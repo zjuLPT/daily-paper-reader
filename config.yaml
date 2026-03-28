@@ -25,3 +25,50 @@ subscriptions:
     stage: A
     diff_threshold_pct: 15
   keyword_recall_mode: or
+  intent_profiles:
+    - tag: DiffTS
+      description: 查询将扩散模型应用于时间序列任务的相关论文
+      enabled: true
+      paper_sources:
+        - arxiv
+      keywords:
+        - keyword: Time Series
+          keyword_cn: 时间序列
+          query: Time Series
+        - keyword: diffusion model
+          keyword_cn: 扩散模型
+          query: research on diffusion models for time-series data
+        - keyword: time series forecasting
+          keyword_cn: 时间序列预测
+          query: methods using diffusion models for time series forecasting
+        - keyword: denoising diffusion
+          keyword_cn: 去噪扩散模型
+          query: denoising diffusion probabilistic models applied to time series
+        - keyword: sequence modeling
+          keyword_cn: 序列建模
+          query: sequence modeling with diffusion processes for time-dependent data
+        - keyword: conditional diffusion
+          keyword_cn: 条件扩散
+          query: conditional diffusion frameworks for time series generation
+      intent_queries:
+        - query: research papers on diffusion models applied to time series tasks
+          query_cn: 关于将扩散模型应用于时间序列任务的研究论文
+          enabled: true
+          source: manual
+          note: ''
+      updated_at: '2026-03-28T13:27:03.391Z'
+source_backends:
+  arxiv:
+    papers_table: arxiv_papers
+    use_vector_rpc: true
+    vector_rpc: match_arxiv_papers
+    vector_rpc_exact: match_arxiv_papers_exact
+    use_bm25_rpc: true
+    bm25_rpc: match_arxiv_papers_bm25
+    sync_table: arxiv_sync_status
+    sync_success_value: success
+    schema: public
+    kind: supabase
+    enabled: true
+    url: https://lyucdwgefyfbmaiopjbk.supabase.co
+    anon_key: sb_publishable_lX-oi64Uxyd7SIVv3_w2Uw_MTOojeKq
