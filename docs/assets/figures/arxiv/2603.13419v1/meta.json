@@ -1,0 +1,230 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-001.webp",
+      "caption": "Fig. 3: Flow field lines and predictions of the optimal target predictor y∗(x, σ) at different noise levels σ = 28, 2.8, 0.63. Color indicates the magnitude of the prediction error y∗(x, σ)−x. Field geometry is (a) global, predictions tend towards the superposition of all training points, (b) moderately localized around training points, predictions approximate the data manifold, and (c) highly localized around each training point, predictions replicate the training points.",
+      "page": 6,
+      "index": 1,
+      "width": 720,
+      "height": 266
+    },
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-002.webp",
+      "caption": "Fig. 9: Relative generalization gaps (Mval − Mtrain)/Mtrain for Autoguidance and CFG with EDM2-S on ImageNet-64 with varying guidance weights. w = 0 corresponds to no guidance. Reconstruction-based metrics fix σ near the peak in the generalization gap.",
+      "page": 11,
+      "index": 2,
+      "width": 708,
+      "height": 230
+    },
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-003.webp",
+      "caption": "Fig. 19: (a)-(c) Relative generalization gap (Mval−Mtrain)/Mtrain and (d)-(f) training and validation results Mtrain/val, with EDM2 on ImageNet-512 for various metrics and model sizes. ForrL2pix, σ is fixed at the peak of the generalization gap, see Fig. 17 and Fig. 18.",
+      "page": 25,
+      "index": 3,
+      "width": 716,
+      "height": 444
+    },
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-004.webp",
+      "caption": "Fig. 18: Relative generalization gap (Mval − Mtrain)/Mtrain with EDM2-M on ImageNet-512 for various metrics. Black lines indicate σ values used in Fig. 19.",
+      "page": 25,
+      "index": 4,
+      "width": 709,
+      "height": 442
+    },
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-005.webp",
+      "caption": "Fig. 20: Relative generalization gap (Mval −Mtrain)/Mtrain with EDM on CIFAR-10 for various metrics. Black lines indicate σ values used in Fig. 22 and Fig. 23.",
+      "page": 26,
+      "index": 5,
+      "width": 708,
+      "height": 443
+    },
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-006.webp",
+      "caption": "Fig. 21: Relative generalization gap (Mval−Mtrain)/Mtrain with EDM on CIFAR-100 for various metrics. Black lines indicate σ values used in Fig. 22 and Fig. 23.",
+      "page": 26,
+      "index": 6,
+      "width": 708,
+      "height": 448
+    },
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-007.webp",
+      "caption": "Fig. 14: Relative generalization gap (Mval − Mtrain)/Mtrain with EDM2-M on ImageNet-64 for various metrics. Black lines indicate σ values used in Fig. 15 and Fig. 16.",
+      "page": 21,
+      "index": 7,
+      "width": 708,
+      "height": 444
+    },
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-008.webp",
+      "caption": "Fig. 13: Relative generalization gap (Eval −Etrain)/Etrain with EDM2 on ImageNet64 for various model sizes. Black lines indicate σ values used in Fig. 15 and Fig. 16.",
+      "page": 21,
+      "index": 8,
+      "width": 708,
+      "height": 445
+    },
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-009.webp",
+      "caption": "Fig. 25: Relative generalization gap (Eval −Etrain)/Etrain in our 2D toy model with random data and (a) different settings of the model error parameter δ, (b) different number of training points, and (c) different settings for the guidance weight w. w = 0 corresponds to no guidance.",
+      "page": 30,
+      "index": 9,
+      "width": 706,
+      "height": 228
+    },
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-010.webp",
+      "caption": "Fig. 26: Filled contours showing the relative generalization gap (E − Etrain)/Etrain at intermediate noise (σ ≈ 1.1) between the training points and each point in space, respectively. The black lines enclose the area where this gap is 0.5 or less. As the model error δ decreases, this region shrinks until it no longer contains the validation points, indicating that the generalization gap to the validation set is larger than 0.5.",
+      "page": 30,
+      "index": 10,
+      "width": 720,
+      "height": 265
+    },
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-011.webp",
+      "caption": "Fig. 5: Filled contours showing the relative generalization gap (E − Etrain)/Etrain at intermediate noise (σ ≈ 1.1) between the training points and each point in space, respectively. The black lines enclose the area where this gap is 0.5 or less. As the model error δ decreases, this region shrinks until it no longer contains the validation points, indicating that the generalization gap to the validation set is larger than 0.5.",
+      "page": 7,
+      "index": 11,
+      "width": 720,
+      "height": 265
+    },
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-012.webp",
+      "caption": "Fig. 24: Flow field lines and predictions of the optimal target predictor y∗(x, σ) at different noise levels σ = 28, 2.8, 0.63. Color indicates the magnitude of the prediction error y∗(x, σ)−x. Field geometry is (a) global, predictions tend towards the superposition of all training points. (b) moderately localized around training points, predictions approximate the data manifold (c) highly localized around each training point, predictions replicate the training points.",
+      "page": 29,
+      "index": 12,
+      "width": 720,
+      "height": 266
+    },
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-013.webp",
+      "caption": "Fig. 15: Relative generalization gap (Mval−Mtrain)/Mtrain with EDM2 on ImageNet64 for various metrics and model sizes. For reconstruction-based metrics, σ is fixed at the peak of the generalization gap, see Fig. 13 and Fig. 14.",
+      "page": 22,
+      "index": 13,
+      "width": 719,
+      "height": 699
+    },
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-014.webp",
+      "caption": "Fig. 8: (a) The relative generalization gap (Mval − Mtrain)/Mtrain in pixel space increases and shifts to the right when the number of classes (colorbar) for a classconditioned model increases. (b) In feature space, this trend is mostly mitigated, and (c) stays absent with Fréchet Distance-based metrics. σ fixed near the peak of the gap.",
+      "page": 10,
+      "index": 14,
+      "width": 699,
+      "height": 236
+    },
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-015.webp",
+      "caption": "Fig. 31: Relative generalization gaps (Mval−Mtrain)/Mtrain with Classifier-Free Guidance with EDM2-S on ImageNet-64. Black lines indicate σ values used in Fig. 29",
+      "page": 33,
+      "index": 15,
+      "width": 710,
+      "height": 456
+    },
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-016.webp",
+      "caption": "Fig. 30: Relative generalization gaps (Mval−Mtrain)/Mtrain with Autoguidance with EDM2-S on ImageNet-64. Black lines indicate σ values used in Fig. 28",
+      "page": 33,
+      "index": 16,
+      "width": 710,
+      "height": 456
+    },
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-017.webp",
+      "caption": "Fig. 16: Training and validation results Mtrain/val with EDM2 on ImageNet-64 for various metrics and model sizes. For reconstruction-based metrics, σ is fixed at the peak of the generalization gap, see Fig. 13 and Fig. 14.",
+      "page": 23,
+      "index": 17,
+      "width": 719,
+      "height": 699
+    },
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-018.webp",
+      "caption": "Fig. 23: Training and validation results Mtrain/val with EDM on CIFAR-10/100 for various metrics and model sizes. For reconstruction-based metrics, σ is fixed at the peak of the generalization gap, see Fig. 20 and Fig. 21.",
+      "page": 28,
+      "index": 18,
+      "width": 719,
+      "height": 699
+    },
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-019.webp",
+      "caption": "Fig. 2: The relative generalization gap (Eval − Etrain)/Etrain increases with images seen during training (colorbar in millions) and with model size in relation to dataset size. The black line indicates the beginning of overfitting (validation error starts increasing, Fig. 1) for each noise level σ.",
+      "page": 4,
+      "index": 19,
+      "width": 714,
+      "height": 227
+    },
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-020.webp",
+      "caption": "Fig. 11: (a) Decreasing the receptive field mitigates the relative generalization gap (Eval − Etrain)/Etrain. Colorbar shows the sliding window size. 64 corresponds to regular inference. (b) During inference, the model shifts from long-range correlations to short-range correlations. The correlation score is averaged over pixels and images. (c) Edge pixels tend to have longer-range dependencies. σ ≈ 1.2. RGB shows the pixelwise correlation score, agg is aggregated over channels. All plots show ImageNet-64, EDM2-S.",
+      "page": 19,
+      "index": 20,
+      "width": 716,
+      "height": 230
+    },
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-021.webp",
+      "caption": "Fig. 10: (a)-(b) Relative generalization gap (Mval − Mtrain)/Mtrain and (c)-(d) training and validation results Mtrain/val, with EDM2-M on ImageNet-64 with tFD and truncated inference. The indices in the legend show at which step inference was stopped, with 16, 17, 18, 19, 20 corresponding to intermediate noise levels σ ≈ 2.2, 1.6, 1.2, 0.8, 0.6, comparable to the peak in the relative generalization gap for the reconstruction-based metrics.",
+      "page": 17,
+      "index": 21,
+      "width": 725,
+      "height": 676
+    },
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-022.webp",
+      "caption": "Fig. 29: Relative generalization gaps (Mval−Mtrain)/Mtrain with Classifier-Free Guidance with EDM2-S on ImageNet-64. Reconstruction-based metrics fix σ at the peak of the generalization gap (see Fig. 31).",
+      "page": 32,
+      "index": 22,
+      "width": 694,
+      "height": 309
+    },
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-023.webp",
+      "caption": "Fig. 28: Relative generalization gaps (Mval−Mtrain)/Mtrain with Autoguidance with EDM2-S on ImageNet-64. Reconstruction-based metrics fix σ at the peak of the generalization gap (see Fig. 30).",
+      "page": 32,
+      "index": 23,
+      "width": 694,
+      "height": 309
+    },
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-024.webp",
+      "caption": "Fig. 22: Relative generalization gap (Mval − Mtrain)/Mtrain with EDM on CIFAR10/100 for various metrics and model sizes. For reconstruction-based metrics, σ is fixed at the peak of the generalization gap, see Fig. 20 and Fig. 21.",
+      "page": 27,
+      "index": 24,
+      "width": 719,
+      "height": 699
+    },
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-025.webp",
+      "caption": "Fig. 17: Relative generalization gap (Eval −Etrain)/Etrain with EDM2 on ImageNet512 for various model sizes. Black lines indicate σ values used in Fig. 19.",
+      "page": 24,
+      "index": 25,
+      "width": 709,
+      "height": 695
+    },
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-026.webp",
+      "caption": "Fig. 6: Relative generalization gaps (Mval−Mtrain)/Mtrain vs training time and model capacity for various metrics on ImageNet-64. Approximately linearly scaling for onestep reconstruction metrics, using (a) L2-norm to compare paired samples, (b) Fréchet Distance to compare distributions of paired samples. (c) Relative generalization gaps using tFD (FDD) as a metric, comparing the output of denoising trajectories instead of one-step predictions. (a) and (b) show results for σ near the peaks in their generalization gaps.",
+      "page": 9,
+      "index": 26,
+      "width": 718,
+      "height": 230
+    },
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-027.webp",
+      "caption": "Fig. 7: Metric results for Mtrain and Mval for various metrics on ImageNet-64. (a),(b) For reconstruction-based metrics, the training performance improves with training time and model size, whereas the validation performance eventually degrades, resulting in classical overfit behavior. (c) With FDD, overfitting is absent, because training performance degrades as well.",
+      "page": 9,
+      "index": 27,
+      "width": 712,
+      "height": 228
+    },
+    {
+      "url": "assets/figures/arxiv/2603.13419v1/fig-028.webp",
+      "caption": "Fig. 27: (a)-(b) Relative generalization gap (Mval −Mtrain)/Mtrain for various metrics and (c)-(d) training and validation results Mtrain/val with FDD/FID, with EDM on CIFAR-10. We retrained for 100Mimg (half of the default) with different numbers of classes. Classes were computed algorithmically using k-means clustering in DINOv2 feature space. For reconstruction-based metrics, σ is fixed at the peak of the generalization gap.",
+      "page": 31,
+      "index": 28,
+      "width": 675,
+      "height": 691
+    }
+  ]
+}

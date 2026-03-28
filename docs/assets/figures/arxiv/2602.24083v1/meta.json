@@ -1,0 +1,78 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2602.24083v1/fig-001.webp",
+      "caption": "Figure 4: The learned posterior sample paths (red) are generated using the learned (bθ, uβ) pair, and the baseline “true” posterior sample paths are generated using extensive MCMC simulations (blue).",
+      "page": 15,
+      "index": 1,
+      "width": 806,
+      "height": 920
+    },
+    {
+      "url": "assets/figures/arxiv/2602.24083v1/fig-002.webp",
+      "caption": "Figure 7: Overdispersion affects downstream inferences.",
+      "page": 39,
+      "index": 2,
+      "width": 878,
+      "height": 344
+    },
+    {
+      "url": "assets/figures/arxiv/2602.24083v1/fig-003.webp",
+      "caption": "Figure 1: The variance curve exceeds the mean curve, indicating strong overdispersion of the arrival point process, in the US Bank data from [38].",
+      "page": 3,
+      "index": 3,
+      "width": 627,
+      "height": 388
+    },
+    {
+      "url": "assets/figures/arxiv/2602.24083v1/fig-004.webp",
+      "caption": "Figure 3: The learned data samples (red) compared to the true data samples (blue).",
+      "page": 13,
+      "index": 4,
+      "width": 806,
+      "height": 535
+    },
+    {
+      "url": "assets/figures/arxiv/2602.24083v1/fig-005.webp",
+      "caption": "Figure 6: The learned data samples (red) compared to the true data samples (blue).",
+      "page": 19,
+      "index": 5,
+      "width": 806,
+      "height": 539
+    },
+    {
+      "url": "assets/figures/arxiv/2602.24083v1/fig-006.webp",
+      "caption": "Table 2: Comparison of computation time used for posterior inference on the testing dataset. The data is generated with the ground truth drift b̃(Zt, t) = 0.3(80− Zt).",
+      "page": 17,
+      "index": 6,
+      "width": 898,
+      "height": 183
+    },
+    {
+      "url": "assets/figures/arxiv/2602.24083v1/fig-007.webp",
+      "caption": "Figure 2: Comparing learned prior drift bθ(Zt, t) (purple) to the ground truth drift b̃(Zt, t) = 0.3(80− Zt) (yellow).",
+      "page": 12,
+      "index": 7,
+      "width": 540,
+      "height": 464
+    },
+    {
+      "url": "assets/figures/arxiv/2602.24083v1/fig-008.webp",
+      "caption": "Figure 8: Amortized variational inference architecture for Neural Diffusion Intensity Models.",
+      "page": 41,
+      "index": 8,
+      "width": 898,
+      "height": 616
+    },
+    {
+      "url": "assets/figures/arxiv/2602.24083v1/fig-009.webp",
+      "caption": "Figure 5: Train vs. test Wasserstein distance between amortized posterior samples and high-fidelity MCMC posterior samples as a function of the training sample size n. A train-test gap indicates overfitting of the amortized correction uβ(· · · , X), which vanishes as n goes beyond 16.",
+      "page": 16,
+      "index": 9,
+      "width": 540,
+      "height": 402
+    }
+  ]
+}

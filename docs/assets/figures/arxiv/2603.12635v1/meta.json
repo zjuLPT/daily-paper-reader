@@ -1,0 +1,142 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.12635v1/fig-001.webp",
+      "caption": "Figure 4: Mean absolute error from DNS at different timesteps of forecast for different sensor placement techniques. Sensor placements improve the forecast. These values are for 50 sensor points with a minimum distance of 15 grid points between them.",
+      "page": 11,
+      "index": 1,
+      "width": 590,
+      "height": 354
+    },
+    {
+      "url": "assets/figures/arxiv/2603.12635v1/fig-002.webp",
+      "caption": "Figure 3: U velocity at different timesteps of forecast for different sensor placement techniques. The sensor locations are shown as black dots.",
+      "page": 11,
+      "index": 2,
+      "width": 786,
+      "height": 740
+    },
+    {
+      "url": "assets/figures/arxiv/2603.12635v1/fig-003.webp",
+      "caption": "Table 1: Consolidated training and sampling hyperparameters for Homogeneous Isotropic Turbulence (HIT) and Backwards-Facing Step (BFS) experiments.",
+      "page": 25,
+      "index": 3,
+      "width": 844,
+      "height": 611
+    },
+    {
+      "url": "assets/figures/arxiv/2603.12635v1/fig-004.webp",
+      "caption": "Figure 11: Mean absolute error from ground truth at different timesteps of forecast for different sensor placement techniques. Sensor placements improves the forecast. These values are for 50 sensor points with a minimum distance of 7 grid points between them.",
+      "page": 15,
+      "index": 4,
+      "width": 590,
+      "height": 354
+    },
+    {
+      "url": "assets/figures/arxiv/2603.12635v1/fig-005.webp",
+      "caption": "Figure 10: U velocity plots at different timesteps of forecast for different sensor placement techniques. The sensor locations are shown as black dots.",
+      "page": 15,
+      "index": 5,
+      "width": 786,
+      "height": 433
+    },
+    {
+      "url": "assets/figures/arxiv/2603.12635v1/fig-006.webp",
+      "caption": "Figure 1: U velocity at different timesteps of forecast for single-step vs multi-step diffusion training along with the DNS ground truth.",
+      "page": 10,
+      "index": 6,
+      "width": 786,
+      "height": 492
+    },
+    {
+      "url": "assets/figures/arxiv/2603.12635v1/fig-007.webp",
+      "caption": "Figure 2: Mean absolute error from DNS at different timesteps of forecast for single-step vs multi-step diffusion training.",
+      "page": 10,
+      "index": 7,
+      "width": 590,
+      "height": 354
+    },
+    {
+      "url": "assets/figures/arxiv/2603.12635v1/fig-008.webp",
+      "caption": "Figure 8: U velocity plots at different timesteps of forecast for single-step vs multi-step diffusion training along with the ground truth.",
+      "page": 14,
+      "index": 8,
+      "width": 976,
+      "height": 554
+    },
+    {
+      "url": "assets/figures/arxiv/2603.12635v1/fig-009.webp",
+      "caption": "Figure 9: Mean absolute error from ground truth at different timesteps of forecast for single-step vs multi-step diffusion training.",
+      "page": 14,
+      "index": 9,
+      "width": 686,
+      "height": 414
+    },
+    {
+      "url": "assets/figures/arxiv/2603.12635v1/fig-010.webp",
+      "caption": "Figure 15: Predictions of the Reynolds stress profiles at different downstream locations of the BFS case obtained by different sensor placement techniques. (Top) Streamwise normal stress, < u′u′ > /U2 ∞; (Middle) Shear stress, < u′v′ > /U2 ∞; (Bottom) Vertical normal stress, < v′v′ > /U2 ∞. The placement of sensors generally leads to improved prediction of stresses with the uncertainty-based placement strategy being most effective.",
+      "page": 18,
+      "index": 10,
+      "width": 979,
+      "height": 1107
+    },
+    {
+      "url": "assets/figures/arxiv/2603.12635v1/fig-011.webp",
+      "caption": "Figure 6: Plots for comparing different sensor placement techniques and their mean absolute error from DNS at different timesteps of forecast for different distance between(d) and number of sensor points(s). Standard-deviation-based sensor placement gives lowest error.",
+      "page": 13,
+      "index": 11,
+      "width": 976,
+      "height": 545
+    },
+    {
+      "url": "assets/figures/arxiv/2603.12635v1/fig-012.webp",
+      "caption": "Figure 7: Visualization of the two-dimensional backwards-facing step computational domain, including boundary conditions and the cropped region used for training",
+      "page": 13,
+      "index": 12,
+      "width": 962,
+      "height": 285
+    },
+    {
+      "url": "assets/figures/arxiv/2603.12635v1/fig-013.webp",
+      "caption": "Figure 16: Relationship between the number of measurement points/sensors (s) and the sampling time (in seconds) for various sensor placement techniques for (left) homogeneous isotropic turbulence sampling and (right) backward-facing step sampling. The shading represents uncertainty (±3σ) over 5 runs.",
+      "page": 19,
+      "index": 13,
+      "width": 976,
+      "height": 321
+    },
+    {
+      "url": "assets/figures/arxiv/2603.12635v1/fig-014.webp",
+      "caption": "Figure 14: Predictions of the mean velocity profiles at different downstream locations of the BFS case obtained by different sensor placement techniques. (Top) Streamwise velocity, < u > /U∞; (Bottom) Wall-normal velocity, < v > /U∞",
+      "page": 17,
+      "index": 14,
+      "width": 979,
+      "height": 740
+    },
+    {
+      "url": "assets/figures/arxiv/2603.12635v1/fig-015.webp",
+      "caption": "Figure 5: Plots for the mean absolute error from DNS at different timesteps of forecast for different gap between(g) and number of sensor points(s). More sensor points and larger gaps between sensors lead to lower prediction error.",
+      "page": 12,
+      "index": 15,
+      "width": 976,
+      "height": 308
+    },
+    {
+      "url": "assets/figures/arxiv/2603.12635v1/fig-016.webp",
+      "caption": "Figure 12: Plots for the mean absolute error from ground truth at different timesteps of forecast for different gap(g) and number of sensor points(s).",
+      "page": 16,
+      "index": 16,
+      "width": 976,
+      "height": 308
+    },
+    {
+      "url": "assets/figures/arxiv/2603.12635v1/fig-017.webp",
+      "caption": "Figure 13: Plots for comparing different sensor placement techniques and their mean absolute error from ground truth at different timesteps of forecast for different gap(g) and number of sensor points(s). Random sensor placement and the standard deviation based sensor placement give the highest and lowest error respectively.",
+      "page": 16,
+      "index": 17,
+      "width": 976,
+      "height": 546
+    }
+  ]
+}

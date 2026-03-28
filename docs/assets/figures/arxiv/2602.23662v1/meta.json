@@ -1,0 +1,78 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2602.23662v1/fig-001.webp",
+      "caption": "Table 1: Anomaly detection performance. V-R and V-P are VUS-ROC and VUS-PR (Paparrizos et al. 2022). RF is Range F-score (Tatbul et al. 2018). Best results are in bold, and second-best results are underlined (higher is better).",
+      "page": 6,
+      "index": 1,
+      "width": 1048,
+      "height": 242
+    },
+    {
+      "url": "assets/figures/arxiv/2602.23662v1/fig-002.webp",
+      "caption": "Table 2: Ablation study with different components. M and N refer to Bernoulli mask and Noiseless inference, respectively.",
+      "page": 6,
+      "index": 2,
+      "width": 1048,
+      "height": 209
+    },
+    {
+      "url": "assets/figures/arxiv/2602.23662v1/fig-003.webp",
+      "caption": "Table 3: Reconstruction quality performance. MSEa and MSEn are the MSE values of anomalous and normal parts during the inference. Not necessary, but MSEa should be higher, and MSEn should be lower. The higher the ratio MSEa",
+      "page": 7,
+      "index": 3,
+      "width": 1048,
+      "height": 273
+    },
+    {
+      "url": "assets/figures/arxiv/2602.23662v1/fig-004.webp",
+      "caption": "Figure 6: Sensitivity analysis across four hyperparameters.",
+      "page": 14,
+      "index": 4,
+      "width": 1056,
+      "height": 217
+    },
+    {
+      "url": "assets/figures/arxiv/2602.23662v1/fig-005.webp",
+      "caption": "Table 7: Standard deviation of VUS-ROC, VUS-PR, and Range F-score.",
+      "page": 13,
+      "index": 5,
+      "width": 1048,
+      "height": 264
+    },
+    {
+      "url": "assets/figures/arxiv/2602.23662v1/fig-006.webp",
+      "caption": "Table 6: R-R, R-P, A-R, and F are Range-AUC-ROC, Range-AUC-PR (Paparrizos et al. 2022), AUC-ROC, and F1.",
+      "page": 13,
+      "index": 6,
+      "width": 1048,
+      "height": 204
+    },
+    {
+      "url": "assets/figures/arxiv/2602.23662v1/fig-007.webp",
+      "caption": "Table 5: Key hyperparameters for AnomalyFilter.",
+      "page": 12,
+      "index": 7,
+      "width": 500,
+      "height": 310
+    },
+    {
+      "url": "assets/figures/arxiv/2602.23662v1/fig-008.webp",
+      "caption": "Figure 2: An overview of AnomalyFilter framework. The model is trained to predict masked Gaussian noise, with the aim of learning to denoise the anomaly parts (i.e., nonmasked parts) and retaining the normal parts (i.e., masked parts). Noiseless inference operates without noise at the beginning and during the denoising steps. Thus, when given a normal instance, it outputs an instance with no change. When given an anomaly instance, only anomalous parts are removed. AnomalyFilter captures temporal and inter-variable dependencies by temporal and feature transformer layers and predicts noise added to the input.",
+      "page": 5,
+      "index": 8,
+      "width": 1046,
+      "height": 317
+    },
+    {
+      "url": "assets/figures/arxiv/2602.23662v1/fig-009.webp",
+      "caption": "Figure 8: Reconstruction examples across different methods of (a) AIOps, (b) Yahoo real, (c) Yahoo bench, and (d) SMD.",
+      "page": 16,
+      "index": 9,
+      "width": 1052,
+      "height": 1031
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.08803v1/fig-001.webp",
+      "caption": "Figure 1: The 12-point example series. Quantile bands are shaded. The dashed vertical line marks the chunk boundary for K = 2.",
+      "page": 4,
+      "index": 1,
+      "width": 761,
+      "height": 252
+    },
+    {
+      "url": "assets/figures/arxiv/2603.08803v1/fig-002.webp",
+      "caption": "Figure 2: The assembled 12× 12 global MTF image for the worked example (Q = 3). Rowindex colours and left-side brackets group the three sets of identical rows: red for state 1 (i ∈ {1, 4, 7, 8}), green for state 2 (i ∈ {3, 6, 9, 10}), and blue for state 3 (i ∈ {2, 5, 11, 12}). Within each group the rows are pixel-for-pixel identical regardless of whether they fall in the mean-reverting first half or the persistent second half of the series. No band structure is visible; the regime transition at t = 6 leaves no trace.",
+      "page": 5,
+      "index": 2,
+      "width": 779,
+      "height": 575
+    },
+    {
+      "url": "assets/figures/arxiv/2603.08803v1/fig-003.webp",
+      "caption": "Figure 3: The assembled 12× 12 TMTF image for the worked example (K = 2, Q = 3). Rows i = 1–6 (top band, above the dashed line) are governed by W (1) and contain only binary values {0, 1}, producing a stark alternating texture reflecting the deterministic mean-reverting cycle of chunk 1. Rows i = 7–12 (bottom band) are governed by W (2) and contain values in {0, 0.5, 1}, producing a softer texture reflecting the persistent upward dynamics of chunk 2. A CNN filter traversing the image detects the texture change at the band boundary and associates it with the regime transition at t = 6.",
+      "page": 9,
+      "index": 3,
+      "width": 779,
+      "height": 508
+    }
+  ]
+}

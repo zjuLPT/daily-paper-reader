@@ -1,0 +1,1388 @@
+Title: Neural Diffusion Intensity Models for Point Process Data
+
+URL Source: https://arxiv.org/pdf/2602.24083v1
+
+Published Time: Mon, 02 Mar 2026 02:18:00 GMT
+
+Number of Pages: 41
+
+Markdown Content:
+# Neural Diffusion Intensity Models for Point Process Data 
+
+## Xinlong Du 1, Harsha Honnappa 1, and Vinayak Rao 21Edwardson School of Industrial Engineering, Purdue University 
+
+2Department of Statistics, Purdue University 
+
+Abstract 
+
+Cox processes model overdispersed point process data via a latent stochas-tic intensity, but both nonparametric estimation of the intensity model and posterior inference over intensity paths are typically intractable, relying on expensive MCMC methods. We introduce Neural Diffusion Intensity Models, a variational framework for Cox processes driven by neural SDEs. Our key theoretical result, based on enlargement of filtrations, shows that conditioning on point process observations preserves the diffusion structure of the latent intensity with an explicit drift correction. This guarantees the variational family contains the true posterior, so that ELBO maximization coincides with maximum likelihood estimation under sufficient model capacity. We design an amortized encoder architecture that maps variable-length event sequences to posterior intensity paths by simulating the drift-corrected SDE, replacing repeated MCMC runs with a single forward pass. Experiments on synthetic and real-world data demonstrate accurate recovery of latent intensity dynamics and posterior paths, with orders-of-magnitude speedups over MCMC-based methods. 
+
+# 1 Introduction 
+
+Point process data appear in many scientific and industrial applications, including neural spike trains [ 3], social interactions [ 36 ], finance and insurance models [ 7] and queuing models [ 8]. Such data are sparse, irregular, and often exhibit substantial over-dispersion relative to simple inhomogeneous Poisson models [ 23 , 5]. As an example, 1
+
+> arXiv:2602.24083v1 [cs.LG] 27 Feb 2026
+
+in Section 4.4, we will consider a dataset of call records from a large U.S. bank call center. Figure 1 shows the statistics of the number of arrivals every 10 minutes: this exhibits a very obvious overdispersion. A natural and expressive framework is to model these temporal events as Cox processes, wherein event arrivals follow a Poisson process with a latent stochastic intensity [ 11 , Chapter 6]. The randomness of the intensity function helps explain the greater between-realization variability that is characteristic of overdispersed point processes. In this paper, we model the intensity process as Markov diffusions that are solutions to unknown stochastic differential equations (SDEs). In this case the point process model is commonly referred to as a diffusion-driven Cox process (DDCP) [ 18 ]. The Markovianity of the intensity process is a common requirement in many real-world applications; for instance, [ 48 ] propose a Cox-Ingersoll-Ross (CIR) diffusion model of the intensity of the U.S. bank data in Figure 1. Modeling via an SDE allows one to explicitly encode dynamic mechanisms, such as mean reversion or state-dependent volatility. These provide an interpretable description of how the event rate evolves over multiple time-scales, making them particularly appealing when the intensity is believed to follow an underlying economic, physical, or biological process. Learning a DDCP amounts to estimating the coefficients of the latent SDE from point process observations. This is a challenging problem, involving intractable infinite-dimensional integrals over paths and requiring computationally intensive Markov chain Monte Carlo (MCMC) methods [ 18 ]. These challenges persist even after fitting the model: now, computing the posterior of the intensity conditioned on a point process observation requires expensive MCMC simulations. In this work, we introduce Neural Diffusion Intensity Models , a nonparametric variational framework for Cox processes driven by latent SDE intensity processes. Our approach combines three key ideas: 1. Neural SDE priors. We parametrize the drift of the latent SDE with a neural network, yielding a flexible generative model for intensity paths. We do not emphasize this here, but our methodology applies equally in settings with standard parametric SDE drift functions, or semiparametric models that sit in between. 2. Posterior characterization. Using tools from enlargement of filtrations (EoF), we show that conditioning on point process observations introduces a score-like drift correction while preserving the diffusion structure of the latent intensity. That is, the posterior intensity process remains a diffusion with the same diffusion coefficient and a modified score-type drift. This establishes a conjugacy at the level of path measures. 2Figure 1: The variance curve exceeds the mean curve, indicating strong overdispersion of the arrival point process, in the US Bank data from [38]. 3. Path-space variational inference. Motivated by the structural result above, we construct a variational family indexed by the above drift correction, each index corresponding to a different approximation to the posterior intensity process. We parametrize the drift correction as a neural network, so that for expressive enough neural network architectures, the variational family contains the true posterior. As a consequence, maximizing the evidence lower bound (ELBO) coincides with maximum likelihood estimation. Viewed as a VAE, the drift neural network is a decoder from Brownian paths to point process observations via the intermediate intensity, while the drift correction neural network forms an encoder mapping from point process observations to posterior distributions over intensity paths. Under our framework, posterior inference is amortized: given point process observations, posterior intensity paths can be sampled by simulating the drift-corrected SDE directly. 
+
+## 1.1 Related Work 
+
+There have been numerous prior works on point process models with stochastic intensity functions. A large number of these model the intensity function as a transformed realization of a smooth Gaussian process prior, and carry out posterior inference via MCMC [ 32 , 1], variational inference [ 13 , 2], or approaches like INLA [ 42 ]. Here, the latent intensity primarily serves as a smoothing mechanism, and these 3Gaussian process models lack the capacity to represent mechanistic dynamics in the way that a drift term in an SDE can. Closer to our work is [ 15 , 21 , 46 ], all of whom consider DDCPs, and attempt to flexibly learn the drift-function of the underlying SDE using variational Bayes. In the former, the authors make a Gaussian approximation to the posterior along the lines of [ 4] (see below): however this introduces a variational gap. [ 21 , 46 ] proposed a variational inference scheme for DDCPs, using a stochastic partial differential equation satisfied by the smoothing posterior density as a heuristic to identify the posterior diffusion. The present paper supersedes this work by providing a rigorous EoF-based structural characterization of the posterior path measure (not considered in [ 21 , 46 ]), and establishes that a sufficiently expressive variational family will contain the true posterior. [ 45 ] extended the method in [ 46 ] to a Poisson random measure likelihood, slightly generalizing the setting in [ 21 , 46 ]. Furthermore, these works do not consider amortized inference, necessitating a fresh inference run for each new observation. A different approach is that taken by neural temporal point processes (neural TPPs) and related models [ 14 , 40 , 49 , 31 , 39 ]: these model marked point processes autoregressively, predicting the time and mark of the next event in a sequence using neural network architectures like RNNs, GRUs or LSTMs. Works like APP-VAE [ 30 ], VEPP [ 35 ] and [ 41 ] can be viewed as latent variable neural TPPs, and apply variational autoencoder ideas to point process data by introducing latent variables at the level of inter-arrival times. These models, while flexible, are geared more towards prediction. They are non-intensity-based models, unable to model, learn the dynamics of, or capture posterior uncertainty about the latent stochastic intensity process. Even here, the ones that utilize variational inference/autoencoders do not emphasize the structure of the ‘true’ posterior, and since their variational families are Gaussian, a variational gap is present structurally. Moving our focus from point processes to SDEs, there is an extensive literature on MCMC [ 6, 18 ] and variational inference for continuous-time stochastic models. The latter can be traced to the seminal work in [ 4], who first proposed approximating the posterior of a diffusion process with a linear SDE, deriving a variational lower bound via Girsanov’s theorem. Works like [ 34 ] and [ 37 ] build on these ideas for SDE latent paths, and share some ideas with our work. For example, [34 ] assumes (like us) that the approximate posterior path is an SDE with a learnable drift, and proposes to learn the posterior drift as a stochastic optimal control problem. [ 34 ] however does not consider point processes observations (which present special challenges), does not attempt to identify the ‘true’ posterior, nor is the question of amortized inference considered. Latent Neural SDEs for generative modeling have also been studied in [ 25 , 27 ], however none of these works consider point process observations 4generated by the latent-diffusion. Opper’s formulation of variational inference as stochastic optimal control [ 34 ] is closely related to [ 44 ], who derive the F¨ ollmer drift — the drift that exactly samples from the posterior over the terminal state XT given observations Y ∼ P (·| XT ) — as the solution to an optimal control problem, parameterized by a neural network. This is free of variational gap at the level of the terminal law. In our setting, however, the point process observations depend on the full intensity trajectory, so we must match the entire path measure rather than just the terminal law. Our EoF-based result provides the path-measure analogue of their terminal-law result. However, observe that we identify the posterior drift correction from purely probabilistic considerations rather than as an optimal control. The question of amortized inference in dynamical latent variable models has been studied in the discrete-time setting by [ 26 ] and [ 29 ], who show that conditioning the approximate posterior on the full observation sequence can yield substantially better posterior approximations than causal (filtering) conditioning. Our work can be viewed as the continuous-time, point-process analogue of this principle, with the additional theoretical results from EoF about the structural necessity of full-sequence conditioning. 
+
+# 2 Problem Formulation 
+
+We formulate our model on a filtered probability space (Ω , F, (Ft)t∈[0 ,T ], P⋆), where 
+
+P⋆ denotes the unknown ground-truth data-generating measure. We observe event data as a simple point process [ 11 , Chapter 1] X = {τi}Ki=1 on [0 , T ], with 0 < τ 1 <
+
+· · · < τ K ≤ T and K a random variable giving the number of events. We may use 
+
+X interchangeably with the counting process N0: T where Nt := P 
+
+> i
+
+1{τi≤t}. We let 
+
+μgt = P⋆ ◦ X−1 denote the ground-truth distribution over event sequences, and let 
+
+X := ∪k∈NRk represent the sample space for X. The filtration ( Ft) is assumed to carry both the observed events X and a latent intensity process Z = ( Zt)t∈[0 ,T ], which is ( Ft)-adapted but not directly observed. Let Z := C([0 , T ]; Rd) represent the sample space of Rd-valued continuous functions for Z.
+
+## 2.1 Neural Diffusion Intensity Model 
+
+We focus on one-dimensional simple point processes, noting that our framework can be extended to multivariate point processes by replacing the scalar intensity process 5with a vector-valued SDE 1 on [0 , T ]. Our model class {Pθ, θ ∈ Θ} consists of Cox processes (doubly stochastic Poisson processes), defined by the hierarchical structure 
+
+Pθ(X) := R 
+
+> Z
+
+dP θ(X, Z ) where Pθ(X, Z ) = P (X|Z)Pθ(Z), P (X|Z) and Pθ(Z) are path measures and Θ ⊆ Rp, p > 0. Conditioned on a latent intensity trajectory 
+
+Z = ( Zt)t∈[0 ,T ], the observation X is an inhomogeneous Poisson process with rate (Zt)t∈[0 ,T ]. The prior measure Pθ(Z) over intensities is induced by the Markov diffusion solution of the SDE 
+
+dZ t = bθ(Zt, t ) dt + σ(Zt, t ) dB t, Z0 = z. (1) Here Bt is a Brownian motion adapted to ( Ft)t∈[0 ,T ], while 
+
+• bθ is a parameterized drift function (modeled by a neural network), 
+
+• σ is a known diffusion coefficient (e.g., fixed as a constant or set by the CIR model). We assume that the drift and diffusion coefficients satisfy the usual conditions consistent for a strong solution of the SDE to exist; see [ 33 , Theorem 5.2.1]. Then, the joint measure Pθ(X, Z ) is well-defined on X × Z provided Zt ≥ 0 a.s., making it is a valid intensity function. This construction yields an infinite mixture model [ 28 ]of Poisson processes [ 32 ], with mixing distribution given by the SDE prior Pθ(Z). See Section A for the measure-theoretic desiderata for the model. 
+
+## 2.2 Nonparametric Maximum Likelihood 
+
+With this setup, learning Pθ(X) reduces to estimating the drift parameter θ. We do this by maximizing the expected log-likelihood under the ground truth distribution 
+
+μgt :sup 
+
+> θ∈Θ
+
+Eμgt [log Pθ(X)] = sup 
+
+> θ∈Θ
+
+Eμgt 
+
+
+
+log 
+
+Z
+
+P (X|Z)Pθ(dZ )
+
+
+
+.
+
+This is a nonparametric maximum likelihood estimation (NPMLE) problem over an infinite mixture model; see [ 28 , Chapter 5]. We assume that the model class 
+
+{Pθ, θ ∈ Θ} is well-specified in the sense that KL (μgt ∥Pθ) < ∞ for some θ ∈ Θ. This ensures that Eμgt [ log Pθ(X)] is well-defined and finite, and that the maximum likelihood objective is not trivially −∞ .
+
+> 1This would model of multiple event streams that may share a common latent intensity or evolve independently.
+
+6In practice, μgt is unknown and we assume access to n i.i.d. observations of the data, i.e., {Xi}ni=1 , with Xi i.i.d. 
+
+∼ μgt , leading to the empirical objective sup 
+
+> θ∈Θ
+
+Eˆμ
+
+
+
+log 
+
+Z
+
+P (X|Z)dP θ(Z)
+
+
+
+(2) where ˆ μ := 1
+
+> n
+
+Pni=1 δXi is the empirical measure. Solving this maximization problem however involves a structural difficulty: with a few special exceptions, the integral on the RHS is intractable. This has been classically addressed in the mixture modeling literature by resorting to an expectation-maximization (EM) type algorithm; see Appendix C.1 and [ 28 , Chapter 3 and 6] for finite dimensional settings. In our setting, the E-step requires sampling from the posterior path measure 
+
+Pθ(Z|X), typically via MCMC, while the M-step updates the prior measure θ. This can be computationally expensive, since every gradient step requires new MCMC samples from the path posterior distribution. Furthermore, the EM algorithm will only learn the prior dynamics, and posterior inference for a newly observed point process will require additional MCMC at test time. Since the posterior is a path space measure, such MCMC sampling can be challenging, especially in settings where repeated or real-time inference is needed. To bypass this computational burden, we introduce an amortized approximation to the posterior. We model the posterior intensity process as the solution of the SDE 
+
+dZ t =
+
+h
+
+bθ(Zt, t ) + 1{t≤T ′}σ(Zt, t )uβ (Zt, t, T ′, N 0: T ′ )
+
+i
+
+dt 
+
++ σ(Zt, t ) dB t.
+
+(3) and treat the path measure induced by this SDE as the variational family Qϕ(Z|X), where ϕ = ( θ, β ). This construction preserves the diffusion coefficient, while intro-ducing an observation-dependent drift correction through uβ . Once bθ and uβ are learned, posterior inference for any observation reduces to simulating sample paths from Eq. (3). Posterior inference becomes fully amortized. 
+
+## 2.3 Enlargement of Filtrations 
+
+At this point, this structure imposed by our variational approximation remains a heuristic. There are two fundamental questions to consider regarding the true posterior process: i. (Existence ) Does the posterior intensity, conditioned on a point process obser-vation, remain a diffusion with an SDE representation? And if so: 7ii. ( Structure ) How does its drift relate to the prior drift? Answering the first question justifies the validity of using path measures induced by Markov diffusions (as solutions of SDEs) for the approximate posteriors, and answering the second sheds light on the correct functional form of the posterior drift correction. Both questions can be answered using tools from Enlargement of Filtrations (EoF) [22 , 20 ], wherein one studies how semimartingale decompositions change when the filtration is enlarged to include additional information, typically information about future events. In our setting, the enlargement corresponds to conditioning on the observed point process trajectory X = N0: T ′ , where T ′ ≤ T . Formally, we pass from the original filtration ( Ft) to the “enlarged” filtration Gt = Ft ∨ σ(N0: T ′ ), so that the future event times up to T ′ are known at all earlier times. This is the continuous-time analogue of smoothing in a hidden Markov model (HMM), where the latent state at time t is inferred given the entire observation sequence rather than only the observations up to time t; here, the role of the full observation sequence is played by the complete point process trajectory N0: T ′ .Under Jacod’s absolute continuity condition (Theorem B.1), one can apply the general semimartingale decomposition theorem (Theorem. B.3) to obtain the following result 2:
+
+Theorem 2.1. Fix T ′ ≤ T and let N0: T ′ be a one-dimensional point process on the interval [0 , T ′], and suppose the prior intensity process satisfies 
+
+dZ t = b(Zt, t ) dt + σ(Zt, t ) dB t, Z0 = z0.
+
+Then, conditioned on the observed event times X = (0 < τ 1 < · · · < τ NT ′ ≤ T ), the posterior intensity process admits the SDE representation 
+
+dZ t = b(Zt, t ) + 1{t≤T ′}σ(Zt, t )2h(Zt, t, T ′, X )dt 
+
++ σ(Zt, t ) d ˜Bt, Z0 = z0,
+
+where ˜B is a Brownian motion with respect to Gt and 
+
+h(z, t, T ′, X ) := 
+
+∂∂z log E
+
+"
+
+exp −
+
+Z T ′
+
+> t
+
+Zs ds 
+
+! Y 
+
+> t<τ i≤T′
+
+Zτi Zt = z
+
+#
+
+, (4) 
+
+with the conditional expectation with respect to the prior. 
+
+> 2Proof in Appendix B.2.5
+
+8Theorem 2.1 answers the two structural questions: i. Diffusion structure is preserved. Under conditioning on the point process realization, the intensity remains a semi-martingale diffusion with the same diffusion coefficient. Only the drift is modified. ii. Posterior correction is a score-type correction. The additional drift term 
+
+σ2h takes the form of a score function : it is the gradient of the log-density of future observations with respect to the current state, evaluated under the prior. The posterior correction is analogous to the classifier guidance term in conditional diffusion models [ 12 ], where the score of a classifier steers the prior toward the conditioned distribution. Comparing Theorem 2.1 with the variational SDE (Eq. (3) )introduced earlier, we see that the amortized correction uβ is intended to approximate the quantity σ(Zt, t )h(Zt, t, T ′, X ). The theorem therefore provides a principled, structured target for which variational inference methodology can be applied to learn. In this sense, EoF does not merely justify the SDE ansatz, but precisely identifies the functional object that amortization must approximate. Under sufficient expressiveness of uβ , the variational family contains the true posterior, and the variational gap vanishes. 
+
+# 3 Variational Methodology 
+
+Consider the empirical NPMLE objective (2) , with a single observation X, so that ˆμ =
+
+δX . For any probability measure Q equivalent to Pθ, i.e, Q ∼ Pθ, we write log Pθ(X) = log R P (X|Z)dP θ (Z) 
+
+> dQ (Z)
+
+dQ (Z). Applying Jensen’s inequality gives the standard evidence lower bound (ELBO) log Pθ(X) ≥ EQ(Z)[log P (X|Z)] − KL [Q(Z)|| Pθ(Z)] . (5) This bound is tight when Q = Pθ(Z|X). Recall the posterior drift correction uβ (·)indexed by β from Eq. (3) , and let ϕ := ( θ, β ). Then ELBO takes the following specific form: 
+
+Theorem 3.1. Suppose the prior model {Pθ(Z)} is specified by Eq. (1) , and the variational family {Qϕ} is specified by Eq. (3) , then the evidence lower bound for the log-likelihood reduces to L(θ, β ; X) = 
+
+EQϕ
+
+"
+
+log P (X|Z) − 12
+
+Z T ′
+
+> 0
+
+u2 
+
+> β
+
+(Zt, t, T ′, X ) dt 
+
+#
+
+. (6) 9We direct readers to Appendix. D.1 for the proof of this. To train our model, we jointly optimize the empirical ELBO, 1
+
+n
+
+> n
+
+X
+
+> i=1
+
+L(θ, β ; Xi), (7) with respect to θ and β, learning a generative prior over intensity trajectories and an amortized approximation to the posterior SDE. Once trained, posterior inference for a new point pattern X′ reduces to simulating the SDE in Eq. (3) , avoiding the need for repeated MCMC sampling. 
+
+## 3.1 Optimization strategy 
+
+To optimize the ELBO in Eq. (7) , we must first evaluate the gradients 
+
+∂θL(θ, β ; X) and ∂β L(θ, β ; X) associated with any point process observation X in Eq. (6) . Under standard regularity conditions, we can interchange differentiation and expectation to obtain pathwise gradient representations: the derivatives of L can be written as expectations under the variational path measure Qϕ(·| X) of functionals involving the latent trajectory Z and its parameter sensitivities , the Jacobian processes in (14) -(15) Jθt := ( ∂θZ)t and Jβt := ( ∂β Z)t (see Appendix. D.2). More concretely, the likelihood part contributes to the gradients through gradients of the terms P  
+
+> τi≤T′
+
+log Zτi and R T ′ 
+
+> 0
+
+Zt dt as well as the KL term 12
+
+R T ′ 
+
+> 0
+
+u2 
+
+> β
+
+dt . The gradients of the neural networks bθ and uβ with respect to the parameters and Z can be computed using back-propagation (chain rule). At the implementation level, we numerically simulate the posterior SDE for Z and the Jacobian processes using an Euler-Maruyama iteration on a grid tj = t∆t, with common Brownian increments. For each observation X, we simulate m i.i.d. Brownian paths (discretized) and use these to simulate all the trajectories ( Z0: T ′ , J θ  
+
+> 0: T′
+
+, J β  
+
+> 0: T′
+
+), and then average over these samples. Finally, we use stochastic gradient descent (SGD) on batched samples of the point process observations (specifically Adam). 
+
+## 3.2 Architectural Implications 
+
+The prior drift bθ is Markovian, therefore a standard neural network, such as a fully connected multi-layer perceptron (MLP), suffices for parametrization. The posterior correction, however, is structurally different. From Theorem 2.1, the true drift correction h depends on 1) the current state Zt, 2) the current time t, 3) the terminal horizon T ′, and 4) the set of future event times {τi : t < τ i ≤ T ′}. Consequently, 
+
+uβ must take as input a varying-sized collection of event times X. While we could 10 map X to a fixed-dimensional summary statistic (such as the number of arrivals in ( t, T ′]), this will necessarily discard the temporal structure of the data, and lead to an amortization gap. To preserve all the information carried by a point process observation, we adapt the Deep Sets architecture [ 47 ], and parametrize the posterior correction with the following two-stage ‘pooling’ architecture: 
+
+uβ (Zt, t, T ′, N 0: T ′ ) = 
+
+σ(Zt, t )ρ t, T ′, X 
+
+> t<τ i≤T′
+
+ψ(Zt, ∆i, T ′ − τi)
+
+!
+
+,
+
+where ∆ i := τi − τi−1, and both ρ and ψ are fully connected MLPs. 
+
+# 4 Numerical Experiments 
+
+In this section, we progressively evaluate our proposed variational inference method, including qualitative and quantitative analyses on synthetic datasets, as well as a real world dataset of call arrivals to a large U.S.-based bank call center. 
+
+## 4.1 Prior recovery 
+
+We begin with a synthetic experiment in which the ground-truth intensity process is assumed to follow Cox–Ingersoll–Ross (CIR) dynamics. The CIR model is a natural choice because it ensures positivity of the intensity and is widely used in finance and operations research applications. Here, the latent intensity Zt evolves as 
+
+dZ t = 0 .3(80 − Zt) dt + pZt dB t, Z0 = 5 . (8) Using this model, we generate 256 point process observations {Xi}256  
+
+> i=1
+
+of the Cox process on the interval [0 , 4] (each coming from an independently sampled intensity path Z). During training, The SDEs are simulated using the Euler-Maruyama scheme, with 100 even steps. Monte Carlo gradient estimates are computed using 10 i.i.d. Brownian paths (discretized) (details in appendix D.2). The model is trained for 100 epochs with a mini-batch size of 32 and a learning rate of 0 .005 for both the prior drift network bθ and the control network uβ . To stabilize optimization, gradients are clipped to have an L2 norm of at most 5. During training, the true prior dynamics are not accessible. Fig. 2 compares the learned prior drift bθ(Zt, t ) with the ground-truth drift ˜b(Zt, t ) = 0 .3(80 − Zt) on a grid. While the learned drift does not perfectly match 11 the ground truth everywhere, it captures some of the global structure over space-time regions where the CIR process is near steady state (i.e., where t ≫ 0). These are precisely the space-time regions that are most relevant for sample generation. 
+
+Figure 2: Comparing learned prior drift bθ(Zt, t ) (purple) to the ground truth drift ˜b(Zt, t ) = 0 .3(80 − Zt) (yellow). From the perspective of prediction, a more important criterion is the model’s generative performance. To this end, we generate 128 Cox process samples using the ground-truth drift ˜b and another 128 samples using the learned drift bθ. Figure 3 compares the resulting samples in terms of their empirical means and standard deviations. The close agreement between the two sets of statistics indicates that the model captures a representation of the underlying data distribution despite the local deviations shown in Fig. 2. 
+
+## 4.2 Amortized Posterior Inference 
+
+To assess the quality of posterior approximation resulting from our amortized vari-ational framework, we compare the learned variational posterior against the gold-standard (but computationally intensive) MCMC approximation, run with a burn-in period of 10,000 iterations. Fig. 4 shows two representative inference scenarios. In Fig. 4a, the posterior is conditioned on the point process sample in the test dataset with the fewest points over [0 , T ] in the test dataset. This is challenging since 12 Figure 3: The learned data samples (red) compared to the true data samples (blue). 13 such extreme samples are very limited in the training dataset. Despite this difficulty, the variational posterior closely tracks the MCMC posterior trajectories. Fig. 4b illustrates a more realistic prediction task, where we have access to the point process on [0 , T / 2], and the goal is to infer posterior dynamics on the unobserved interval [ T / 2, T ]. The agreement with the MCMC baseline indicates that the learned drift correction uβ effectively incorporates the information provided by the partial observations. 
+
+Does amortization overfit?: A natural question concerns the number of point process realizations (and the observation intervals) necessary for the amortized posterior drift correction X 7 → uβ (z, t, T ′, X ) to reliably generalize. Even if the prior 
+
+bθ is learned well, an overfitted uβ may still yield unreliable posterior predictions for new point process observations. To probe this, we measure how closely posterior paths sampled from our amortized posterior Qϕ(Z|X) match samples from a high-fidelity MCMC approximation of the true posterior P (Z|X), and compare this on training versus testing point process observations. As a metric between the resulting path measures, we use the 2-Wasserstein distance: 
+
+W (μ, ν ) := 
+
+
+
+inf 
+
+> π∈Π( μ,ν )
+
+Z
+
+d(z, ˜z)2dπ (Z, ˜Z)
+
+1/2
+
+, (9) where Π( μ, ν ) denotes the set of couplings of μ and ν. In our experiments, Z is a latent intensity trajectory on [0 , T ], and we equip the space with and L2-type metric. Given a time grid tj = j∆t for j = 1 , ..., M (with M ∆t = T ), we approximate ˆd(Z, ˜Z)2 := 
+
+PMj=0 ∆t(Ztj − ˜Ztj )2. For empirical measures ˆμ = 1
+
+> n
+
+Pni=1 δZi and ˆν = 1
+
+> n
+
+Pni=1 δ ˜Zi
+
+supported on the n sampled trajectories from Qϕ(·| X) and P (·| X), respectively, the discrete version of the 2-Wasserstein distance is computed as ˆW (ˆ μ, ˆν) := min 
+
+> γ∈Sn
+
+1
+
+n
+
+> n
+
+X
+
+> i=1
+
+ˆd(Zγ(i), ˜Zi)2
+
+!1/2
+
+,
+
+where Sn is the set of all permutations on {1, ..., n }.Fig. 5 shows that for small training sample size (e.g., n ≤ 8), the Wasserstein distance to the high-fidelity MCMC approximation of the posterior is noticeably lower on the training set compared to the testing set, indicating overfitting of the decoder uβ . As the number of point process observations in the training dataset increases, this discrepancy vanishes, suggesting that amortized posterior inference generalizes reliably to samples outside the training data once the training data size is large enough (e.g., n ≥ 16). 14 (a) Posterior Inference with complete data N0: T .
+
+(b) Posterior Inference with partially observed data N0: T / 2.
+
+Figure 4: The learned posterior sample paths (red) are generated using the learned (bθ, u β ) pair, and the baseline “true” posterior sample paths are generated using extensive MCMC simulations (blue). 15 Figure 5: Train vs. test Wasserstein distance between amortized posterior samples and high-fidelity MCMC posterior samples as a function of the training sample size n.A train-test gap indicates overfitting of the amortized correction uβ (· · · , X ), which vanishes as n goes beyond 16. 
+
+## 4.3 Comparison to EM 
+
+We next compare the proposed variational approach with an approximate expectation-maximization (EM) baseline (implementing Algorithm 1) in the same synthetic CIR setting. As introduced previously, the EM method alternates between approximating the posterior of the latent intensity (via MCMC) and maximizing the expected data log-likelihood (via approximate gradient descent). 
+
+Learning the Model (Prior): We first evaluate how well each method recovers the ground-truth prior dynamics. As a quantitative metric, we consider the expected 
+
+L2 deviation between the learned intensity path Zθt and the ground-truth path Zgt  
+
+> t
+
+:
+
+E
+
+hR T
+
+> 0
+
+ Zθt − Zgt 
+
+> t
+
+2 dt 
+
+i
+
+, smaller values indicate better recovery. This expectation is estimated by simulating both processes using the same set of 64 i.i.d. Brownian motion realizations. We assume a fixed computational budget for both the EM algorithm and the variational method of five hour run time 3. Table 1 shows the resulting L2 deviations for two different ground-truth drift functions. under the same training time, the variational method achieves comparable (or slightly better) recovery of the prior. Notably, this is achieved while simultaneously learning a posterior drift 
+
+> 3on a M3 MacBook Air with 8GB of RAM
+
+16 correction network uβ , which enables fast amortized inference that’s absent from the EM framework. True drift ˜b EM ( ℓ2 loss) VI ( ℓ2 loss) 0.3(80 − Zt) 6.159 5.792 0.3(80 − Zt) − 5t 6.721 4.989 Table 1: Comparison of the learned prior quality in terms of ℓ2 deviation of the intensity paths. 
+
+Inference Time: We compare posterior inference ‘efficiency’ between the two methods. Specifically, rather than a fixed computational budget, we now fix a desired accuracy of the posterior estimate and measure the time required to achieve that. The quality of the posterior samples is quantified with the posterior predictive log-likelihood: 
+
+EX∼μgt 
+
+"
+
+EZ∼Q(·| X)
+
+" X 
+
+> T′<τ i≤T
+
+log Zτi −
+
+Z TT ′
+
+Zt dt 
+
+## 
+
+, (10) which evaluates how well posterior samples explain future observations. For the variational method, samples from Q(Z|X) ≡ Qϕ(Z|X) are obtained by simulating the posterior SDE, Eq. (3) , using the learned ( bθ, u β ) pair. In contrast, we use a Metropolis-Hastings sampler for the EM baseline. For each prediction horizon [T ′, T ], we tune the number of MCMC steps such that both methods get comparable posterior predictive log-likelihoods. We then record the total time required to generate 32 posterior sample paths conditioned on all 128 testing point process observations. ˜b(Zt, t ) = 0 .3(80 − Zt)Horizon Likelihood MCMC VI [0 , T ] 398.0 17m 38.5s 39.9s [T / 4, T ] 370.1 12m 43.8s 9.6s [T / 2, T ] 288.4 14m 3.3s 19.6s [3 T / 4, T ] 162.6 15m 49.8s 29.7s Table 2: Comparison of computation time used for posterior inference on the testing dataset. The data is generated with the ground truth drift ˜b(Zt, t ) = 0 .3(80 − Zt). Tables 2 and 3 summarize the results for time-homogeneous and time-inhomogeneous ground-truth drifts, respectively. Across all horizons, the variational 17 ˜b(Zt, t ) = 0 .3(80 − Zt) − 5t
+
+Horizon Likelihood MCMC VI [0 , T ] 249.9 16m 17.7s 38.2s Table 3: Comparison of computation time with time-dependent ˜b(Zt, t ) = 0 .3(80 −
+
+Zt) − 5t.method is one to two orders of magnitude faster than MCMC-based posterior sam-pling while achieving similar predictive log-likelihoods. This efficiency gap widens as 
+
+T ′ decreases, demonstrating the computational advantages of amortization in this setting. 
+
+## 4.4 US Bank Dataset 
+
+Finally, we evaluate the proposed method on a real-world dataset of call records from a large U.S.-based bank call center 4. The call record counts demonstrate strong dyadic or time-of-day variation and over-dispersion ( [ 9]). The over-dispersion of the counts immediately imply that the process is well-modeled by a Cox process, and indeed [ 9] describe time-binned models for estimating a random daily-effect stochastic model of the intensity. The dataset contains the number of arrivals at each minute of the day, which are turned into exact arrival times by evenly spreading those arrivals across the minute. We use data from 128 Monday’s as the training set. The arrivals are then thinned independently with thinning probability 0 .001 (keep each arrival with probability 0 .001 independently) for training stability. The model is trained using the same optimization procedures as in the synthetic setting, with the same hyperparameters. The training time is constrained to 5 hours as with the synthetic experiments. Since the true prior is unknown, we directly compare samples of the reconstructed samples to the entire training data ( n = 128) in Fig. 6. Qualitatively, the learned latent intensity mean trajectory captures the main temporal patterns observed in the dataset, including peak periods, but the standard deviation trajectories do not closely match the data. This is most likely due to the fact that the diffusion coefficient is fixed to σ(Zt, t ) = √Zt, and one natural improvement of the proposed methodology is to model the diffusion with another neural network σα. The entire methodology remains unchanged except for changes in the gradient computations. 
+
+> 4https://seelab.net.technion.ac.il/data/, or see Appendix E
+
+18 Figure 6: The learned data samples (red) compared to the true data samples (blue). 19 5 Conclusion 
+
+We introduce Neural Diffusion Intensity Models, a variational framework for Cox process models where the latent intensity evolves as a neural SDE. Our key theoretical contribution leverages enlargement of filtrations to show that conditioning on point process observations preserves the diffusion structure of the latent intensity with an explicit drift correction — establishing a conjugacy between our neural SDE priors and the Poisson likelihood. This ensures the variational family contains the true posterior, so ELBO maximization coincides with likelihood maximization under sufficient capacity. Unlike existing frameworks [ 34 , 43 ], where the posterior drift is characterized only as the solution to a stochastic control problem, ours is available in closed form. We propose an amortized inference framework with a DeepSets-inspired archi-tecture for the posterior correction drift, avoiding the repeated MCMC simulations of classical EM methods. Experiments on synthetic and real data show accurate recovery of prior dynamics with orders-of-magnitude speedups over MCMC-based posterior inference. Our enlargement-of-filtrations methodology is broadly applicable and potentially extensible beyond Cox models. 
+
+# References 
+
+[1] Ryan Prescott Adams, Iain Murray, and David J.C. MacKay. Tractable nonpara-metric Bayesian inference in Poisson processes with Gaussian process intensities. In Proceedings of the 26th International Conference on Machine Learning (ICML) ,pages 9–16, 2009. [2] Virginia Aglietti, Edwin V Bonilla, Theodoros Damoulas, and Sally Cripps. Structured variational inference in continuous cox process models. Advances in Neural Information Processing Systems , 32, 2019. [3] Ken-ichi Amemori and Shin Ishii. Gaussian process approach to spiking neurons for inhomogeneous poisson inputs. Neural computation , 13(12):2763–2797, 2001. [4] Cedric Archambeau, Dan Cornford, Manfred Opper, and John Shawe-Taylor. Gaussian process approximations of stochastic differential equations. In Gaussian Processes in Practice , volume 1 of Proceedings of Machine Learning Research ,pages 1–16. PMLR, 2007. [5] A.N. Avramidis and P. L’Ecuyer. Modeling and simulation of call centers. In 
+
+Proceedings of the Winter Simulation Conference, 2005. , pages 9 pp.–, 2005. 20 [6] Alexandros Beskos, Omiros Papaspiliopoulos, Gareth O Roberts, and Paul Fearnhead. Exact and computationally efficient likelihood-based estimation for discretely observed diffusion processes (with discussion). Journal of the Royal Statistical Society Series B: Statistical Methodology , 68(3):333–382, 2006. [7] Tomas Bj¨ ork. Point Processes and Jump Diffusions: An Introduction with Finance Applications . Cambridge University Press, 2021. [8] Pierre Br´ emaud. Point Processes and Queues: Martingale Dynamics . Springer Series in Statistics. Springer-Verlag, New York, 1981. [9] Lawrence Brown, Noah Gans, Avishai Mandelbaum, Anat Sakov, Haipeng Shen, Sergey Zeltyn, and Linda Zhao. Statistical analysis of a telephone call center: A queueing-science perspective. Journal of the American Statistical Association ,100(469):36–50, 2005. [10] D. R. Cox and P. A. W. Lewis. The Statistical Analysis of Series of Events .Methuen, London, 1966. [11] D. J. Daley and D. Vere-Jones. An Introduction to the Theory of Point Processes: Volume I: Elementary Theory and Methods . Probability and Its Applications. Springer, New York, 2nd edition, 2003. [12] Prafulla Dhariwal and Alexander Nichol. Diffusion models beat GANs on image synthesis. In Advances in Neural Information Processing Systems , volume 34, pages 8780–8794. Curran Associates, Inc., 2021. [13] Christian Donner and Manfred Opper. Efficient bayesian inference of sigmoidal gaussian cox processes. Journal of Machine Learning Research , 19(67):1–34, 2018. [14] Nan Du, Hanjun Dai, Rakshit Trivedi, Utkarsh Upadhyay, Manuel Gomez-Rodriguez, and Le Song. Recurrent marked temporal point processes: Embedding event history to vector. In Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining , pages 1555–1564, 2016. [15] Lea Duncker, Gergo Bohner, Julien Boussard, and Maneesh Sahani. Learning interpretable continuous-time models of latent stochastic dynamical systems. In 
+
+International conference on machine learning , pages 1726–1734. PMLR, 2019. 21 [16] Paul Glasserman. Gradient Estimation Via Perturbation Analysis , volume 116 of 
+
+The Springer International Series in Engineering and Computer Science . Kluwer Academic Publishers, Boston, 1991. [17] Emmanuel Gobet and R´ emi Munos. Sensitivity analysis using Itˆ o–Malliavin calculus and martingales, and application to stochastic optimal control. SIAM Journal on Control and Optimization , 43(5):1676–1713, 2005. [18] Fl´ avio B. Gon¸ calves, Krzysztof G. L atuszy´ nski, and Gareth O. Roberts. Exact bayesian inference for diffusion-driven cox processes. Journal of the American Statistical Association , 119(547):1882–1894, 2024. [19] Karen Grigorian and Robert A. Jarrow. Enlargement of filtrations: An exposition of core ideas with financial examples, 2023. [20] Jean Jacod. Grossissement initial, hypothese (H’) et theoreme de Girsanov. In 
+
+Grossissements de filtrations: exemples et applications: S´ eminaire de Calcul Stochastique 1982/83 Universit´ e Paris VI , pages 15–35. Springer, 2006. [21] Prateek Jaiswal, Harsha Honnappa, and Vinayak Rao. Variational inference for diffusion modulated Cox processes. https://openreview.net/forum?id= snaT4xewUfX , 2021. Unpublished manuscript. [22] Monique Jeanblanc, Marc Yor, and Marc Chesney. Mathematical Methods for Financial Markets . Springer Finance. Springer, 2009. [23] Geurt Jongbloed and Ger Koole. Managing uncertainty in call centres using poisson mixtures. Applied Stochastic Models in Business and Industry , 17(4):307– 318, 2001. [24] Olav Kallenberg. Foundations of Modern Probability , volume 99 of Probability Theory and Stochastic Modelling . Springer, Cham, third edition, 2021. [25] Patrick Kidger, James Foster, Xuechen Li, and Terry J Lyons. Neural SDEs as infinite-dimensional GANs. In Proceedings of the 38th International Conference on Machine Learning , volume 139 of Proceedings of Machine Learning Research ,pages 5453–5463. PMLR, 2021. [26] Rahul G. Krishnan, Uri Shalit, and David Sontag. Structured inference networks for nonlinear state space models. In Proceedings of the Thirty-First AAAI Conference on Artificial Intelligence , pages 2101–2109, 2017. 22 [27] Xuechen Li, Ting-Kam Leonard Wong, Ricky T. Q. Chen, and David Duvenaud. Scalable gradients for stochastic differential equations. In Proceedings of the Twenty Third International Conference on Artificial Intelligence and Statistics ,volume 108 of Proceedings of Machine Learning Research , pages 3870–3882. PMLR, 2020. [28] Bruce G. Lindsay. Mixture Models: Theory, Geometry, and Applications , volume 5 of NSF-CBMS Regional Conference Series in Probability and Statistics . Institute of Mathematical Statistics and American Statistical Association, Hayward, CA, 1995. [29] Joseph Marino, Milan Cvitkovic, and Yisong Yue. A general method for amortiz-ing variational filtering. In Advances in Neural Information Processing Systems ,pages 7868–7879, 2018. [30] Nazanin Mehrasa, Akash Abdu Jyothi, Thibaut Durand, Jiawei He, Leonid Sigal, and Greg Mori. A variational auto-encoder model for stochastic point processes. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , pages 3165–3174, 2019. [31] Hongyuan Mei and Jason Eisner. The neural Hawkes process: A neurally self-modulating multivariate point process. In Advances in Neural Information Processing Systems , volume 30, 2017. [32] Jesper Møller, Anne Randi Syversveen, and Rasmus Plenge Waagepetersen. Log Gaussian Cox processes. Scandinavian Journal of Statistics , 25(3):451–482, 1998. [33] Bernt Øksendal. Stochastic differential equations. In Stochastic differential equations: an introduction with applications , pages 38–50. Springer, 2003. [34] Manfred Opper. Variational inference for stochastic differential equations. An-nalen der Physik , 531(3):1800233, 2019. [35] Zhen Pan, Zhenya Huang, Defu Lian, and Enhong Chen. A variational point process model for social event sequences. In Proceedings of the AAAI conference on artificial intelligence , volume 34, pages 173–180, 2020. [36] Patrick O. Perry and Patrick J. Wolfe. Point process modelling for directed interaction networks. Journal of the Royal Statistical Society: Series B (Statistical Methodology) , 75(5):821–849, 2013. 23 [37] Tom Ryder, Andrew Golightly, A. Stephen McGough, and Dennis Prangle. Black-box variational inference for stochastic differential equations. In Jennifer Dy and Andreas Krause, editors, Proceedings of the 35th International Conference on Machine Learning , volume 80 of Proceedings of Machine Learning Research ,pages 4423–4432. PMLR, 10–15 Jul 2018. [38] SEE Lab, Technion. SEE lab dataset. https://seelab.net.technion.ac.il/ data/ , 2024. Accessed: 2025. [39] Oleksandr Shchur, Nicholas Gao, Marin Biloˇ s, and Stephan G¨ unnemann. Fast and flexible temporal point processes with triangular maps. In Advances in Neural Information Processing Systems (NeurIPS) , 2020. [40] Oleksandr Shchur, Ali Caner T¨ urkmen, Tim Januschowski, and Stephan G¨ unne-mann. Neural temporal point processes: A review. In Proceedings of the 30th International Joint Conference on Artificial Intelligence (IJCAI) , pages 4585– 4593, 2021. [41] Ryohei Shibue and Tomoharu Iwata. Marked point process variational autoen-coder with applications to unsorted spiking activities. PLOS Computational Biology , 20(12):e1012620, 2024. [42] Daniel Simpson, Janine Baerbel Illian, Finn Lindgren, Sigrunn H Sørbye, and Havard Rue. Going off grid: Computationally efficient inference for log-gaussian cox processes. Biometrika , 103(1):49–70, 2016. [43] Belinda Tzen and Maxim Raginsky. Neural stochastic differential equations: Deep latent Gaussian models in the diffusion limit. arXiv preprint arXiv:1905.09883 ,2019. [44] Belinda Tzen and Maxim Raginsky. Theoretical guarantees for sampling and inference in generative models with latent diffusions, 2019. [45] Ruixin Wang and Harsha Honnappa. Calibrating infinite server queueing models driven by cox processes. In 2021 Winter Simulation Conference (WSC) , pages 1–12. IEEE, 2021. [46] Ruixin Wang, Prateek Jaiswal, and Harsha Honnappa. Estimating stochas-tic poisson intensities using deep latent models. In 2020 Winter Simulation Conference (WSC) , pages 596–607. IEEE, 2020. 24 [47] Manzil Zaheer, Satwik Kottur, Siamak Ravanbakhsh, Barnabas Poczos, Ruslan Salakhutdinov, and Alexander Smola. Deep sets, 2018. [48] Xiaowei Zhang, L. Jeff Hong, and Jiheng Zhang. Scaling and modeling of call center arrivals. In Proceedings of the 2014 Winter Simulation Conference , pages 476–485, 2014. [49] Simiao Zuo, Haoming Jiang, Zichong Li, Tuo Zhao, and Hongyuan Zha. Trans-former Hawkes process. In Proceedings of the 37th International Conference on Machine Learning , volume 119 of Proceedings of Machine Learning Research ,pages 11692–11702. PMLR, 2020. 25 Supplementary Material A Measure-Theoretic Foundations of the Neural SDE Cox Model 
+
+We provide precise conditions under which the path measures in the Neural SDE Cox model (Section 2.1) are well-defined. Throughout, let Z := C([0 , T ], R≥0) denote the space of non-negative continuous paths on [0 , T ] equipped with the sup-norm topology and its Borel σ-algebra B(Z), and let X = ∪k∈NRk denote the space of locally finite counting measures on [0 , T ] equipped with the vague topology and its Borel σ-algebra B(X ). 
+
+Existence and uniqueness of the SDE solution. We require the drift and diffusion coefficients of the SDE (1) to satisfy the following standard conditions: (A1 ) Global Lipschitz continuity. There exists a constant K > 0 such that for all 
+
+x, y ∈ R and t ∈ [0 , T ], 
+
+|bθ(x, t ) − bθ(y, t )| + |σ(x, t ) − σ(y, t )| ≤ K|x − y|.
+
+(A2 ) Linear growth. There exists a constant C > 0 such that for all x ∈ R and 
+
+t ∈ [0 , T ], 
+
+|bθ(x, t )| + |σ(x, t )| ≤ C(1 + |x|).
+
+(A3 ) Joint measurability. The functions bθ(·, ·) and σ(·, ·) are jointly Borel measurable in ( x, t ). Under ( A1 )–( A3 ), the SDE (1) admits a unique strong solution for each θ ∈ Θ [ 33 ,Theorem 5.2.1]. This solution induces a well-defined probability measure Pθ(Z) on (Z, B(Z)) via the pushforward of the Wiener measure through the Itˆ o map. 
+
+Non-negativity of the intensity process. Since Z serves as an intensity, we additionally require: (A4 ) Non-negativity. Zt ≥ 0 almost surely for all t ∈ [0 , T ]. This condition is not implied by ( A1 )–( A3 ) and must be enforced through the model structure. For instance, if σ(z, t ) = σ0
+
+√z (as in the CIR model), the Feller condition 2bθ(0 , t ) ≥ σ20 for all t ensures that the boundary at zero is unattainable. Alterna-tively, one may model log Zt as the SDE solution and recover Zt by exponentiation, guaranteeing positivity. 26 The Poisson kernel as a Markov kernel. Given a non-negative intensity path 
+
+Z ∈ Z , the conditional law P (X | Z) is that of an inhomogeneous Poisson process with rate function ( Zt)t∈[0 ,T ]. Its Radon–Nikodym derivative with respect to the unit-rate Poisson measure P0 is 
+
+dP (X | Z)
+
+dP 0
+
+= exp 
+
+Z T
+
+> 0
+
+log Zt dN t −
+
+Z T
+
+> 0
+
+(Zt − 1) dt 
+
+
+
+, (11) where Nt denotes the counting process associated with X. We require: (A5 ) Integrability. R T 
+
+> 0
+
+Zt dt < ∞ almost surely. (A6 ) Strict positivity at event times. Pθ(Zt > 0 for all t ∈ [0 , T ]) = 1. Condition ( A5 ) is automatically satisfied when Z has continuous paths on the compact interval [0 , T ], but we state it explicitly for completeness. Condition ( A6 ) ensures that log Zt in (11) is well-defined at event times; it is implied by the Feller condition in the CIR setting or by the log-normal construction. Under ( A5 )–( A6 ), the map 
+
+Z 7 → P (X | Z) defines a Markov kernel from ( Z, B(Z)) to ( X , B(X )), since the Poisson likelihood (11) is a measurable functional of the intensity path. 
+
+Well-definedness of the joint and marginal measures. Under conditions (A1 )–( A6 ), the joint measure 
+
+Pθ(X, Z ) = P (X | Z) Pθ(Z)is well-defined on the product σ-algebra B(X ) ⊗ B (Z) by the standard Markov kernel construction [24, Chapter 3]. The marginal observation law 
+
+Pθ(X) = 
+
+Z
+
+> Z
+
+P (X | Z) dP θ(Z)is then a well-defined probability measure on ( X , B(X )). 
+
+Regularity in θ. For gradient-based optimization via the pathwise (“differentiate then simulate”) method [16, 17], we further require: (A7 ) Differentiability in parameters. The map θ 7 → bθ(x, t ) is continuously differen-tiable for all ( x, t ), and ∇θbθ satisfies conditions ( A1 )–( A2 ) uniformly in θ over compact subsets of Θ. Under ( A7 ), the augmented system of SDEs for ( Zt, ∂ θZt, ∂ β Zt) admits a unique strong solution, ensuring that the pathwise sensitivity processes are well-defined and that the resulting Monte Carlo gradient estimators are unbiased (up to time-discretization error). 27 B Enlargement of Filtrations 
+
+In this section, we will work with a filtered probability space (Ω , F, F, P) where the probability measure P encodes our “beliefs”, and the filtration—collection of σ-algebras— F = ( Ft)t≥0 represents the information that’s available to us at any time. A stochastic process ( Xt)t≥0 is said to be adapted to F if Xt is Ft-measurable for all 
+
+t. That is, the value of Xt can be determined exactly by the information available at time t. The mathematical framework that studies how stochastic processes behave under such changes in information is called Enlargement of Filtrations, which has been studied extensively in the probability literature; see [19, 20, 22]. 
+
+## B.1 Martingales 
+
+Let (Ω , F, F = ( Ft)t≥0, P) be a filtered probability space, and let Mt be an F-adapted stochastic process with E |Mt| < ∞ for all t. If 
+
+E[Mt|F s] = Ms
+
+for all 0 ≤ s < t , then Mt is said to be an F-martingale. Intuitively, a martingale represents a “fair game”: given the current information, its expected future value is just the present value. A process Xt is a semimartingale if it can be decomposed as 
+
+Xt = Mt + At
+
+where Mt is a local martingale (which behaves like a martingale up to random stopping times) 5 and At is an F-adapted finite-variation process. Semimartingales form the largest class of stochastic processes for which we can talk about Itˆ o calculus. 
+
+## B.2 Enlarging the filtration 
+
+Xt may be a martingale with respect to some filtration F, but not necessarily when 
+
+F is “enlarged” with extra information ζ. Describing Xt in the presence of this information is the goal of Enlargement of Filtrations. 
+
+B.2.1 Setup 
+
+There are two main types of “enlargement”:       
+
+> 5A process Mtis a local martingale if there exists an increasing sequence of stopping times
+> τn↗ ∞ such that each stopped process Mt∧τnis a martingale.
+
+28 • Initial enlargement: all secret information is available at time 0. 
+
+• Progressive enlargement: information is gradually revealed over time. We focus on the first case, which will be related to our variational problem. Let F = ( Ft)t≥0 be the original filtration, and let ζ be an F-measurable random variable taking values in some measurable space E. We define the enlarged filtration 
+
+G = ( Gt)t≥0 by 
+
+Gt = Ft ∨ σ(ζ),
+
+where ∨ denotes the smallest σ-algebra containing elements from Ft and σ(ζ). Intu-itively, G describes a world in which the value of ζ is known from the start—one has “insider” information about ζ at time 0. 
+
+B.2.2 The H and H′ Hypotheses 
+
+The question is how martingales behave under a filtration enlargement. If every F-martingale remains a G-martingale, we say that F is immersed in G, or that the pair ( F, G) satisfies the H-hypothesis . This is quite a strong condition— informally, it means that the extra information carried by ζ does not interfere with the “fairness” of any F-martingale. A weaker but more flexible condition is the H′-hypothesis : every F-martingale remains a G-semimartingale . Under this assumption, Itˆ o calculus remains valid, but an additional drift term may appear when expressing the F-martingale in the G
+
+filtration. This is what’s going under the hood when we enlarge the filtration with the observed point process N0: T ′ .
+
+B.2.3 Jacod’s condition 
+
+Among several sufficient conditions ensuring the H′-hypothesis, Jacod’s condition is often the most convenient in practice. The following statements (theorem and lemma) are adapted from [19]. 
+
+Theorem B.1 (Jacod’s condition) . Let ζ be a random element in a standard Borel space (E, E), and let Qt(ω, dx ) be the regular conditional distribution of ζ given Ft
+
+for all t ≥ 0. Suppose that there exists a positive σ-finite 6 measure η on (E, E) such that 
+
+Qt(ω, dx ) ≪ η(dx ) a.s., ∀t ≥ 0.
+
+Then H′ holds.  
+
+> 6A measure is called σ-finite if it can be written as a countable union of finite measures.
+
+29 Just knowing that a process remains a semimartingale is usually not enough, we typically would like the semimartingale decomposition in the enlarged filtration 7 Fσ(ζ).To do so, we need the following lemma and theorem. 
+
+Lemma B.2. Under J , there exists a nonnegative O(F) × B ( ¯R)-measurable function 
+
+Ω × R+ × ¯R ∋ (ω, t, x ) 7 → pt(ω, x )
+
+cadlag in t such that (i) Qt(ω, dx ) = pt(ω, x )η(dx ) for every t ≥ 0,(ii) for each x ∈ ¯R, the process (pt(x)) t≥0 is an F-martingale, (iii) p(x) > 0 and p−(x) > 0 on 8 J0, ζ xJ and p(x) = 0 on Jζx, ∞J, where ζx := inf {t :
+
+p−(x) = 0 }.
+
+Theorem B.3. Suppose that the random element ζ satisfies J . If X is an F-local martingale, the process ˜X defined as 
+
+˜Xt := Xt −
+
+Z t
+
+> 0
+
+1
+
+ps−(ζ)d⟨X, p (u)⟩F 
+
+> s
+
+|u=ζ , t ≤ T (∗)
+
+is an Fσ(ζ)-local martingale. 
+
+B.2.4 Example: Brownian bridge via initial enlargement 
+
+Consider a standard Brownian motion B = ( Bt)t≥0 on (Ω , F, F, P) with its natural filtration ( Ft = σ(Xs, 0 ≤ s ≤ t)). Suppose we enlarge F with the information given by ζ := BT , i.e., 
+
+Gt = Ft ∨ σ(BT ), G = ( Gt)t≥0.
+
+As always, G is assumed to be right-continuous by taking 
+
+G+ 
+
+> t
+
+= \
+
+> s>t
+
+Gs.     
+
+> 7We use Fσ(ζ)to denote the right-continuous version of the enlarged filtration F∨σ(ζ).
+> 8The double square bracket is used for intervals with random boundary points.
+
+30 Step 1: Verifying Jacod’s condition. For t < T , the conditional law of BT given 
+
+Ft is Gaussian: 
+
+BT | F t ∼ N  Bt, T − t.
+
+Hence there exists a dominating measure (the Lebesgue measure) η(dx ) = dx .
+
+Qt(ω, dx ) has a density with respect to Lebesgue measure: Qt(ω, dx ) = pt(ω, x ) dx ,with 
+
+pt(x) = 1
+
+p2π(T − t) exp 
+
+
+
+− (x − Bt)2
+
+2( T − t)
+
+
+
+, 0 ≤ t < T. 
+
+Thus Qt(·, dx ) ≪ η(dx ) a.s. for each t < T , so Jacod’s condition holds on [0 , t ). (On [T, ∞), the conditional law is degenerate at BT .) 
+
+Step 2: Computing the semimartingale decomposition. We apply Theorem B.3 with X = B. To do so, we first compute the F-predictable covariation ⟨B, p (x)⟩F.By Itˆ o’s formula, we can get 
+
+dp t(x) = ∂Bt pt(x) dB t = x − Bt
+
+T − t pt(x) dB t, t < T. 
+
+Hence the predictable covariation with B is just 
+
+d B, p (x) F 
+
+> t
+
+= x − Bt
+
+T − t pt(x) dt, 0 ≤ t < T. 
+
+Plugging this into ( ∗) with x = ζ = BT , we obtain from Theorem B.3 that the process ˜Bt := Bt −
+
+Z t
+
+> 0
+
+BT − Bs
+
+T − s ds, 0 ≤ t < T 
+
+is a G-local martingale. Since B is continuous with quadratic variation [ B]t = t,it follows that [ ˜B]t = t as well, and by L´ evy’s characterization ˜B is a G-Brownian motion on [0 , T ). Equivalently, B admits the G-semimartingale (indeed, SDE) representation 
+
+dB t = d ˜Bt + BT − Bt
+
+T − t dt, 0 ≤ t < T, 
+
+where ˜B is a G-Brownian motion. This is precisely the Brownian bridge drift toward the terminal pinning value BT .31 B.2.5 Proof of Theorem 2.1: Intensity process under initial enlargement 
+
+Now we come back to the setting in the main body of the paper: a nonnegative stochastic process Z has an SDE representation in the natural filtration F:
+
+dZ t = b(Zt, t ) dt + σ(Zt, t ) dB t, Z0 = z0.
+
+For a Cox process observation N0: T , if we consider the enlarged filtration Gt =T
+
+> s>t
+
+(Fs ∨ σ(N0: T )), does Z remain a semimartingale in G = ( Gt)0≤t≤T ? In this case, we choose the reference measure to be the unit rate Poisson process so that the Radon-Nikodym process derivative between the conditional measure and the reference measure is 
+
+pt(ω, x ) = Qt(ω, dx )
+
+η(dx ) = exp 
+
+Z t
+
+> 0
+
+log Zs dN s −
+
+Z t
+
+> 0
+
+(Zs − 1) ds 
+
+
+
+· βt(dx ), (12) where 
+
+βt(dx ) = E
+
+"
+
+exp 
+
+Z Tt
+
+log Zs dN s −
+
+Z Tt
+
+(Zs − 1) ds 
+
+
+
+Ft
+
+#
+
+.
+
+Assuming Zs is almost surely positive for all t ∈ [0 , T ], then the Radon-Nikodym derivative exists and Jacod’s condition is satisfied. To compute the drift correction term, let h(Zt, t ) = βt(dx ), where 
+
+h(z, t ) = E
+
+"
+
+exp 
+
+Z Tt
+
+log Zs dN s −
+
+Z Tt
+
+(Zs − 1) ds 
+
+
+
+Zt = z
+
+#
+
+.
+
+By Theorem B.3, ˜Bt = Bt −
+
+Z t
+
+> 0
+
+1
+
+ps
+
+d⟨B, p (u)⟩F 
+
+> s
+
+|u=N0: T , t ≤ T
+
+is an Fσ(N0: T )-Brownian motion. It remains to compute the predictable covariation 
+
+d⟨B, p (u)⟩s:1
+
+ps−
+
+d⟨B, p (u)⟩s = 1
+
+hs−
+
+d⟨B, h ⟩s
+
+= 1
+
+hs
+
+σpZt
+
+∂∂Z t
+
+h(Zt, t ) dt 
+
+= σpZt
+
+∂∂Z t
+
+log h(Zt, t ) dt 
+
+32 Altogether, we have 
+
+d ˜Bt = dB t − σpZt
+
+∂∂Z t
+
+log E
+
+exp 
+
+
+
+−
+
+Z Tt
+
+Zs ds 
+
+ Y 
+
+> τi∈(t,T ]
+
+Zτi Zt
+
+ dt. 
+
+Since we want to do inference on the interval ( T ′, T ] with the information N0: T ′
+
+sometimes, we take another look to what happens when we enlarge the filtration 
+
+G with N0: T ′ . Take η(dx ) to be the measure on D([0 , T ′], N) describing the unit rate Poisson process on [0 , T ′]. Then the Radon-Nikodym derivative between the conditional measure and this base measure is 
+
+pt(ω, x ) = Qt(ω, dx )
+
+η(dx ) = exp 
+
+Z t∧T ′
+
+> 0
+
+log Zs dN s −
+
+Z t∧T ′
+
+> 0
+
+(Zs − 1) ds 
+
+!
+
+βt(dx ),
+
+where 
+
+βt(dx ) = E
+
+"
+
+exp 
+
+Z T ′ 
+
+> t∧T′
+
+log ZsdN s −
+
+Z T ′ 
+
+> t∧T′
+
+(Zs − 1 ds )
+
+!
+
+Ft
+
+#
+
+.
+
+Doing similar calculations as before, we get 
+
+d ˜Bt = dB t − 1{t≤T ′}σ(Zt, t ) ∂∂Z t
+
+log E
+
+exp −
+
+Z T ′
+
+> t
+
+Zs ds 
+
+! Y 
+
+> τi∈(t,T ′]
+
+Zτi Zt
+
+ dt. 
+
+This means that in the enlarged filtration, the intensity process can be described as 
+
+dZ t = b(Zt, t ) dt + σ(Zt, t )
+
+
+
+d ˜Bt
+
++1{t≤T ′}σ(Zt, t ) ∂∂Z t
+
+log E
+
+exp −
+
+Z T ′
+
+> t
+
+Zs ds 
+
+! Y 
+
+> τi∈(t,T ′]
+
+Zτi Zt
+
+ dt 
+
+=
+
+b(Zt, t ) + 1{t≤T ′}σ(Zt, t )2 ∂∂Z t
+
+log E
+
+exp −
+
+Z T ′
+
+> t
+
+Zs ds 
+
+! Y 
+
+> τi∈(t,T ′]
+
+Zτi Zt
+
+ dt 
+
++ σ(Zt, t ) d ˜Bt,
+
+which is the form appearing in Theorem 2.1. Note that ˜B is a standard Brownian motion with respect to the enlarged filtration, so numerically simulating the above SDE with Euler scheme simply involves replacing d ˜Bt with standard Gaussian increments. 33 C Expectation Maximization and Gradient Com-putations 
+
+In this section, we introduce the general expectation-maximization scheme. Then, we look at an approximate version as applied to our problem setting, with a focus on gradient computations in the M-step. 
+
+## C.1 The Expectation-Maximization Algorithm 
+
+First, we restate the variational lower bound in Eq. (5) for the log-likelihood: log Pθ(X) ≥ EQ(Z)[log P (X|Z)] − KL [Q(Z)|| Pθ(Z)] . (13) The expectation-maximization scheme maximizes this lower bound by iterating between two steps: 
+
+• Expectation -step Find Q(Z) that tightens the inequality in Eq. (13) 
+
+• Maximization -step Maximize the right-hand side of Eq. (13) with respect to θ.One can show that the Q(Z) that tightens the inequality is exactly the true posterior, i.e., 
+
+Q(Z) = Pθ(Z|X).
+
+This procedure is shown in details in Algorithm 1. 
+
+Algorithm 1: Expectation-Maximization 
+
+Input: n observed samples {Xi}ni=1 
+
+Initialize with arbitrary θ(0) 
+
+for t ← 0 to ∞ do Expectation: Compute for all Xi
+
+Qi(Z) = Pθ(t) (Z|Xi) ; 
+
+Maximization: 
+
+θ(t+1) ∈ arg max θ 1
+
+> n
+
+Pni=1 
+
+ EQi(Z)[log P (Xi|Z)] − KL [Qi(Z)|| Pθ(Z)] ;
+
+return Q∞;34 C.2 Same algorithm, adapted to our problem 
+
+In our problem setting (and many others), it is hard to compute the exact posterior 
+
+Qi(Z) = Pθ(t) (Z|Xi) for each sample Xi in the E-step, so we may resort to approxi-mations of the true posterior. In particular, we generate approximate sample paths from P (t) 
+
+> θ
+
+(Z|Xi) using Metropolis-Hastings type MCMC algorithm. In the M-step, finding the argmax is difficult since the expectation over the approximate posterior does not have a closed-form expression. Instead, we perform a few gradient steps with respect to θ, which requires Monte-Carlo estimates of the gradients of right-hand size of Eq. (13) . The next section explains how to compute these gradient estimates. 
+
+## C.3 Gradient Computations 
+
+Starting with Eq. (13), observe that 
+
+∂θ ELBO = −∂θEQ(Z)
+
+
+
+log dQ (Z)
+
+dP θ(Z)
+
+
+
+= −∂θEQ(Z)
+
+
+
+log dP ∗(Z)
+
+dP θ(Z)
+
+
+
+,
+
+where P ∗(Z) is the path measure induced by the SDE 
+
+dZ t = σ(Zt, t ) dB t.
+
+This identity holds because, during the M-step, the variational distribution Q(Z) is fixed and does not depend on θ. Furthermore, the data likelihood term log P (X|Z)is also independent of θ.Assuming regularity conditions (as before), we may write 
+
+∂θ ELBO = −∂θEQ(Z)
+
+Z T
+
+> 0
+
+bθ
+
+σ2 dZ t − 12
+
+Z T
+
+> 0
+
+b2
+
+> θ
+
+σ2 dt 
+
+
+
+= EQ(Z)
+
+Z T
+
+> 0
+
+bθ ∂θbθ
+
+σ2 dt −
+
+Z T
+
+> 0
+
+∂θbθ
+
+σ2 dZ t
+
+
+
+.
+
+To obtain Monte Carlo estimates of this gradient, we substitute discretized increments 
+
+dZ ti ≈ (Zti+1 −Zti ) and evaluate the resulting expression w.r.t. sample paths Z ∼ Q(Z)generated in the E-step. Averaging over these trajectories and over batched samples yields an unbiased estimator of the gradient (up to discretization error). 
+
+# D Variational Inference Gradient Computations 
+
+In Section 3.1, we give the high-level ideas of how gradients of the ELBO are computed. Here, we dive into the details of those gradient computations. 35 D.1 ELBO derivation (Proof of Theorem 3.1) 
+
+We begin by deriving the Evidence lower bound (ELBO) for the variational formulation as shown in Eq. (6) . Starting from the general ELBO expression in Eq. (5) , we replace the variational measure Q(Z) with the conditional path measure Qϕ(Z|X) that is induced by the posterior SDE in Eq. (3) . Recall the version of the Girsanov’s theorem adapted to our notations: 
+
+Theorem D.1 (Girsanov’s theorem) . Let (Ω , F, (Ft)t∈[0 ,T ], P)be a filtered probability space for the standard Brownian motion B. Consider the prior intensity diffusion 
+
+dZ t = bθ(Zt, t ) dt + σ(Zt, t ) dB t, Z0 = z0,
+
+where σ(·, ·) ∈ R and assume the usual conditions ensuring a unique strong solution. Let u be an R-valued process such that the exponential local martingale 
+
+Mt := exp 
+
+Z t
+
+> 0
+
+us dB s − 12
+
+Z t
+
+> 0
+
+∥us∥2 ds 
+
+
+
+is a true martingale on [0 , T ] (e.g. by Novikov’s condition). Define a new measure Q
+
+by 
+
+dQ
+
+dP FT
+
+= MT .
+
+Then the process 
+
+˜B := Bt −
+
+Z t
+
+> 0
+
+us ds 
+
+is a Q-Brownian motion, and any (Ft)-adapted process Z satisfying 
+
+dZ t = ( bθ(Zt, t ) + σ(Zt, t )ut) dt + σ(Zt, t ) dB t
+
+under P also satisfies 
+
+dZ t = bθ(Zt, t ) dt + σ(Zt, t ) d ˜Bt
+
+under Q.Moreover, 
+
+KL [Q|| P] = EQ
+
+Z T
+
+> 0
+
+us dB s − 12
+
+Z T
+
+> 0
+
+∥us∥2 ds 
+
+
+
+.
+
+36 By the theorem, the resulting KL divergence term admits a closed-form expression: 
+
+KL [Qϕ(Z|X)|| Pθ(Z)] = EQϕ(Z|X)
+
+
+
+log 
+
+dQ ϕ(Z|X)
+
+dP θ(Z)
+
+ 
+
+= EQϕ(Z|X)
+
+"Z T ′
+
+> 0
+
+uβ (Zt, t, T ′, X ) dB t − 12
+
+Z T ′
+
+> 0
+
+u2 
+
+> β
+
+(Zt, t, T ′, X ) dt 
+
+#
+
+.
+
+Let Q denote the probability measure corresponding to Qϕ(Z|X). Under Q, the process ˜Bt = Bt −
+
+Z t
+
+> 0
+
+uβ (Zt, t, T ′, X ) dt 
+
+is a standard Brownian motion. Therefore, we may rewrite the stochastic integral as 
+
+Z T ′
+
+> 0
+
+uβ (Zt, t, T ′, X ) dB t =
+
+Z T ′
+
+> 0
+
+uβ (Zt, t, T ′, X ) d ˜Bt +
+
+Z T ′
+
+> 0
+
+u2 
+
+> β
+
+(Zt, t, T ′, X ) dt. 
+
+Substituting this expression back into the KL divergence and using the martingale property of ˜Bt under Q, we obtain 
+
+KL [Qϕ(Z|X)|| Pθ(Z)] = EQϕ(Z|X)
+
+"
+
+12
+
+Z T ′
+
+> 0
+
+u2 
+
+> β
+
+(Zt, t, T ′, X ) dt 
+
+#
+
+,
+
+which directly yields the ELBO expression in Eq. (6). 
+
+## D.2 Gradient computations 
+
+We now turn to the computation of gradients of the ELBO with respect to the model parameters θ and β. Under suitable regularity conditions assumptions, we may interchange differentiation and expectation (e.g., by Fubini’s theorem), leading to the following pathwise gradient representations: 
+
+∂θ ELBO = E
+
+" X 
+
+> 0<τ i≤T′
+
+∂θZτi
+
+Zτi
+
+−
+
+Z T ′
+
+> 0
+
+∂θZt dt −
+
+Z T ′
+
+> 0
+
+uβ
+
+∂u β
+
+∂Z t
+
+∂θZt dt 
+
+#
+
+,∂β ELBO = E
+
+" X 
+
+> 0<τ i≤T′
+
+∂β Zτi
+
+Zτi
+
+−
+
+Z T ′
+
+> 0
+
+∂β Zt dt −
+
+Z T ′
+
+> 0
+
+uβ
+
+∂u β
+
+∂Z t
+
+∂β Zt + ∂β uβ
+
+
+
+dt 
+
+#
+
+.
+
+37 The expectations above are taken with respect to the joint law of Zt and its parameter sensitivities. These evolve according to the following set of SDEs. Zt
+
+satisfies Eq. (3), while the sensitivities with respect to θ and β satisfy 
+
+d∂ θZt =
+
+
+
+∂θbθ + ∂b θ
+
+∂Z t
+
+∂θZt + σ ∂u β
+
+∂Z t
+
+∂θZt + ∂σ ∂Z t
+
+uβ ∂θZt
+
+
+
+dt + ∂σ ∂Z t
+
+∂θZt dB t, ∂ θZt = 0,
+
+(14) 
+
+d∂ β Zt =
+
+ ∂b θ
+
+∂Z t
+
+∂β Zt + σ ∂u β
+
+∂Z t
+
+∂β Zt + σ∂ β uβ + ∂σ ∂Z t
+
+uβ ∂β Zt
+
+
+
+dt + ∂σ ∂Z t
+
+∂β Zt dB t, ∂ β Zt = 0.
+
+(15) To obtain Monte Carlo estimates of the gradients, we sample m i.i.d. discretized Brownian paths. For each path, simulate Zt, ∂θZt, and ∂β Zt using a shared Brownian path Bt with Euler-Maruyama discretization. Substituting these simulated trajectories into the expressions above yields unbiased estimators of the gradients, other than the discretization bias introduced by the Euler scheme. 
+
+# E About the Bank Dataset 
+
+The dataset [ 38 ] originates from an undisclosed U.S. bank. With up to 300,000 calls per day, it provides a rich collection of information, including call time, call duration, and various categorical and continuous data. For our analysis, we focus solely on the initial arrival times of the calls. Accordingly, the dataset records the number of calls occurring within each minute of the day. Given the large volume of calls, we first evenly distribute calls within each minute and then apply independent thinning to each event with probability p = 0 .001. 
+
+## E.1 Inference with Overdispersed Data 
+
+We now describe a simple experiment demonstrating overdispersion in the U.S. Bank dataset. As Figure 1 shows, the estimated mean and variance of arrival counts over 10-minute intervals differ by more than an order of magnitude. The ratio of the variance to the mean is called the index of dispersion [ 10 ]. Under a nonhomogeneous Poisson process, the index of dispersion would be uniformly equal to 1 by definition, so the discrepancy observed in the dataset is direct evidence that the data-generating process is not a simple Poisson point process. 38 (a) Variance of event counts as a function of ∆, with CIR intensity model.  
+
+> (b) Variance of Cox /M/ ∞queue length as a function of ∆.
+
+Figure 7: Overdispersion affects downstream inferences. Overdispersion has immediate implications for downstream inference. For a nonhomogeneous Poisson process with deterministic intensity ( λt), the variance of the count N (t) := P 
+
+> i≥1
+
+1τi≤t over an interval [ t, t + ∆) satisfies Var μ(N (t + ∆) − N (t)) = Eμ[N (t + ∆) − N (t)] ≈ λ(t)∆ .
+
+That is, variance grows linearly in ∆ at the same rate as the mean. For a Cox process with stochastic intensity ( Zt) satisfying E[Z(t)] = λ(t), the law of total variance gives Var μ(N (t + ∆) − N (t)) = EZ [Var N (N (t + ∆) − N (t) | Z)] + Var Z (EN [N (t + ∆) − N (t) | Z]) 
+
+≈ λ(t)∆ + ∆ 2 Var Z (Z(t)) .
+
+The additional term ∆ 2 Var Z (Z(t)), absent in the Poisson case, reflects the randomness of the latent intensity and causes the variance to grow quadratically in ∆. Figure 7a plots the empirical variance of arrival counts from the U.S. Bank dataset as a function of ∆, at four representative hours: 3AM, 10AM, 2PM, and 6PM. The variance grows nonlinearly, consistent with the Cox process prediction and inconsistent with any Poisson model regardless of how its intensity is specified. We also fit a CIR diffusion intensity model to each time period. Figure 7b then plots the variance of the queue length in a Cox /M/ ∞ queue driven by the fitted Cox process. The nonlinear growth persists in the queue length as well, illustrating that overdispersion propagates into downstream inference: a model that does not explicitly represent the stochastic intensity will systematically misrepresent the variability of quantities that depend on it. 39 F Architecture 
+
+> 40
+
+Figure 8: Amortized variational inference architecture for Neural Diffusion Intensity Models. 41

@@ -1,0 +1,230 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-001.webp",
+      "caption": "Figure 1. Conditional time series generation with varying conditioning modalities (text, attribute, class label) and semantic abstraction levels (morphological vs. conceptual).",
+      "page": 1,
+      "index": 1,
+      "width": 494,
+      "height": 717
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-002.webp",
+      "caption": "Figure 2. Model ranking under two metric groups: (left) generation fidelity that evaluates marginal distribution of generated time series; (right) condition adherence that evaluates joint/conditional alignment between time series and conditions.",
+      "page": 6,
+      "index": 2,
+      "width": 998,
+      "height": 306
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-003.webp",
+      "caption": "Figure 3. Morphological vs. conceptual conditioning: absolute performance. DTW and CRPS on PTB-XL and Weather under the two condition types.",
+      "page": 6,
+      "index": 3,
+      "width": 1003,
+      "height": 205
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-004.webp",
+      "caption": "Table 20. Taxonomy of Evaluation Metrics for ConTSG",
+      "page": 25,
+      "index": 4,
+      "width": 850,
+      "height": 182
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-005.webp",
+      "caption": "Table 13. Morphological Condition Attribute Set for PTB-XL",
+      "page": 21,
+      "index": 5,
+      "width": 887,
+      "height": 427
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-006.webp",
+      "caption": "Table 14. Conceptual Condition Attribute Set for PTB-XL",
+      "page": 21,
+      "index": 6,
+      "width": 931,
+      "height": 196
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-007.webp",
+      "caption": "Figure 12. Case Visualization of PTB-XL Data",
+      "page": 21,
+      "index": 7,
+      "width": 1017,
+      "height": 283
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-008.webp",
+      "caption": "Figure 4. Fine-grained control evaluation. Left: Joint shapelet classification accuracy on Synth-U, where all three segment-level local patterns must be correctly generated. Middle: Segment retrieval accuracy (Acc@1) as a function of candidate pool size on TelecomTS-Segment. Right: Segment–text temporal order accuracy on TelecomTS-Segment.",
+      "page": 7,
+      "index": 8,
+      "width": 994,
+      "height": 234
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-009.webp",
+      "caption": "Table 17. Conceptual Condition Attribute Set for Weather.",
+      "page": 22,
+      "index": 9,
+      "width": 979,
+      "height": 373
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-010.webp",
+      "caption": "Figure 22. Generation Quality Comparison: WEATHER Conceptual. Each subplot shows one model’s performance on one variable. Blue line: ground truth; Red line: generated median; Red bands: 25%-75% (dark) and 10%-90% (light) quantile ranges of 10 generated samples.",
+      "page": 34,
+      "index": 10,
+      "width": 1011,
+      "height": 233
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-011.webp",
+      "caption": "Figure 20. Generation Quality Comparison: PTB-XL Conceptual. Each subplot shows one model’s performance on one variable. Blue line: ground truth; Red line: generated median; Red bands: 25%-75% (dark) and 10%-90% (light) quantile ranges of 10 generated samples.",
+      "page": 34,
+      "index": 11,
+      "width": 1009,
+      "height": 233
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-012.webp",
+      "caption": "Figure 21. Generation Quality Comparison: PTB-XL Morphological. Each subplot shows one model’s performance on one variable. Blue line: ground truth; Red line: generated median; Red bands: 25%-75% (dark) and 10%-90% (light) quantile ranges of 10 generated samples.",
+      "page": 34,
+      "index": 12,
+      "width": 1009,
+      "height": 232
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-013.webp",
+      "caption": "Figure 7. Overall Pipeline of LLM Caption Generation",
+      "page": 14,
+      "index": 13,
+      "width": 1063,
+      "height": 754
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-014.webp",
+      "caption": "Figure 16. Generation Quality Comparison: AirQuality Beijing. Each subplot shows one model’s performance on one variable. Blue line: ground truth; Red line: generated median; Red bands: 25%-75% (dark) and 10%-90% (light) quantile ranges of 10 generated samples.",
+      "page": 33,
+      "index": 14,
+      "width": 1011,
+      "height": 234
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-015.webp",
+      "caption": "Figure 24. Morphological vs. conceptual conditioning: rank stability. Each point is a model with ranks computed separately under morphological (x-axis) and conceptual (y-axis) conditions (lower is better). Points near the diagonal indicate stable rankings across condition types, while off-diagonal points indicate sensitivity to condition semantics.",
+      "page": 35,
+      "index": 15,
+      "width": 993,
+      "height": 249
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-016.webp",
+      "caption": "Table 32. Drop Rate by Model and Dataset (lower is better)",
+      "page": 35,
+      "index": 16,
+      "width": 1008,
+      "height": 254
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-017.webp",
+      "caption": "Figure 23. Generation Quality Comparison: WEATHER Morphological. Each subplot shows one model’s performance on one variable. Blue line: ground truth; Red line: generated median; Red bands: 25%-75% (dark) and 10%-90% (light) quantile ranges of 10 generated samples.",
+      "page": 35,
+      "index": 17,
+      "width": 1011,
+      "height": 234
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-018.webp",
+      "caption": "Figure 8. Case Visualization of Airquality Beijing Data",
+      "page": 18,
+      "index": 18,
+      "width": 1015,
+      "height": 277
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-019.webp",
+      "caption": "Figure 9. Case Visualization of TelecomTS Data",
+      "page": 18,
+      "index": 19,
+      "width": 1004,
+      "height": 398
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-020.webp",
+      "caption": "Figure 10. Case Visualization of ETTm1 Data",
+      "page": 18,
+      "index": 20,
+      "width": 1008,
+      "height": 243
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-021.webp",
+      "caption": "Figure 13. Case Visualization of Weather Data",
+      "page": 23,
+      "index": 21,
+      "width": 1015,
+      "height": 286
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-022.webp",
+      "caption": "Figure 5. Compositional generalization analysis. Left: normalized retrieval accuracy for head (closest 20% to training distribution) vs. tail (farthest 20%, novel attribute combinations) test samples; points below the diagonal indicate performance degradation on out-of-distribution combinations. Right: accuracy gap (tail − head) for each model, where negative values reflect sensitivity to novel attribute combinations.",
+      "page": 8,
+      "index": 22,
+      "width": 472,
+      "height": 272
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-023.webp",
+      "caption": "Figure 6. Drop rate distribution across datasets and models. Lower drop rate indicates better substitutability of generated data.",
+      "page": 8,
+      "index": 23,
+      "width": 475,
+      "height": 262
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-024.webp",
+      "caption": "Table 1. Comparison of conditional time series generation methods and benchmarks along three dimensions: (1) supported condition modalities, (2) semantic abstraction levels, and (3) evaluation dimensions beyond fidelity, which is universally assessed. Abbreviations: Attr = Attribute; Morph = Morphological; Adh. = Condition Adherence; Fine-gr. = Fine-grained control; Comp. Gen. = Compositional generalization; Down. Util. = Downstream utility.",
+      "page": 4,
+      "index": 24,
+      "width": 1008,
+      "height": 460
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-025.webp",
+      "caption": "Table 11. Attribute Set for Istanbul Traffic.",
+      "page": 19,
+      "index": 25,
+      "width": 975,
+      "height": 322
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-026.webp",
+      "caption": "Table 9. Attribute Set for ETTm1.",
+      "page": 19,
+      "index": 26,
+      "width": 933,
+      "height": 296
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-027.webp",
+      "caption": "Table 6. Attribute Set for Air Quality Profile.",
+      "page": 17,
+      "index": 27,
+      "width": 1033,
+      "height": 267
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04767v1/fig-028.webp",
+      "caption": "Figure 11. Case Visualization of Istanbul Traffic Data",
+      "page": 20,
+      "index": 28,
+      "width": 1013,
+      "height": 264
+    }
+  ]
+}

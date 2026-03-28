@@ -1,0 +1,530 @@
+Title: Modeling Trend Dynamics with Variational Neural ODEs for Information Popularity Prediction
+
+URL Source: https://arxiv.org/pdf/2603.09148v1
+
+Published Time: Wed, 11 Mar 2026 00:30:20 GMT
+
+Number of Pages: 9
+
+Markdown Content:
+# Modeling Trend Dynamics with Variational Neural ODEs for Information Popularity Prediction 
+
+# Yuchen Wang, Dongpeng Hou, Weikai Jing, Chao Gao *, Xianghua Li, Yang Liu 
+
+Northwestern Polytechnical University 
+
+{wany810, hdp0918, 2015217442 }@mail.nwpu.edu.cn, {cgao, li xianghua }@nwpu.edu.cn, yangliuyh@gmail.com 
+
+Abstract 
+
+Predicting the future popularity of information in online so-cial networks is a crucial yet challenging task, due to the com-plex spatiotemporal dynamics underlying information diffu-sion. Existing methods typically use structural or sequential patterns within the observation window as direct inputs for subsequent popularity prediction. However, most approaches lack the ability to explicitly model the overall trend of pop-ularity up to the prediction time, which leads to limited pre-dictive capability. To address these limitations, we propose VNOIP, a novel method based on variational neural Ordi-nary Differential Equations (ODEs) for information popular-ity prediction. Specifically, VNOIP introduces bidirectional jump ODEs with attention mechanisms to capture long-range dependencies and bidirectional context within cascade se-quences. Furthermore, by jointly considering both cascade patterns and overall trend temporal patterns, VNOIP explic-itly models the continuous-time dynamics of popularity trend trajectories with variational neural ODEs. Additionally, a knowledge distillation loss is employed to align the evolu-tion of prior and posterior latent variables. Extensive exper-iments on real-world datasets demonstrate that VNOIP is highly competitive in both prediction accuracy and efficiency compared to state-of-the-art baselines. 
+
+Code — https://github.com/cgao-comp/VNOIP 
+
+# Introduction 
+
+With the explosive growth of social media platforms, un-derstanding and forecasting the popularity of information has become an essential problem in social network services (SNS) (Li et al. 2021). Information cascade popularity pre-diction focuses on modeling the overall diffusion scale and growth trajectory of information, rather than merely tracking individual behaviors, as illustrated in Fig. (1). This macro-scopic perspective is critical for grasping the collective dy-namics and emergent patterns in large-scale social systems. Moreover, accurately estimating the future reach and in-fluence of content is vital for a wide range of real-world SNS applications, including viral marketing (Rizoiu and Xie 2017), event detection (Steuber et al. 2023), and content rec-ommendation (Wang et al. 2018). Therefore, cascade pop-
+
+> *
+
+Corresponding author Copyright © 2026, Association for the Advancement of Artificial Intelligence (www.aaai.org). All rights reserved. 
+
+ularity prediction stands as a fundamental and challenging problem and has attracted increasing attention. 
+
+Figure 1: An illustration of popularity prediction. Mainstream approaches to popularity prediction can be broadly categorized into feature engineering-based models, generative diffusion models, and deep learning-based mod-els. Feature engineering-based models rely on manually de-signed features extracted from content, user profiles, and network structures, and establish a mapping between these features and popularity (Ma, Sun, and Cong 2013; Mar-tin et al. 2016). Generative diffusion models, inspired by epidemiological (Matsubara et al. 2012) or stochastic pro-cesses (Shen et al. 2014), have been further refined to ac-count for specific characteristics observed in social net-works, such as periodicity and user heterogeneity. Although these methods offer a certain degree of interpretability, they often struggle to capture the complex spatiotemporal pat-terns present in real-world cascades, thereby limiting their predictive performance. Recently, deep learning methods, particularly those lever-aging sequence models such as recurrent neural networks (RNNs) (Cao et al. 2017; Gou et al. 2018), Transform-ers (Sun et al. 2023), and neural ordinary differential equa-tions (ODEs) (Cheng et al. 2024), have demonstrated supe-rior performance in modeling the continuous-time dynam-ics and irregular event intervals observed in cascades. How-ever, these methods typically rely solely on cascade features for popularity prediction. Notably, CasFT (Jing et al. 2025) is the only work that attempts to use a diffusion denois-ing model to generate future trends. Nevertheless, these ap-
+
+> arXiv:2603.09148v1 [cs.SI] 10 Mar 2026
+
+proaches still lack the ability to explicitly capture the overall trend of popularity up to the prediction time, which results in limited predictive capability. In addition, most of these methods consider only unidirectional dependencies within the cascade, further restricting their capacity to capture long-range global contextual information. To address these challenges, we propose VNOIP, a novel method based on variational neural ODEs for information popularity prediction. First, VNOIP employs lightweight graph embeddings for both global and cascade graphs. Then, bidirectional jump ODEs with attention mechanisms are de-signed for enhanced sequence modeling, enabling the model to simultaneously consider information diffusion from both the past and the future. Furthermore, a variational inference module is introduced to model the uncertainty and continu-ous evolution of popularity trends. By jointly learning from both macroscopic popularity trends and microscopic cas-cade sequences, VNOIP samples the latent states of popu-larity dynamics from the prior and posterior distributions. In addition, a knowledge distillation loss on future latent states is employed to better align the evolution of the prior and pos-terior latent states. By comprehensively modeling the spa-tiotemporal dynamics from both cascade sequences and pop-ularity trends, VNOIP significantly enhances the predictive capability for information popularity. Our contributions can be summarized as follows. • A novel bidirectional jump ODEs-based model is intro-duced for cascade sequence modeling, enabling the cap-ture of long-range dependencies, resulting in more ex-pressive and informative cascade representations. • A variational neural ODE approach is introduced for modeling global popularity trends. By extracting features from both cascade sequences and popularity trajectories, the prior and posterior distributions of the initial state are inferred to capture trend dynamics and future uncer-tainty. Additionally, a knowledge distillation loss is in-corporated to better align the evolution of the prior and posterior latent states. • Extensive experiments on benchmark datasets demon-strate that VNOIP achieves competitive performance and improved efficiency compared to SOTA baselines. 
+
+# Related Work 
+
+Feature Engineering-based Models: Prior feature engi-neering based studies predict information popularity by manually extracting features from social media data. These approaches consider various factors such as content charac-teristics (Ma, Sun, and Cong 2013), user attributes (Martin et al. 2016), network structure (Wu et al. 2016), and tempo-ral dynamics (Yang and Leskovec 2011) to improve predic-tion accuracy. However, their effectiveness largely depends on the quality of manually designed features and may face limitations in generalization. 
+
+Generative Diffusion Models: Generative diffusion mod-els for popularity prediction are mainly categorized into dif-ferential equation-based and stochastic process-based ap-proaches. Differential equation-based models, often inspired by epidemiology, are adapted to account for the unique mechanisms of information diffusion, such as dynamic in-fection rates (Matsubara et al. 2012) and periodic external influences (Stai et al. 2018). Stochastic process-based mod-els estimate the contribution of individual events or users, modeling mechanisms like decay, excitation, and periodic-ity using distributions and processes such as Poisson (Shen et al. 2014) and Hawkes (Bao 2016) processes. Both ap-proaches provide detailed representations of dynamic diffu-sion behaviors and improve interpretability through parame-terization. However, they face challenges in capturing com-plex diffusion patterns and generalizing to diverse scenarios compared to deep learning methods. 
+
+Deep Learning-based Models: Recently, increasing atten-tion focuses on leveraging deep learning methods for mod-eling the spatiotemporal characteristics of information dif-fusion. In early work, RNNs often serve as the backbone to model information cascades (Gou et al. 2018; Cao et al. 2017; Chen et al. 2019). To better capture arbitrary de-pendencies in long sequences, later studies incorporate at-tention mechanisms (Sun et al. 2023). Recently, some ap-proaches explore neural differential equations to enhance continuous-time sequence modeling (Chen et al. 2018). For example, Cheng et al. propose the CasDo model, which ex-tends the discrete state transitions of RNNs to continuous-time dynamic systems (Cheng et al. 2024). Jing et al. pro-pose CasFT, which uses observed information cascades and dynamic cues extracted by neural ordinary differential equa-tions as conditions, with micro-level features serving as the initial conditions for subsequent macro-level spatiotempo-ral pattern prediction (Jing et al. 2025). Moreover, mod-eling the uncertainty of macro-level diffusion significantly affects predictive performance. Common approaches intro-duce deep generative models such as normalizing flows (Xu et al. 2021) and denoising diffusion models (Cheng et al. 2024; Jing et al. 2025) to capture uncertainty in prediction results and improve accuracy. 
+
+# Problem Statement 
+
+Global Graph: The global graph Gg = {V g , Eg } represents a social/citation network. The nodes are users and the edges are relationships between them. 
+
+Cascade Graph: Given an information item and the ob-served record of its diffusion, the cascade graph is defined as Gc = {V c, Ec}, Vc = {u0, u 1, u 2, . . . , u n} denotes the set of users involved in spreading the information, while 
+
+Ec = {e1, e 2, . . . , e m} specifies the connections among these users. Each edge ei = ( uj , u i, t i) indicates that user 
+
+ui has reposted or forwarded the information from user uj
+
+at timestamp ti.
+
+Cascade Sequence: Let C(to) be a collection of users ar-ranged based on their timestamps until the observation time 
+
+to, i.e., C(to) = {(u0, t 0), (u1, t 1), . . . , (un, t n)}, where 
+
+t0<t 1<· · · <t n≤ to.
+
+Information Cascade Popularity Prediction: Given a cas-cade c observed up to time to, together with the global graph 
+
+Gg , the observed cascade graph Gc(to), and the cascade se-quence C(to), the objective of popularity prediction is to es-timate the incremental popularity ∆P = P (tp) − P (to),Figure 2: The overview of VNOIP. (a) The global graph, the observed cascade graph, and the cascade sequence. (b) Bi-directional Jump ODEs with attention to enhance the representation capability of sequence context. (c) Variational neural ODEs model the overall trend by jointly aggregating cascade patterns and popularity trend features. where P (ti) denotes the popularity at time ti, tp ≫ to, and 
+
+tp is the prediction horizon. 
+
+# Methodology 
+
+Overview 
+
+Fig. 2(a) shows the input data, including the global graph, the cascade graph, and the cascade sequence. In Fig. 2(b), VNOIP models the cascade sequence using bidirectional jump ODEs based on both global and cascade graph embed-dings, which capture both past and future influence dynam-ics in the cascade process. Fig. 2(c) presents the prediction module based on variational neural ODEs. The aggregated spatiotemporal patterns from the bidirectional jump ODEs and the popularity trend are encoded into latent variables through variational inference. The model then generates the popularity trend from the learned latent dynamics using neu-ral ODEs. Finally, the generated trend and cascade hidden states are fed into MLPs to predict the incremental trend. 
+
+Global and Cascade Graph Embeddings 
+
+Since information popularity prediction targets macro-level patterns, the underlying networks are often large in scale. Consequently, representing network structures directly with advanced graph neural networks becomes challenging. To address this, lightweight graph embedding techniques are adopted to extract distinctive structural patterns from both the global graph and the information cascade graph, as sug-gested in previous studies (Xu et al. 2021; Jing et al. 2025). For the large-scale global graph, NetSMF (Qiu et al. 2019) is employed due to its efficiency in handling large networks and its ability to quickly learn user interactions, embedding global structural features into node representations Xg . For the cascade graph, GraphWave (Donnat et al. 2018) is uti-lized to effectively capture local structural patterns and ob-tain the node embeddings Xc.
+
+Bi-directional Jump ODEs for Sequence Modeling 
+
+Most previous studies model information cascades by con-sidering only the unidirectional process from the initial time to the final time. However, such models can only capture par-tial dependencies within the sequence, thereby limiting their capacity for comprehensive context representation. There-fore, this paper proposes bidirectional jump ODEs with at-tention mechanisms, which aggregate both past and future information at each position in the information cascade. This approach alleviates the bias caused by strict sequential order and enhances the expressive power of the representation. 
+
+Bi-directional Context Representation To enhance the model’s ability to capture long-range dependencies, the at-tention mechanism is utilized to obtain the context repre-sentation. Specifically, following previous work (Jing et al. 2025), two self-attention layers are independently applied to both the cascade graph and the global graph views. For the global graph, the user embeddings Sg =[Xgu0 , . . . , X gun ] are retrieved according to the sequence of users involved in the information cascade. The scaled dot-product attention (Vaswani et al. 2017) is then applied to obtain bidirectional contextual representations for the se-quence as follows. 
+
+> →
+
+Sg = Attention (Sg , S g , S g , →
+
+M ),
+
+> ←
+
+Sg = Attention (Sg , S g , S g , ←
+
+M ),
+
+Attention (Q, K, V, M ) = Softmax 
+
+ QK ⊤
+
+√d + M
+
+
+
+V, 
+
+(1) where →
+
+Sg and ←
+
+Sg denote the bidirectional contextual repre-sentations, →
+
+M and ←
+
+M are the forward and backward mask matrices (i.e., past-to-future and future-to-past masks). For the cascade graph, the sequence embeddings are de-fined as Sc = [ Xcu0 + E(t0), . . . , X cun + E(tn)] , where Xcui
+
+is user ui’ cascade graph embedding and E(ti) is the tem-poral embedding that encodes the specific position of user 
+
+ui in the cascade sequence. The temporal encoding E(ti) is defined as follows. 
+
+E(ti)j =
+
+
+
+cos 
+
+ ti
+
+10000 j−1
+
+> d
+
+
+
+, if j is odd ,
+
+sin 
+
+ ti
+
+10000 jd
+
+
+
+, if j is even ,
+
+(2) where ti denotes the timestamp of the i-th user in the se-quence, j is the j-th dimension, and d is the embedding di-mension. Then, the bidirectional contextual representations for the cascade graph, →
+
+Sc and ←
+
+Sc, can then be obtained in the same manner as in Eq. (1). Finally, the forward and backward representations from both views are concatenated to form the final contextual rep-resentations, i.e., →
+
+S = [ →
+
+Sc; →
+
+Sg ] and ←
+
+S = [ ←
+
+Sc; ←
+
+Sg ], where 
+
+[·; ·] denotes vector concatenation. 
+
+Jump ODEs for Sequence Modeling First, the initial state of a cascade sequence is initialized as a trainable vector 
+
+H. Then, self-gating is applied to generate separate forward and backward initial states →
+
+H(t0) and ←
+
+H(tn) for the jump ODEs, respectively. 
+
+> →
+
+H(t0) = H ⊙ sigmoid (W f H + bf ),
+
+> ←
+
+H(tn) = H ⊙ sigmoid (W bH + bb),
+
+(3) where ⊙ denotes element-wise multiplication, and W and b
+
+are learnable parameters. Then, the continuous-time evolution of the hidden states 
+
+> →
+
+H(t) and ←
+
+H(t) over the intervals [t+ 
+
+> i
+
+, t i+1 ] and [ti−1, t − 
+
+> i
+
+] is modeled by neural ODEs, as shown in Eq. (4). 
+
+d →
+
+H(t)dt = fo1 (→
+
+H(t)) , d ←
+
+H(t)dt = fo2 (←
+
+H(t)) , (4) where fo1 (·) and fo2 (·) are multi-layer perceptrons (MLPs). When an action occurs at time ti, the states of the cascade sequence, →
+
+H(ti) and ←
+
+H(ti), are updated via a jump process using GRUs, as shown in Eq. (5). 
+
+> →
+
+H(t+ 
+
+> i
+
+) = GRUCell (→
+
+H(ti), →
+
+Si),
+
+> ←
+
+H(t− 
+
+> i
+
+) = GRUCell (←
+
+H(ti), ←
+
+Si),
+
+(5) where →
+
+Si and ←
+
+Si denote the i-th positional contextual repre-sentations obtained from the attention layers, which are used to enhance the receptive field of sequence modeling. 
+
+Feature Fusion By employing both forward and back-ward jump ODEs, we obtain the cascade sequence states 
+
+> →
+
+H = [ →
+
+H(t+0 ), . . . , →
+
+H(t+ 
+
+> n
+
+)] and ←
+
+H = [ ←
+
+H(t− 
+
+> 0
+
+), . . . , ←
+
+H(t− 
+
+> n
+
+)] ,respectively. Finally, a channel attention fusion mechanism is applied to produce the final sequence state ¯H as follows. 
+
+γ(ti) = exp( a · W aH(ti)) 
+
+P    
+
+> H′(ti)∈{ →
+> H(t+
+> i),←
+> H(t−
+> i)}
+
+exp( a · W aH′ (ti)) ,
+
+¯H(ti) = X   
+
+> H′(ti)∈{ →
+> H(t+
+> i),←
+> H(t−
+> i)}
+
+γ′
+
+(ti)H′
+
+(ti), (6) where a and W a are learnable parameters. The final se-quence representation ¯H(ti) is computed as the weighted sum of the forward and backward hidden states at each time step. To further improve training stability, Layer Normaliza-tion is applied to the output, i.e., ¯H = LayerNorm ( ¯H).
+
+Variational Encoder for Popularity Trend 
+
+To generate the complete popularity trend and facilitate the final prediction, the interval [to, t p] is evenly divided into T
+
+points, and the popularity at these points is used during train-ing. Furthermore, a variational neural ODEs module is em-ployed to model the dynamics of popularity evolution. Dur-ing the training phase, the popularity trajectories P ctx and 
+
+P tgt are constructed. Specifically, P ctx = [ P (t0), . . . , P (to)] 
+
+represents the popularity in the cascade observed up to time 
+
+to. Building upon P ctx , P tgt = [ P ctx , P (to + (tp−to) 
+
+> T
+
+), P (to +2 (tp−to) 
+
+> T
+
+), . . . , P (tp)] incorporates the cumulative popular-ity at L additional future time points, denoted as P tgt (t) for 
+
+to < t ≤ tp, where T is a hyperparameter. Subsequently, following the framework of variational in-ference, the Evidence Lower BOund (ELBO) can be formu-lated as Eq. (7). 
+
+log p(P tgt |P ctx , ¯H) ≥ Eq(z0|P tgt , ¯H)
+
+ log p(P tgt |z0, ¯H)
+
+− KL  q(z0|P tgt , ¯H) ∥ p(z0|P ctx , ¯H),
+
+(7) 
+
+Latent Variables of Initial State To account for the in-fluence of user structure and event popularity on spatiotem-poral features, both the popularity trajectory and the cas-cade sequence are utilized as two views to encode the la-tent variable. Specifically, for the popularity sequences P ctx 
+
+and P tgt , MLPs are employed to obtain Zctx and Ztgt , Zi =
+
+f ([ P (ti); ti]) , where Zi denotes the vector representation at the i-th position, [P (ti); ti] denotes the concatenation the popularity at time ti with the timestamp ti. Then, a trainable vector Zp is utilized as the query to aggregate the features 
+
+Zctx and Ztgt through attention layers, as illustrated below. 
+
+¯Zctx = Attention (Zp, Z ctx , Z ctx ),
+
+¯Ztgt = Attention (Zp, Z tgt , Z tgt ), (8) In the similar way, a trainable vector Zh is utilized as the query to aggregate the cascade hidden states ¯H through an attention layer. 
+
+¯Zh = Attention (Zh, ¯H, ¯H). (9) By concatenating the aggregated feature ( ¯Zctx or ¯Ztgt ) from the popularity trend and the aggregated feature ¯Zh from the cascade sequence, the initial representation incorporates both the macroscopic and microscopic spatiotemporal char-acteristics. Subsequently, MLPs are employed to map these features to Gaussian distributions, and the latent variable z
+
+for modeling the popularity trend is obtained via the repa-rameterization trick. 
+
+zprior (t0) ∼ N  μp([ ¯Zctx ; ¯Zh]) , σ p([ ¯Zctx ; ¯Zh])  ,zpost (t0) ∼ N  μq ([ ¯Ztgt ; ¯Zh]) , σ q ([ ¯Ztgt ; ¯Zh])  , (10) where μp(·), μq (·), σp(·), and σq (·) can be learned from MLPs. To ensure that σ(Z) > 0, we parameterize the stan-dard deviation as σ(Z) = 0 .1 + 0 .9 · sigmoid(MLP( Z)) .
+
+Neural ODEs for Popularity Trend Generation After obtaining the initial value z(t0), neural ODEs are employed to generate the complete popularity trajectory. Meanwhile, to model the uncertainty in the generation process and to en-sure that the instantaneous increments are non-negative, the expected value of a truncated normal distribution is adopted for the popularity increment dP (t)/dt. The specific genera-tion process is as follows. 
+
+dz(t)dt = fz (z(t)) ,
+
+dP (t)dt = μf (z(t)) + σf (z(t)) · ϕ(t)1 − Φ( t) ,ϕ(t) = 1
+
+√2π exp 
+
+
+
+− α(t)2
+
+2
+
+
+
+,
+
+Φ( t) = 12
+
+
+
+1 + erf 
+
+ α(t)
+
+√2
+
+ 
+
+, α (t) = −μf (z(t)) 
+
+σf (z(t)) 
+
+(11) where fz (·), μf (·), and σf (·) are learned by MLPs, erf( ·) is the error function. Given the initial prior zprior (t0) and posterior zpost (t0),and employing a shared neural ODE, an ODE solver computes the future trends P prior and P post for both the prior and posterior. In addition, the latent trajec-tories zprior = [zprior (t0), . . . , z prior (tp)] and zpost =[zpost (t0), . . . , z post (tp)] are obtained. 
+
+Knowledge Distillation of Future Latent States 
+
+Although the prior and posterior latent variables are evolved using a shared neural ODE, slight differences in their ini-tial states can result in substantial divergence after long-term dynamics. To mitigate this effect and promote similarity be-tween the prior and posterior latent variables over time, a KL divergence-based knowledge distillation loss is applied at the final time step to regularize the evolved latent vari-ables, which is shown as follows. 
+
+Lkd = 12 KL  zprior (tp) zpost (tp) +KL  zpost (tp) zprior (tp) ! (12) This symmetric formulation penalizes discrepancies in both directions and thus more effectively aligns the prior and pos-terior latent representations at time tp.
+
+Model Training and Popularity Prediction 
+
+During training, the final prediction is obtained via a decoder as Eq. (13). 
+
+∆ ˆP = Softplus  fd([ ¯H(t0); ¯H(tn); P post ]) , (13) where fd denotes MLPs and P post indicates the generated future trend from posterior latent variable. The main loss is computed by the mean squared logarithmic error (MSLE). 
+
+Lmain =
+
+
+
+log 2
+
+
+
+∆P + 1 
+
+
+
+− log 2
+
+
+
+∆ ˆP + 1 
+
+ 2
+
+. (14) To encourage the generated trends to better match the ground truth, we introduce a regression loss Lrg to approxi-mate the reconstruction loss, defined as the MSLE between the generated trends (i.e., P prior and P post ) and the ground-truth trend P over the interval [to, t p] at T time points. The overall loss function for optimization is given by 
+
+Ltotal = Lmain + λ1Lrg + λ2(Lkl + Lkd ),
+
+Lkl = KL  q(zpost (t0)) ∥ p(zprior (t0), (15) where λ1 and λ2 are hyperparameters that balance the con-tributions of each loss term, and the prior and posterior dis-tributions are defined in Eq. (10). After training is completed via backpropagation and opti-mization, during the testing phase, the trend generated from the prior latent variable zprior (t0) is utilized to assist in pre-dicting the incremental popularity, as shown below. 
+
+∆ ˆP = Softplus  fd([ ¯H(t0); ¯H(tn); P prior ]) . (16) 
+
+# Experiments 
+
+Datasets 
+
+We evaluate VNOIP and other baselines on three real-world datasets: Twitter, APS (Shen et al. 2014), and Weibo (Cao et al. 2017). Twitter consists of tweet cascades collected between March 1 and April 15, 2022, based on hashtags. 
+
+APS contains citation cascades from papers published in American Physical Society journals between 1893 and 1997. 
+
+Weibo includes repost cascades from China’s largest mi-croblogging platform. For each dataset, we follow previous works (Jing et al. 2025) to set the observation and prediction periods. Specifically, observation windows are 1 and 2 days for Twitter, 3 and 5 years for APS, and 0.5 and 1 hour for Weibo. Prediction periods are set to 15 days, 20 years, and 24 hours, respectively. Cascades with fewer than 10 partici-pants during the observation window are excluded. We split each dataset into 70% for training, 15% for validation, and 15% for testing. More details are provided in Table 1. Dataset Twitter APS Weibo 
+
+Cascades 86,764 207,685 119,313 Nodes in Gg 490,474 616,316 6,738,040 Edges in Gg 1,903,230 3,304,400 15,249,636 Avg. popularity 94 51 240 
+
+Number of cascades in two observation settings 
+
+Train (1d/3y/0.5h) 7,308 18,511 21,463 Val (1d/3y/0.5h) 1,566 3,967 4,599 Test (1d/3y/0.5h) 1,566 3,966 4,599 Train (2d/5y/1h) 10,983 32,102 29,908 Val (2d/5y/1h) 2,353 6,879 6,409 Test (2d/5y/1h) 2,353 6,879 6,408 
+
+Table 1: Statistics of the three datasets. 
+
+Baselines 
+
+The baselines used for comparison include the following representative methods: DeepCas (Li et al. 2017) utilizes a bi-directional GRU with attention for effective sequence modeling. DeepHawkes (Cao et al. 2017) combines the Hawkes process with deep learning to capture user influ-ence, self-excitation, and temporal decay effects in cascade dynamics. VaCas (Zhou et al. 2020) introduces a hierarchi-cal graph learning framework and leverages a variational au-toencoder to model uncertainty. CasFlow (Xu et al. 2021) considers both local and global graph structures to character-ize user behavior for popularity prediction. CTCP (Lu et al. 2023) proposes an evolution learning module that updates user and cascade states in real time as diffusion unfolds. 
+
+CasDO (Cheng et al. 2024) proposes a novel framework that integrates probabilistic diffusion models with neural ODEs for information cascade popularity prediction. CasFT (Jing et al. 2025) employs probabilistic diffusion models to dy-namically generate cues for modeling popularity trends. 
+
+Experimental Settings 
+
+In our experiments, the batch size is set to 100. The hyper-parameters ( λ1, λ2, T ) are tuned to achieve the best perfor-mance on the validation set (details can be found in the sec-tion on Sensitivity Analysis of Hyperparameters), and early stopping with a patience of 15 epochs is applied. The di-mensions of both the cascade graph and global graph repre-sentations are set to 40. The functions fo1 and fo2 are im-plemented as three-layer MLPs with Softplus activation functions. The functions fz (·), μf (·), and σf (·) are also im-plemented as three-layer MLPs with Tanh activation func-tions. All other MLP modules are two-layer networks with 
+
+ReLU activations. The dimensions of hidden states and la-tent variables are set to 64, except for the Twitter dataset with a 2-day observation window and the Weibo dataset, where the dimension is set to 128. The model parameters are optimized using the Adam optimizer with a learning rate of 2×10 −3. For sequence modeling, the ODE solver is set to 
+
+euler , while for popularity generation, it is set to dopri5 .
+
+Evaluation Metrics 
+
+Two commonly used metrics, mean squared logarithmic er-ror (MSLE) and mean absolute percentage error (MAPE), are employed to evaluate the performance of models: MSLE = 1
+
+B
+
+> B
+
+X
+
+> b=1
+
+
+
+log 2(∆ Pb + 1) − log 2(∆ ˆPb + 1) 
+
+2
+
+,
+
+MAPE = 1
+
+B
+
+> B
+
+X
+
+> b=1
+
+log 2(∆ Pb + 2) − log 2(∆ ˆPb + 2) log 2(∆ Pb + 2) ,
+
+(17) where ∆Pb denotes the true incremental popularity of b-th cascade, ∆ ˆPb represents the predicted incremental popular-ity, and B is the total number of test cascades. 
+
+Experimental Results 
+
+Table 2 presents the performance comparison of different methods on the Twitter, APS, and Weibo datasets. On the Twitter dataset, VNOIP demonstrates notable improvements over the baselines for both the 1-day and 2-day observation windows. For the 1-day window, VNOIP achieves a 2.9% re-duction in MSLE and a 3.8% reduction in MAPE compared to the second-best method, CasFT. For the 2-day window, VNOIP yields a 7.2% reduction in MSLE and a 4.4% re-duction in MAPE over CasFT. On the APS dataset, CasDo achieves better results than VNOIP for the 3-year window, which may be due to its explicit modeling of structural un-certainty. VNOIP, however, still achieves results that are close to those of CasDo, demonstrating its strong predictive capability even without explicitly modeling structural uncer-tainty. For the 5-year window, VNOIP slightly outperforms CasDo in MSLE, while CasDo maintains the best MAPE. On the Weibo dataset, VNOIP demonstrates strong overall performance. In particular, for the 1-hour window, VNOIP achieves a 4.9% reduction in MSLE compared to CasDo. These results demonstrate that VNOIP is highly competitive, and consistently outperforming most existing baselines. 
+
+Ablation Study 
+
+We conduct ablation studies on VNOIP with the follow-ing configurations. VNOIP-B : Utilizes only the forward jump ODE for sequence modeling to evaluate the impact of bidirectional modeling. VNOIP-F : Removes the popular-ity trend modeling and directly predicts via bidirectional se-quence features. VNOIP-V : Disables variational inference, using only the generation results from zctx . VNOIP-K : Re-moves the knowledge distillation loss. The results in Ta-ble 2 show that, for most datasets, excluding the modeling of overall trends leads to a substantial decline in prediction performance. The second most notable drop occurs when variational encoding is omitted. These results suggest that VNOIP’s approach of leveraging variational neural ODEs for overall trend modeling is indeed effective. 
+
+Efficiency of VNOIP 
+
+To demonstrate the superior efficiency of VNOIP in model training, we compare the training times of recent SOTA methods on three datasets. As shown in Fig. (3), VNOIP achieves a significant improvement in efficiency. Unlike Method Twitter APS Weibo 
+
+1-day 2-days 3-years 5-years 0.5-hour 1-hour MSLE MAPE MSLE MAPE MSLE MAPE MSLE MAPE MSLE MAPE MSLE MAPE DeepCas 6.330 0.657 5.715 0.667 2.105 0.287 1.926 0.346 4.646 0.326 3.553 0.353 DeepHawkes 5.934 0.502 4.849 0.519 1.914 0.282 1.815 0.337 2.874 0.304 2.743 0.335 VaCas 5.512 0.479 4.214 0.487 1.776 0.269 1.695 0.301 2.525 0.285 2.345 0.299 CasFlow 4.779 0.415 3.688 0.422 1.437 0.240 1.335 0.262 2.337 0.266 2.223 0.294 CTCP 5.399 0.376 3.601 0.377 1.767 0.305 1.375 0.291 2.557 0.306 2.297 0.301 CasDo 4.636 0.425 3.714 0.397 1.192 0.217 1.165 0.222 2.175 0.254 2.141 0.256 
+
+CasFT 4.146 0.391 3.298 0.367 1.301 0.234 1.188 0.251 2.261 0.268 2.175 0.289 VNOIP-B 4.144 0.381 3.152 0.359 1.251 0.229 1.183 0.253 2.209 0.252 2.085 0.273 VNOIP-F 4.232 0.408 3.382 0.443 1.282 0.225 1.267 0.266 2.235 0.263 2.142 0.276 VNOIP-V 4.195 0.389 3.269 0.369 1.275 0.228 1.190 0.256 2.216 0.259 2.069 0.270 VNOIP-K 4.180 0.382 3.259 0.414 1.237 0.224 1.185 0.253 2.174 0.255 2.111 0.282 VNOIP 4.026 0.376 3.061 0.351 1.247 0.222 1.159 0.247 2.139 0.251 2.037 0.268 Table 2: Performance comparison between baselines and VNOIP on three datasets across different observation times measured by MSLE and MAPE (lower is better). CasDo and CasFT, VNOIP does not employ the more com-plex denoising diffusion probabilistic models to capture pro-cess uncertainty. The lower efficiency of CTCP is primarily due to its use of multiple LSTMs to model the dynamic cas-cade graph, which increases computational overhead. 
+
+Figure 3: Comparison of the performance and training time. 
+
+Sensitive Analysis of Hyperparameter 
+
+Effect of Weights λ1 and λ2 To demonstrate the ef-fect of the weights λ1 and λ2 on prediction performance, we train models with different combinations of λ1 =[0 .1, 0.2, 0.3, 0.4, 0.5] and λ2 = [0 .2, 0.4, 0.6, 0.8, 1.0] on Twitter-1day, APS-3years, and Weibo-0.5hour. The results are shown in the Fig. (4). The results show that there ex-ist optimal regions in the λ1–λ2 space where the MSLE achieves its minimum, suggesting that a proper balance be-tween the corresponding loss terms is crucial for achieving the best prediction accuracy. 
+
+Effect of Number of Future Data Points T To investi-gate the impact of the hyperparameter T on prediction per-formance, we train models on each dataset using various values of T = [4 , 8, 12 , 20 , 32] . The experimental results in Fig. (5) indicate that, in most cases, partitioning future trends into finer intervals does not necessarily improve pre-diction accuracy. This could be attributed to instances of 
+
+Figure 4: Effect of weights λ1 and λ2.early saturation, where the growth halts prematurely, lead-ing to zero increments within certain intervals and thereby increasing the difficulty of model training. 
+
+Figure 5: Effect of number of future data points T .
+
+# Conclusion 
+
+This paper proposes VNOIP, a novel variational neural ODE-based approach for information popularity prediction. VNOIP jointly models cascade sequences and global popu-larity trends, using bidirectional jump ODEs and variational inference to extract the patterns of information diffusion. In addition, a knowledge distillation loss is incorporated to en-hance the consistency of evolution between prior and pos-terior latent variables. Extensive experiments on real-world datasets demonstrate that VNOIP delivers highly competi-tive prediction accuracy compared to baselines. Acknowledgments 
+
+This research was supported by the National Natu-ral Science Foundation of China (Nos. 62261136549, 62471403, U22A2098, 62271411), the Technological Inno-vation Team of Shaanxi Province (No. 2025RS-CXTD-009), the International Cooperation Project of Shaanxi Province (No. 2025GH-YBXM-017), the Fundamental Research Funds for the Central Universities (Nos. G2024WD0151, D5000240309). 
+
+# References 
+
+Bao, P. 2016. Modeling and predicting popularity dynam-ics via an influence-based self-excited Hawkes process. In 
+
+Proceedings of the 25th ACM International Conference on Information and Knowledge Management , 1897–1900. Cao, Q.; Shen, H.; Cen, K.; Ouyang, W.; and Cheng, X. 2017. Deephawkes: Bridging the gap between prediction and understanding of information cascades. In Proceedings of the 26th ACM International Conference on Information and Knowledge Management , 1149–1158. Chen, R. T.; Rubanova, Y.; Bettencourt, J.; and Duvenaud, D. K. 2018. Neural ordinary differential equations. In Pro-ceedings of the 32nd International Conference on Neural In-formation Processing Systems , volume 31, 6572–6583. Chen, X.; Zhou, F.; Zhang, K.; Trajcevski, G.; Zhong, T.; and Zhang, F. 2019. Information diffusion prediction via recurrent cascades convolution. In 2019 IEEE 35th Interna-tional Conference on Data Engineering , 770–781. Cheng, Z.; Zhou, F.; Xu, X.; Zhang, K.; Trajcevski, G.; Zhong, T.; and Yu, P. S. 2024. Information cascade popular-ity prediction via probabilistic diffusion. IEEE Transactions on Knowledge and Data Engineering , 36(12): 8541–8555. Donnat, C.; Zitnik, M.; Hallac, D.; and Leskovec, J. 2018. Learning structural node embeddings via diffusion wavelets. In Proceedings of the 24th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining ,1320–1329. Gou, C.; Shen, H.; Du, P.; Wu, D.; Liu, Y.; and Cheng, X. 2018. Learning sequential features for cascade outbreak pre-diction. Knowledge and Information Systems , 57(3): 721– 739. Jing, X.; Jing, Y.; Lu, Y.; Deng, B.; Chen, X.; and Yang, D. 2025. CasFT: Future trend modeling for information popu-larity prediction with dynamic cues-driven diffusion models. In Proceedings of the 39th AAAI Conference on Artificial In-telligence , volume 39, 11906–11914. Li, C.; Ma, J.; Guo, X.; and Mei, Q. 2017. Deepcas: An end-to-end predictor of information cascades. In Proceedings of the 26th International Conference on World Wide Web , 577– 586. Li, H.; Xia, C.; Wang, T.; Wen, S.; Chen, C.; and Xiang, Y. 2021. Capturing dynamics of information diffusion in SNS: A survey of methodology and techniques. ACM Computing Surveys , 55(1): 1–51. Lu, X.; Ji, S.; Yu, L.; Sun, L.; Du, B.; and Zhu, T. 2023. Continuous-time graph learning for cascade popularity pre-diction. In Proceedings of the 32nd International Joint Con-ference on Artificial Intelligence , 2224–2232. Ma, Z.; Sun, A.; and Cong, G. 2013. On predicting the pop-ularity of newly emerging hashtags in Twitter. Journal of the American Society for Information Science and Technology ,64(7): 1399–1410. Martin, T.; Hofman, J. M.; Sharma, A.; Anderson, A.; and Watts, D. J. 2016. Exploring limits to prediction in complex social systems. In Proceedings of the 25th International con-ference on World Wide Web , 683–694. Matsubara, Y.; Sakurai, Y.; Prakash, B. A.; Li, L.; and Faloutsos, C. 2012. Rise and fall patterns of information diffusion: Model and implications. In Proceedings of the 18th ACM SIGKDD International Conference on Knowl-edge Discovery and Data Mining , 6–14. Qiu, J.; Dong, Y.; Ma, H.; Li, J.; Wang, C.; Wang, K.; and Tang, J. 2019. Netsmf: Large-scale network embedding as sparse matrix factorization. In Proceedings of the World Wide Web Conference 2019 , 1509–1520. Rizoiu, M.-A.; and Xie, L. X. 2017. Online popularity under promotion: Viral potential, forecasting, and the economics of time. In Proceedings of the International AAAI Confer-ence on Web and Social Media , volume 11, 182–191. Shen, H.; Wang, D.; Song, C.; and Barab´ asi, A.-L. 2014. Modeling and predicting popularity dynamics via reinforced poisson processes. In Proceedings of the 28th AAAI Confer-ence on Artificial Intelligence , volume 28, 291–297. Stai, E.; Milaiou, E.; Karyotis, V.; and Papavassiliou, S. 2018. Temporal dynamics of information diffusion in Twit-ter: Modeling and experimentation. IEEE Transactions on Computational Social Systems , 5(1): 256–264. Steuber, F.; Schneider, S.; Schneider, J. A.; and Rodosek, G. D. 2023. Real-time anomaly detection and popularity prediction for emerging events on Twitter. In Proceedings of the International Conference on Advances in Social Net-works Analysis and Mining , 300–304. Sun, X.; Zhou, J.; Liu, L.; and Wu, Z. 2023. Castformer: A novel cascade transformer towards predicting information diffusion. Information Sciences , 648: 119531. Vaswani, A.; Shazeer, N.; Parmar, N.; Uszkoreit, J.; Jones, L.; Gomez, A. N.; Kaiser, Ł.; and Polosukhin, I. 2017. At-tention is all you need. In Proceedings of the 31st Inter-national Conference on Neural Information Processing Sys-tems , volume 30, 6000–6010. Wang, W.; Zhang, W.; Wang, J.; Yan, J.; and Zha, H. 2018. Learning sequential correlation for user generated textual content popularity prediction. In Proceedings of the 27th International Joint Conference on Artificial Intelligence ,1625–1631. Wu, B.; Mei, T.; Cheng, W.-H.; and Zhang, Y. 2016. Unfold-ing temporal dynamics: Predicting social media popularity using multi-scale temporal decomposition. In Proceedings of the 30th AAAI Conference on Artificial Intelligence , vol-ume 30, 272–278. Xu, X.; Zhou, F.; Zhang, K.; Liu, S.; and Trajcevski, G. 2021. Casflow: Exploring hierarchical structures and propa-gation uncertainty for cascade prediction. IEEE Transac-tions on Knowledge and Data Engineering , 35(4): 3484– 3499. Yang, J.; and Leskovec, J. 2011. Patterns of temporal varia-tion in online media. In Proceedings of the 4th ACM Inter-national Conference on Web Search and Data Mining , 177– 186. Zhou, F.; Xu, X.; Zhang, K.; Trajcevski, G.; and Zhong, T. 2020. Variational information diffusion for probabilistic cas-cades prediction. In IEEE INFOCOM 2020-IEEE Confer-ence on Computer Communications , 1618–1627.

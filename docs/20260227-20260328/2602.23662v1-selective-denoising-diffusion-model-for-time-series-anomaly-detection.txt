@@ -1,0 +1,1205 @@
+Title: Selective Denoising Diffusion Model for Time Series Anomaly Detection
+
+URL Source: https://arxiv.org/pdf/2602.23662v1
+
+Published Time: Mon, 02 Mar 2026 01:28:31 GMT
+
+Number of Pages: 16
+
+Markdown Content:
+# Selective Denoising Diffusion Model for Time Series Anomaly Detection 
+
+Kohei Obata 1* , Zheng Chen 1, Yasuko Matsubara 1, Lingwei Zhu 2, Yasushi Sakurai 1
+
+> 1
+
+SANKEN, The University of Osaka, Osaka, Japan 
+
+> 2
+
+Great Bay University, Dongguan, China 
+
+{obata88, chenz, yasuko, yasushi }@sanken.osaka-u.ac.jp, zhulingwei@gbu.edu.cn 
+
+Abstract 
+
+Time series anomaly detection (TSAD) has been an impor-tant area of research for decades, with reconstruction-based methods, mostly based on generative models, gaining popu-larity and demonstrating success. Diffusion models have re-cently attracted attention due to their advanced generative ca-pabilities. Existing diffusion-based methods for TSAD rely on a conditional strategy, which reconstructs input instances from white noise with the aid of the conditioner. However, this poses challenges in accurately reconstructing the normal parts, resulting in suboptimal detection performance. In re-sponse, we propose a novel diffusion-based method, named AnomalyFilter, which acts as a selective filter that only de-noises anomaly parts in the instance while retaining normal parts. To build such a filter, we mask Gaussian noise during the training phase and conduct the denoising process without adding noise to the instances. The synergy of the two simple components greatly enhances the performance of naive diffu-sion models. Extensive experiments on five datasets demon-strate that AnomalyFilter achieves notably low reconstruction error on normal parts, providing empirical support for its ef-fectiveness in anomaly detection. AnomalyFilter represents a pioneering approach that focuses on the noise design of dif-fusion models specifically tailored for TSAD. 
+
+Code — https://github.com/KoheiObata/AnomalyFilter 
+
+Introduction 
+
+Time series anomaly detection (TSAD) is an important task for real-world applications, including robot-assisted sys-tems (Park, Hoshi, and Kemp 2018; Park et al. 2017), en-gines (Malhotra et al. 2016), and cyber-physical system maintenance (Tan, Ting, and Liu 2011). The goal of TSAD is to detect unexpected/unusual patterns/values within se-quences that are significantly dissimilar to the majority. Since anomalies are typically rare and labeling them from quantities of data is laborious, TSAD is generally ap-proached as an unsupervised learning problem in which de-tection relies on a normality assumption, namely, most ob-servations are normal. A prevalent approach for TSAD involves reconstruction-based methods. These methods learn to reconstruct nor-mal samples during training and assume that normal sam-
+
+> *
+
+Corresponding author. 
+
+ples are better reconstructed than anomalous samples dur-ing inference. Then, anomalies can be detected by threshold-ing the difference between the input and its reconstruction. Hence, the ideal reconstruction exhibits low reconstruction error on normal parts and high error on anomalous parts. Many methods, such as those based on GAN (Zhou et al. 2019; Bashar and Nayak 2020) and Transformer (Xu et al. 2022; Tuli, Casale, and Jennings 2022), are categorized as encoder-decoder models because they reconstruct samples from embeddings in latent space. However, controlling the balance between concise representation (i.e., regularization) and representation power (i.e., reconstruction) remains chal-lenging (Gong et al. 2019). This issue is unavoidable when reconstructing from latent space. Recently, diffusion models (Ho, Jain, and Abbeel 2020) have emerged as a promising approach due to their ad-vanced generative capabilities (Zhang et al. 2023a). Unlike encoder-decoder models, diffusion models operate directly in data space, gradually reconstructing data from noisy in-puts through an iterative denoising process. Current diffu-sion models for TSAD primarily focus on the creation of an effective conditional strategy of introducing inductive bias into the denoising process (Xiao et al. 2023; Chen et al. 2023). However, reconstructing from white noise proves challenging even with the aid of the conditioner due to the unavailability of original information. Consequently, while it denoises anomalous parts well and the reconstruction of anomalous parts deviates from the original input, it limits the accurate reconstruction of the normal parts. Thus, a natural research question arises: How can we ac-curately reconstruct the normal parts while exploiting the denoising capability of diffusion models? In this work, we propose AnomalyFilter, a new diffusion-based method de-signed for TSAD, which overcomes the limitation of the existing diffusion-based methods regarding reconstruction quality. Specifically, we build a selective filter that denoises only the anomalous parts in the sample while retaining the normal parts. While alternative noise strategies for diffu-sion models have been explored in the image domain (Wy-att et al. 2022; Nachmani, Roman, and Wolf 2021), the im-pact of noise design on time series remains largely underex-plored. Thus, we investigate the utility of masked Gaussian noise , which is the noise generated through a combination of Gaussian noise and Bernoulli mask. During the training, the      
+
+> arXiv:2602.23662v1 [cs.LG] 27 Feb 2026 AnomalyFilter
+> Value
+> 0.8
+> 0.0
+> 0.0
+> 5.0
+> 1e -3
+> Smoothed MSE
+> 8700
+> Timestep 9700
+> IMDiffusion
+> Value
+> 0.8
+> 0.0
+> 0.0
+> 4.0
+> 1e -2
+> Smoothed MSE
+> 8700
+> Timestep 9700
+> Anomaly -Transformer
+> Value
+> 0.8
+> 0.0
+> 0.0
+> 3.0
+> 1e -4
+> Smoothed MSE
+> 8700
+> Timestep 9700
+> BeatGAN
+> Value
+> 0.8
+> 0.0
+> 0.0
+> 1.5
+> 1e -2
+> Smoothed MSE
+> 8700
+> Timestep 9700
+> Reconstruction Input
+> Smoothed MSE
+> Anomaly
+> Misalignment in peak
+> Low MSE in Normal parts
+> High MSE in Anomalous parts
+> 9200
+
+Figure 1: Reconstruction examples of encoder-decoder models (i.e., BeatGAN and Anomaly-Transformer), conditional diffu-sion models (i.e., IMDiffusion), and proposed AnomalyFilter. model learn to predict the noise added to a sample similar to general diffusion models, enabling the model to act as a filter that selectively denoises nonmasked parts (i.e., erases Gaussian noise) while passing through masked parts (i.e., retains input). Furthermore, we observe that adding noise to the sample during the denoising process merely degrades re-construction quality, leading to poor detection accuracy. To address this, we propose noiseless inference , which inputs a scaled noiseless sample into the model and conducts the de-noising process without any noise, aligning seamlessly with the masked Gaussian noise. Neither masked Gaussian noise nor noiseless inference alone contributes significantly to im-proving the performance of the vanilla DDPM. However, the synergy of the two simple components allows the model to act as an effective filter, achieving substantial performance improvements over the vanilla DDPM. 
+
+Results Overview Figure 1 shows the reconstruction re-sults and reconstruction error (i.e., MSE) of four meth-ods. Remind that the y-axis units differ across methods. BeatGAN prioritizes concise expression and struggles at reconstructing peaks, resulting in consistently high MSE. Anomaly-Transformer, on the other hand, has strong repre-sentation power, causing it to accurately reconstruct even the anomalous parts, so-called “identical shortcut” issue (You et al. 2022). The relatively high MSE around 9200 is caused by a slight misalignment in reconstructing the peak. These results suggest that encoder-decoder models face challenges in balancing concise representation and repre-sentation power. IMDiffusion denoises anomalous parts well but fails to reconstruct normal parts, especially peaks, which demonstrates the limitation of conditional diffusion models. As a result, these methods fail to detect the anomalous parts. Our proposed AnomalyFilter shows a significantly higher MSE only in the anomalous parts while performing recon-struction with low MSE for the remaining parts, making anomaly detection easier. 
+
+Contributions In summary, this paper makes the follow-ing contributions: • We investigate the limitations of the existing diffusion-based methods for TSAD from the perspective of noise design and empirically demonstrate their impact on recon-struction quality and anomaly detection performance. • We introduce AnomalyFilter, a novel diffusion-based method designed for TSAD. It achieves ideal reconstruc-tion, i.e., a low reconstruction error for normal parts and relatively high reconstruction error for anomalous parts. • We show the superiority of AnomalyFilter by comparing it with state-of-the-art baselines on five datasets. Notably, by combining two simple components, masked Gaussian noise and noiseless inference, we achieve a 45 .1% im-provement in VUS-PR compared with vanilla DDPM. 
+
+Related Work 
+
+Diffusion Model in Time Series Diffusion models are a type of generative model that gains the ability to gen-erate diverse samples by corrupting training samples with noise and learning to reverse the process (Yang et al. 2023a; Lin et al. 2024). They have attracted increasing attention in the field of AI-generated content, such as text-to-image synthesis (Zhang et al. 2023a) and audio synthesis (Kong et al. 2021; Chen et al. 2021). As regards time series, con-ditional diffusion models have been applied to various time series tasks such as imputation (Wang et al. 2023; Zhang et al. 2023b; Fons et al. 2025) and forecasting (Alcaraz and Strodthoff 2022; Feng et al. 2024; Li et al. 2024; Gao, Cao, and Chen 2025). They utilize diffusion models conditioned on observed values to impute/predict unseen values, achiev-ing good success. For instance, CSDI (Tashiro et al. 2021) is designed for time series imputation, and it employs fea-ture and temporal attention sequentially to learn the noise at each step while introducing conditions in the denoising process. TimeGrad (Rasul et al. 2021) is a conditional dif-fusion model that predicts in an autoregressive manner, with the denoising process guided by the hidden state of a re-current neural network. Additionally, diffusion models have been employed for time series data augmentation (Huang, Chen, and Qiao 2024; Narasimhan et al. 2024; Kollovieh et al. 2024; Li et al. 2025). 
+
+Diffusion Model for Time Series Anomaly Detection 
+
+TSAD differs from the aforementioned tasks in that all val-ues are known. Overly powerful conditioners risk carrying anomaly information, which can lead to the accurate recon-struction of even anomalous parts. Therefore, the current mainstream focus is on a unique conditional strategy (Pin-tilie, Manolache, and Brad 2023; Wang et al. 2024a; Zhong et al. 2025). For example, IMDiffusion (Chen et al. 2023) is inspired by imputation techniques, where part of the sam-ple is masked, and the unmasked parts serve as a condi-tion to impute the masked parts. DiffAD (Xiao et al. 2023) tackles the case where anomalous points concentrate in cer-tain parts, which is called anomaly concentration, and in-corporates a density ratio-based point selection strategy for masking anomalous parts. However, since they rely on par-tially observed input as a condition, which often loses infor-mation needed for reconstructing normal parts, their recon-struction errors are relatively high, resulting in a failure to detect anomalies that differ slightly from normalities (e.g., pattern-wise outliers). 
+
+Denoising Model for Anomaly Detection Denoising models, including diffusion models, perform anomaly de-tection by taking corrupted inputs, learning to denoise them, and generating clean reconstructions. Similar to diffusion models, a denoising autoencoder (DAE) (Vincent et al. 2010) adds noise (typically Gaussian) to the input but differs in that it directly predicts the clean input rather than using a stepwise denoising process. The selection of noise is critical in denoising models. Recent studies have explored determin-istic noise (Bansal et al. 2024; Daras et al. 2022), and non-Gaussian noise (Nachmani, Roman, and Wolf 2021) for dif-fusion models. In image anomaly detection, (Kascenas et al. 2023) shows that DAE trained with coarse noise outper-forms diffusion models at Brain MRI, and AnoDDPM (Wy-att et al. 2022) demonstrates the effectiveness of Simplex noise. Despite these advancements in the image domain, where noise has been extensively studied and often operates on 2D data, noise tailored for time series remains largely un-explored. This highlights a significant gap in understanding the impact of noise design in TSAD applications. 
+
+Preliminaries 
+
+Problem Definition 
+
+In this paper, we focus on unsupervised anomaly detec-tion for time series. We adopt a local contextual window to model their temporal dependency, which is a common prac-tice with most deep TSAD methods. Consider an instance 
+
+X = {x1, x2, . . . , xL} ∈ RK×L to be a multivariate time series with K features and L timesteps. The objective of TSAD is to identify anomalous timesteps in a test set Dtest 
+
+by training the model in an unlabeled training set Dtrain as-sumed to contain mostly normal instances. Thus, the model aims to assign an anomaly score to each timestep, where higher scores are more anomalous. In a reconstruction-based approach, the model outputs a reconstruction ˆX of the given instance X, and the anomaly score is calculated by compar-ing them by a score function A(xl, ˆxl) : RK → R (for simplicity, we consider the MSE score). To solve TSAD ef-ficiently, we need a powerful method that achieves ideal re-construction, i.e., has a low reconstruction error on the nor-mal parts and a high reconstruction error on the anomalous parts of the instance. 
+
+Denoising Diffusion Probablistic Model 
+
+Our AnomalyFilter is based on the denoising diffusion prob-abilistic model (DDPM) (Ho, Jain, and Abbeel 2020), a well-known diffusion model. DDPM consists of a forward diffusion process and a reverse denoising process. The for-ward diffusion process q(Xt |Xt−1) gradually corrupts data Algorithm 1: Naive Training  
+
+> 1:
+
+Input: Training set Dtrain , Forward diffusion step T ; 
+
+> 2:
+
+repeat  
+
+> 3:
+
+Sample data X0 ∼ D train ; 
+
+> 4:
+
+Sample diffusion step t ∼ U nif orm ({1, . . . , T }); 
+
+> 5:
+
+Sample noise ϵt ∼ N (0, I); 
+
+> 6:
+
+Corrupt Xt = ¯ αtX0 + √1 − ¯αtϵt; 
+
+> 7:
+
+Calculate L = ∥ϵt − ϵθ (Xt, t )∥; 
+
+> 8:
+
+until Converged; from some target distribution q(X0) into a normal distribu-tion, where Xt denotes corrupted data indexed by a diffu-sion step t. Thus, in practice, X0 is X. Then, a learned re-verse process pθ (Xt−1 | Xt) generates data by turning noise into data from q(X0).
+
+Forward Process This process can be formally described as Markovian: 
+
+q(Xt | Xt−1) = N (Xt; p1 − βtXt−1, β tI), (1) for t = {1, . . . , T }, where T is a forward diffusion step. The variance schedule βt ∈ (0 , 1) is a hyperparameter defined by a monotonically increasing sequence β1 < β 2 < · · · < β T
+
+such that the data become sequentially corrupted. To sample from an arbitrary t, namely without having to find intermediate steps Xt−1, . . . , X1, the variance sched-ule is simplified to αt = 1 − βt and ¯αt = QTi=1 αi, as follows: 
+
+q(Xt | X0) = N (Xt; √¯αtX0, (1 − ¯αt)I), (2) 
+
+Xt = ¯ αtX0 + √1 − ¯αtϵt, (3) where ϵt ∼ N (0, I) is the same size as X0.
+
+Reverse Process The generative model, parameterized by 
+
+θ, is a learned reverse process to denoise XT and reconstruct 
+
+X0. This is accomplished by iteratively computing the fol-lowing Gaussian transitions: 
+
+pθ (Xt−1 | Xt) = N (Xt−1; μθ (Xt, t ), ˜βtI), (4) for t = {T, . . . , 1}, where ˜βt = 1− ¯αt−1  
+
+> 1−¯αt
+
+. μθ can, for ex-ample, be implemented with U-net-like architectures (Ron-neberger, Fischer, and Brox 2015), and it can be learned by setting 
+
+μθ (Xt, t ) = 1
+
+αt
+
+ Xt − βt
+
+√1 − ¯αt
+
+ϵθ (Xt, t ). (5) 
+
+Objective Function (Ho, Jain, and Abbeel 2020) shows that optimizing the following simplified training objective leads to better generation quality: 
+
+L = EX0∼q(X0),ϵ t∼N (0,I),t [∥ϵt − ϵθ (Xt, t )∥], (6) where ϵt is the noise used to obtain Xt from X0 in Equa-tion (3) at step t, and ∥·∥ denotes the Frobenius norm. 
+
+Anomaly Detection with Diffusion Model 
+
+Here, we focus on general anomaly detection tasks that are not restricted to time series. The diffusion model is a reconstruction-based approach. Thus, hereafter, we describe the way in which the diffusion model reconstructs ˆX.Algorithm 2: Naive Inference  
+
+> 1:
+
+Input: Data X0 ∈ Dtest , Reverse diffusion step λ,Trained denoising function ϵθ ; 
+
+> 2:
+
+Output: Reconstruction ˆX0 (i.e., ˆX);  
+
+> 3:
+
+Corrupt ˆXλ = ¯ αλX0 + √1 − ¯αλϵλ; 
+
+> 4:
+
+for t = λ : 1 do  
+
+> 5:
+
+Sample ϵt ∼ N (0, I) if t > 1 else ϵt = 0 ; 
+
+> 6:
+
+Denoise ˆXt−1 = 1√αt
+
+  ˆXt − βt√1− ¯αt
+
+ϵθ ( ˆXt, t )+ ˜βtϵt; 
+
+> 7:
+
+end for  
+
+> 8:
+
+return ˆX0;
+
+Training Phase During the training phase, the model ϵθ
+
+learns to predict the noise ϵt added to X0 ∈ D train given 
+
+Xt and t. The training procedure is shown as Algorithm 1. In each iteration of the training (Line 3-7), a diffusion step 
+
+t is randomly sampled, at which point the diffusion process Equation (3) is applied. Unlike the other tasks, in anomaly detection, XT does not need to be white noise. The loss Equation (6) is calculated afterward. 
+
+Inference Phase In the inference phase, the model ϵθ gen-erates a reconstruction ˆX given the input instance X0 ∈Dtest . The inference procedure is shown in Algorithm 2. It first corrupts X0 into ˆXλ (Line 3): 
+
+ˆXλ = ¯ αλX0 + √1 − ¯αλϵλ, (7) where λ is a reverse diffusion step that can be shorter than 
+
+T . In general, relatively weak noise is added to form ˆXλ so that it retains some of the input features (Wyatt et al. 2022; Pintilie, Manolache, and Brad 2023). This can be seen as a conditional DDPM on the input instance. Then, in each step (Line 6), ˆXλ is gradually denoised to reconstruct ˆX.
+
+ˆXt−1 = 1
+
+√αt
+
+  ˆXt − βt
+
+√1 − ¯αt
+
+ϵθ ( ˆXt, t ) + ˜βtϵt. (8) 
+
+Proposed AnomalyFilter 
+
+In this section, we propose AnomalyFilter, a novel diffusion-based method designed for TSAD, which works as a selec-tive filter that removes only the anomalous parts while re-taining the normal parts. We begin by providing an overview of AnomalyFilter and its architecture. Subsequently, we look at how to achieve such a filter. 
+
+Overview An overview of the AnomalyFilter framework is in Figure 2 (left). It consists of masked Gaussian noise training and noiseless inference . Masked Gaussian noise makes the model learn to allow normal parts to pass through selectively by masking the Gaussian noise. To address the reconstruction quality issue, we propose noiseless inference, which eliminates the addition of noise during the inference. This aligns with the learned masked Gaussian noise and achieves the accurate reconstruction of normal parts. 
+
+Architecture The architecture of AnomalyFilter is shown in Figure 2 (right) and is based on CSDI (Tashiro et al. 2021), which is a modification of DiffWave (Kong et al. Algorithm 3: Masked Gaussian Noise Training  
+
+> 1:
+
+Input: Training set Dtrain , Forward diffusion step T ,Mask ratio p; 
+
+> 2:
+
+repeat  
+
+> 3:
+
+Sample data X0 ∼ D train ; 
+
+> 4:
+
+Sample diffusion step t ∼ U nif orm ({1, . . . , T }); 
+
+> 5:
+
+Sample noise ϵt = B ◦ ζ ,where ζ ∼ N (0, I), Bk,l ∼ Bernoulli (p); 
+
+> 6:
+
+Corrupt Xt = ¯ αtX0 + √1 − ¯αtϵt; 
+
+> 7:
+
+Calculate L = ∥ϵt − ϵθ (Xt, t )∥; 
+
+> 8:
+
+until Converged; 2021) employing transformer layers. It is composed of mul-tiple residual layers with a latent dimension C. Diffusion step t is embedded as a 128-dimensional encoding vector with positional encoding (Vaswani et al. 2017) and input into the model together with data Xt. To incorporate tempo-ral and inter-variable dependencies beyond L timesteps and 
+
+K features, we employ a temporal and feature transformer layer. The positional encoding of time and feature is added afterward. As is typical for diffusion models, the output di-mensions match the input dimensions. 
+
+Masked Gaussian Noise 
+
+Our objective is to build a filter with two functionalities: (1) removing the anomalous parts and (2) allowing the nor-mal parts to pass through. We design masked Gaussian noise for this purpose. Specifically, we represent anomalous parts with Gaussian noise, as in typical DDPM. To enable the model to allow normal parts to pass through, we randomly mask the noise. The stochastic selection of the noise to mask enables the filter to selectively denoise anomalous parts. For-mally, our masked Gaussian noise ϵt is defined as follows: 
+
+ϵt = B ◦ ζ, (9) where ◦ is element-wise multiplication, ζ ∼ N (0, I) is Gaussian noise, and B is a mask with elements drawn from a Bernoulli distribution, Bk,l ∼ Bernoulli (p). The hyper-parameter p controls the mask ratio; the larger the value, the larger the ratio of Gaussian noise. 
+
+Masked Gaussian Noise Training 
+
+The simplified DDPM loss function Equation (6) can be in-terpreted as training the model to predict the noise added to the data. Similarly, we train our model ϵθ to predict the masked Gaussian noise ϵt.
+
+Algorithm The training procedure for AnomalyFilter is summarized in Algorithm 3, where the differences from the conventional algorithm (Algorithm 1) are highlighted in cyan. We follow the conventional training procedure for the diffusion model except for the noise ϵt (Line 5). Specifically, given data X0, we sample noisy data Xt and train ϵθ by minimizing the loss function in Equation (6). 
+
+Objective Function Although we use a loss function sim-ilar to that of DDPM, with the introduction of masked Gaus-Normal Instance   
+
+> Input to the next layer
+> Temporal Transformer layer
+> Diffusion step embedding
+> Output 𝜖 !(𝑋 ",𝑡 )
+> Skip connections
+
++
+
++ 
+
+> Input 𝑋 "
+> •
+
++
+
++                                     
+
+> (𝐾 ,𝐿 ,1)
+> (𝐾 ,𝐿 ,𝐶 )
+> (𝐾 ,𝐿 ,128 +16 )
+> (1,1,512 )
+> FC + ↔
+> Conv1x1 + ReLU
+> (𝐾 ,𝐿 ,1)
+> (𝐾 ,𝐿 ,𝐶 )
+> Conv1x1
+> (1,1,128 )
+> FC + SiLU
+> Tanh Sigmoid
+> + Concat ↔
+> Conv1x1 Conv1x1
+> Feature Transformer layer
+> Conv1x1 Conv1x1
+> Side info. (1,𝐿 ,128 )
+> (𝐾 ,1,16 )
+> Time embedding
+> Feature embedding
+> (𝐾 ,𝐿 ,𝐶 )
+> (𝐾 ,𝐿 ,𝐶 )
+> (𝐾 ,𝐿 ,𝐶 )
+> (𝐾 ,𝐿 ,2𝐶 )(𝐾 ,𝐿 ,2𝐶 )
+> (𝐾 ,𝐿 ,𝐶 )
+> (𝐾 ,𝐿 ,𝐶 )
+
++    
+
+> ×𝛼 /!
+> ×1−𝛼 /!
+> •
+> Masked Gaussian noise
+> 𝜖 "
+> AnomalyFilter
+> 𝜖 !
+> Diffusion step t
+
+𝝐 𝜽 
+
+Masked Gaussian Noise Training 
+
+AnomalyFilter 
+
+Architecture Sample Noise  
+
+> NResidual Blocks
+
++ •: Element -wise add. : Element -wise mult. : Expand. ↔     
+
+> Predicted noise
+> 𝜖 !(𝑋 ",𝑡 )
+> …
+> Reverse diffusion step λ
+> …
+> 𝑋 *#=𝛼 -$𝑋 %
+> Scaled noiseless input Reconstruction
+> 𝑋 *
+> AnomalyFilter
+> 𝜖 !
+> AnomalyFilter
+> 𝜖 !
+
+Noiseless Inference               
+
+> Anomaly Instance
+> Normal Instance
+> Anomaly
+> 𝑋 *"
+> Normal Instance
+> Anomaly Instance
+> 𝑋 "
+> Noisy input
+> Bernoulli mask
+> 𝐵 &,(~𝐵𝑒𝑟𝑛𝑜𝑢𝑙𝑙𝑖 (𝑝 )
+> Anomaly Instance
+> (𝑋 %~𝒟 ")*" )
+> Input
+> 𝑋 %~𝒟 "+,-.
+> Gaussian noise
+> 𝜁 ~𝑁 0,𝐼
+> Conv1x1 + ReLU
+> Intermediate
+> Diffusion step 𝑡
+> Diffusion step 𝑡
+
+Figure 2: An overview of AnomalyFilter framework. The model is trained to predict masked Gaussian noise, with the aim of learning to denoise the anomaly parts (i.e., nonmasked parts) and retaining the normal parts (i.e., masked parts). Noiseless inference operates without noise at the beginning and during the denoising steps. Thus, when given a normal instance, it outputs an instance with no change. When given an anomaly instance, only anomalous parts are removed. AnomalyFilter captures temporal and inter-variable dependencies by temporal and feature transformer layers and predicts noise added to the input. Algorithm 4: Noiseless Inference 
+
+1: Input: Data X0 ∈ Dtest , Reverse diffusion step λ,Trained denoising function ϵθ ;
+
+2: Output: Reconstruction ˆX0 (i.e., ˆX); 
+
+3: Scale ˆXλ = ¯ αλX0 ;
+
+4: for t = λ : 1 do 
+
+5: Denoise ˆXt−1 = 1√αt
+
+  ˆXt − βt√1− ¯αt
+
+ϵθ ( ˆXt, t );
+
+6: end for 
+
+7: return ˆX0;sian noise, our loss function can be divided into two parts. 
+
+L = E[∥ϵt − ϵθ (Xt, t )∥] (10) 
+
+= E[B ◦ ∥ ζ − ϵθ (Xt, t )∥]
+
+| {z }
+
+> Noisy part
+
++ E[( 1 − B) ◦ ∥ 0 − ϵθ (Xt, t )∥]
+
+| {z }
+
+> Noiseless part
+
+= LN onM ask + LM ask .
+
+The derivation is provided in the Appendix. Thus, this loss function enables the model to learn a filter with two func-tionalities: (1) the removal of anomalous parts ( LN onM ask )and (2) the retention of normal parts ( LM ask ). 
+
+Noiseless Inference 
+
+To achieve low reconstruction errors for normal parts, we in-troduce noiseless inference, which inputs the data as they are and does not add noise at each denoising step. Algorithm 4 is our proposed noiseless inference. Instead of inputting cor-rupted data ˆXλ = ¯ αλX0 + √1 − ¯αλϵλ into the model, we input the following scaled noiseless data (Line 3): 
+
+ˆXλ = ¯ αλX0. (11) Then, at each denoising step, Xλ is gradually denoised to reconstruct ˆX. This step is conducted without any addition of noise (Line 5): 
+
+ˆXt−1 = 1
+
+√αt
+
+  ˆXt − βt
+
+√1 − ¯αt
+
+ϵθ ( ˆXt, t ). (12) Thanks to the masked Gaussian noise, the model func-tions as a filter. Thus, noiseless inference presumes that the model outputs data with no change when given normal data and outputs data with the anomalous parts removed when given anomaly data. The key advantage of noiseless infer-ence over naive inference (Algorithm 2) is that it prevents the loss of important features of the original input, which occurs by adding noise. This allows the input to act as a condition for reconstruction, leading to an accurate recon-struction of the normal parts. 
+
+Experiments 
+
+Experiment Setup 
+
+Datasets We use five datasets in our paper: (1) UCR anomaly archive (UCR) (Wu and Keogh 2021), (2) AIOps, (3, 4) Yahoo real and Yahoo bench, and (5) Server Machine Dataset (SMD) (Su et al. 2019). We trained and tested sepa-rately for each of the subdatasets, and the average results of five runs are presented. 
+
+Baselines We compare our method with the following 13 baselines in four categories, including classical methods and state-of-the-art reconstruction-based methods, as fol-lows: (1) Classical machine-learning methods, IsolationFor-est (Liu, Ting, and Zhou 2008) and OCSVM (Sch¨ olkopf et al. 1999), (2) GAN, VAE, and AE-based methods, BeatGAN (Zhou et al. 2019), LSTM-VAE (Park, Hoshi, and Kemp 2018), and USAD (Audibert et al. 2020), (3) Transformer-based methods, Anomaly-Transformer (Xu et al. 2022), TranAD (Tuli, Casale, and Jennings 2022), and DADA (Shentu et al. 2025), and (4) Denoising-based meth-ods, DiffAD (Xiao et al. 2023), IMDiffusion (Chen et al. UCR AIOps Yahoo real Yahoo bench SMD V-R V-P RF Acc. V-R V-P RF V-R V-P RF V-R V-P RF V-R V-P RF IsolationForest 0.641 0.106 0.041 0.236 0.798 0.169 0.061 0.699 0.358 0.000 0.611 0.295 0.000 0.735 0.245 0.093 OCSVM 0.645 0.167 0.092 0.300 0.848 0.336 0.152 0.715 0.443 0.000 0.608 0.289 0.000 0.698 0.239 0.156 BeatGAN 0.746 0.205 0.137 0.351 0.889 0.487 0.239 0.751 0.503 0.060 0.720 0.373 0.004 0.819 0.356 0.232 LSTM-VAE 0.739 0.141 0.113 0.217 0.864 0.359 0.185 0.899 0.612 0.076 0.709 0.329 0.003 0.711 0.223 0.190 USAD 0.674 0.156 0.129 0.272 0.889 0.445 0.227 0.830 0.571 0.075 0.612 0.305 0.000 0.508 0.145 0.088 Anomaly-Transformer 0.704 0.132 0.103 0.202 0.881 0.347 0.157 0.872 0.557 0.051 0.710 0.291 0.005 0.861 0.420 0.252 TranAD 0.579 0.072 0.059 0.157 0.762 0.230 0.160 0.774 0.496 0.061 0.589 0.270 0.000 0.636 0.194 0.144 DADA 0.585 0.028 0.015 0.036 0.839 0.255 0.161 0.860 0.548 0.095 0.745 0.309 0.007 0.875 0.419 0.262                                                                 
+
+> DiffAD 0.605 0.063 0.039 0.095 0.859 0.395 0.191 0.844 0.520 0.077 0.768 0.346 0.004 0.606 0.169 0.157 IMDiffusion 0.630 0.047 0.028 0.060 0.866 0.358 0.126 0.860 0.552 0.062 0.725 0.300 0.002 0.850 0.341 0.196 D3R 0.580 0.071 0.060 0.157 0.839 0.396 0.213 0.839 0.560 0.099 0.668 0.315 0.000 0.828 0.330 0.235
+> AnomalyFilter 0.726 0.238 0.204 0.399 0.932 0.597 0.230 0.900 0.625 0.109 0.793 0.416 0.011 0.891 0.477 0.273
+
+Table 1: Anomaly detection performance. V-R and V-P are VUS-ROC and VUS-PR (Paparrizos et al. 2022). RF is Range F-score (Tatbul et al. 2018). Best results are in bold , and second-best results are underlined (higher is better). UCR AIOps Yahoo real Yahoo bench SMD V-R V-P RF Acc V-R V-P RF V-R V-P RF V-R V-P RF V-R V-P RF DAE 0.760 0.252 0.190 0.386 0.900 0.501 0.266 0.888 0.614 0.083 0.694 0.310 0.003 0.866 0.435 0.238 DAE w/ M 0.685 0.149 0.125 0.266 0.890 0.495 0.243 0.894 0.606 0.080 0.688 0.286 0.001 0.878 0.452 0.257 DAE w/ N 0.758 0.234 0.173 0.382 0.884 0.448 0.257 0.887 0.593 0.073 0.687 0.284 0.001 0.875 0.456 0.255 DAE w/ M&N 0.693 0.172 0.144 0.291 0.915 0.519 0.242 0.905 0.624 0.081 0.696 0.316 0.004 0.876 0.439 0.265 DDPM 0.660 0.071 0.054 0.110 0.761 0.183 0.100 0.865 0.550 0.064 0.714 0.280 0.001 0.786 0.337 0.267                                                 
+
+> DDPM w/ M 0.660 0.062 0.046 0.097 0.713 0.162 0.079 0.843 0.508 0.074 0.717 0.268 0.000 0.751 0.286 0.228 DDPM w/ N 0.709 0.165 0.127 0.272 0.827 0.323 0.204 0.896 0.613 0.083 0.727 0.313 0.000 0.812 0.334 0.233
+> AnomalyFilter
+> (DDPM w/ M&N) 0.726 0.238 0.204 0.399 0.932 0.597 0.230 0.900 0.625 0.109 0.793 0.416 0.011 0.891 0.477 0.273
+
+Table 2: Ablation study with different components. M and N refer to Bernoulli mask and Noiseless inference, respectively. 2023), D3R (Wang et al. 2024b), DAE (Vincent et al. 2010) and DDPM (Ho, Jain, and Abbeel 2020). We position DAE and DDPM as part of our ablation study, since they share the same architecture as AnomalyFilter. 
+
+Evaluation Metrics It is claimed that the traditional met-ric for TSAD, namely the F1 score calculated with a protocol named point adjustment (PA), overestimates the model per-formance (Kim et al. 2022; Sarfraz et al. 2024). Thus, we adopt various threshold-independent measures along with conventional metrics (AUC-ROC and F1 score) for a com-prehensive comparison. Specifically, we use the follow-ing five range-based measures, which are designed to pro-vide a robust and suitable assessment for TSAD. Range F-score (Tatbul et al. 2018), Range-AUC-ROC, Range-AUC-PR, volume under the surface (VUS)-ROC, and VUS-PR (Paparrizos et al. 2022). In particular, VUS-PR is iden-tified as providing the most reliable and accurate measure-ment (Liu and Paparrizos 2024). We set the buffer region for Range-AUC-ROC/PR at half of the window size. For UCR, we also employ accuracy as a metric, where we consider that the model detects the anomaly if the highest anomaly score is located inside the given anomaly range, since it only has a single anomaly in a sequence. 
+
+Anomaly Detection Performance 
+
+Table 1 presents the performance of AnomalyFilter and the baseline methods for five datasets. While the second-best method varies depending on the dataset and metric, the pro-posed AnomalyFilter achieves the highest detection accu-racy across most of the datasets, demonstrating an average improvement of 4.1% in VOC-ROC, 14 .4% in VOC-PR, and 29 .0% in Range F-score compared with the second-best method. Overall, reconstruction-based methods exceed classic machine-learning methods. BeatGAN struggles with Yahoo, which has limited training data, and SMD, which is multivariate data. In contrast, Anomaly-Transformer per-forms well on SMD, but tends to overfit on simple patterns, as shown in Figure 1, and underperforms on UCR. These re-sults highlight the difficulty of appropriately balancing the information bottleneck across diverse datasets. DADA is a zero-shot anomaly detection method that identifies relative anomalies within a window. However, when most values in a window are anomalous (as in UCR), it fails to detect them accurately, resulting in lower performance. Diffusion-based methods, DiffAD and IMDiffusion, face challenges in UCR, which contains many pattern-wise anomalies, reflecting lim-itations in the reconstruction quality. These results demon-strate the effectiveness of AnomalyFilter. 
+
+Ablation Studies 
+
+We assess the contribution of each component. Qualitative analysis, hyperparameter studies, and case studies can be found in the Appendix. 
+
+Effect of key components Table 2 shows quantitative re-sults across datasets w/o each component with DAE and DDPM as a base method. We can see that the noiseless inference enhances the performance of the vanilla DDPM. While the Bernoulli mask alone does not independently im-prove the accuracy of DDPM, its combination with noise-less, namely AnomalyFilter, leads to substantial perfor-mance gains. This synergy underscores the importance of jointly employing these two simple components in improv-UCR AIOps Yahoo real Yahoo bench SMD                                                                                                                                                                                                                                 
+
+> M SE aM SE nM SE a
+> M SE nM SE aM SE nM SE a
+> M SE nM SE aM SE nM SE a
+> M SE nM SE aM SE nM SE a
+> M SE nM SE aM SE nM SE a
+> M SE n
+> BeatGAN 0.0153 0.0030 5.1 0.0251 0.0005 50.6 9.6410 0.3539 27.2 0.0660 0.0296 2.2 0.0257 0.0053 4.8 LSTM-VAE 0.0171 0.0030 5.7 0.0361 0.0014 25.5 10.6639 0.3497 30.5 0.1656 0.1131 1.5 0.0387 0.0130 3.0 USAD 0.0394 0.0152 2.6 0.0715 0.0068 10.5 12 .6297 0.7915 16.0 0.1593 0.1265 1.3 0.0036 0.0015 2.3 Anomaly-Transformer 0.0039 0.0004 10 .30.0091 0.0002 50.7 9.6449 0.2966 32.5 0.0266 0.0133 2.0 0.0239 0.0042 5.6 TranAD 0.0447 0.0328 1.4 0.0892 0.0187 4.8 12 .6501 0.8379 15.1 0.2679 0.2464 1.1 0.0183 0.0032 5.8 DADA 0.0090 0.0050 1.8 0.0072 0.0003 23.0 2.2592 0.0204 110 .80.0195 0.0059 3.30.0029 0.0006 4.8 DiffAD 0.0373 0.0244 1.5 0.0436 0.0051 8.5 10.4784 0.2780 37.70 0.0844 0.0362 2.3 0.0490 0.0314 1.6 IMDiffusion 0.0532 0.0273 1.9 0.0501 0.0110 4.6 10.0372 0.2937 34.2 0.1038 0.0528 2.0 0.0150 0.0031 4.8 D3R 0.0540 0.0440 1.2 0.0476 0.0094 5.0 10.0916 0.1463 69 .00.0636 0.0252 2.5 0.0142 0.0028 5.0
+> AnomalyFilter 0.0108 0.0008 13 .90.0344 0.0001 257 .30.3551 0.0075 47.2 0.0276 0.0070 4.00.0093 0.0010 9.5
+> DAE 0.0103 0.0016 6.7 0.0374 0.0006 66 .710.3125 0.3423 30.1 0.0642 0.0382 1.7 0.0037 0.0006 6.0
+> DDPM 0.0357 0.0170 2.1 0.0415 0.0053 7.8 0.5271 0.0716 7.4 0.0917 0.0472 1.9 0.0155 0.0053 3.0 DDPM w/ N 0.0261 0.0080 3.3 0.0392 0.0026 15.1 0.4989 0.0401 12.4 0.0757 0.0311 2.4 0.0139 0.0046 3.0 DDPM w/ M 0.0339 0.0201 1.7 0.0472 0.0111 4.3 0.4564 0.0690 6.6 0.0837 0.0511 1.6 0.0250 0.0169 1.5
+
+Table 3: Reconstruction quality performance. M SE a and M SE n are the MSE values of anomalous and normal parts during the inference. Not necessary, but M SE a should be higher, and M SE n should be lower. The higher the ratio M SE a 
+
+> M SE n
+
+is, the easier it is to detect anomalies. Loss weight: c     
+
+> Na ive Inference
+> Noiseless Inference
+> VUS ROC
+> VUS PR Noiseless Inference
+> Naive Inference
+> VUS ROC
+> Noise strength: e
+> 𝑝 =1.0
+> 𝑝 =0.5
+> VUS PR
+
+(a) Loss ratio c (b) Noise strength e
+
+Figure 3: Effect of loss weights and noise strength. ing anomaly detection capabilities. The failure of the mask to work effectively on its own is because, in naive inference, noise is added at each denoising step, resulting in a mis-match with what the model has learned. Interestingly, when DAE is used as the base method, neither the Bernoulli mask nor noiseless inference contributes to performance improve-ment. This is probably because the direct prediction frame-work of DAE makes it challenging to learn a complex filter capable of both retaining and denoising, while DDPM has demonstrated remarkable capabilities in learning the filter. 
+
+Effect of loss weights We investigate the effect of loss weights. During our experiments, we give the same impor-tance to each regularizer, i.e., the coefficients c in L =
+
+cLN onM ask + (1 − c)LM ask are set at 0.5. Here, we vary 
+
+c from {0.1, . . . 1.0}, using p = 0.5 for training, where 
+
+c = 1 .0 focused solely on denoising and c = 0 .0 focused solely on retention. The results, shown in Figure 3 (a), in-dicate that c = 0 .5 achieved the best performance, align-ing with p = 0 .5 and suggesting that explicit weighting is unnecessary. However, under naive inference, c = 1 .0 per-formed best, demonstrating that denoising is critical when inference includes noise, whereas both processes are signif-icant when inference is noise-free. 
+
+Effect of noise strength during inference We evaluate the effect of noiseless inference by modifying the noise added during naive inference (Algorithm 2, Lines 3 and 6) from ϵt to eϵ t and gradually reducing e from {1.0, . . . , 0.0},even achieving noiseless inference. This is equivalent to sampling Gaussian noise ζ from N (0, e 2I). Figure 3 (b) shows the results for models trained with masked Gaussian noise ( p = 0 .5) and Gaussian noise ( p = 1 .0). In both cases, the performance improved as e decreased, with the best results achieved at e = 0 .0 (i.e., noiseless inference), indicating that noise is unnecessary for inference in TSAD. The model trained on Gaussian noise outperformed masked Gaussian noise at around e ≥ 0.4, suggesting that mod-els trained with Gaussian noise are more suitable when in-ference includes higher levels of noise, aligning with their training paradigm. 
+
+Reconstruction Quality 
+
+We show the MSE of anomalous and normal parts and their ratio in Table 3. Compared to baselines and ablation settings, AnomalyFilter achieves a significantly lower M SE n, result-ing in a larger ratio M SE a 
+
+> M SE n
+
+. This demonstrates that Anoma-lyFilter is well-suited for effective anomaly detection. Al-though Anomaly-Transformer achieves a very small M SE n
+
+on UCR and AIOps, its M SE a is similarly small, resulting in a mediocre ratio. As illustrated in Figure 1, this causes false positives by even slight misalignments in normal re-gions. DADA, a zero-shot anomaly detector, shows favor-able ratios on datasets like Yahoo, where the number of training samples is limited and point anomalies are domi-nant, but struggles in UCR, which contains longer anoma-lous parts than the window size. Diffusion-based methods such as DiffAD, IMDiffusion, and DDPM exhibit high val-ues in both M SE a and M SE n, indicating the limitation of diffusion models. DDPM w/ Mask yields results similar to the vanilla DDPM, suggesting that the Bernoulli mask by it-self is not sufficient for improving detection ability. In con-trast, DDPM w/ Noiseless setting shows a notable reduc-tion in M SE n, leading to improved ratio. These findings are consistent with the anomaly detection performance re-ported in Table 2 and further support the effectiveness of the proposed approach, particularly the combined contribution of the Bernoulli mask and noiseless inference. Conclusion 
+
+We proposed a novel diffusion-based method called Anoma-lyFilter for unsupervised TSAD. To resolve the low recon-struction quality of existing reconstruction-based methods, we built a selective filter that accurately denoises anomalous parts while retaining normal parts. Specifically, we investi-gated the utility of noise in diffusion models and devised masked Gaussian noise and noiseless inference. Extensive experiments on five datasets demonstrated the effectiveness of the method. Ablation studies confirmed the contribution of our design to anomaly detection in a quantitative and qualitative manner and demonstrated that the synergy of the proposed two simple components strongly enhances vanilla DDPM. Overall, we believe that our work paves the way for a new diffusion-based approach towards TSAD. 
+
+Acknowledgments 
+
+The authors would like to thank the anonymous referees for their valuable comments and helpful suggestions. This work was supported by JST CREST JPMJCR23M3, JST START JPMJST2553, JST CREST JPMJCR20C6, JST K Program JPMJKP25Y6, JST COI-NEXT JPMJPF2009, JST COI-NEXT JPMJPF2115, the Future Social Value Co-Creation Project - Osaka University. 
+
+References 
+
+Alcaraz, J. L.; and Strodthoff, N. 2022. Diffusion-based Time Series Imputation and Forecasting with Structured State Space Models. TMLR .Audibert, J.; Michiardi, P.; Guyard, F.; Marti, S.; and Zulu-aga, M. A. 2020. Usad: Unsupervised anomaly detection on multivariate time series. In KDD , 3395–3404. Bansal, A.; Borgnia, E.; Chu, H.-M.; Li, J.; Kazemi, H.; Huang, F.; Goldblum, M.; Geiping, J.; and Goldstein, T. 2024. Cold diffusion: Inverting arbitrary image transforms without noise. NeurIPS , 36. Bashar, M. A.; and Nayak, R. 2020. TAnoGAN: Time se-ries anomaly detection with generative adversarial networks. In 2020 IEEE Symposium Series on Computational Intelli-gence (SSCI) , 1778–1785. IEEE. Challu, C. I.; Jiang, P.; Wu, Y. N.; and Callot, L. 2022. Deep generative model with hierarchical latent factors for time se-ries anomaly detection. In AISTATS , 1643–1654. PMLR. Chen, N.; Zhang, Y.; Zen, H.; Weiss, R. J.; Norouzi, M.; and Chan, W. 2021. WaveGrad: Estimating Gradients for Waveform Generation. In ICLR .Chen, Y.; Zhang, C.; Ma, M.; Liu, Y.; Ding, R.; Li, B.; He, S.; Rajmohan, S.; Lin, Q.; and Zhang, D. 2023. ImD-iffusion: Imputed Diffusion Models for Multivariate Time Series Anomaly Detection. Proc. VLDB Endow. , 17(3): 359–372. Daras, G.; Delbracio, M.; Talebi, H.; Dimakis, A. G.; and Milanfar, P. 2022. Soft diffusion: Score matching for general corruptions. arXiv preprint arXiv:2209.05442 .Feng, S.; Miao, C.; Zhang, Z.; and Zhao, P. 2024. Latent dif-fusion transformer for probabilistic time series forecasting. In AAAI , 11979–11987. Fons, E.; Sztrajman, A.; El-Laham, Y.; Ferrer, L.; Vyetrenko, S.; and Veloso, M. 2025. LSCD: Lomb-Scargle Conditioned Diffusion for Time series Imputation. ICML .Gao, J.; Cao, Q.; and Chen, Y. 2025. Auto-regressive mov-ing diffusion models for time series forecasting. In AAAI ,16727–16735. Gong, D.; Liu, L.; Le, V.; Saha, B.; Mansour, M. R.; Venkatesh, S.; and Hengel, A. v. d. 2019. Memorizing nor-mality to detect anomaly: Memory-augmented deep autoen-coder for unsupervised anomaly detection. In ICCV , 1705– 1714. Goswami, M.; Challu, C. I.; Callot, L.; Minorics, L.; and Kan, A. 2023. Unsupervised Model Selection for Time Se-ries Anomaly Detection. In ICLR .Ho, J.; Jain, A.; and Abbeel, P. 2020. Denoising diffusion probabilistic models. NeurIPS , 33: 6840–6851. Huang, H.; Chen, M.; and Qiao, X. 2024. Generative Learn-ing for Financial Time Series with Irregular and Scale-Invariant Patterns. In ICLR .Ismail Fawaz, H.; Forestier, G.; Weber, J.; Idoumghar, L.; and Muller, P.-A. 2019. Deep learning for time series clas-sification: a review. Data mining and knowledge discovery ,33(4): 917–963. Kascenas, A.; Sanchez, P.; Schrempf, P.; Wang, C.; Clack-ett, W.; Mikhael, S. S.; Voisey, J. P.; Goatman, K.; Weir, A.; Pugeault, N.; et al. 2023. The role of noise in denoising models for anomaly detection in medical images. Medical Image Analysis , 90: 102963. Kim, S.; Choi, K.; Choi, H.-S.; Lee, B.; and Yoon, S. 2022. Towards a rigorous evaluation of time-series anomaly detec-tion. In AAAI , volume 36, 7194–7201. Kollovieh, M.; Ansari, A. F.; Bohlke-Schneider, M.; Zschiegner, J.; Wang, H.; and Wang, Y. B. 2024. Predict, refine, synthesize: Self-guiding diffusion models for proba-bilistic time series forecasting. NeurIPS , 36. Kong, Z.; Ping, W.; Huang, J.; Zhao, K.; and Catanzaro, B. 2021. DiffWave: A Versatile Diffusion Model for Audio Synthesis. In ICLR .Li, Y.; Chen, W.; Hu, X.; Chen, B.; Zhou, M.; et al. 2024. Transformer-Modulated Diffusion Models for Probabilistic Multivariate Time Series Forecasting. In ICLR .Li, Y.; Meng, H.; Bi, Z.; Urnes, I. T.; and Chen, H. 2025. Population Aware Diffusion for Time Series Generation. In 
+
+AAAI , 18520–18529. Li, Z.; Zhao, Y.; Han, J.; Su, Y.; Jiao, R.; Wen, X.; and Pei, D. 2021. Multivariate time series anomaly detection and interpretation using hierarchical inter-metric and temporal embedding. In KDD , 3220–3230. Lin, L.; Li, Z.; Li, R.; Li, X.; and Gao, J. 2024. Diffusion models for time-series applications: a survey. Frontiers of Information Technology & Electronic Engineering , 25(1): 19–41. Liu, F. T.; Ting, K. M.; and Zhou, Z.-H. 2008. Isolation Forest. In ICDM , 413–422. Liu, Q.; and Paparrizos, J. 2024. The Elephant in the Room: Towards A Reliable Time-Series Anomaly Detection Bench-mark. In NeurIPS .Malhotra, P.; Ramakrishnan, A.; Anand, G.; Vig, L.; Agar-wal, P.; and Shroff, G. 2016. LSTM-based encoder-decoder for multi-sensor anomaly detection. arXiv preprint arXiv:1607.00148 .Nachmani, E.; Roman, R. S.; and Wolf, L. 2021. Non gaussian denoising diffusion models. arXiv preprint arXiv:2106.07582 .Nam, Y.; Yoon, S.; Shin, Y.; Bae, M.; Song, H.; Lee, J.-G.; and Lee, B. S. 2024. Breaking the Time-Frequency Gran-ularity Discrepancy in Time-Series Anomaly Detection. In 
+
+WWW , 4204–4215. Narasimhan, S. S.; Agarwal, S.; Akcin, O.; sujay sanghavi; and Chinchali, S. P. 2024. Time Weaver: A Conditional Time Series Generation Model. In ICML .Obata, K.; Matsubara, Y.; and Sakurai, Y. 2025. Robust and Explainable Detector of Time Series Anomaly via Augment-ing Multiclass Pseudo-Anomalies. In KDD .Paparrizos, J.; Boniol, P.; Palpanas, T.; Tsay, R. S.; Elmore, A.; and Franklin, M. J. 2022. Volume under the surface: a new accuracy evaluation measure for time-series anomaly detection. Proc. VLDB Endow. , 15(11): 2774–2787. Park, D.; Hoshi, Y.; and Kemp, C. C. 2018. A multimodal anomaly detector for robot-assisted feeding using an lstm-based variational autoencoder. IEEE Robotics and Automa-tion Letters , 3(3): 1544–1551. Park, D.; Kim, H.; Hoshi, Y.; Erickson, Z.; Kapusta, A.; and Kemp, C. C. 2017. A multimodal execution monitor with anomaly classification for robot-assisted feeding. In 2017 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) , 5406–5413. IEEE. Pintilie, I.; Manolache, A.; and Brad, F. 2023. Time series anomaly detection using diffusion-based models. In 2023 IEEE International Conference on Data Mining Workshops (ICDMW) , 570–578. IEEE. Rasul, K.; Seward, C.; Schuster, I.; and Vollgraf, R. 2021. Autoregressive denoising diffusion models for multivariate probabilistic time series forecasting. In ICML , 8857–8868. PMLR. Ronneberger, O.; Fischer, P.; and Brox, T. 2015. U-net: Convolutional networks for biomedical image segmenta-tion. In Medical image computing and computer-assisted intervention–MICCAI 2015: 18th international conference, Munich, Germany, October 5-9, 2015, proceedings, part III 18 , 234–241. Springer. Sarfraz, M. S.; Chen, M.-Y.; Layer, L.; Peng, K.; and Koulakis, M. 2024. Position: Quo Vadis, Unsupervised Time Series Anomaly Detection? In ICML .Schmidl, S.; Wenig, P.; and Papenbrock, T. 2022. Anomaly Detection in Time Series: A Comprehensive Evaluation. 
+
+Proceedings of the VLDB Endowment (PVLDB) , 15(9): 1779–1797. Sch¨ olkopf, B.; Williamson, R. C.; Smola, A.; Shawe-Taylor, J.; and Platt, J. 1999. Support vector method for novelty detection. NeurIPS , 12. Shentu, Q.; Li, B.; Zhao, K.; Shu, Y.; Rao, Z.; Pan, L.; Yang, B.; and Guo, C. 2025. Towards a General Time Se-ries Anomaly Detector with Adaptive Bottlenecks and Dual Adversarial Decoders. In ICLR .Su, Y.; Zhao, Y.; Niu, C.; Liu, R.; Sun, W.; and Pei, D. 2019. Robust anomaly detection for multivariate time se-ries through stochastic recurrent neural network. In KDD ,2828–2837. Tan, S. C.; Ting, K. M.; and Liu, T. F. 2011. Fast anomaly detection for streaming data. In AAAI , IJCAI’11, 1511–1516. AAAI Press. ISBN 9781577355144. Tashiro, Y.; Song, J.; Song, Y.; and Ermon, S. 2021. Csdi: Conditional score-based diffusion models for probabilistic time series imputation. NeurIPS , 34: 24804–24816. Tatbul, N.; Lee, T. J.; Zdonik, S.; Alam, M.; and Gottschlich, J. 2018. Precision and recall for time series. In NeurIPS ,NIPS’18, 1924–1934. Red Hook, NY, USA: Curran Asso-ciates Inc. Tishby, N.; and Zaslavsky, N. 2015. Deep learning and the information bottleneck principle. In 2015 ieee information theory workshop (itw) , 1–5. IEEE. Tuli, S.; Casale, G.; and Jennings, N. R. 2022. TranAD: Deep Transformer Networks for Anomaly Detection in Mul-tivariate Time Series Data. Proceedings of VLDB , 15(6): 1201–1214. Vaswani, A.; Shazeer, N.; Parmar, N.; Uszkoreit, J.; Jones, L.; Gomez, A. N.; Kaiser, Ł.; and Polosukhin, I. 2017. At-tention is all you need. NeurIPS , 30. Vincent, P.; Larochelle, H.; Lajoie, I.; Bengio, Y.; Manzagol, P.-A.; and Bottou, L. 2010. Stacked denoising autoencoders: Learning useful representations in a deep network with a local denoising criterion. Journal of machine learning re-search , 11(12). Wang, C.; Zhuang, Z.; Qi, Q.; Wang, J.; Wang, X.; Sun, H.; and Liao, J. 2024a. Drift doesn’t matter: dynamic decompo-sition with diffusion reconstruction for unstable multivariate time series anomaly detection. NeurIPS , 36. Wang, C.; Zhuang, Z.; Qi, Q.; Wang, J.; Wang, X.; Sun, H.; and Liao, J. 2024b. Drift doesn’t matter: dynamic decompo-sition with diffusion reconstruction for unstable multivariate time series anomaly detection. NeurIPS , 36. Wang, X.; Zhang, H.; Wang, P.; Zhang, Y.; Wang, B.; Zhou, Z.; and Wang, Y. 2023. An Observed Value Consistent Dif-fusion Model for Imputing Missing Values in Multivariate Time Series. In KDD , KDD ’23, 2409–2418. Wu, R.; and Keogh, E. J. 2021. Current time series anomaly detection benchmarks are flawed and are creating the illu-sion of progress. IEEE transactions on knowledge and data engineering , 35(3): 2421–2429. Wu, S.; Zhao, J.; and Tian, G. 2022. Understanding and Mit-igating Data Contamination in Deep Anomaly Detection: A Kernel-based Approach. In IJCAI , 2319–2325. Wyatt, J.; Leach, A.; Schmon, S. M.; and Willcocks, C. G. 2022. Anoddpm: Anomaly detection with denoising diffu-sion probabilistic models using simplex noise. In CVPR ,650–656. Xiao, C.; Gou, Z.; Tai, W.; Zhang, K.; and Zhou, F. 2023. Imputation-based time-series anomaly detection with condi-tional weight-incremental diffusion models. In KDD , 2742– 2751. Xu, H.; Chen, W.; Zhao, N.; Li, Z.; Bu, J.; Li, Z.; Liu, Y.; Zhao, Y.; Pei, D.; Feng, Y.; et al. 2018. Unsupervised anomaly detection via variational auto-encoder for seasonal kpis in web applications. In WWW , 187–196. Xu, J.; Wu, H.; Wang, J.; and Long, M. 2022. Anomaly Transformer: Time Series Anomaly Detection with Associ-ation Discrepancy. In ICLR .Yang, L.; Zhang, Z.; Song, Y.; Hong, S.; Xu, R.; Zhao, Y.; Zhang, W.; Cui, B.; and Yang, M.-H. 2023a. Diffusion Mod-els: A Comprehensive Survey of Methods and Applications. 
+
+ACM Comput. Surv. , 56(4). Yang, Y.; Zhang, C.; Zhou, T.; Wen, Q.; and Sun, L. 2023b. Dcdetector: Dual attention contrastive representation learn-ing for time series anomaly detection. In KDD , 3033–3045. You, Z.; Cui, L.; Shen, Y.; Yang, K.; Lu, X.; Zheng, Y.; and Le, X. 2022. A unified model for multi-class anomaly de-tection. NeurIPS , 35: 4571–4584. Yue, W.; Ying, X.; Guo, R.; Chen, D.; Shi, J.; Xing, B.; Zhu, Y.; and Chen, T. 2024. Sub-Adjacent Transformer: Improv-ing Time Series Anomaly Detection with Reconstruction Error from Sub-Adjacent Neighborhoods. arXiv preprint arXiv:2404.18948 .Zhang, C.; Zhang, C.; Zhang, M.; and Kweon, I. S. 2023a. Text-to-image diffusion models in generative ai: A survey. 
+
+arXiv preprint arXiv:2303.07909 .Zhang, S.; Wang, S.; Tan, X.; Liu, R.; Zhang, J.; and Wang, J. 2023b. sasdim: self-adaptive noise scaling diffusion model for spatial time series imputation. arXiv preprint arXiv:2309.01988 .Zhong, G.; Yuan, J.; Li, Z.; Chen, L.; et al. 2025. Multi-resolution decomposable diffusion model for non-stationary time series anomaly detection. In ICLR .Zhou, B.; Liu, S.; Hooi, B.; Cheng, X.; and Ye, J. 2019. Beatgan: Anomalous rhythm detection using adversarially generated time series. In IJCAI , volume 2019, 4433–4439. UCR AIOps Yahoo real Yahoo bench SMD # of Subdatasets 250 29 37 181 28 # of Features 1 1 1 1 38 Domain Various Cloud KPIs Web traffic Synthetic Server                               
+
+> Train (Average per subdataset)
+> Sequence Length 30522 103588 860 1008 25300 # of Anomalies 0.00 42.35 0.84 5.53 -Anomaly Ratio (%) 0.00 2.49 0.87 0.55 -
+> Test (Average per subdataset)
+> Seqence Length 56173 100649 573 672 25300 # of Anomalies 1.00 50.69 2.49 3.97 11.68 Anomaly Ratio (%) 0.85 1.81 4.58 0.59 4.21
+
+Table 4: Statistics of the datasets. 
+
+Proof 
+
+Proposition 1 Assume we have a noise ϵt = B ◦ ϵ1 + ( 1 −
+
+B) ◦ ϵ2, where ϵ1 and ϵ2 are sampled from some distribu-tions, and B is a mask with elements drawn from a Bernoulli distribution, Bk,l ∼ Bernoulli (p). Then, the loss function Equation (6) can be separated into two parts by the mask. 
+
+Proof 1 Each element of the mask is independent. Hence, 
+
+L = E[∥ϵt − ϵθ (Xt, t )∥] (13) 
+
+= E[∥B ◦ ϵt − B ◦ ϵθ (Xt, t )∥]+ E[∥(1 − B) ◦ ϵt − (1 − B) ◦ ϵθ (Xt, t )∥]= E[∥B ◦ B ◦ ϵ1 − B ◦ ϵθ (Xt, t )∥]+ E[∥(1 − B) ◦ (1 − B) ◦ ϵ2 − (1 − B) ◦ ϵθ (Xt, t )∥]= E[∥B ◦ ϵ1 − B ◦ ϵθ (Xt, t )∥]+ E[∥(1 − B) ◦ ϵ2 − (1 − B) ◦ ϵθ (Xt, t )∥]= E[B ◦ ∥ ϵ1 − ϵθ (Xt, t )∥] + E[( 1 − B) ◦ ∥ ϵ2 − ϵθ (Xt, t )∥].
+
+Our masked Gaussian noise is a special case of the above, where ϵ1 = ζ ∼ N (0, I) and ϵ2 = 0 is deterministic. Thus, we have 
+
+L = E[∥ϵt − ϵθ (Xt, t )∥] (14) 
+
+= E[B ◦ ∥ ζ − ϵθ (Xt, t )∥]
+
+| {z }
+
+> Noisy part
+
++ E[( 1 − B) ◦ ∥ 0 − ϵθ (Xt, t )∥]
+
+| {z }
+
+> Noiseless part
+
+= LN onM ask + LM ask .
+
+Experiment Setup 
+
+Datasets 
+
+We provide a detailed description of the datasets and their statistics (Table 4). • UCR anomaly archive (UCR) (Wu and Keogh 2021): contains 250 diverse univariate time series from vari-ous domains. According to (Goswami et al. 2023), the datasets include nine domains, (1) Acceleration, (2) Air Temperature, (3) Arterial Blood Pressure (ABP), (4) Electrical Penetration Graph (EPG), (5) Electrocardio-gram (ECG), (6) Gait, (7) NASA, (8) Power Demand, and (9) Respiration (RESP). There is only one well-checked anomaly in each sequence, which overcomes some of the flaws in previously used benchmarks. • AIOps 1: comprises 29 univariate time series of Key Per-formance Indicators (KPIs), which are monitored to pro-vide a stable web service from prominent Internet com-panies. • Yahoo real and bench 2: are provided as part of the Ya-hoo! Webscope program. Yahoo real contains real pro-duction traffic to some of the Yahoo! properties, and Ya-hoo bench contains synthetic time series, including com-ponents such as trend and seasonality. • Server Machine Dataset (SMD) (Su et al. 2019): com-prises a multivariate time series with 38 features from 28 server machines collected from a large internet company over a period of five weeks. Both the training and test sets contain around 50k timestamps with 5% anomalous cases. Although the use of SMD has generated both sup-port (Challu et al. 2022; Goswami et al. 2023) and op-position (Wu and Keogh 2021), we employ this dataset because of its multivariate nature. 
+
+Baselines 
+
+We detail the baselines below. • IsolationForest (Liu, Ting, and Zhou 2008): constructs binary trees based on random space splitting. The nodes with shorter path lengths to the root are more likely to be anomalies. • OCSVM (Sch¨ olkopf et al. 1999): uses the smallest pos-sible hypersphere to encompass instances. The distance from the hypersphere to data located outside the hyper-sphere is used to determine whether or not the data are anomalous. • BeatGAN (Zhou et al. 2019): is based on a GAN frame-work where reconstructions produced by the generator are regularized by the discriminator instead of fixed re-construction loss functions. • LSTM-VAE (Park, Hoshi, and Kemp 2018): is an LSTM-based VAE capturing complex temporal dependencies that models the data-generating process from the latent space to the observed space, which is trained using vari-ational techniques. • USAD (Audibert et al. 2020): presents an autoencoder architecture whose adversarial-style learning is also in-spired by GAN. • Anomaly-Transformer (Xu et al. 2022): combines series and prior association to make anomalies distinctive. • TranAD (Tuli, Casale, and Jennings 2022): is aTransformer-based model that uses attention-based se-quence encoders to perform inferences with broader tem-poral trends, focusing on score-based self-conditioning for robust multi-modal feature extraction and adversarial training. • DADA (Shentu et al. 2025): is a zero-shot anomaly de-tector designed for multi-domain time series. It features 
+
+> 1
+
+https://competition.aiops-challenge.com/home/competition/ 1484452272200032281 
+
+> 2
+
+https://webscope.sandbox.yahoo.com/catalog.php?datatype= s&did=70 Design Parameter Value 
+
+Architecture 
+
+Attention heads 8# of residual blocks N 8Latent dimension C 64 
+
+Diffusion model 
+
+Forward diffusion step T 50 Reverse diffusion step λ 50 Noise scheduling β np.linspace( βstart , βend , T )Minimum noise βstart 0.0001 Maximum noise βend 0.01 Bernoulli parameter p 0.5 Table 5: Key hyperparameters for AnomalyFilter. Adaptive Bottlenecks for flexible latent space compres-sion based on data characteristics, and Dual Adversarial Decoders that explicitly distinguish normal from anoma-lous patterns through adversarial training. • DiffAD (Xiao et al. 2023): is a conditional diffusion model that employs a density ratio-based strategy as a conditioner. Its conditioner is based on density-based se-lection, where only the high-density (i.e., normal) parts of the sample are provided to the model. • IMDiffusion (Chen et al. 2023): integrates the imputation method with a grating masking strategy and conditional diffusion model. It masks half of a sequence and uses the unmasked portion as the conditioner to reconstruct the masked part. Then, it reverses the mask and reconstructs the entire sequence. The reconstruction is gradually gen-erated from white noise through the denoising process. • D3R (Wang et al. 2024b): is a denoising model that tackles the drift via decomposition and reconstruction, overcoming the limitation of the local sliding window. It first extracts stable components by decomposition. Then, it disturbs the stable components by adding noise and learns denoising. The reconstruction is conducted at 1 step, similar to DAE. • DAE (Vincent et al. 2010): corrupts the sample with 
+
+ˆX = X + αϵ , where we use α = 0 .1, ϵ ∼ N (0, I), and directly predicts the clean sample X. We use the same hyperparameters and model architecture with Anomaly-Filter. • DDPM (Ho, Jain, and Abbeel 2020): trains the model by Algorithm 1 and reconstructs learned samples from cor-rupted data by Algorithm 2. We use the same hyperpa-rameters and model architecture with AnomalyFilter. To ensure a fair comparison of reconstruction quality, all reconstruction-based methods used in this study employed MSE as the anomaly score. To handle sequential informa-tion, we then apply the moving average of half of the win-dow size (50 timesteps) to the score. 
+
+Implementation Details 
+
+We train the proposed model using AdamW with a learn-ing rate of 10 −3. The batch size is 64. We use 10% of the BeatGAN 
+
+> DADA
+> Anomaly -Transformer
+> AnomalyFilter
+> DiffA D
+> D3R
+> IMDiffusion
+> IsolationForest
+> TranAD
+> USAD
+> OCSVM
+> LSTM -VAE
+> DDPM
+> DAE
+
+Figure 4: Critical difference diagram of VUS-PR. training samples as validation and apply early stopping for a maximum of 100 epochs. Other hyperparameters related to the framework are listed in Table 5. Due to the out-of-memory issue, we used N = 4 , C = 32 for SMD. The baselines are implemented based on previously reported hy-perparameters and are trained with early stopping using a procedure similar to AnomalyFilter. The window size is 100 for all datasets. 
+
+Experimental Results 
+
+Results of Various Metrics 
+
+We show the corresponding results of other range-based metrics, Range-AUC-ROC and Range-AUC-PR, in Table 6, as well as standard deviation in Table 7. Figure 4 shows the corresponding critical difference diagram of VUS-PR based on the Wilcoxon-Holm method (Ismail Fawaz et al. 2019), where methods that are not connected by a bold line are sig-nificantly different in average rank. Overall, we observe that AnomalyFilter outperforms the baselines for most datasets and metrics. 
+
+Ablation Studies 
+
+Qualitative analysis We visualize the reconstruction when adding each component to DDPM. Figure 5 show the results of DDPM with each component and AnomalyFilter of #029 ABP data from UCR. The area where it appears that the noise is added to the normal peak is the anomaly, in-dicated with a red background. DDPM and DDPM w/ Mask struggle to accurately reconstruct the normal parts, leading to poor anomaly detection performance. DDPM w/ Noise-less improves reconstruction of the normal parts compared with DDPM, but still exhibits significant deviations in cer-tain areas. In contrast, AnomalyFilter achieves notably low MSE for the normal parts, making anomalies stand out and enabling much more effective detection. 
+
+Sensitivity Analysis 
+
+We study the effect of key hyperparameters. Figure 6 shows VUS-ROC and VUS-PR of the average of all datasets. 
+
+Effect of ratio between noise and mask We investigate the effect of the Bernoulli mask by training models with masked Gaussian noise using different noise ratios p. Fig-ure 6 (a) shows the results for both noiseless inference and naive inference. When p = 0 .0, Gaussian noise is not added at all, and the model learns to scale the data based on the noise schedule, resulting in low accuracy with both infer-ence procedures. p = 1 .0 indicates the addition of Gaus-sian noise. For noiseless inference, the best performance was UCR AIOps Yahoo real Yahoo bench SMD R-R R-P A-R F R-R R-P A-R F R-R R-P A-R F R-R R-P A-R F R-R R-P A-R FIsolationForest 0.653 0.114 0.613 0.057 0.825 0.217 0.824 0.187 0.813 0.595 0.601 0.000 0.705 0.487 0.502 0.000 0.764 0.275 0.799 0.171 OCSVM 0.662 0.187 0.618 0.092 0.874 0.463 0.866 0.220 0.841 0.722 0.633 0.000 0.710 0.516 0.523 0.000 0.727 0.274 0.801 0.254 BeatGAN 0.752 0.209 0.729 0.158 0.912 0.594 0.814 0.214 0.852 0.723 0.655 0.063 0.799 0.577 0.624 0.005 0.829 0.383 0.857 0.325 LSTM-VAE 0.745 0.140 0.719 0.117 0.881 0.419 0.830 0.197 0.934 0.782 0.846 0.092 0.781 0.520 0.617 0.003 0.732 0.239 0.798 0.266 USAD 0.684 0.157 0.651 0.138 0.908 0.541 0.862 0.221 0.892 0.758 0.771 0.081 0.695 0.485 0.527 0.000 0.550 0.183 0.583 0.118 Anomaly-Transformer 0.720 0.138 0.675 0.106 0.901 0.442 0.847 0.146 0.915 0.749 0.799 0.069 0.790 0.487 0.604 0.005 0.874 0.457 0.885 0.342                                                                                                                         
+
+> TranAD 0.609 0.072 0.537 0.059 0.789 0.273 0.798 0.261 0.844 0.666 0.712 0.068 0.678 0.449 0.502 0.000 0.693 0.259 0.604 0.159 DADA 0.610 0.031 0.542 0.016 0.863 0.306 0.764 0.156 0.911 0.727 0.768 0.113 0.822 0.508 0.624 0.006 0.885 0.445 0.867 0.326
+> DiffAD 0.623 0.065 0.578 0.044 0.893 0.500 0.783 0.192 0.899 0.725 0.760 0.088 0.838 0.560 0.670 0.004 0.644 0.188 0.681 0.199 IMDiffusion 0.651 0.050 0.596 0.032 0.889 0.435 0.795 0.116 0.907 0.751 0.782 0.075 0.799 0.489 0.605 0.001 0.865 0.367 0.867 0.229 D3R 0.610 0.074 0.534 0.061 0.871 0.492 0.804 0.199 0.902 0.767 0.764 0.109 0.765 0.507 0.543 0.000 0.846 0.368 0.833 0.321
+> AnomalyFilter 0.740 0.245 0.697 0.196 0.943 0.690 0.854 0.227 0.933 0.813 0.833 0.128 0.852 0.621 0.686 0.013 0.900 0.508 0.873 0.321
+
+Table 6: R-R, R-P, A-R, and F are Range-AUC-ROC, Range-AUC-PR (Paparrizos et al. 2022), AUC-ROC, and F1. UCR AIOps Yahoo real Yahoo bench SMD V-R V-P RF Acc. V-R V-P RF V-R V-P RF V-R V-P RF V-R V-P RF IsolationForest 0.262 0.201 0.125 0.425 0.103 0.125 0.077 0.220 0.193 0.000 0.195 0.176 0.000 0.145 0.189 0.104 OCSVM 0.271 0.267 0.203 0.459 0.115 0.201 0.132 0.225 0.218 0.000 0.210 0.173 0.000 0.159 0.202 0.199 BeatGAN 0.232 0.280 0.206 0.478 0.116 0.222 0.129 0.217 0.224 0.114 0.186 0.229 0.019 0.144 0.226 0.189 LSTM-VAE 0.208 0.231 0.186 0.412 0.117 0.207 0.125 0.125 0.269 0.161 0.195 0.223 0.021 0.147 0.181 0.210 USAD 0.235 0.257 0.233 0.446 0.123 0.235 0.145 0.196 0.267 0.148 0.235 0.214 0.000 0.201 0.135 0.123 Anomaly-Transformer 0.227 0.239 0.198 0.401 0.101 0.166 0.096 0.149 0.246 0.097 0.159 0.191 0.026 0.122 0.217 0.216 TranAD 0.215 0.165 0.177 0.364 0.149 0.177 0.136 0.219 0.272 0.139 0.221 0.183 0.008 0.228 0.172 0.123 DADA 0.200 0.065 0.053 0.187 0.117 0.179 0.090 0.173 0.295 0.192 0.151 0.195 0.028 0.113 0.199 0.174 DiffAD 0.244 0.155 0.111 0.294 0.134 0.196 0.130 0.174 0.272 0.169 0.139 0.204 0.027 0.168 0.139 0.139 IMDiffusion 0.203 0.121 0.089 0.238 0.128 0.202 0.144 0.172 0.256 0.143 0.162 0.198 0.014 0.122 0.215 0.211 D3R 0.219 0.162 0.171 0.364 0.157 0.237 0.137 0.169 0.238 0.163 0.202 0.186 0.006 0.110 0.214 0.197 
+
+AnomalyFilter 0.234 0.308 0.267 0.490 0.098 0.166 0.100 0.143 0.237 0.179 0.162 0.229 0.029 0.112 0.227 0.194 Table 7: Standard deviation of VUS-ROC, VUS-PR, and Range F-score. achieved at p = 0 .5, demonstrating that effective learning of the filter requires balancing both the denoise and retain func-tionalities. On the other hand, for naive inference, p = 1 .0
+
+yielded the best performance, indicating that reconstruction from corrupted data requires the model to be trained with noise that aligns closely with the inference conditions. 
+
+Effect of noise schedule We use a linear variance schedule to define the noise schedule. βend deter-mines the maximum noise level, and we vary it across 
+
+{0.001 , 0.005 , 0.01 , 0.05 , 0.1}. The results in Figure 6 (b) indicate that an optimal level of noise is necessary for the best performance. 
+
+Effect of forward diffusion step We vary the forward dif-fusion step T across {1, 2, 4, 8, 16 , 32 , 50 }, with the reverse diffusion step λ set at the same value as T . Shorter steps lead to more rapid corruption. When T = 1 , the model denoises in a single step, resembling DAE and achieving similar ac-curacy. The results in Figure 6 (c) indicate that a T ≥ 32 is sufficient for effective performance. Shorter steps are prefer-able when using naive inference, suggesting that the denois-ing step should ideally operate in a noise-free setting. 
+
+Effect of reverse diffusion step We fix the forward diffu-sion step T = 50 and vary the reverse diffusion step λ across 
+
+{1, 2, 4, 8, 16 , 32 , 50 }. As shown in Figure 6 (d) λ ≥ 8 is sufficient for effective performance. With naive inference, the best accuracy is achieved at λ = 8 , indicating that us-ing a relatively small λ compared with T improves perfor-mance. However, the results also show that an overly short 
+
+λ compared with T hinders effective denoising, which re-quires careful tuning of λ.
+
+Computational Time 
+
+We select six denoising-based methods to evaluate their scalability with respect to varying sample sizes during train-ing and inference. For diffusion models, we set forward and reverse diffusion steps to 50. All methods are evaluated un-der the same NVIDIA RTX A6000. As shown in Figure 7 (a), the training times are comparable across methods, ex-cept for D3R. During inference shown in Figure 7 (b), DAE and D3R, which predict in a single step, are faster than the others. Diffusion-based methods that require multiple re-verse diffusion steps exhibit similar inference times. 
+
+Case Studies 
+
+We present further case studies in Figure 8 that visually show the difference between baselines and AnomalyFilter. 
+
+AIOps KPI-301c This dataset consists of noisy sequences whose values fluctuate in a fine-grained manner, as shown in Figure 8 (a). It includes different types of anomalies, such as a pattern anomaly at around timestep 1600 and many point anomalies. AnomalyFilter has a higher reconstruction error for all anomalies visualized in the figure, while accurately reconstructing normal parts. In contrast, other methods fail to detect anomalies because their reconstruction error on normal parts is relatively larger than that of anomalous parts. 
+
+Yahoo real A1real-28 The Yahoo dataset provides limited training data, and some test data exhibit characteristics dif-ferent from the training data. As shown in Figure 8 (b), this sequence contains a cutoff anomaly shortly after the start of the test period (around timestep 1000), as well as two point anomalies. Due to the limited amount of training data, all AnomalyFilter       
+
+> Value
+> 1.0
+> 0.2
+> 0.0
+> 6.0
+> 1e -4
+> Smoothed MSE
+> 1600
+> Timestep 2600
+> DDPM w/ Mask
+> Value
+> 1.0
+> 0.2
+> 0.0
+> 6.0
+> 1e -2
+> Smoothed MSE
+> 1600
+> Timestep 2600
+> DDPM w/ Noiseless
+> Value
+> 1.0
+> 0.2
+> 0.0
+> 3.0
+> 1e -2
+> Smoothed MSE
+> 1600
+> Timestep 2600
+> DDPM
+> Value
+> 1.0
+> 0.2
+> 0.0
+> 6.0
+> 1e -2
+> Smoothed MSE
+> 1600
+> Timestep 2600
+> Reconstruction Input
+> Smoothed MSE
+
+Figure 5: Reconstruction examples across DDPM variants of #029 ABP on UCR. Noise ratio: p
+
+> VUS ROC
+> VUS PR
+> Na ive Inference
+> Noiseless Inference
+
+(a) Noise ratio pMaximum noise level: 𝛽 !"#  
+
+> VUS ROC
+> VUS PR
+> Na ive Inference
+> Noiseless Inference
+
+(b) Maximum noise βend Forward diffusion step: T 
+
+> VUS ROC
+> VUS PR
+> Na ive Inference
+> Noiseless Inference
+
+(c) Forward diffusion step TReverse diffusion step: 𝜆  
+
+> VUS ROC
+> VUS PR
+> Na ive Inference
+> Noiseless Inference
+
+(d) Reverse diffusion step λ
+
+Figure 6: Sensitivity analysis across four hyperparameters. # of training samples 
+
+> Time per epoch (sec)  IMDiffusion
+> DiffAD
+> D3R
+> DAE
+> DDPM
+> AnomalyFilter # of inference samples
+> Total time (sec)
+
+(a) Training (b) Inference Figure 7: Computational time for training and inference. methods struggle to detect the cutoff anomaly. Only Anoma-lyFilter has a high reconstruction error for the subsequent point anomalies. 
+
+Yahoo bench A3Benchmark-TS3 Figure 8 (c) is from Yahoo bench. This dataset includes a trend component, caus-ing the test values to fall outside the range of the training data. BeatGAN fails to shift the baseline of the reconstruc-tion, resulting in a gradual drift away from the input. Al-though Anomaly-Transformer and IMDiffusion handle the baseline shift of test data, their large reconstruction error leads to failures in anomaly detection. In contrast, Anoma-lyFilter, due to its gradual denoising nature from the input, produces a reconstruction that closely matches the input and successfully detects the point anomalies. 
+
+SMD machine-1-6 We show the results of SMD on Fig-ure 8 (d). In the SMD dataset, each variable in the multivari-ate time series is individually labeled for anomalies; how-ever, as visualized, the labeling accuracy is often low. There-fore, we adopt a commonly used setting where a time point is considered anomalous if any variable exhibits an anomaly. Because both BeatGAN and Anomaly-Transformer recon-struct from the latent space, the reconstruction errors for dim3 and dim4 increase after timestep 4000, causing earlier anomalies to become less distinguishable. Moreover, the re-construction of dim2 for BeatGAN and dim1 for Anomaly-Transformer is affected by dim3 and dim4, as these methods reconstruct the whole dimensions from the common latent vector. In contrast, denoising-based methods, which denoise from the input, maintain low reconstruction errors for dim3 and dim4, thereby avoiding such drifts. Since AnomalyFil-ter selectively denoises only the anomalous parts, it is less susceptible to the influence of anomalies in other variables. 
+
+More Related Work 
+
+Reconstruction-based Method for TSAD Inspired by the success of deep learning, numerous deep learn-ing methods for TSAD have been proposed, with reconstruction-based methods constituting a significant proportion (Schmidl, Wenig, and Papenbrock 2022). Reconstruction-based methods aim to detect anomalous be-havior in an unsupervised manner by comparing the original input with the reconstruction. They rely on the hypothesis that a model trained mostly on normal samples excels in normal parts but struggles in anomalous parts. Deep gen-erative techniques, including VAE (Xu et al. 2018; Li et al. 2021) and GAN (Bashar and Nayak 2020), are often uti-lized to build reconstruction-based methods. For example, LSTM was incorporated into VAE to learn temporal fea-tures (Park, Hoshi, and Kemp 2018; Su et al. 2019). Beat-GAN (Zhou et al. 2019), proposed for detecting anomalies in ECG beats, is a GAN-based method that uses time series warping for data augmentation. However, VAE and GAN are usually difficult to train because they require a careful balance between the two networks. Transformer architec-ture (Nam et al. 2024; Xu et al. 2022; Yang et al. 2023b; Yue et al. 2024) has also been explored. TranAD (Tuli, Casale, and Jennings 2022) introduces attention mechanisms from transformer models and incorporates adversarial training to jointly enhance the accuracy of anomaly detection. These encoder-decoder models aim to learn the latent representa-tion for the entire time series for data reconstruction and can be interpreted through the information bottleneck (IB) prin-ciple, namely the trade-off between concise representation and reconstruction accuracy (Tishby and Zaslavsky 2015). However, in anomaly detection, controlling the IB is chal-lenging due to the absence of anomaly knowledge and la-bels, often leading to underfitting (i.e., prioritizing concise-ness) or overfitting (i.e., prioritizing reconstruction). 
+
+Limitations and Future Directions 
+
+High-dimentional data Current benchmarks commonly used for multivariate time series anomaly detection assign the same label to all variables. While SMD labels individual variables, their quality is low, as we observed clearly nor-mal variables labeled as anomalies. Therefore, models must predict anomalies if any variable in the multivariate data ex-hibits abnormal behavior. Such labels mean that high-dimensional data pose chal-lenges for AnomalyFilter, as the model learns noise that is independent across variables. This leads to reconstructions where only the anomalous parts of the affected variables are denoised. With MSE used as the anomaly score, the accu-mulation of errors across variables makes detecting anoma-lies increasingly difficult as the number of variables grows. On the other hand, when using encoder-decoder models, an anomaly in one variable affects the entire latent state, thereby influencing the reconstruction of all variables. Al-though they cannot pinpoint the specific anomalous variable, they are more suitable for the current labels. Accordingly, future research could focus on developing noise mechanisms that account for inter-variable dependencies. 
+
+Anomaly contamination In unsupervised anomaly de-tection, it is common to assume that all or most of the training samples are normal, which is known as the nor-mality assumption (Wu, Zhao, and Tian 2022). However, in real-world scenarios, the presence of anomaly samples in the training set (i.e., anomaly contamination) is in-evitable (Obata, Matsubara, and Sakurai 2025). Under this assumption, reconstruction-based methods become vulnera-ble to contamination, as their strong representational power can lead to the accurate reconstruction of even anomalous patterns, thereby reducing performance. As with most of the reconstruction-based methods, we adopt the normality as-sumption, making AnomalyFilter susceptible to this issue. To the best of our knowledge, no diffusion-based approach has explicitly addressed anomaly contamination. Handling anomaly contamination within a diffusion-based framework remains an open and promising research direction. AnomalyFilter 
+
+> Value
+
+0.8 
+
+0.0 
+
+0.0 
+
+1.5 
+
+1e -3
+
+> Smoothed MSE
+
+0 2000 
+
+Timestep 
+
+IMDiffusion 
+
+> Value
+
+0.8 
+
+0.0 
+
+0.0 
+
+3.0 
+
+1e -2
+
+> Smoothed MSE
+
+0 2000 
+
+Timestep 
+
+Anomaly -Transformer 
+
+> Value
+
+0.8 
+
+0.0 
+
+0.0 
+
+4.0 
+
+1e -3
+
+> Smoothed MSE
+
+0 2000 
+
+Timestep 
+
+BeatGAN 
+
+> Value
+
+0.8 
+
+0.0 
+
+0.0 
+
+0.8 
+
+1e -2
+
+> Smoothed MSE
+
+0 2000 
+
+Timestep 
+
+Reconstruction Input 
+
+Smoothed MSE (a) AIOps KPI-301c Reconstruction Input 
+
+Smoothed MSE 
+
+Training ← → Test 
+
+BeatGAN 
+
+> Value
+
+1.0 
+
+0.0 
+
+0.0 
+
+3.0 
+
+1e -1
+
+> Smoothed MSE
+
+0 1000 
+
+Timestep 
+
+Anomaly -Transformer 
+
+> Value
+
+1.0 
+
+0.0 
+
+0.0 
+
+2.0 
+
+1e -1
+
+> Smoothed MSE
+
+0 1000 
+
+Timestep 
+
+IMDiffusion 
+
+> Value
+
+1.0 
+
+0.0 
+
+0.0 
+
+3.0 
+
+1e -1
+
+> Smoothed MSE
+
+0 1000 
+
+Timestep 
+
+AnomalyFilter 
+
+> Value
+
+1.0 
+
+0.0 
+
+0.0 
+
+2.0 
+
+1e -2
+
+> Smoothed MSE
+
+0 1000 
+
+Timestep 
+
+(b) Yahoo real A1real-28 Training ← → Test 
+
+BeatGAN 
+
+> Value
+
+1.0 
+
+0.0 
+
+0.0 
+
+2.0 
+
+1e -1
+
+> Smoothed MSE
+
+0 1000 
+
+Timestep 
+
+Reconstruction Input 
+
+Smoothed MSE 
+
+Anomaly -Transformer 
+
+> Value
+
+1.0 
+
+0.0 
+
+0.0 
+
+6.0 
+
+1e -2
+
+> Smoothed MSE
+
+0 1000 
+
+Timestep 
+
+IMDiffusion 
+
+> Value
+
+1.0 
+
+0.0 
+
+1.5 
+
+1e -1
+
+> Smoothed MSE
+
+0 1000 
+
+Timestep 
+
+0.0 
+
+AnomalyFilter 
+
+> Value
+
+1.0 
+
+0.0 
+
+0.8 
+
+1e -2
+
+> Smoothed MSE
+
+0 1000 
+
+Timestep 
+
+0.0 
+
+(c) Yahoo bench A3Benchmark-TS3 BeatGAN 
+
+> Value (dim1)
+
+0.5 
+
+0.0 
+
+0.0 
+
+2.0 
+
+1e -2
+
+> Smoothed MSE
+
+0 5000 
+
+Timestep 
+
+> Value (dim2)
+
+0.6 
+
+0.0 
+
+> Value (dim3)
+
+0.8 
+
+0.0 
+
+> Value (dim4)
+
+0.8 
+
+0.0 
+
+Anomaly -Transformer 
+
+> Value (dim1)
+
+0.5 
+
+0.0 
+
+0.0 
+
+1.2 
+
+1e -2
+
+> Smoothed MSE
+
+0 5000 
+
+Timestep 
+
+> Value (dim2)
+
+0.6 
+
+0.0 
+
+> Value (dim3)
+
+0.8 
+
+0.0 
+
+> Value (dim4)
+
+0.8 
+
+0.0 
+
+IMDiffusion 
+
+> Value (dim1)
+
+0.5 
+
+0.0 
+
+0.0 
+
+1.2 1e -1
+
+> Smoothed MSE
+
+0 5000 
+
+Timestep 
+
+> Value (dim2)
+
+0.6 
+
+0.0 
+
+> Value (dim3)
+
+0.8 
+
+0.0 
+
+> Value (dim4)
+
+1.5 
+
+0.0 
+
+AnomalyFilter 
+
+> Value (dim1)
+
+0.5 
+
+0.0 
+
+0.0 
+
+6.0 
+
+1e -3
+
+> Smoothed MSE
+
+0 5000 
+
+Timestep 
+
+> Value (dim2)
+
+0.6 
+
+0.0 
+
+> Value (dim3)
+
+0.8 
+
+0.0 
+
+> Value (dim4)
+
+0.8 
+
+0.0 
+
+Reconstruction Input 
+
+Smoothed MSE 
+
+(d) SMD machine-1-6 Figure 8: Reconstruction examples across different methods of (a) AIOps, (b) Yahoo real, (c) Yahoo bench, and (d) SMD.

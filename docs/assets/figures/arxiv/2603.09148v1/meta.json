@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.09148v1/fig-001.webp",
+      "caption": "Table 2: Performance comparison between baselines and VNOIP on three datasets across different observation times measured by MSLE and MAPE (lower is better).",
+      "page": 7,
+      "index": 1,
+      "width": 948,
+      "height": 383
+    },
+    {
+      "url": "assets/figures/arxiv/2603.09148v1/fig-002.webp",
+      "caption": "Figure 2: The overview of VNOIP. (a) The global graph, the observed cascade graph, and the cascade sequence. (b) Bidirectional Jump ODEs with attention to enhance the representation capability of sequence context. (c) Variational neural ODEs model the overall trend by jointly aggregating cascade patterns and popularity trend features.",
+      "page": 3,
+      "index": 2,
+      "width": 1054,
+      "height": 514
+    },
+    {
+      "url": "assets/figures/arxiv/2603.09148v1/fig-003.webp",
+      "caption": "Table 1: Statistics of the three datasets.",
+      "page": 6,
+      "index": 3,
+      "width": 500,
+      "height": 273
+    },
+    {
+      "url": "assets/figures/arxiv/2603.09148v1/fig-004.webp",
+      "caption": "Figure 1: An illustration of popularity prediction.",
+      "page": 1,
+      "index": 4,
+      "width": 500,
+      "height": 254
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.04951v1/fig-001.webp",
+      "caption": "Table 2: Main performance comparison. The best results are highlighted in bold and the second best are underlined.",
+      "page": 6,
+      "index": 1,
+      "width": 1002,
+      "height": 444
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04951v1/fig-002.webp",
+      "caption": "Figure 12: Visualization of prediction performance with varying context lengths (Top-𝐾 ). The plots display the concatenated input sequences and resulting predictions for 𝐾 ∈ {1, 2, 3, 4, 5}.",
+      "page": 11,
+      "index": 2,
+      "width": 497,
+      "height": 631
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04951v1/fig-003.webp",
+      "caption": "Figure 11: Comparison ofweighting strategies: Uniform (Unweighted), Temporal Weight Only, and our proposed Variable + Temporal strategy.",
+      "page": 11,
+      "index": 3,
+      "width": 497,
+      "height": 312
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04951v1/fig-004.webp",
+      "caption": "Figure 9: Visualization of covariate ablation studies.We compare prediction trajectories under four settings: (1) No Covariates, (2) Only IP, (3) Only N2, and (4) Full Covariates.",
+      "page": 11,
+      "index": 4,
+      "width": 497,
+      "height": 418
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04951v1/fig-005.webp",
+      "caption": "Figure 10: Impact of Knowledge Base (KB) Scope on retrieval and prediction. From top to bottom: Scope 1 (Single Plane), Scope 2 (B777, same aircraft type), and Scope 3 (B777 + A320, cross-Type mixed aircraft).",
+      "page": 11,
+      "index": 5,
+      "width": 497,
+      "height": 312
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04951v1/fig-006.webp",
+      "caption": "Figure 2: Overall RAG Pipeline. Tail numbers are masked for privacy.",
+      "page": 2,
+      "index": 6,
+      "width": 1050,
+      "height": 358
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04951v1/fig-007.webp",
+      "caption": "Table 6: Ablation on weighting schemes and context length (𝑘) on B777. “𝑊 point” for PointWeighting and “𝑊 cov” for Covariate Weighting.",
+      "page": 7,
+      "index": 7,
+      "width": 502,
+      "height": 243
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04951v1/fig-008.webp",
+      "caption": "Table 7: Predictive maintenance records from the CSA deployment (Starting Nov. 2025). Online visualizations are presented in Appendix A.7. Tail numbers are masked for privacy.",
+      "page": 8,
+      "index": 8,
+      "width": 502,
+      "height": 528
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04951v1/fig-009.webp",
+      "caption": "Figure 13: The MSE of the B-2**7 PRSOV L in time order. PRSOV L fault notified and detected with our method on plane B-2**7.",
+      "page": 12,
+      "index": 9,
+      "width": 493,
+      "height": 259
+    },
+    {
+      "url": "assets/figures/arxiv/2603.04951v1/fig-010.webp",
+      "caption": "Figure 5: The agentic context augment process. The top-1 sample is used as an agent to self-calibrate the optimal number of context fragments (𝑘∗). Tail numbers are masked for privacy.",
+      "page": 5,
+      "index": 10,
+      "width": 500,
+      "height": 306
+    }
+  ]
+}

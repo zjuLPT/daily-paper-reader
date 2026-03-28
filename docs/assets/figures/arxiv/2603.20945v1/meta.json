@@ -1,0 +1,70 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.20945v1/fig-001.webp",
+      "caption": "Figure 6. From left to right: visualizations of µ̂E(x), µ̂ (o)(x), and Pxµ̂E(x), where Px is the projection operator onto the tangent space TxM . The ground-truth drift vector is superimposed as blue arrows. The associated local patch mapped via U3 and rotation is overlaid to enhance the visualization.",
+      "page": 21,
+      "index": 1,
+      "width": 714,
+      "height": 544
+    },
+    {
+      "url": "assets/figures/arxiv/2603.20945v1/fig-002.webp",
+      "caption": "Table 2. Summary of various evaluation metrics. µ̂(x) is the estimator of µ(o)(x), which can be µ̂E , µ̂ (o), or Pxµ̂E , where Px is the projection to TxM , listed in the top. π̂(x) is the estimator of π(o)(x), which is π̂(o)(x). Θ(µ(o), µ̂) is the angle between µ(o) and µ̂ with the unit radian. ∥ sinΘ∥F is the subspace distance between the dominant 2D eigenspaces of π̂(o) and π(o).",
+      "page": 21,
+      "index": 2,
+      "width": 732,
+      "height": 214
+    },
+    {
+      "url": "assets/figures/arxiv/2603.20945v1/fig-003.webp",
+      "caption": "Table 1. Summary of various evaluation metrics. µ̂(x) is the estimator of µ(o)(x), which can be µ̂E , µ̂ (o), or Pxµ̂E , where Px is the projection to TxM , listed in the top. π̂(x) is the estimator of π(o)(x), which is π̂(o)(x). Θ(µ̂, µ(o)) is the angle between µ(o) and µ̂ with the unit radian. ∥ sinΘ∥F is the subspace distance between the dominant 2D eigenspaces of π̂(o) and π(o).",
+      "page": 18,
+      "index": 3,
+      "width": 762,
+      "height": 245
+    },
+    {
+      "url": "assets/figures/arxiv/2603.20945v1/fig-004.webp",
+      "caption": "Figure 3. Histograms of drift estimation errors over 1000 independent SDE simulations, comparing µ̂E and µ̂(o) to the true drift vector field µ(o) at (0, 0, 1)⊤.",
+      "page": 18,
+      "index": 4,
+      "width": 640,
+      "height": 486
+    },
+    {
+      "url": "assets/figures/arxiv/2603.20945v1/fig-005.webp",
+      "caption": "Figure 4. Histograms of the errors of the estimated diffusion matrix u⊤i π̂ (o)uj over 1000 independent SDE simulations (labeled as (i, j) in the subplots) compared to the true vector fields u⊤i π (o)uj , for ellipsoids of varying eccentricities.",
+      "page": 19,
+      "index": 5,
+      "width": 640,
+      "height": 375
+    },
+    {
+      "url": "assets/figures/arxiv/2603.20945v1/fig-006.webp",
+      "caption": "Figure 2. From left to right: visualizations of µ̂E(x), µ̂ (o)(x), and Pxµ̂E(x), where Px is the projection operator onto the tangent space TxM , for base-point samples x drawn uniformly from a spherical cap centered at (1, 0, 0)⊤ and observed on an ellipsoid with eccentricity (2, 1.5, 1), shown from two viewing angles. The ground-truth drift vector is superimposed as blue arrows.",
+      "page": 17,
+      "index": 6,
+      "width": 714,
+      "height": 456
+    },
+    {
+      "url": "assets/figures/arxiv/2603.20945v1/fig-007.webp",
+      "caption": "Figure 5. Using the occupation density for trajectory length n = 108 and ∆ = 10−2 as an accurate estimate for the invariant density ϕX , we compare the invariant density to the estimate L̂(o) based on the first n data-points of the trajectory to measure the convergence rate of the empirical density.",
+      "page": 20,
+      "index": 7,
+      "width": 490,
+      "height": 360
+    },
+    {
+      "url": "assets/figures/arxiv/2603.20945v1/fig-008.webp",
+      "caption": "Figure 1. Using the occupation density for trajectory length n = 108, time-step ∆ = 10−2, and physical time T = 106 as an accurate estimate for the invariant density ϕX , we compare the invariant density to the estimate L̂(o) based on the first n data-points of the trajectory on each observed ellipsoid to measure the convergence rate of the empirical density.",
+      "page": 16,
+      "index": 8,
+      "width": 452,
+      "height": 327
+    }
+  ]
+}
