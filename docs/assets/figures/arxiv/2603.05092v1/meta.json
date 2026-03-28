@@ -1,0 +1,94 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.05092v1/fig-001.webp",
+      "caption": "Table 1: Results of time series forecasting and anomaly detection on China Southern Airlines datasets. Bold indicates the best performance. True Alert Rates (TAR) are calculated under a constrained false alarm rate of 5% to ensure practical reliability.",
+      "page": 6,
+      "index": 1,
+      "width": 1069,
+      "height": 441
+    },
+    {
+      "url": "assets/figures/arxiv/2603.05092v1/fig-002.webp",
+      "caption": "Figure 6: Visualization results of Aura, TimeLLM and TimeXer on Boeing 777 Datasets.",
+      "page": 11,
+      "index": 2,
+      "width": 1039,
+      "height": 508
+    },
+    {
+      "url": "assets/figures/arxiv/2603.05092v1/fig-003.webp",
+      "caption": "Figure 1: Illustration of diverse exogenous information influencing aircraft component anomaly detection. Beyond the time series directly associated with the equipment, this detection process incorporates multiple factors, including correlated sensor signals, aircraft register, airport location, and dynamic environmental takeoff conditions, which collectively influence the temporal dynamics, necessitating a unified integration for accurate health monitoring.",
+      "page": 2,
+      "index": 3,
+      "width": 1056,
+      "height": 245
+    },
+    {
+      "url": "assets/figures/arxiv/2603.05092v1/fig-004.webp",
+      "caption": "Figure 4: Statistical distribution of gated weights for history and future exogenous series.",
+      "page": 7,
+      "index": 4,
+      "width": 486,
+      "height": 315
+    },
+    {
+      "url": "assets/figures/arxiv/2603.05092v1/fig-005.webp",
+      "caption": "Table 2: Exogenous forecasting results on the EPF benchmark with future exogenous series. We set the input length to 168 and the prediction length to 24, following TimeXer [33] experimental setup. AVG means the average results from all five datasets.",
+      "page": 7,
+      "index": 5,
+      "width": 1062,
+      "height": 204
+    },
+    {
+      "url": "assets/figures/arxiv/2603.05092v1/fig-006.webp",
+      "caption": "Table 4: Statistics of the datasets used in our experiments.",
+      "page": 10,
+      "index": 6,
+      "width": 952,
+      "height": 275
+    },
+    {
+      "url": "assets/figures/arxiv/2603.05092v1/fig-007.webp",
+      "caption": "Figure 2: Bleed Air System Schematic.",
+      "page": 3,
+      "index": 7,
+      "width": 479,
+      "height": 376
+    },
+    {
+      "url": "assets/figures/arxiv/2603.05092v1/fig-008.webp",
+      "caption": "Figure 8: The Prompt Design of Aura for dynamic contextual events.",
+      "page": 13,
+      "index": 8,
+      "width": 1047,
+      "height": 1058
+    },
+    {
+      "url": "assets/figures/arxiv/2603.05092v1/fig-009.webp",
+      "caption": "Figure 5: Deployed model inference visualization within the health monitoring system of China Southern Airlines.",
+      "page": 8,
+      "index": 9,
+      "width": 487,
+      "height": 434
+    },
+    {
+      "url": "assets/figures/arxiv/2603.05092v1/fig-010.webp",
+      "caption": "Figure 3: Overall architecture of Aura, a multi-dimensional exogenous integration framework. Aura integrates static attributes encoded by LLMs and geospatial embeddings, and prepends them to endogenous tokens. Two cross-attention layers fuse exogenous series via residual connections to regulate the strength of integration. A Mixture of Experts (MoE) module leverages LLM-generated future insights from dynamic events to guide time series forecasting.",
+      "page": 4,
+      "index": 10,
+      "width": 1052,
+      "height": 502
+    },
+    {
+      "url": "assets/figures/arxiv/2603.05092v1/fig-011.webp",
+      "caption": "Figure 7: Visualization Prior to PRSOV Anomaly.",
+      "page": 12,
+      "index": 11,
+      "width": 481,
+      "height": 258
+    }
+  ]
+}

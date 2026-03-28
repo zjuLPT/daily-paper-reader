@@ -1,0 +1,62 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.07514v1/fig-001.webp",
+      "caption": "Figure 1: 2D visualization: Gaussian drifting field is exactly parallel to the score-matching direction. With a Gaussian kernel used for smoothing, the mean-shift drifting field in (a) is exactly direction-aligned with the score-mismatch field in (b) (as proved in Theorem 1); panels (c,d) visualize this alignment. Both fields are estimated from finite samples using the same kernel-based Monte Carlo procedure. Here p denotes the data distribution and q denotes a constructed model distribution (no training): p is a 3-mode mixture on the unit circle, and q is obtained by rotating each mode center of p by a fixed angle.",
+      "page": 2,
+      "index": 1,
+      "width": 1058,
+      "height": 232
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07514v1/fig-002.webp",
+      "caption": "Figure 6: Empirical diagnostics for the Laplace-kernel mechanism. (a) The kernel-reweighted preconditioners concentrate and become indistinguishable, ᾱp/ᾱq → 1. (b) The residual-gap energy Ex∼q∥δgap(x)∥22 decays with D, indicating a vanishing covariance residual. (c) The theory-predicted scale Ctheory = ρτ matches the oracle least-squares scale C∗, with C∗/Ctheory → 1. All results are consistent with the predictions of Theorems 4 and 5 and support the view that mean-shift drifting follows an approximately score-matching direction.",
+      "page": 18,
+      "index": 2,
+      "width": 1005,
+      "height": 245
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07514v1/fig-003.webp",
+      "caption": "Figure 7: Illustration of 2D generation across different synthetic datasets. We compare the generation quality of drifting models using Laplace and Gaussian kernels, and evaluate them using Sliced Wasserstein Distance (SWD) and MMD. The two kernels achieve nearly identical performance on both metrics across the four datasets. This suggests that, even in low dimension, the preconditioning and covariance-residual terms in Theorem 2 have little practical effect on generation quality.",
+      "page": 19,
+      "index": 3,
+      "width": 1042,
+      "height": 533
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07514v1/fig-004.webp",
+      "caption": "Figure 5: Empirical validity of drifting–score alignment as dimension grows. Field alignment between the drifting discrepancy ∆p,q(x) and the score discrepancy ∆sp,q(x) across increasing dimension D, evaluated on both Ring MoG and Raw MoG. (a) Absolute alignment error Eq∥∆p,q(x)− Ctheory∆sp,q(x)∥2, where Ctheory is computed as Equation (12). (b) Scale-free relative error normalized by the field energy Eq∥∆p,q(x)∥2. (c) Cosine similarity cos∠(∆p,q(x),∆sp,q(x)). (d) Directional misalignment 1− cos∠ on a log scale. Across both datasets, alignment improves monotonically with dimension: errors decrease at a rate consistent with the predicted 1/D decay, and the cosine similarity approaches 1, supporting the high-dimensional alignment predictions in Theorems 4 and 5.",
+      "page": 17,
+      "index": 4,
+      "width": 1060,
+      "height": 192
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07514v1/fig-005.webp",
+      "caption": "Figure 3: 2D visualization: drifting field is nearly parallel to score mismatch. The mean-shift drifting field is nearly directionaligned with the score-mismatch field; both are estimated from finite samples using the same kernel-based Monte Carlo procedure. Here, p and q are constructed as in Figure 1. As D increases, the alignment improves and the error gap decays as 1/D, consistent with Theorems 4 and 5.",
+      "page": 12,
+      "index": 5,
+      "width": 1058,
+      "height": 233
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07514v1/fig-006.webp",
+      "caption": "Figure 8: Comparison of generation on CIFAR-10. Single-step unconditional generation on CIFAR-10 at 32× 32 resolution using (a) a Laplace kernel (FID 20.91) and (b) a Gaussian kernel (FID 7.97). Both models are trained from the same random initialization. In this setup, the Gaussian kernel performs better. However, we do not view this gap as necessarily intrinsic to the kernel choice: prior evidence on CelebA-HQ [24] shows that Laplace and Gaussian kernels can achieve comparable FIDs (Laplace: 14.71; Gaussian: 16.56). Taken together, these results suggest that the additional preconditioning and residual terms introduced by the Laplace kernel need not significantly affect generation quality relative to the Gaussian kernel, although their practical impact may depend on tuning and training configuration.",
+      "page": 20,
+      "index": 6,
+      "width": 786,
+      "height": 400
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07514v1/fig-007.webp",
+      "caption": "Figure 4: Illustration of the 2D synthetic datasets. Top row shows Ring MoG; bottom row shows Raw MoG.",
+      "page": 16,
+      "index": 7,
+      "width": 263,
+      "height": 580
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.02840v1/fig-001.webp",
+      "caption": "Table 1. MASE of fine-tuning methods. The table shows the MASE performance of fine-tuning methods on the Chronos Bolt and Moirai-1.1-R TSFMs, when zero-shot forecasting standard time series datasets. A lower MASE is better and we also provide standard errors over training runs. Importantly, the time series used for fine-tuning are related but are not the same as the time series evaluated on. We bold and underline the best and second best performing method, respectively, for each dataset and TSFM. Our results show that MixFT, in terms of average ranking and number of bolded/underlined results, performs the best.",
+      "page": 6,
+      "index": 1,
+      "width": 1000,
+      "height": 850
+    },
+    {
+      "url": "assets/figures/arxiv/2603.02840v1/fig-002.webp",
+      "caption": "Table 4. MASE of versions of MixFT with differing component selection methods, when zero-shot forecasting using Chronos Bolt. The table shows MixFT with µ and Arrow routing which are used by some of the other fine-tuning methods compared to in the main paper. Also the table shows two methods which use the probabilities given by MixFTs Bayesian GMM to perform component selection, soft and ensemble-MixFT. In the table we bold and underline the best and second best results, respectively. We find that that MixFT performs the best or second best for all time series, bar CloudD1, and achieves the lowest average rank. This shows that MixFTs way of selecting what LoRA to use for zero-shot forecasting performs well.",
+      "page": 15,
+      "index": 2,
+      "width": 795,
+      "height": 452
+    },
+    {
+      "url": "assets/figures/arxiv/2603.02840v1/fig-003.webp",
+      "caption": "Figure 7. Mixture membership of the evaluation datasets for MixFT, when using Chronos Bolt. The plot shows, for the first channel of each evaluation dataset, when the time series is learnt to be of the first mixture component (purple area) or the second component (yellow area). We find, as expected, that there are less consistent patterns of mixture membership than in the fine-tuning data (see Figure 3). This demonstrates the difficultly of identifying sub-domains from zero-shot data. However, there are still patterns of usage. For example, for BizITObs-Application we see a periodic pattern. This suggests while it is hard to identify zero-shot mixture membership, MixFT still does a reasonable job and this is one of the reasons it performs well in our experiments.",
+      "page": 21,
+      "index": 3,
+      "width": 535,
+      "height": 394
+    },
+    {
+      "url": "assets/figures/arxiv/2603.02840v1/fig-004.webp",
+      "caption": "Figure 1. MixFT identifies and trains separate LoRA modules on different sub-domains given in the fine-tuning datasets. This is unlike previous approaches which either separately fine-tune LoRA modules using dataset boundaries (per-dataset methods) or trained a single LoRA module on all the data (Shared) (Ostapenko et al., 2024). By training separate LoRA modules on sub-domains, MixFT aims for the training data for each LoRA to be more homogeneous, leading to more specialized and consistent LoRA modules. This also should lead to better identifiability of what LoRA modules to use when zero-shot forecasting.",
+      "page": 2,
+      "index": 4,
+      "width": 1000,
+      "height": 262
+    },
+    {
+      "url": "assets/figures/arxiv/2603.02840v1/fig-005.webp",
+      "caption": "Table 7. Confidence of MixFTs classification of a contexts sub-domain in terms of average classification entropy. The average classification entropy of a dataset D is Ex∼D[H(c|z = TSFMembed(x))] and measures the average uncertainty in the classification of c for x ∈ D. We find that the average entropy is small across all fine-tuning and evaluation datasets, where an entropy of 0.01 bit corresponds to a 0.999 estimated probability a context is of a particular sub-domain. This shows that MixFT is on average very confident what contexts belong to what sub-domains.",
+      "page": 18,
+      "index": 5,
+      "width": 537,
+      "height": 631
+    },
+    {
+      "url": "assets/figures/arxiv/2603.02840v1/fig-006.webp",
+      "caption": "Figure 3. Mixture membership of the fine-tuning datasets for MixFT. The plot shows, for the first channel of each fine-tuning dataset, when the time series is learnt to be of the first mixture component (purple area) or the second component (yellow area). We find that some of the channels consist of just one mixture component (CloudD3 and M4-Weekly), mostly one component (BitBrains and M4-Hourly) or exhibit periodic patterns (CloudD4 and BizITObs-Service). The plots suggest that MixFTs Bayesian mixture model finds reasonable patterns in the data. Also, as both sub-domains/mixture components are found in a given dataset, MixFT’s data divisions can not be found by per-dataset methods.",
+      "page": 8,
+      "index": 6,
+      "width": 453,
+      "height": 333
+    },
+    {
+      "url": "assets/figures/arxiv/2603.02840v1/fig-007.webp",
+      "caption": "Figure 2. Overview of MixFT. On the left side of the figure, we display how MixFT fine-tunes LoRA modules for zero-shot forecasting. First, it identifies the sub-domains in the fine-tuning datasets. Then it redivides the data per-sub-domain. Last, it trains a separate LoRA module on the data of each sub-domain. This ensures that the trained LoRA modules specialise in forecasting sub-domains not datasets, unlike previous work (Ostapenko et al., 2024). On the right side of the figure, we show how MixFT constructs a forecast. This is done by identifying what sub-domain a context belongs to and then using that sub-domains LoRA module for forecasting. This ensures the TSFM is exploiting the knowledge of that sub-domain given by the fine-tuning data.",
+      "page": 4,
+      "index": 7,
+      "width": 1014,
+      "height": 375
+    },
+    {
+      "url": "assets/figures/arxiv/2603.02840v1/fig-008.webp",
+      "caption": "Figure 4. Example forecasts on BizITObs-Application given by MixFT and when using the other sub-domains LoRA module in a mixture or on its own. The two plot shows forecasts for MixFT, Ensemble MixFT (see Appendix D.2) and the forecast given by using the LoRA module not selected by MixFT, calling this Other Component in the plots. The plot also present the true value. In plot b) we do not show the forecasts of Ensemble MixFT as it is identical to that of MixFT—MixFT classifies with probability 1.0 that the given context belongs to one of the sub-domains. The plots show that using the LoRA module MixFT selects gives better forecasts than using the one it does not. Furthermore, that ensembleling both forecasts can result in worse performance than MixFT because the Other Component forecast can be inaccurate given that it is forecasting an OOD context for its sub-domain.",
+      "page": 19,
+      "index": 8,
+      "width": 978,
+      "height": 388
+    },
+    {
+      "url": "assets/figures/arxiv/2603.02840v1/fig-009.webp",
+      "caption": "Table 6. MASE of using MixFT with differing number of mixture components, when using Chronos Bolt. In the table we show when using MixFT with one to ten mixture components. Using one is equivalent to Shared and using two is what MixFT uses in the rest of our experiments. In the table we bold and underline the best and second best results, respectively. We find that different numbers of mixture components often perform similarly and that using two is best in terms of average rank.",
+      "page": 17,
+      "index": 9,
+      "width": 967,
+      "height": 453
+    },
+    {
+      "url": "assets/figures/arxiv/2603.02840v1/fig-010.webp",
+      "caption": "Figure 5. Plots of two contexts identified as belonging to the two mixture components of MixFT, respectively, for the first channel of the fine-tuning dataset BizITObs-service, when using Chronos Bolt. The plot shows one of the characteristics of the learnt sub-domains, in that when the end of a context is varying (i.e. is spiking in the figure) then it is seen as belonging to the second component, else it belongs to the first. This is the reason why in Figure 3, for BizITObs-service there is a periodic pattern as it has periodic spikes. This figure demonstrates that MixFTs found sub-domains are interpretable and understandable.",
+      "page": 20,
+      "index": 10,
+      "width": 980,
+      "height": 338
+    },
+    {
+      "url": "assets/figures/arxiv/2603.02840v1/fig-011.webp",
+      "caption": "Table 5. MASE of versions of MixFT with differing probabilistic models, when using Chronos Bolt. MixFT uses a Bayesian GMM to identify and learn sub-domains. In the table we show its performance using a range of different probabilistic models, to identify and learn sub-domains. In the table we bold and underline the best and second best results, respectively. We find that using a Bayesian GMM performs best or second best for all datasets, bar M4-Daily, and achieves the lowest average rank. This shows it is a good choice for the probabilistic model of MixFT.",
+      "page": 16,
+      "index": 11,
+      "width": 625,
+      "height": 450
+    }
+  ]
+}

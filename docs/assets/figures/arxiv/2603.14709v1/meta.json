@@ -1,0 +1,62 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.14709v1/fig-001.webp",
+      "caption": "Table 1. Comparison of TS RAG frameworks. (1) How to retrieve? Defines the similarity space used for retrieval in either the data space or the latent space, depending on the use of the retrieval encoder h(·). (2) What to retrieve? Specifies the retrieved content R. (3) How to fuse? Describes how the retrieved information is integrated with the query Q.",
+      "page": 2,
+      "index": 1,
+      "width": 997,
+      "height": 305
+    },
+    {
+      "url": "assets/figures/arxiv/2603.14709v1/fig-002.webp",
+      "caption": "Table 8. Average MSE across various input windows (T ) and forecast horizons (L). Cross-attention-based retrieval in CrossRAG leads to more consistent improvements compared with selfattention-based TS-RAG across seven different datasets.",
+      "page": 7,
+      "index": 2,
+      "width": 481,
+      "height": 342
+    },
+    {
+      "url": "assets/figures/arxiv/2603.14709v1/fig-003.webp",
+      "caption": "Table 9. Robustness to similarity metrics. Performance remains stable across different similarity metrics, indicating that the method can be applied directly in the data space without requiring a separate retrieval encoder.",
+      "page": 7,
+      "index": 3,
+      "width": 492,
+      "height": 263
+    },
+    {
+      "url": "assets/figures/arxiv/2603.14709v1/fig-004.webp",
+      "caption": "Figure 3. Overall Framework of Cross-RAG. Cross-RAG fuses retrieved information through two branches: (1) Query–retrieval cross-attention models relevance between the query and retrieved inputs and aggregates retrieved outputs conditioned on this relevance. (2) Retrieval self-attention summarizes retrieved outputs in a query-independent manner to capture contextual information among retrieved samples. The TSFM backbone and predictor are frozen, and only the additional modules are trained on general pretraining datasets.",
+      "page": 3,
+      "index": 4,
+      "width": 1015,
+      "height": 287
+    },
+    {
+      "url": "assets/figures/arxiv/2603.14709v1/fig-005.webp",
+      "caption": "Figure 4. Necessity of selective attention. The figure shows that the optimal k varies both across and within datasets ([A] ETTh1, [B] Exchange, [C] Weather), highlighting the necessity of selectively attending to samples among the retrieved samples.",
+      "page": 4,
+      "index": 5,
+      "width": 1010,
+      "height": 213
+    },
+    {
+      "url": "assets/figures/arxiv/2603.14709v1/fig-006.webp",
+      "caption": "Table D.1. Full results of ablation on fusion components. Q denotes the skip-connection from the query representation, R denotes retrieval self-attention that summarizes retrieved samples.",
+      "page": 12,
+      "index": 6,
+      "width": 927,
+      "height": 225
+    },
+    {
+      "url": "assets/figures/arxiv/2603.14709v1/fig-007.webp",
+      "caption": "Table 3. Results of zero-shot forecasting across TSFMs. The proposed method outperforms existing TSFMs across diverse datasets, achieving up to a 4.8% MSE improvement over the best baseline. The 1st and 2nd results are indicated by bold and underline, respectively.",
+      "page": 5,
+      "index": 7,
+      "width": 1017,
+      "height": 268
+    }
+  ]
+}

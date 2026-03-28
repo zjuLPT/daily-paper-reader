@@ -1,0 +1,46 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.01552v1/fig-001.webp",
+      "caption": "Fig. 1. Flow diagram indicating the desirable information to be modeled in the latent representational space of our approach.",
+      "page": 1,
+      "index": 1,
+      "width": 464,
+      "height": 375
+    },
+    {
+      "url": "assets/figures/arxiv/2603.01552v1/fig-002.webp",
+      "caption": "Fig. 4. Left to right: (a) Ground truth, (b) cDAE, and (c) Align-cDAE. Top to bottom: (i) Ground-truth and predicted follow-up images, (ii) (a) Ground truth baseline and (b)-(c) model attention maps overlaid on images, and (iii) Difference between ground-truth/ predicted follow-up and ground-truth baseline images.",
+      "page": 6,
+      "index": 2,
+      "width": 372,
+      "height": 469
+    },
+    {
+      "url": "assets/figures/arxiv/2603.01552v1/fig-003.webp",
+      "caption": "Fig. 2. Left to right: The condition encoder (C) integrates progression information with the latent representation of baseline image (xb) produced by the encoding component (E), guiding the denoising decoder (D) to generate follow-up image (x̂f ). Cross-attention (Al) is computed between the conditioning vector and decoder layers, and the objective functions enforce alignment of Al with the progression-specific mask (M ).",
+      "page": 2,
+      "index": 3,
+      "width": 1064,
+      "height": 408
+    },
+    {
+      "url": "assets/figures/arxiv/2603.01552v1/fig-004.webp",
+      "caption": "TABLE I QUANTITATIVE EVALUATIONS OF ALIGN-CDAE WITH THE BASELINE METHODS IN TERMS OF IMAGE-LEVEL METRICS (PSNR, SSIM, MSE). STATISTICAL SIGNIFICANCE (p < 0.01) IS MARKED WITH (∗).",
+      "page": 4,
+      "index": 4,
+      "width": 529,
+      "height": 419
+    },
+    {
+      "url": "assets/figures/arxiv/2603.01552v1/fig-005.webp",
+      "caption": "Fig. 3. Left to right: In sub-figures (A) and (B), the columns (a)-(f) present a method-wise comparison of predicted follow-up images (x̂f ) along with their error maps computed with respect to the ground-truth follow-up (|x̂f −xf |) and ground truth baseline (|xb− x̂f |), respectively. Column (g) in sub-figure (A) shows the ground-truth follow-up (xf ), while in sub-figure (B) it also shows the ground-truth follow-up and baseline difference (|xb − xf |). Top to bottom: For both sub-figures, the upper and lower two rows correspond to subjects aged 83.3 and 84.3 years, respectively, from the AD disease category. In sub-figure (A), the green box highlights that Align-cDAE better predicts progression-related changes.",
+      "page": 5,
+      "index": 5,
+      "width": 1068,
+      "height": 396
+    }
+  ]
+}

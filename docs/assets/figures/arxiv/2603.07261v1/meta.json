@@ -1,0 +1,78 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.07261v1/fig-001.webp",
+      "caption": "Figure 4: Comparative performance of symbolic forecasting approaches and state-of-the-art frameworks for one-step ahead (rolling window) forecasting of chaotic datasets using five historical observations for each model. In the plot, panels show error distributions across four metrics: RMSE (top-left), MAE (top-right), MARRE (bottom-left), and SMAPE (bottom-right). Red dots denote median performance; error bars represent the interquartile range (IQR). For all panels, models are ranked by ascending median error (lower values indicate better performance).",
+      "page": 15,
+      "index": 1,
+      "width": 950,
+      "height": 627
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07261v1/fig-002.webp",
+      "caption": "Figure 2: Real-world datasets along with their autocorrelation function (ACF) and partial autocorrelation function (PACF).",
+      "page": 7,
+      "index": 2,
+      "width": 950,
+      "height": 542
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07261v1/fig-003.webp",
+      "caption": "Figure 6: Comparative performance of symbolic forecasting approaches and state-of-the-art frameworks for one-step ahead forecasting of chaotic datasets using twenty-five historical observations for each model. In the plot, panels show error distributions across four metrics: RMSE (top-left), MAE (topright), MARRE (bottom-left), and SMAPE (bottom-right). Red dots denote median performance; error bars represent the interquartile range (IQR). For all panels, models are ranked by ascending median error (lower values indicate better performance).",
+      "page": 18,
+      "index": 3,
+      "width": 950,
+      "height": 627
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07261v1/fig-004.webp",
+      "caption": "Figure 9: The plot visualizes the ground truth (red points) observations of (a) Sanjuan Dengue and (b) El Niño SST dataset during the test period, along with the point forecasts (blue line) and the conformal prediction interval of the SYNF-Div-Reg model (yellow shaded).",
+      "page": 23,
+      "index": 4,
+      "width": 950,
+      "height": 411
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07261v1/fig-005.webp",
+      "caption": "Figure 7: Visualization of the MCB test results for synthetic chaotic attractor forecasting tasks based on RMSE (left) and SMAPE (right) metrics. The vertical axis represents the average ranks of the forecasting methods, while the horizontal axis lists the corresponding techniques. For example, SyTF – 1.98 indicates that the SyTF framework obtained an average rank of 1.98 under the RMSE metric, with similar interpretations applicable to the remaining models.",
+      "page": 19,
+      "index": 5,
+      "width": 950,
+      "height": 340
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07261v1/fig-006.webp",
+      "caption": "Figure 5: Comparative performance of symbolic forecasting approaches and state-of-the-art frameworks for one-step ahead forecasting of chaotic datasets using ten historical observations for each model. In the plot, panels show error distributions across four metrics: RMSE (top-left), MAE (top-right), MARRE (bottom-left), and SMAPE (bottom-right). Red dots denote median performance; error bars represent the interquartile range (IQR). For all panels, models are ranked by ascending median error (lower values indicate better performance).",
+      "page": 17,
+      "index": 6,
+      "width": 950,
+      "height": 627
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07261v1/fig-007.webp",
+      "caption": "Figure 3: Symbolic Forecasting Architectures. The upper panel illustrates the architecture of the Symbolic Neural Forecaster (SyNF), where a differentiable neural training mechanism is used to learn interpretable forecasting equations from symbolic operators and lagged inputs. The lower panel presents the workflow of the Symbolic Tree Forecaster (SyTF), which employs an evolutionary search to construct and refine symbolic expression trees based on predictive performance and interpretability. The demonstration is conducted on a simulated dataset. The mathematical expression obtained from the SyNF model is ŷt = 0.1110 + 0.9421yt−1 + 0.0001 (yt−1) 2 (top image) whereas the SyTF architecture yields ŷt,SyTF = 0.9613yt−1 (bottom image) using a single historical lagged observation. The one-stepahead rolling window forecasts are also presented in the upper and lower panels for the simulated example datasets.",
+      "page": 9,
+      "index": 7,
+      "width": 950,
+      "height": 723
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07261v1/fig-008.webp",
+      "caption": "Table 2: Comparative evaluation of forecasting performance for machine learning models and symbolic forecasting frameworks on real-world datasets across multiple performance indicators. In the table, the best and second-best performing models are highlighted.",
+      "page": 20,
+      "index": 8,
+      "width": 794,
+      "height": 509
+    },
+    {
+      "url": "assets/figures/arxiv/2603.07261v1/fig-009.webp",
+      "caption": "Figure 1: A dataset of 132 distinct low-dimensional chaotic systems, colored by largest Lyapunov exponent (λmax).",
+      "page": 5,
+      "index": 9,
+      "width": 950,
+      "height": 546
+    }
+  ]
+}

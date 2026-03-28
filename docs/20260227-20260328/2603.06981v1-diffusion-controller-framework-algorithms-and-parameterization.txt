@@ -1,0 +1,2407 @@
+Title: Diffusion Controller: Framework, Algorithms and Parameterization
+
+URL Source: https://arxiv.org/pdf/2603.06981v1
+
+Published Time: Tue, 10 Mar 2026 00:27:08 GMT
+
+Number of Pages: 37
+
+Markdown Content:
+# Diffusion Controller: Framework, Algorithms and Parameterization 
+
+Tong Yang ∗
+
+CMU & Google Research Moonkyung Ryu †
+
+Google Research Chih-Wei Hsu †
+
+Google Research Guy Tennenholtz †
+
+Google Research Yuejie Chi ‡
+
+Yale Craig Boutilier †
+
+Google Research Bo Dai †
+
+Google DeepMind March 2026 LoRA  Ours                   
+
+> Pretrained
+> Prompt: “A black cat
+> wearing asuit and
+> smoking acigar.”
+> Prompt: “A bluejay is
+> eating spaghetti.”
+> Pretrained
+> LoRA Ours LoRA Ours
+> Pretrained
+> Prompt: “A lizard
+> wearing sunglasses.”
+
+Figure 1: Qualitative text-to-image comparisons of pretrained Stable Diffusion v1.4, LoRA finetuning, and ours. 
+
+Abstract 
+
+Controllable diffusion generation often relies on various heuristics that are seemingly disconnected without a unified understanding. We bridge this gap with Diffusion Controller (DiffCon), a unified control-theoretic view that casts reverse diffusion sampling as state-only stochastic control within (gen-eralized) linearly-solvable Markov Decision Processes (LS-MDPs). Under this framework, control acts by reweighting the pretrained reverse-time transition kernels, balancing terminal objectives against an 
+
+f -divergence cost. From the resulting optimality conditions, we derive practical reinforcement learn-ing methods for diffusion fine-tuning: (i) f -divergence-regularized policy-gradient updates, including a PPO-style rule, and (ii) a regularizer-determined reward-weighted regression objective with a minimizer-preservation guarantee under the Kullback–Leibler (KL) divergence. The LS-MDP framework further implies a principled model form: the optimal score decomposes into a fixed pretrained baseline plus a lightweight control correction, motivating a side-network parameterization conditioned on exposed intermediate denoising outputs, enabling effective gray-box adaptation with a frozen backbone. Experi-ments on Stable Diffusion v1.4 across supervised and reward-driven finetuning show consistent gains in preference-alignment win rates and improved quality–efficiency trade-offs versus gray-box baselines and even the parameter-efficient white-box adapter LoRA. 
+
+Keywords: diffusion, reinforcement learning, controllable generation, text-to-image, representation learning 
+
+> ∗
+
+Carnegie Mellon University; Intern at Google Research; Email: tongyang@andrew.cmu.edu .
+
+> †
+
+Google; Emails: {mkryu,cwhsu,guytenn,cboutilier,bodai }@google.com .
+
+> ‡
+
+Yale University; Email: yuejie.chi@yale.edu .
+
+1
+
+> arXiv:2603.06981v1 [cs.LG] 7 Mar 2026
+
+# 1 Introduction 
+
+Recent advances in diffusion models have enabled high-fidelity image synthesis, becoming a default choice for text-to-image generation [Ho et al., 2020, Song and Ermon, 2019], e.g., Stable Diffusion 3 [Esser et al., 2024], Flux.1 Labs et al. [2025], Emu3 [Wang et al., 2024]. Yet, controllable generation—steering samples to satisfy user intent, constraints, or downstream objectives—remains challenging, as stronger steering typically requires departing further from the pretrained model and can degrade sample quality [Zhang et al., 2023]. In practice, control is achieved through a mix of inference-time mechanisms (e.g., classifier/classifier-free guidance and related guidance variants [Dhariwal and Nichol, 2021, Ho and Salimans, 2022]) and training-time adaptation (e.g., personalization or domain adaptation via paired supervision and parameter-efficient adapters [Ruiz et al., 2023, Zhang et al., 2023]). More recently, a growing line of work fine-tunes diffusion models using human feedback or learned rewards, aiming to optimize terminal objectives such as alignment, aesthetics, or task scores [Lee et al., 2023, Fan et al., 2023]. Despite strong empirical progress, these approaches are often presented as a patchwork of objectives and disconnected heuristics, and the field has largely lacked a simple, principled and unified framework to model and analyze the control of these powerful generative processes. 
+
+1.1 Our contribution 
+
+To address this gap, we aim to develop a control-theoretic view of diffusion sampling that provides a com-mon language for interpreting a range of diffusion finetuning approaches. To this end, we view diffusion finetuning as optimal control of the Markov process over intermediate noisy states along the denoising tra-jectory—induced by the reverse-time sampler. Under this lens, controllable diffusion generation amounts to learning a controlled reverse-time transition kernel of diffusion that steers the induced terminal distribution toward a target objective. Under this controlled-sampling view, diffusion finetuning becomes a state-only stochastic control problem that fits naturally into the linearly-solvable MDP (LS-MDP) framework [Todorov, 2006]. In contrast to stan-dard MDP formulations that introduce explicit actions [Uehara et al., 2024a], our LS-MDP–induced diffusion controller (DiffCon) directly modulates the reverse-time dynamics by reweighting the passive (uncontrolled) pretrained transitions. We penalize this modulation with a general f -divergence control cost (recovering the classic KL-regularized LS-MDP [Todorov, 2006] as a special case), which provides a principled trade-off between reward-driven steering and staying close to the pretrained model for preserving stability and sample quality. We next turn the LS-MDP characterization into implementable diffusion finetuning algorithms by re-alizing the optimality conditions with a score-parameterized diffusion reverse process, rather than directly learning the implied optimal reverse kernels that are hard to sample from. This translation yields practical objectives in the reinforcement learning finetuning (RLFT) setting where no target samples are available and feedback is provided only by a terminal reward model on the final image. Specifically, we derive two RL finetuning updates: i) , f -divergence-regularized policy-gradient methods [Williams, 1992] with standard extensions such as PPO [Schulman et al., 2017]; and ii) , regularizer-determined reward-weighted regres-sion objectives with a minimizer-preservation guarantee (under KL, matching the relevant LS-MDP optimal marginal). Finally, beyond offering a unified objective template, the LS-MDP view also sheds light on the optimal model form: the optimal controlled reverse process is a regularized perturbation of the pretrained diffusion model (aka the backbone), so the learned score naturally decomposes into a fixed pretrained baseline plus a small control correction. This motivates our DiffCon parameterization that freezes the backbone and learns a lightweight controller network conditioned on exposed intermediate denoising outputs (e.g., per-step noise predictions or the implied reverse mean), making it naturally compatible with gray-box settings where the backbone architecture is unknown [Poole et al., 2022]. Our parameterization steers the backbone model with a small and interpretable module that preserves pretrained stability yet enables strong and tunable control. Our experiments demonstrate the effectiveness of our proposed algorithms and parameterization. Across both SFT and RLFT settings, the resulting objectives significantly improve win rate over the pretrained 2model. Moreover, the LS-MDP-motivated score reparameterization delivers a stronger quality–efficiency trade-off—outperforming gray-box baselines and the white-box adapter LoRA. 
+
+1.2 Related work 
+
+Reinforcement learning for diffusion models. Existing RL finetuning for diffusion models treats de-noising as an MDP and optimizes terminal rewards via policy gradients (e.g., DDPO [Black et al., 2023], DPOK [Fan et al., 2023]), differentiable-reward backpropagation (e.g., DRaFT [Clark et al., 2023]), or reward-weighted likelihood/score matching [Lee et al., 2023, Fan et al., 2023], see Uehara et al. [2024a] for a review. Several works align diffusion models from pairwise preferences using DPO-style objectives [Wallace et al., 2024, Yang et al., 2024a, Kim et al., 2025, Croitoru et al., 2025], and others mitigate delayed supervision by constructing dense or step-level rewards along the denoising trajectory [Yang et al., 2024b]. Tang and Zhou [2024] further connects continuous-time diffusion finetuning to entropy/ f -divergence regularized stochastic control, with follow-ups casting diffusion finetuning explicitly as entropy-regularized control [Uehara et al., 2024b, Han et al., 2024]. 
+
+Score-function parameterization and modular control. A common diffusion finetuning practice keeps a strong pretrained backbone fixed and steer generation with lightweight adapters (e.g., LoRA [Hu et al., 2022], or DiffFit [Xie et al., 2023], which tunes only bias terms plus a small set of added layerwise scaling factors) or side networks such as ControlNet [Zhang et al., 2023], T2I-Adapter [Mou et al., 2024], IP-Adapter [Ye et al., 2023], Gligen [Li et al., 2023] that add score adjustments (akin to guidance). In con-trast, our LS-MDP analysis yields a principled pretrained+controller decomposition of the optimal score that supports gray-box access, with the control term implemented as a side module parameterized via random Fourier features [Rahimi and Recht, 2007, Tancik et al., 2020]. 
+
+Notation. Let R, N be the set of real numbers and natural numbers. Let Rd be the d-dimensional real vector space, and ∥x∥2 represent the Euclidean norm of x. The Gaussian distribution with mean μ and covariance matrix Σ is denoted by N (x|μ, Σ), and U (A) stands for the uniform distribution over set A.Define [ T ] := {1, · · · , T }. Last but not least, O(·) and Op(·) denote the standard asymptotic big-O notation and the big-O in probability notation, respectively. 
+
+# 2 Preliminaries 
+
+Linearly-Solvable MDP (LS-MDP) [Todorov, 2006]. An LS-MDP is a stochastic control problem in which the controller acts directly on the transition kernel: at each time step, it selects a next-state distribution that stays close to a given passive (uncontrolled) dynamic, measured by the Kullback-Leibler (KL) divergence. Concretely, let st ∈ S be the state at time t from the state space S, and Pt(st+1 | st)denote the passive transition kernel at time t. The time-dependent control ut : S × S → R exponentially tilts the passive dynamic as: 
+
+Pu,t (st+1 |st) = Pt (st+1 |st) exp ( ut (st+1 , s t)) ,
+
+s.t.
+
+Z
+
+> S
+
+Pu,t (st+1 |st) ds t+1 = 1 , ∀t ∈ [T − 1] , (1) where T is the time horizon. Given an instantaneous reward rt : S → R, the (regularized) value recursion is 
+
+Vu,t (st) := rt (st) + Est+1 ∼Pu,t (·| st) [Vu,t +1 (st+1 )] − τ D KL (Pu,t (·| st) ∥ Pt(·| st)) , (2) where DKL (p ∥ q) := R p(x) log p(x) 
+
+> q(x)
+
+dx is the KL divergence, and τ ⩾ 0 is the regularization coefficient. The KL-regularized formulation (2) has also been generalized by replacing the KL control cost with more general divergence regularizers, such as R´ enyi-regularized LS-control [Dvijotham and Todorov, 2011] or Tsallis entropy [Hashizume et al., 2024]. 3Diffusion models [Ho et al., 2020]. Diffusion models generate data by learning to iteratively transforms a simple noise distribution into a target data distribution. We describe the setting of conditional generation ,where clean images follow the distribution xT ∼ pdata (· | c) conditioned on c ∼ pc (e.g., class labels or text), with condition support C.1 When c = ∅, this reduces to unconditional generation. Let {βt ∈ (0 , 1) }T −1 
+
+> t=1
+
+be the variance schedule, and define 
+
+αt = 1 − βt, αt = 
+
+> T−1
+
+Y
+
+> i=t
+
+αi. (3) We now describe the forward process and the reverse process used in diffusion models. 
+
+• Forward process. The forward (noising) process is a fixed Markov chain that gradually corrupts a clean image into (approximately) standard Gaussian noise. Starting from xT ∼ pdata (· | c), for any 
+
+t ∈ [T − 1], 
+
+xt = √αtxt+1 + pβtξt = √αtxT + √1 − αtξ, (4) where ξt, ξ ∼ N (0 , Id). In particular, x1 is approximately standard Gaussian. We use score matching to learn the score function ϵ(·, c, t ), 2 which is parameterized by neural networks as ϵθ (·, c, t ), using the following noise-prediction regression objective: min  
+
+> θ
+
+Ec,x T ,t,ξ 
+
+ 12 ξ − ϵθ
+
+ √αtxT + √1 − αtξ, c, t  22
+
+
+
+,
+
+where the expectation is taken over c ∼ pc, xT ∼ pdata (·| c), t ∼ U ([ T − 1]), and ξ ∼ N (0 , Id). 
+
+• Reverse process. At sampling time, diffusion models iterative denoise a noise sample x1 ∼ N (0 , Id)to xT through the Gaussian reverse-time transitions: 
+
+xt+1 ∼ pt (·| xt, c ) := N (·| μ(xt, c, t ), eβtId) (5) with mean 
+
+μ(xt, c, t ) = 1
+
+√αt
+
+xt − βt
+
+pαt (1 − αt) ϵθ (xt, c, t )and reverse-time variance eβt := βt(1 −αt+1 )1−αt . For unconditional generation, we directly set ϵθ (xt, t ) = 
+
+ϵθ (xt, ∅, t ) to generate the image following the reverse process. For conditional generation, we use the standard classifier-free guidance (CFG) framework [Ho and Salimans, 2022]: during training we drop the condition with probability pdrop ∈ (0 , 1), and at sampling we combine conditional and unconditional predictions as ˆϵθ (xt, c, t ) = (1 + λCFG )ϵθ (xt, c, t ) − λCFG ϵθ (xt, ∅, t ),
+
+where λCFG ⩾ 1 controls guidance strength. 
+
+Access levels for diffusion finetuning. We categorize diffusion fine-tuning by access to the pretrained backbone. In the white-box setting, the backbone can be modified (e.g., full finetuning or inserting adapters such as LoRA [Hu et al., 2022]). In many real-world applications, however, the backbone may be sealed for proprietary or safety reasons, while exposing limited interfaces (e.g., per-timestep noise predictions or denoising trajectories). This gray-box setting motivates finetuning with add-on modules that harvest on these interfaces while keeping the backbone intact [Poole et al., 2022, Yang et al., 2024c, Yu et al., 2023b, Zhu et al., 2025, Yu et al., 2023a].     
+
+> 1Our indexing is reversed from the convention used in Ho et al. [2020] to align with common RL notation: xTis the clean image and x1is pure noise.
+> 2To be precise, this is the noise-prediction function, which can be mapped equivalently from the score function [Song et al., 2020].
+
+43 Diffusion Controller through LS-MDP 
+
+We are interested in finetuning a pretrained diffusion model to generate images from a new distribution (e.g., conditional generation, human-preference alignment, domain adaptation, etc.). In this section, we formulate diffusion finetuning through the lens of controlling LS-MDP, which provides a simpler and unified framework compared to prior works using standard MDPs [Black et al., 2023, Fan et al., 2023]). We call the proposed framework Diffusion Controller (DiffCon) : a controllable diffusion reverse process that steers intermediate states to match a target distribution. Building on this formulation, we further derive the corresponding RL finetuning algorithms. 
+
+3.1 Framework 
+
+Prior works (e.g., DDPO [Black et al., 2023], DPOK [Fan et al., 2023]) cast the reverse diffusion chain as a standard MDP by taking the state st = ( xt, c, t ) and treating the next sample as the action at = xt+1 ,with a deterministic environment and a policy given by the reverse transition from xt to xt+1 . However, this “action” is simply (part of) the next state, so the only real degree of freedom is how we shape the transition kernel itself. This motivates our LS-MDP characterization, which directly controls the reverse transition (regularized to stay close to the pretrained dynamics) rather than introducing a separate action variable, greatly simplifying the presentation. Let ϵ0(xt, c, t ) be the pretrained score function, whose reverse process is given by x1 ∼ p0,1 := N (·| 0, Id), and for all t ∈ [T − 1]: 
+
+xt+1 ∼ p0,t (·| xt, c ) := N (·| μ0(xt, c, t ), eβtId) (6) same as in (5), with mean 
+
+μ0 (xt, c, t ) := 1
+
+√αt
+
+xt − βt
+
+pαt (1 − αt) ϵ0 (xt, c, t ) . (7) We use the generalized LS-MDP framework (c.f. (1), (2)) to characterize the target distribution of finetuning. We define the controllable transition kernels induced by control ut : Rd × Rd × C → R as 
+
+Pu,t (xt+1 |xt, c ) = p0,t (xt+1 |xt, c ) exp( ut(xt+1 , x t, c )) ,
+
+s.t.
+
+Z
+
+> Rd
+
+Pu,t (xt+1 |xt, c )dx t+1 = 1 (8) for all c ∈ C and t = 0 , · · · , T − 1. Here we introduce x0 := ∅ for controlling the initial distribution 
+
+p0,0(x1|x0, c ) := p0,1(x1) of x1 with u0. Given a reward function rt(xt, c ), we let u⋆ = {u⋆t }T −1 
+
+> t=0
+
+denote the optimal control that solves the following value maximization problem: max  
+
+> ut(·,·,c )
+
+Vu,t (xt, c ) := rt (xt, c ) + Ext+1 ∼Pu,t (·| xt,c ) [Vu,t +1 (xt+1 , c )] − τ D f (Pu,t (·| xt, c ) ∥ p0,t (·| xt, c )) (9) for c ∈ C and t = 0 , · · · , T −1 with terminal value function VT (xT , c ) := rT (xT , c ) and regularization strength 
+
+τ ⩾ 0, where Df is an f -divergence [Csisz´ ar, 1963]: Df (p ∥ q) = R f
+
+ p(x)
+
+> q(x)
+
+
+
+q(x)dx for some convex f with 
+
+f (1) = 0. When Df = DKL , (9) recovers the classical KL-regularized LS-MDP (2). 
+
+Our goal. We aim to learn the optimal transition kernel Pu⋆,t (·| xt, c ) that leads to our target distribution 
+
+pu⋆ (·| c) (given any c ∈ C )—the terminal sample distribution of xT under the optimal control u⋆.However, Pu⋆,t (·| xt, c ) characterized by (1) is generally intractable to sample from (e.g., in the KL-regularized case, it takes an energy-based form, see (53) in the Appendix), so naively sampling xt+1 ∼
+
+Pu⋆,t (·| xt, c ) requires expensive inner-loop estimation at each step. To obtain an efficient ancestral sam-pler, we therefore learn a tractable diffusion reverse process whose induced transitions lead to the terminal 5distribution pu⋆ . Namely, we target for a score function ϵ⋆ that minimizes the following regression loss 
+
+Lorg (ϵ; pu⋆ ): 12 E c,t,ξ xT ∼pu⋆ (·| c)
+
+∥ξ − ϵ  √αtxT + √1 − αtξ, c, t  ∥22, (10) where c ∼ pc, t ∼ U ([ T − 1]), and ξ ∼ N (0 , Id). 
+
+3.2 Reinforcement Learning Finetuning (RLFT) 
+
+When target samples from pu⋆ (·| c) are unavailable and only a reward model is given, we derive tractable RL-style updates from the LS-MDP optimality in (9). Same as existing work [Black et al., 2023, Fan et al., 2023, Lee et al., 2023], we assume a terminal reward model is available: the reward scores only the fully denoised sample at the end of the reverse process, i.e. , in (9) we have 
+
+rt(xt, c ) = 
+
+(
+
+r(xT , c ), t = T, 
+
+0, otherwise . (11) Various diffusion control algorithms can be derived under the LS-MDP framework. To give some examples, we first derive the policy gradient type methods, and then propose reward-weighted losses for RL finetuning. 
+
+3.2.1 Policy Gradient and PPO for DiffCon 
+
+We use pθ,t (xt+1 |xt, c ) to denote the transition kernel with learnable parameters θ. It is often parameterized as the Gaussian (5) for ease of sampling: 
+
+pθ,t (xt+1 |xt, c ) = N (xt+1 |μθ (xt, c, t ), eβtId) (12) with 
+
+μθ (xt, c, t ) := 1
+
+√αt
+
+xt − βt
+
+pαt(1 − αt) ϵθ (xt, c, t ), (13) where ϵθ (xt, c, t ) is the score function to be learned. Let pθ, 0 (x1|x0, c ) := pθ, 0 (x1|c), and write Ext+1: t′ |pθ ,x t,c [·]as the shorthand for Exs+1 ∼pθ,s +1 (·| xs,c )
+
+> t⩽s⩽t′−1
+
+[·] for any t + 1 ⩽ t′ ⩽ T , and define the value function under pθ,t (·| c)as 
+
+Vθ,t (xt, c ) := rt(xt, c ) + Ext+1 |pθ ,x t,c [Vθ,t +1 (xt+1 , c )] − τ D f (pθ,t (·| xt, c ) ∥ p0,t (·| xt, c )) . (14) Unfolding (14), under our terminal reward (11), we have 
+
+Vθ,t (xt, c ) = Ext+1: T |pθ ,x t,c 
+
+"
+
+r(xT , c ) − τ 
+
+> T−1
+
+X
+
+> s=t
+
+f (ζθ,s +1 )
+
+ζθ,s +1 
+
+#
+
+, (15) 
+
+where ζθ,s +1 := pθ,s (xs+1 |xs,c ) 
+
+> p0,s (xs+1 |xs,c )
+
+. We define the soft advantage function given ( xt, c, t ) as 
+
+Aθ,t +1 := Vθ,t +1 (xt+1 , c ) − τ f ′ (ζθ,t +1 ) − Vθ,t (xt, c ) + τ Ext+1 |pθ ,x t,c 
+
+
+
+f ′ (ζθ,t +1 ) − f (ζθ,t +1 )
+
+ζθ,t +1 
+
+
+
+. (16) 
+
+Then Aθ,t +1 satisfies Ext+1 |pθ ,x t,c [Aθ,t +1 ] = 0. And a special case is when Df = DKL , we have 
+
+Aθ,t +1 = Vθ,t +1 (xt+1 , c ) − τ log ( ζθ,s +1 ) − Vθ,t (xt, c ).
+
+The following proposition gives the policy gradient expression for maximizing 
+
+Jθ := E c∼pc,x1∼pθ, 1(·| c)
+
+[Vθ, 1(x1, c )] = Ec∼pc [Vθ, 0(x0, c )] under the generalized LS-MDP framework. 6Proposition 1 (policy gradient) Under our reward setting (11) , the gradient of Jθ is given by 
+
+∇θ Jθ = E c∼pc,x1: T |pθ ,c 
+
+ T −1X
+
+> t=0
+
+∇θ log pθ,t (xt+1 |xt, c ) Aθ,t +1 
+
+
+
+.
+
+The proof of Proposition 1 is given in Appendix B.1. Further, utilizing (16), we also give a PPO update rule for DiffCon with clipping parameter δ ∈ (0 , 1): 
+
+θ(k+1) ← θ(k) + η∇θ E c∼pc,x1: T |pθ(k) ,c 
+
+" T −1X
+
+> t=0
+
+min 
+
+
+
+clip 
+
+ pθ,t (xt+1 |xt, c )
+
+pθ(k),t (xt+1 |xt, c ) , 1 − δ, 1 + δ
+
+
+
+A(k)
+
+> t+1
+
+,pθ,t (xt+1 |xt, c )
+
+pθ(k),t (xt+1 |xt, c ) A(k)
+
+> t+1
+
+#
+
+> θ=θ(k)
+
+. (17) 
+
+Relationship to existing policy gradient methods for diffusion finetuning. Prior RL fine-tuning works such as DDPO [Black et al., 2023] and DPOK [Fan et al., 2023] apply policy gradients to the MDP described at the beginning of Section 3.1, taking the policy to be our reverse transition kernel pθ,t (xt+1 |xt, c ). DDPO considers the unregularized setting, and our policy gradient recovers theirs when τ = 0. DPOK adds a KL regularizer toward the pretrained policy, and derives a policy gradient close to ours (but different in the regularization term) when Df = DKL , see Appendix A for a detailed comparison. 
+
+3.2.2 Reward-weighted Loss for DiffCon 
+
+Besides policy-gradient updates, we can obtain ϵ⋆ by reformulating the intractable objective in (10) into a tractable reward-weighted surrogate that preserves the same minimizer ϵ⋆ [Ma et al., 2025]. To do this, we first introduce the following f -divergence regularized optimization problem on trajectory distribution, where we let P0(·| c) be the joint reverse trajectory distribution over x1: T under the pretrained model conditioned on c:max   
+
+> P(·| c)
+
+EP (·| c) [r(xT , c )] − τ D f (P (·| c) ∥ P0(·| c)) (18) for all c ∈ C . We let eP ⋆(·| c) be the optimal solution of (18), and let ep⋆(·| c) be the marginal distribution of 
+
+xT under eP ⋆(·| c). Theorem 1 gives the tractable reward-weighted loss as the substitute of (10) under KL divergence, by exploiting the equivalence between (18) and (9) when Df = DKL . Moreover, it also gives the reward weighted loss equivalent to Lorg (·; ep⋆) under general f -divergence regularization. 
+
+Theorem 1 (reward weighted loss) Under our reward setting (11) , when τ > 0, the reward-weighted loss 
+
+Lf (ϵ) := 12 Et∼U ([ T −1]) ,ξ ∼N (0 ,Id),c∼pc,x T ∼p0,T (·| c)
+
+
+
+wf (r(xT , c ), τ ) ξ − ϵ  √αtxT + √1 − αtξ, c, t  22
+
+
+
+(19) 
+
+with the weighting function 
+
+wf (r(xT , c ), τ ) = max 
+
+
+
+0, (f ′)−1
+
+ r(xT , c ) − bf.τ (c)
+
+τ
+
+ 
+
+has the same minimum as Lorg (·; ep⋆), where bf,τ : C → R is a problem-dependent baseline function of condition c. Specially, when Df = DKL , ep⋆ = pu⋆ .
+
+The proof of Theorem 1 is given in Appendix B.2. As special examples of Theorem 1, for Df = DKL , we have the following exponential weighting function 
+
+wKL (r(xT , c ), τ ) := exp 
+
+ r(xT , c )
+
+τ
+
+
+
+; (20) 7for Df = Dα (α-divergence), and the following polynomial weighting function            
+
+> wα(r(xT, c ), τ ) :=
+> 
+> 1 + α−1
+> τ(r(xT, c )−bα.τ (c))
+> 1
+> α−1
+> +
+> (21)
+
+for some baseline function bα,τ : C → R.Note that for general f -divergence Df̸ = DKL , ep⋆ typically differs from pu⋆ , so so there is generally no closed-form weighting wf (r(xT , c ), τ ) exactly equivalent to (10). Nevertheless, the general reward-weighted loss form (19) remains a meaningful surrogate—it corresponds to optimizing the score-matching objective under the f -regularized optimal marginal ep⋆, and our experiments demonstrate the effectiveness of both the polynomial weighting (21) and the exponential weighting (20). 
+
+Relationship to existing RWL methods for diffusion finetuning. Prior diffusion RLFT work has also explored reward-weighted objectives: Lee et al. [2023] and Fan et al. [2023, Algorithm 2] optimize a reward-weighted likelihood-style loss on model samples with the weighting being the reward r(xT , c ) itself. Uehara et al. [2024a, Section 6.1] gives a reward-weighted MLE/score-matching objective with the exponential weighting same as our (20). See Appendix A for a more detailed discussion. 
+
+# 4 Diffusion Controller: Parameterization 
+
+The LS-MDP formulation implies that the optimal reverse dynamics is not an arbitrary diffusion model—it is the result of a regularized control that stays close to the pretrained reverse kernel (6). This suggests a design principle: rather than fully re-learning a high-capacity score ϵθ , we would like a parameterization that (i) , keeps the pretrained score ϵ0 as a strong baseline and isolates the control signal into a lightweight module, and (ii) is compatible with gray-box access, where the backbone may be hidden but we can still query intermediate denoising outputs (e.g., ϵ0 or the implied reverse mean μ0). To make this concrete, we focus on the KL-regularized case. Under the assumption that the pretrained score function ϵ0 minimizes the pretrained loss: 
+
+L0 (ϵ) := 12 E c,t,ξ, xT ∼p0(·| c)
+
+h
+
+ξ − ϵ  √αtxT + √1 − αtξ, c, t  22
+
+i
+
+(22) where in the expectation, p0 is the pretraining data distribution, c ∼ pc, t ∼ U ([ T − 1]), and ξ ∼ N (0 , Id), we next ask: what structure does the LS-MDP optimality impose on the optimal score ϵ⋆?
+
+We will introduce Proposition 2 that expresses ϵ⋆ in terms of ϵ0 plus two control-dependent objects that arise from reweighting the pretrained reverse transition p0,t (·| xt, c ). Further, the specific Gaussian form of p0,t (·| xt, c ) admits a convenient Fourier feature representation that is widely used in representation learning [Rahimi and Recht, 2007, Tancik et al., 2020], allowing us to express the two control-dependent objects as linear combinations of a shared Fourier-style basis function set ϕω (xt, c, t ) defined as 
+
+ϕω (xt, c, t ) := 
+
+cos 
+
+
+
+ω⊤μ0(xt, c, t )/
+
+qeβt
+
+
+
+sin 
+
+
+
+ω⊤μ0(xt, c, t )/
+
+qeβt
+
+ . (23) Now we state the main proposition of this section, where q0,t (·| xt, c ) in the error term is the true posterior transition kernel induced by the data distribution p0 and the forward process (that the learned reverse transition p0,t (·| xt, c ) tries to approximate): 
+
+Proposition 2 Assume Df = DKL in (9) , ϵ0 minimizes the pretrained loss (22) , and all xT satisfies 
+
+∥xT ∥∞ ⩽ 1. Then the minimum of (10) can be represented as: 
+
+ϵ⋆(xt, c, t ) = (1 − z⋆t (xt, c )) ϵ0(xt, c, t ) −√1 − αt
+
+βt
+
+
+
+z⋆t (xt, c )xt + √αt(1 − z⋆t (xt, c )) h⋆t (xt, c ) − √αtδ0,t 
+
+
+
+(24) 8with 
+
+h⋆t (xt, c ) = 1
+
+M
+
+> M
+
+X
+
+> i=1
+
+W ⋆(ωi, c, t )ϕωi (xt, c, t ) + δh,t , (25) 
+
+z⋆t (xt, c )1 − z⋆t (xt, c ) = 1
+
+M
+
+> M
+
+X
+
+> i=1
+
+u⋆(ωi, c, t )⊤ϕωi (xt, c, t ) + δz,t (26) 
+
+for some functions W ⋆ : Rd × C × [T ] → Rd×2 and u⋆ : Rd × C × [T ] → R2, where {ωi}Mi=1 
+
+> i.i.d.
+
+∼ N (·| 0, Id),
+
+M is the sampling number, and the error terms δh,t , δ z,t , δ 0,t ∈ Rd satisfy ∥δh,t ∥2 = Op
+
+ 1√M
+
+
+
+, ∥δz,t ∥2 =
+
+Op
+
+ 1√M
+
+
+
+, ∥δ0,t ∥2 = O
+
+pβtdTV ( q0,t (·| xt, c ), p 0,t (·| xt, c )) 
+
+
+
+.
+
+The proof of Proposition 2 and the hidden problem-dependent constants in O and Op are given in Ap-pendix B.3. The main implication of (24) in Proposition 2 indicates the optimal score ϵ⋆ can be represented as a combination of the pretrained score ϵ0 and two control-dependent objects h⋆t (xt, c ) and z⋆t (xt, c ). Further, (25) and (26) show both h⋆ and the logit of z⋆ can be approximated by a linear combination of shared basis features {ϕωi (xt, c, t )}Mi=1 , where all xt-dependence enters through μ0(xt, c, t ) in ϕωi (xt, c, t ). This is structurally analogous to cross-attention with μ0(xt, c, t ) replacing xt as the input, where the condition and time ( c, t ) produce weights that select and mix latent features extracted from μ0. This motivates our DiffCon parameterization of the score function in the following. 
+
+DiffCon score parameterization. Proposition 2 inspires us to use a “side network” [Zhang et al., 2020] 
+
+sθ = ( zθ1 , h θ2 ) to combine with ϵ0 to parameterize ϵθ as 
+
+ϵθ (xt, c, t ) = ϵ0(xt, c, t ) + λmodel sθ (μ0(xt, c, t ), c, t ) (27) with μ0(xt, c, t ) instead of xt as the input to sθ , where 
+
+sθ (x, c, t ) := −zθ1 (x, c, t )ϵ0(x, c, t ) −√1 − αt
+
+βt
+
+(zθ1 (x, c, t )x + √αt(1 − zθ1 (x, c, t )) hθ2 (x, c, t )) . (28) In (27), we add a guidance strength λmodel ⩾ 1 on the side network as a hyper-parameter. Motivated by (25) (26), we parameterize zθ1 and hθ2 with a shared backbone sθ with cross-attention blocks. In practice, we do not explicitly sample ωi (which makes the batch size too large); instead we let the feature directions be learnable (implemented implicitly by the cross-attention projections). Importantly, our DiffCon parameterization is orthogonal to the choice of learning algorithms: besides RLFT updates, it can also be trained with standard supervised finetuning (SFT) loss (10) when paired data are available from the target distribution. 
+
+# 5 Experiments 
+
+5.1 Setup 
+
+We test the proposed algorithms and parameterization under three finetuning algorithms for text-to-image generation: 1. SFT : supervised finetuning. The training is identical to CFG, and we conduct it to demonstrate the effectiveness of our parameterization. We use the ”winner images” and their prompts from the Human Preference Dataset (HPD) v2 [Wu et al., 2023] as the training data. We train with a batch size of 128 for 1000 iterations. 92. RWL : finetuning with reward-weighted loss. We optimize over the Human Preference Score (HPS) v2 [Wu et al., 2023] reward model. We use the polynomial reward weighting (21) with τ = τRWL =5e-4, 
+
+α = 1 + τRWL , and set the baseline b as the mean reward of the first training batch. We train with a batch size of 64 for 2000 iterations, sampling online every 2 iterations: 64 prompts generate 64 images with the current score, then we take two gradient steps on the resulting pairs. 3. PPO : finetuning with KL-regularized online PPO. We optimize over the HPS-v2 reward model. We set τ = τKL (which is the KL regularization coefficient here) to be 1e-4. We train with a batch size of 64 for 2400 iterations. We use stable diffusion v1.4 [Rombach et al., 2022] as the pretrained model. In all methods, we keep the text encoder and VAE fixed, and only finetune the latent score function. For all algorithms, we set the CFG guidance strength λCFG to be 7.5 at inference time, and the dropout probability pdrop to be 0.1. The optimizer is Adam [Kingma and Ba, 2015]. To verify the effectiveness of our parameterization, we implement each algorithm with 5 different network structures: 
+
+• DiffCon (gray-box , ours): we use a side network sθ = ( zθ1 , h θ2 ) parameterized and combined with the pretrained score function as specified in (27) with λmodel = 1 .0. sθ consists of 2D-transformer [Vaswani et al., 2017] blocks and ResNet He et al. [2016] blocks, and we take one (linearly transformed) output channel at the final layer to be zθ1 (yielding a scalar), and use the remaining channels as hθ2 . The structure details are in Appendix C. The learning rate under DiffCon is 1e-5 for all algorithms. We initialize the weights of sθ ’s last layer to 0 so that, same as LoRA, the initial output is the same as the pretrained model’s output. 
+
+• DiffCon-Naive (gray-box baseline): we use a side network sθ as in DiffCon that’s almost the same as 
+
+sθ , except that we do not split the CNN channels at the final layer as is done in DiffCon. Instead, we directly set ϵθ (xt, c, t ) = ϵ0(xt, c, t ) + λmodel sθ (xt, c, t ).
+
+See Appendix C for a more detailed comparison between DiffCon and DiffCon-Naive. The learning rate under DiffCon-Naive is 1e-5 for all algorithms. 
+
+• LoRA (white-box baseline): LoRA finetuning [Hu et al., 2022] with rank r = 16. We set the learning rate under LoRA to be 1e-5 for SFT and 1e-4 for RWL and PPO. 
+
+• DiffCon-J (white-box , ours): we inject LoRA layers with rank r = 4 into the pretrained model and also add DiffCon and jointly train both. For SFT, we set the learning rate for both LoRA and DiffCon to be 1e-5. For RWL and PPO, we set the learning rates for LoRA and DiffCon to be 1e-4 and 1e-5 respectively. 
+
+• DiffCon-S (white-box , ours): similar to DiffCon-J but we train LoRA and DiffCon separately and combine them at evaluation time. 
+
+Evaluation. For automatic evaluation of the finetuned models, the main metric is the HPS-v2 win rate (against the pretrained model or the baselines). We also use Clip [Radford et al., 2021], PickScore [Kirstain et al., 2023] and Clip-Aesthetics [Wu et al., 2023] to demonstrate they are not compromised during our finetuning. We found at test time, enlarging the side network guidance strength λmodel can help the finetuned models to achieve better performance, especially for SFT and RWL. Thus we evaluate DiffCon, DiffCon-Naive, DiffCon-J, DiffCon-S with a few λmodel values, and report the best HPS-v2 win rate among them for each checkpoint. We also conduct human evaluation on PPO. See Appendix C for more details. 
+
+5.2 Results 
+
+Main results. Table 1 reports the HPS-v2 win rate improvements against the pretrained model at the end of training for each algorithm, Figure 2 shows the HPS-v2 win rate curves for each algorithm, and 10 Method # Params ↓ gray-box HPS-v2 win rate vs. pretrained model ↑                                                                     
+
+> SFT (step 1000) RWL (step 2000) PPO (step 2400) Pretrained --0.500 0.500 0.500
+> DiffCon (ours) 1.2×10 7✓0.6667 ±0.0028 0.6815 ±0.0111 0.6957 ±0.0152
+> DiffCon-Naive 1.2×10 7✓0.5655 ±0.0165 0.5060 ±0.0190 0.5201 ±0.0203 LoRA 1.7×10 70.5766 ±0.0137 0.6109 ±0.0059 0.9048 ±0.0084
+> DiffCon-J (ours) 1.6×10 70.6964 ±0.0293 0.6555 ±0.0210 0.9353 ±0.0079 DiffCon-S (ours) 1.6×10 70.6964 ±0.0018 0.7091 ±0.0155 0.9315 ±0.0164
+
+Table 1: HPS-v2 win rate against the pretrained model on the HPS-v2 test prompt set for all setups (each at its reported checkpoint). 
+
+Figure 2: Curves of HPS-v2 win rate against the pretrained model for SFT (left), RWL (middle), and PPO (right). Figure 3 shows the win rate comparisons for both our gray-box and white-box methods against their own baselines. They all demonstrate that both our gray-box and white-box methods can surpass their own baselines. Notably, for SFT and RWL, our gray-box method DiffCon (with fewer parameters) can surpass the white-box LoRA, which requires access to the model’s internals. For PPO, our white-box methods can reach a very high win rate ( > 0.9) against the pretrained model. Some generation examples can be found in Table 5, 6, 7 in Appendix D.    
+
+> (a) HPS-v2 win rate, SFT (b) HPS-v2 win rate, RWL (c) HPS-v2 win rate, PPO (d) human eval., PPO
+
+Figure 3: End-of-training win-rate vs. baselines. Each subplot reports three paired comparisons: (gray-box) DiffCon vs. DiffCon-Naive; (white-box) DiffCon-J vs. LoRA; (white-box) DiffCon-S vs. LoRA. (a)-(c): HPS-v2 win rates for SFT/RWL/PPO with orange error bars showing standard deviation; (d): human-evaluated win rate for PPO. 11 More results and ablation studies. Additional results are in Appendix D. Figures 4, 5, 6, and 7 show that increasing the test-time guidance strength λmodel improves generation quality. CLIP, CLIP-Aesthetics, and PickScore sanity checks for the pretrained model and all methods are also provided (Table 8, 9, 10). We also compare DPOK’s reward-weight loss [Fan et al., 2023, Algorithm 2] with our polynomial reward weighting (21) (Figure 8), and ablate key hyperparameters (e.g., τKL , τRWL , reweighting choice (20), learning rates, and side-network architecture). 
+
+# 6 Conclusion 
+
+We presented DiffCon, a control-theoretic view of reverse diffusion that casts sampling as state-only stochas-tic control in a (generalized) linearly-solvable MDP. This perspective formalizes control as reweighting the pretrained reverse-time dynamics under an f -divergence regularizer, yielding practical fine-tuning objectives that unify supervised and reward-driven adaptation, including PPO-style updates and reward-weighted re-gression. DiffCon also motivates a simple pretrained plus controller parameterization: a lightweight side network conditioned on intermediate denoising signals, enabling effective gray-box fine-tuning with the backbone frozen. This improves text-to-image alignment quality–efficiency trade-offs on Stable Diffusion v1.4. A promising direction is to extend the experiments of DiffCon beyond text-to-image alignment to broader diffusion control settings such as personalization, safety alignment, and transfer learning. 
+
+# Acknowledgment 
+
+The work of Y. Chi is supported in part by NSF grant ECCS-2537078. The work of T. Yang is supported in part by the Wei Shen and Xuehong Zhang Presidential Fellowship at Carnegie Mellon University. The authors thank Krishnamurthy Dvijotham for valuable discussions. 
+
+# References 
+
+K. Black, M. Janner, Y. Du, I. Kostrikov, and S. Levine. Training diffusion models with reinforcement learning. arXiv preprint arXiv:2305.13301 , 2023. S. Cen, C. Cheng, Y. Chen, Y. Wei, and Y. Chi. Fast global convergence of natural policy gradient methods with entropy regularization. Operations Research , 70(4):2563–2578, 2022. K. Clark, P. Vicol, K. Swersky, and D. J. Fleet. Directly fine-tuning diffusion models on differentiable rewards. arXiv preprint arXiv:2309.17400 , 2023. F.-A. Croitoru, V. Hondru, R. T. Ionescu, N. Sebe, and M. Shah. Curriculum direct preference optimization for diffusion and consistency models. In Proceedings of the Computer Vision and Pattern Recognition Conference , pages 2824–2834, 2025. I. Csisz´ ar. Eine informationstheoretische ungleichung und ihre anwendung auf den beweis der ergodizit¨ at von markoffschen ketten. A Magyar Tudom´ anyos Akad´ emia Matematikai Kutat´ o Int´ ezet´ enek K¨ ozlem´ enyei , 8 (1-2):85–108, 1963. P. Dhariwal and A. Nichol. Diffusion models beat gans on image synthesis. Advances in neural information processing systems , 34:8780–8794, 2021. K. Dvijotham and E. Todorov. A unifying framework for linearly solvable control. In UAI 2011, Proceedings of the Twenty-Seventh Conference on Uncertainty in Artificial Intelligence , pages 179–186, 2011. 12 P. Esser, S. Kulal, A. Blattmann, R. Entezari, J. M¨ uller, H. Saini, Y. Levi, D. Lorenz, A. Sauer, F. Boesel, D. Podell, T. Dockhorn, Z. English, K. Lacey, A. Goodwin, Y. Marek, and R. Rombach. Scaling rectified flow transformers for high-resolution image synthesis, 2024. URL https://arxiv.org/abs/2403.03206 .Y. Fan, O. Watkins, Y. Du, H. Liu, M. Ryu, C. Boutilier, P. Abbeel, M. Ghavamzadeh, K. Lee, and K. Lee. Dpok: Reinforcement learning for fine-tuning text-to-image diffusion models. Advances in Neural Information Processing Systems , 36:79858–79885, 2023. Y. Han, M. Razaviyayn, and R. Xu. Stochastic control for fine-tuning diffusion models: Optimality, regu-larity, and convergence. arXiv preprint arXiv:2412.18164 , 2024. Y. Hashizume, K. Oishi, and K. Kashima. Tsallis entropy regularization for linearly solvable mdp and linear quadratic regulator. arXiv preprint arXiv:2403.01805 , 2024. K. He, X. Zhang, S. Ren, and J. Sun. Deep residual learning for image recognition. In 2016 IEEE Conference on Computer Vision and Pattern Recognition, CVPR 2016 , pages 770–778, 2016. J. Ho and T. Salimans. Classifier-free diffusion guidance. arXiv preprint arXiv:2207.12598 , 2022. J. Ho, A. Jain, and P. Abbeel. Denoising diffusion probabilistic models. Advances in neural information processing systems , 33:6840–6851, 2020. E. J. Hu, Y. Shen, P. Wallis, Z. Allen-Zhu, Y. Li, S. Wang, L. Wang, W. Chen, et al. Lora: Low-rank adaptation of large language models. ICLR , 1(2):3, 2022. D. Kim, S. Lyu, S. W. Kim, and P. H. Seo. Direct diffusion score preference optimization via stepwise contrastive policy-pair supervision. arXiv preprint arXiv:2512.23426 , 2025. D. P. Kingma and J. Ba. Adam: A method for stochastic optimization. In 3rd International Conference on Learning Representations, ICLR 2015 , 2015. Y. Kirstain, A. Polyak, U. Singer, S. Matiana, J. Penna, and O. Levy. Pick-a-pic: An open dataset of user preferences for text-to-image generation. Advances in neural information processing systems , 36: 36652–36663, 2023. J. Kwon and V. Perchet. Online Learning and Blackwell Approachability with Partial Monitoring: Optimal Convergence Rates. In A. Singh and J. Zhu, editors, Proceedings of the 20th International Conference on Artificial Intelligence and Statistics , volume 54 of Proceedings of Machine Learning Research , pages 604–613. PMLR, 20–22 Apr 2017. URL https://proceedings.mlr.press/v54/kwon17a.html .B. F. Labs, S. Batifol, A. Blattmann, F. Boesel, S. Consul, C. Diagne, T. Dockhorn, J. English, Z. English, P. Esser, S. Kulal, K. Lacey, Y. Levi, C. Li, D. Lorenz, J. M¨ uller, D. Podell, R. Rombach, H. Saini, A. Sauer, and L. Smith. Flux.1 kontext: Flow matching for in-context image generation and editing in latent space, 2025. URL https://arxiv.org/abs/2506.15742 .K. Lee, H. Liu, M. Ryu, O. Watkins, Y. Du, C. Boutilier, P. Abbeel, M. Ghavamzadeh, and S. S. Gu. Aligning text-to-image models using human feedback. arXiv preprint arXiv:2302.12192 , 2023. Y. Li, H. Liu, Q. Wu, F. Mu, J. Yang, J. Gao, C. Li, and Y. J. Lee. Gligen: Open-set grounded text-to-image generation. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , pages 22511–22521, 2023. H. Ma, T. Chen, K. Wang, N. Li, and B. Dai. Efficient online reinforcement learning for diffusion policy. 
+
+arXiv preprint arXiv:2502.00361 , 2025. C. Mou, X. Wang, L. Xie, Y. Wu, J. Zhang, Z. Qi, Y. Shan, and X. Qie. T2i-adapter: Learning adapters to dig out more controllable ability for text-to-image diffusion models. In Proceedings of the AAAI Conference on Artificial Intelligence (AAAI) , 2024. doi: 10.1609/aaai.v38i5.28226. 13 B. Poole, A. Jain, J. T. Barron, and B. Mildenhall. Dreamfusion: Text-to-3d using 2d diffusion. arXiv preprint arXiv:2209.14988 , 2022. A. Radford, J. W. Kim, C. Hallacy, A. Ramesh, G. Goh, S. Agarwal, G. Sastry, A. Askell, P. Mishkin, J. Clark, et al. Learning transferable visual models from natural language supervision. In International conference on machine learning , pages 8748–8763. PmLR, 2021. A. Rahimi and B. Recht. Random features for large-scale kernel machines. Advances in neural information processing systems , 20, 2007. R. Rombach, A. Blattmann, D. Lorenz, P. Esser, and B. Ommer. High-resolution image synthesis with latent diffusion models. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition ,pages 10684–10695, 2022. N. Ruiz, Y. Li, V. Jampani, Y. Pritch, M. Rubinstein, and K. Aberman. Dreambooth: Fine tuning text-to-image diffusion models for subject-driven generation. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , pages 22500–22510, 2023. J. Schulman, F. Wolski, P. Dhariwal, A. Radford, and O. Klimov. Proximal policy optimization algorithms. 
+
+arXiv preprint arXiv:1707.06347 , 2017. Y. Song and S. Ermon. Generative modeling by estimating gradients of the data distribution. Advances in neural information processing systems , 32, 2019. Y. Song, J. Sohl-Dickstein, D. P. Kingma, A. Kumar, S. Ermon, and B. Poole. Score-based generative modeling through stochastic differential equations. arXiv preprint arXiv:2011.13456 , 2020. M. Tancik, P. Srinivasan, B. Mildenhall, S. Fridovich-Keil, N. Raghavan, U. Singhal, R. Ramamoorthi, J. Barron, and R. Ng. Fourier features let networks learn high frequency functions in low dimensional domains. Advances in neural information processing systems , 33:7537–7547, 2020. W. Tang and F. Zhou. Fine-tuning of diffusion models via stochastic control: entropy regularization and beyond. arXiv preprint arXiv:2403.06279 , 2024. E. Todorov. Linearly-solvable markov decision problems. Advances in neural information processing systems ,19, 2006. M. Uehara, Y. Zhao, T. Biancalani, and S. Levine. Understanding reinforcement learning-based fine-tuning of diffusion models: A tutorial and review. arXiv preprint arXiv:2407.13734 , 2024a. M. Uehara, Y. Zhao, K. Black, E. Hajiramezanali, G. Scalia, N. L. Diamant, A. M. Tseng, T. Biancalani, and S. Levine. Fine-tuning of continuous-time diffusion models as entropy-regularized control. arXiv preprint arXiv:2402.15194 , 2024b. A. Vaswani, N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A. N. Gomez, L. Kaiser, and I. Polosukhin. Attention is all you need. In Advances in Neural Information Processing Systems 30: Annual Conference on Neural Information Processing Systems 2017 , pages 5998–6008, 2017. P. von Platen, S. Patil, A. Lozhkov, P. Cuenca, N. Lambert, K. Rasul, M. Davaadorj, and T. Wolf. Diffusers: State-of-the-art diffusion models. https://github.com/huggingface/diffusers , 2022. Version X.Y.Z. B. Wallace, M. Dang, R. Rafailov, L. Zhou, A. Lou, S. Purushwalkam, S. Ermon, C. Xiong, S. Joty, and N. Naik. Diffusion model alignment using direct preference optimization. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , pages 8228–8238, 2024. X. Wang, X. Zhang, Z. Luo, Q. Sun, Y. Cui, J. Wang, F. Zhang, Y. Wang, Z. Li, Q. Yu, Y. Zhao, Y. Ao, X. Min, T. Li, B. Wu, B. Zhao, B. Zhang, L. Wang, G. Liu, Z. He, X. Yang, J. Liu, Y. Lin, T. Huang, and Z. Wang. Emu3: Next-token prediction is all you need, 2024. URL https://arxiv.org/abs/2409.18869 .14 R. Williams. Simple statistical gradient-following algorithms for connectionist reinforcement learning. Ma-chine Learning , 8(3-4):229–256, 1992. X. Wu, Y. Hao, K. Sun, Y. Chen, F. Zhu, R. Zhao, and H. Li. Human preference score v2: A solid benchmark for evaluating human preferences of text-to-image synthesis. arXiv preprint arXiv:2306.09341 , 2023. E. Xie, L. Yao, H. Shi, Z. Liu, D. Zhou, Z. Liu, J. Li, and Z. Li. Difffit: Unlocking transferability of large diffusion models via simple parameter-efficient fine-tuning. In Proceedings of the IEEE/CVF International Conference on Computer Vision , pages 4230–4239, 2023. K. Yang, J. Tao, J. Lyu, C. Ge, J. Chen, W. Shen, X. Zhu, and X. Li. Using human feedback to fine-tune diffusion models without any reward model. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , pages 8941–8951, 2024a. S. Yang, T. Chen, and M. Zhou. A dense reward view on aligning text-to-image diffusion with preference. 
+
+arXiv preprint arXiv:2402.08265 , 2024b. S. Yang, Y. Du, B. Dai, D. Schuurmans, J. B. Tenenbaum, and P. Abbeel. Probabilistic adaptation of black-box text-to-video models. In The Twelfth International Conference on Learning Representations ,2024c. H. Ye, J. Zhang, S. Liu, X. Han, and W. Yang. Ip-adapter: Text compatible image prompt adapter for text-to-image diffusion models. arXiv preprint arXiv:2308.06721 , 2023. L. Yu, W. Xiang, and K. Han. Edit-diffnerf: Editing 3d neural radiance fields using 2d diffusion model. 
+
+arXiv preprint arXiv:2306.09551 , 2023a. X. Yu, Y.-C. Guo, Y. Li, D. Liang, S.-H. Zhang, and X. Qi. Text-to-3d with classifier score distillation. 
+
+arXiv preprint arXiv:2310.19415 , 2023b. J. O. Zhang, A. Sax, A. Zamir, L. J. Guibas, and J. Malik. Side-tuning: A baseline for network adaptation via additive side networks. In Computer Vision - ECCV 2020 - 16th European Conference, Glasgow ,volume 12348 of Lecture Notes in Computer Science , pages 698–714, 2020. L. Zhang, A. Rao, and M. Agrawala. Adding conditional control to text-to-image diffusion models. arXiv preprint arXiv:2302.05543 , 2023. H. Zhu, Y. Xu, C. Xu, T. Shen, W. Liu, Y. Du, J. Yu, and S. He. Stable score distillation. In Proceedings of the IEEE/CVF International Conference on Computer Vision , pages 16597–16606, 2025. 15 A Additional Details on RLFT Algorithms 
+
+Relationship to existing RWL methods for diffusion finetuning. Lee et al. [2023] proposes a heuris-tic reward-weighted loss for finetuning the diffusion model: they minimize a reward-weighted negative log-likelihood (NLL) on the generated data weighted by reward r(xT , c ) itself. Fan et al. [2023, Algorithm 2] also uses a loss that is an upper bound of the reward-weighted NLL with the same linear weighting. Uehara et al. [2024a, Section 6.1] proposes a reward-weighted MLE algorithm with the following loss (under our notation): 
+
+E c,t,ξ x1: t−1∼pθ ,xt:T ∼p0
+
+exp 
+
+ r (xT , c )
+
+τ
+
+ s
+
+βt
+
+αt(1 − αt) (ϵθ (xt, c, t ) − ϵ0(xt, c, t )) + ξ
+
+> 22
+
+ , (29) where c ∼ pc, t ∼ U ([ T − 1]), ξ ∼ N (0 , Id), ϵθ is their (unconditional) score function, and we use pθ to denote the transition kernel under the current parameter θ. We can see that their score function could be seen as a (linear) reparametrization of our (unconditional) score function ϵ⋆θ . And they use a mixture of online and offline sampling. 
+
+Relationship to existing policy gradient-type methods for diffusion finetuning. Prior RL fine-tuning works such as DDPO Black et al. [2023] and DPOK Fan et al. [2023] propose policy gradient methods under the MDP framework described at the end of Section 3.1, which takes the policy to be the reverse transition kernel pθ,t (xt+1 | xt, c ). Converting to our notation, the following relationships hold: 1. When τ = 0, our policy-gradient reduces to the standard REINFORCE gradient used in DDPO: 
+
+∇θ J DDPO  
+
+> θ
+
+= E c∼pc,x1: T ∼pθ (· | c)
+
+"T −1X
+
+> t=0
+
+∇θ log pθ,t (xt+1 | xt, c ) r(xT , c )
+
+#
+
+(30) up to the usual addition of baselines (which do not change the expectation of the gradient). 2. DPOK Fan et al. [2023] also incorporates a regularization term toward the pretrained model. However, DPOK optimizes a different surrogate objective (based on tractable approximations/upper bounds for the KL-to-reference term), which leads to a policy gradient with a different regularization term than ours under KL divergence: 
+
+∇θ J DPOK  
+
+> θ
+
+= E c∼pc,x1: T ∼pθ (·| c)
+
+" T −1X
+
+> t=0
+
+∇θ log pθ,t (xt+1 | xt, c )
+
+
+
+r(xT , c ) − τ log pθ,t (xt+1 | xt, c )
+
+p0,t (xt+1 | xt, c )
+
+#
+
+. (31) In comparison, by (15) we can see that when Df = DKL , our regularization term at each step t is a sum 
+
+τ 
+
+> T−1
+
+X
+
+> s=t
+
+log pθ,s (xs+1 | xs, c )
+
+p0,s (xs+1 | xs, c ) . (32) 
+
+# B Missing Proofs 
+
+Notation. We usually use q to denote the distributions induced by the forward process, and use p to denote the distributions induced by the reverse process. 16 B.1 Proof of Proposition 1 
+
+This proof follows a similar idea to the proof of Lemma 6 in Cen et al. [2022]. We let 
+
+Dθ,t := Df (pθ,t (·| xt, c ) ∥ p0,t (·| xt, c )) for notation simplicity. By (14), we have for any c ∈ C :
+
+∇θ Vθ, 0(x0, c ) = ∇θ
+
+Z 
+
+> x1
+
+pθ, 0 (x1|x0, c ) ( r0(x0, c ) + Vθ, 1(x1, c )) dx 1
+
+
+
+− τ ∇θ Dθ, 0
+
+=
+
+Z
+
+> x1
+
+(pθ, 0 (x1|x0, c ) ∇θ log pθ, 0 (x1|x0, c )) ( r0(x0, c ) + Vθ, 1(x1, c )) dx 1 − τ ∇θ Dθ, 0
+
++
+
+Z
+
+> x1
+
+pθ, 0 (x1|x0, c ) ∇θ Vθ, 1(x1, c )dx 1. (33) Note that for all t = 0 , 1, · · · , T − 1, we have 
+
+Z
+
+> xt+1
+
+pθ,t (xt+1 |xt, c ) ∇θ log pθ,t (xt+1 |xt, c ) dx t+1 = ∇θ
+
+Z
+
+> xt+1
+
+pθ,t (xt+1 |xt, c ) dx t+1 = ∇θ 1 = 0 , (34) and (recall we define ζθ,s +1 := pθ,s (xs+1 |xs,c ) 
+
+> p0,s (xs+1 |xs,c )
+
+)
+
+∇θ Dθ,t =
+
+Z
+
+f ′ (ζθ,t +1 ) ∇θ pθ,t (xt+1 |xt, c ) dx t+1 
+
+=
+
+Z
+
+pθ,t (xt+1 |xt, c ) f ′ (ζθ,t +1 ) ∇θ log pθ,t (xt+1 |xt, c ) dx t+1 . (35) Letting t = 0 in (34), (35), and plugging them into (33), we have 
+
+∇θ Vθ, 0(x0, c ) = Ex1∼pθ, 0(·| x0,c ) [∇θ log pθ, 0 (x1|x0, c ) ( −τ f ′ (ζθ, 1) + Vθ, 1(x1, c )) + ∇θ Vθ, 1(x1, c )] , (36) where pθ, 0 (x1|x0, c ) = pθ, 0 (x1|c). Repeating the above process for t = 1 , . . . , T − 1, and taking expectation over c ∼ pc, we obtain the following policy gradient: 
+
+∇θ Jθ = ∇θ Ec∼pc [Vθ, 1(x1, c )] = E c∼pc,x1: T |pθ ,c 
+
+ T −1X
+
+> t=0
+
+(∇θ log pθ,t (xt+1 |xt, c )) ( Vθ,t +1 (xt+1 , c ) − τ f ′ (ζθ,t +1 )) 
+
+| {z }
+
+> := Qθ,t +1
+
+
+
+, (37) where we define the soft Q-function 
+
+Qθ,t +1 := Vθ,t +1 (xt+1 , c ) − τ f ′ (ζθ,t +1 ) . (38) Note that 
+
+Aθ,t +1 (16) 
+
+= Vθ,t +1 (xt+1 , c ) − τ f ′ (ζθ,t +1 ) − Vθ,t (xt, c ) − τ D f (pθ,t (·| xt, c ) ∥ p0,t (·| xt, c )) + τ Ext+1 ∼pθ,t (·| xt,c ) [f ′ (ζθ,t +1 )] 
+
+> (14)
+
+= Vθ,t +1 (xt+1 , c ) − τ f ′ (ζθ,t +1 ) − (Ext+1 ∼pθ,t (·| xt,c ) [Vθ,t +1 (xt+1 , c )] − τ Ext+1 ∼pθ,t (·| xt,c ) [f ′ (ζθ,t +1 )]) 
+
+> (38)
+
+= Qθ,t +1 − Ext+1 ∼pθ,t (·| xt,c ) [Qθ,t +1 ] , (39) where the second equality also uses the fact that rt(xt, c ) = 0 (c.f. (11)). Since the term Ext+1 ∼pθ,t (·| xt,c ) [Qθ,t +1 ]in (39) is a constant to xt+1 , by (37) and (34), we have 
+
+∇θ Jθ = E c∼pc,x1: T |pθ ,c 
+
+ T −1X
+
+> t=0
+
+(∇θ log pθ,t (xt+1 |xt, c )) Aθ,t +1 
+
+
+
+. (40) 17 B.2 Proof of Theorem 1 
+
+Step 1: Prove the equivalence between the reward-weighted loss (19) and Lorg (·; ep⋆) under f -divergence. We’ll utilize the following lemma in this step, which is adapted from Proposition 3.1 in Ma et al. [2025]: 
+
+Lemma 1 Given any target distribution p⋆(·| c) of xT , let q⋆t (·| c) be the forward marginal distribution of 
+
+xt := √αtxT + √1 − αtξ with ξ ∼ N (0 , Id), xT ∼ p⋆(·| c). Then for any g : Rd × C × [T ] → (0 , +∞), ϵ and 
+
+c ∈ C , we define 
+
+L (ϵ) := 12 Ec∼pc,t ∼U ([ T −1]) 
+
+Z 
+
+g (xt, c, t ) ϵ (xt, c, t ) + √1 − αt∇xt log q⋆t (xt|c) 22 dx t
+
+
+
+. (41) 
+
+Then for any g : Rd × C × [T ] → (0 , +∞) that makes (41) well-defined, Lorg (·; p⋆) and L has the same minimum ϵp⋆ , which satisfies 
+
+∀(xt, c, t ) ∈ Rd × C × [T ] : ϵp⋆ (xt, c, t ) = −√1 − αt∇xt log q⋆t (xt|c). (42) The proof of Lemma 1 is given in Appendix B.4. We define the density ratio w as 
+
+w(x1: T , c ) := P (x1: T |c)
+
+P0(x1: T |c) . (43) Then we can rewrite the optimization problem (18) as max 
+
+> w(·,c )
+
+Ex1: T ∼P0(·| c) [r(xT , c )w(x1: T , c ) − τ f (w(x1: T , c ))] s.t. w(x1: T , c ) ⩾ 0, Ex1: T ∼P0(·| c) [w(x1: T , c )] = 1 . (44) We let w⋆ be the optimal solution of (44). Introduce a multiplier b(c) ∈ R for the constraint Ex1: T ∼P0(·| c) [w(x1: T , c )] = 1. The Lagrangian is 
+
+L(w(x1: T , c ), b (c)) = Ex1: T ∼P0(·| c) [r(xT , c )w(x1: T , c ) − τ f (w(x1: T , c )) − b(c)w(x1: T , c )] + b(c). (45) 
+
+We consider Gateaux derivative and take w 7 → w + ϵh with arbitrary bounded h. Differentiating at ϵ = 0, we have 
+
+ddϵ L(w + ϵh, b ) ϵ=0 
+
+=
+
+Z
+
+{r(xT , c ) − τ f ′ (w(x1: T , c )) − b(c)}
+
+| {z } 
+
+> =: ϕ(x1: T,c )
+
+h(x1: T )P0(x1: T |c)dx 1: T . (46) By KKT condition, if w⋆(x1: T , c ) > 0, ϕ(x1: T , c ) = 0; if w⋆(x1: T , c ) = 0, ϕ(x1: T , c ) ⩽ 0 (no profitable increase). Therefore, we have 
+
+w⋆(x1: T , c ) = 
+
+
+
+(f ′)−1
+
+ r(xT , c ) − bf,τ (c)
+
+τ
+
+ 
+
+> +
+
+, (47) for some bf,τ (c) ∈ R, where [ x]+ := max (0 , x ), and bf,τ (c) is chosen so that 
+
+Ex1: T ∼P0(·| c)
+
+
+
+(f ′)−1
+
+ r(xT , c ) − bf,τ (c)
+
+τ
+
+ 
+
+> +
+
+= 1 .
+
+This suggests ep⋆(xT |c) satisfies 
+
+ep⋆(xT |c) = 
+
+ZeP ⋆(x1: T |c)dx 1: T −1
+
+18 =
+
+Z
+
+P0(x1: T |c)dx 1: T −1
+
+
+
+(f ′)−1
+
+ r(xT , c ) − bf,τ (c)
+
+τ
+
+ 
+
+> +
+
+= p0,T (xT |c)
+
+
+
+(f ′)−1
+
+ r(xT , c ) − bf,τ (c)
+
+τ
+
+ 
+
+> +
+
+, (48) where p0,T (xT |c) is the reverse marginal distribution of xT under the pretrained model. Let 
+
+g(xt, c, t ) = eq⋆t (xt|c) (49) in Lemma 1, where eq⋆t (xt|c) is the forward marginal distribution of xt = √αtxT +√1 − αtξ with ξ ∼ N (0 , Id)and xT ∼ ep⋆ (·| c). Then we have 
+
+Z
+
+g (xt, c, t ) ϵ (xt, c, t ) + √1 − αt∇xt log eq⋆t (xt|c) 22 dx t
+
+=
+
+Z g (xt, c, t )
+
+eq⋆t (xt|c)
+
+Zep⋆ (xT |c) qt(xt|xT ) ϵ (xt, c, t ) + √1 − αt∇xt log qt(xt|xT ) 22 dx T dx t + const 
+
+=
+
+Z Z
+
+p0,T (xT |c)
+
+
+
+(f ′)−1
+
+ r(xT , c ) − bf,τ (c)
+
+τ
+
+ 
+
+> +
+
+qt(xt|xT ) ϵ (xt, c, t ) + √1 − αt∇xt log qt(xt|xT ) 22 dx T dx t + const 
+
+= E xT ∼p0,T ,ξ∼N (0,Id)
+
+"
+
+(f ′)−1
+
+ r(xT , c ) − bf,τ (c)
+
+τ
+
+ 
+
+> +
+
+ξ − ϵ  √αtxT + √1 − αtξ, c, t  22
+
+#
+
++ const , (50) where the second line is obtained by replacing q⋆(xt|c) and p⋆(xT |c) in (110) in the proof of Lemma 1 by 
+
+eq⋆t (xt|c) and ep⋆ (xT |c), the third line is by our choice of g in (49) and (48). Therefore, by Lemma 1, under (49), L(ϵ) has the same minimum as Lorg (·; ep⋆). 
+
+Step 2: show ep⋆(xT |c) = pu⋆ (xT |c) when Df = DKL . When Df = DKL , the optimal KL-regularized Bellman equation is ( t = 0 , · · · , T − 1) 
+
+∀c ∈ C : V ⋆t (xt, c ) = max  
+
+> u(·,x t,c )
+
+rt (xt, c ) + Ext+1 ∼Pu,t (·| xt,c )
+
+V ⋆t+1 (xt+1 , c ) − τ u t (xt+1 , x t, c )
+
+= max  
+
+> u(·,x t,c )
+
+Vu,t (xt, c ) , (51) which induces 
+
+∀c ∈ C : u⋆t (xt+1 , x t, c ) := arg max  
+
+> u(·,x t,c )
+
+Vu,t (xt, c )= 1
+
+τ V ⋆t+1 (xt+1 , c ) − log 
+
+
+
+Ext+1 ∼p0,t (·| xt,c )
+
+
+
+exp 
+
+ 1
+
+τ V ⋆t+1 (xt+1 , c )
+
+ 
+
+. (52) Then by (8), the optimal transition operator becomes 
+
+Pu⋆,t (xt+1 |xt, c ) = p0,t (xt+1 |xt, c ) exp   1 
+
+> τ
+
+V ⋆t+1 (xt+1 , c )
+
+Ext+1 ∼p0,t (·| xt,c )
+
+exp   1 
+
+> τ
+
+V ⋆t+1 (xt+1 , c ) . (53) In addition, plugging (52) into (51), we have 
+
+V ⋆t (xt, c ) = rt (xt, c ) + τ log 
+
+
+
+Ext+1 ∼p0,t (·| xt,c )
+
+
+
+exp 
+
+ 1
+
+τ V ⋆t+1 (xt+1 , c )
+
+ 
+
+. (54) Define 
+
+Zt (xt, c ) := exp 
+
+ 1
+
+τ V ⋆t (xt, c )
+
+
+
+, (55) 19 then under our terminal reward setting (11), we have 
+
+ZT (xT , c ) := exp 
+
+ 1
+
+τ r (xT , c )
+
+
+
+, (56) and the following recursion given by (54): 
+
+∀t = 0 , · · · , T − 1 : Zt (xt, c ) = Ext+1 ∼p0,t (·| xt,c ) [Zt+1 (xt+1 , c )] . (57) Especially, when t = 0, we have (recall we define x0 := ∅)
+
+Z0(c) := Z0(x0, c ) = Ex1∼N (0 ,Id) [Z1 (x1, c )] . (58) Plugging (57) into (53), we have for all t = 0 , · · · , T − 1: 
+
+Pu⋆,t (xt+1 |xt, c ) = p0,t (xt+1 |xt, c ) Zt+1 (xt+1 , c )
+
+Zt (xt, c ) . (59) Let Pu⋆ (x1: T |c) be the joint distribution of x1: T under the optimal control u⋆. Then by (59), we have 
+
+Pu⋆ (x1: T |c) = pu⋆,−1(x0|c) 
+
+> T−1
+
+Y
+
+> t=0
+
+Pu⋆,t (xt+1 |xt, c )= 
+
+> T−1
+
+Y
+
+> t=0
+
+p0,t (xt+1 |xt, c ) Zt+1 (xt+1 , c )
+
+Zt (xt, c )= P0(x1: T |c) ZT (xT , c )
+
+Z0(c)
+
+> (56)
+
+= P0(x1: T |c) exp   1 
+
+> τ
+
+r (xT , c )
+
+Z0(c) . (60) Integrating out x1: T −1, we have 
+
+pu⋆ (xT |c) = p0,T (xT |c) exp   1 
+
+> τ
+
+r (xT , c )
+
+Z0(c) , (61) where p0,T (xT |c) is the reverse marginal distribution of xT under the pretrained model. Note KL divergence is f -divergence with f (t) = t log t. By (48), we have 
+
+ep⋆(xT |c) ∝ p0,T (xT |c) exp 
+
+ 1
+
+τ r (xT , c )
+
+
+
+, (62) where we use the fact that ( f ′)−1(y) = exp( y −1) for KL divergence. This gives the desired result ep⋆(xT |c) = 
+
+pu⋆ (xT |c). 
+
+B.3 Proof of Proposition 2 
+
+Let q0,t (xt|c), q u⋆,t (xt|c) denote the marginal distributions of xt induced by the forward process starting from target distributions p0 and pu⋆ , respectively, i.e., q0,t (·| c) (resp. qu⋆,t (·| c)) is the probability of xt =√αtxT + √1 − αtξt, where ξt ∼ N (0 , Id), xT ∼ p0(·| c) (resp. pu⋆ (·| c)). Then when Df = DKL , we have 
+
+qu⋆,t (xt|c) = 
+
+Z
+
+qt(xt|xT )pu⋆ (xT |c)dx T
+
+> (61)
+
+= 1
+
+Z0(c)
+
+Z
+
+qt(xt|xT )p0(xT |c) exp 
+
+ 1
+
+τ r (xT , c )
+
+
+
+dx T
+
+20 = 1
+
+Z0(c)
+
+Z
+
+q0,t (xT |xt, c )q0,t (xt|c) exp 
+
+ 1
+
+τ r (xT , c )
+
+
+
+dx T
+
+= q0,t (xt|c) ExT ∼q0,t (·| xt,c )
+
+exp   1 
+
+> τ
+
+r (xT , c ) 
+
+Z0(c) , (63) where the third line follows from the following relation given by the Bayes’ rule: 
+
+q0,t (xT |xt, c ) = qt(xt|xT )p0(xT |c)
+
+q0,t (xt|c) . (64) Thus we have 
+
+qu⋆,t (xt+1 |xt, c ) = qt+1 (xt|xt+1 )qu⋆,t (xt+1 |c)
+
+qu⋆,t (xt|c)
+
+> (63)
+
+= qt+1 (xt|xt+1 )q0,t +1 (xt+1 |c)
+
+q0,t (xt|c)
+
+ExT ∼q0,t +1 (·| xt+1 ,c )
+
+exp   1 
+
+> τ
+
+r (xT , c ) 
+
+ExT ∼q0,t (·| xt,c )
+
+exp   1 
+
+> τ
+
+r (xT , c ) 
+
+= q0,t (xt+1 |xt, c ) ExT ∼q0,t +1 (·| xt+1 ,c )
+
+exp   1 
+
+> τ
+
+r (xT , c ) 
+
+ExT ∼q0,t (·| xt,c )
+
+exp   1 
+
+> τ
+
+r (xT , c ) , (65) where q0,t (xt+1 |xt, c ) and qu⋆,t (xt+1 |xt, c ) represent the posterior conditional distributions induced by the forward process starting from target distributions p0 and pu⋆ , respectively. We define 
+
+ψt(xt, c ) := ExT ∼q0,t (·| xt,c )
+
+
+
+exp 
+
+ 1
+
+τ r (xT , c )
+
+ 
+
+, (66) then by tower property of expectation, we have 
+
+ψt(xt, c ) = Ext+1 ∼q0,t (·| xt,c ) [ψt+1 (xt+1 , c )] , (67) and by (65), we have 
+
+qu⋆,t (xt+1 |xt, c ) = q0,t (xt+1 |xt, c ) ψt+1 (xt+1 , c )
+
+ψt(xt, c ) . (68) Thus we can express the mean of qu⋆,t (xt+1 |xt, c ) as follows: 
+
+Ext+1 ∼qu⋆,t (·| xt,c ) [xt+1 ] = Ext+1 ∼q0,t (·| xt,c ) [xt+1 ψt+1 (xt+1 , c )] 
+
+ψt(xt, c ) . (69) We let pu⋆,t (xt+1 |xt, c ) denote the reverse conditional distribution of xt+1 given xt under the optimal score function ϵ⋆. Then we have the following lemma that says the mean of the posterior conditional distribution 
+
+qu⋆,t (·| xt, c ) induced by the forward process is the same as the mean of the learned reverse kernel pu⋆,t (·| xt, c ): 
+
+Lemma 2 For any data distribution p(·| c) of xT (∀c ∈ C ), let ϵ⋆p be the optimal score function that minimizes the diffusion loss Lorg (·; p) defined in (10) . Then for any xt ∈ Rd, c ∈ C , t ∈ [T − 1] , we have 
+
+Ext+1 ∼qt(·| xt,c ) [xt+1 ] = μ⋆p(xt, c, t ) := 1
+
+√αt
+
+xt − βt
+
+pαt (1 − αt) ϵ⋆p(xt, c, t ), (70) 
+
+where qt(·| xt, c ) is the posterior conditional distribution induced by the forward process starting from data distribution p.
+
+21 The proof of Lemma 2 is given in Appendix B.5. By Lemma 2, we have 
+
+μ⋆(xt, c, t ) = Ext+1 ∼qu⋆,t (·| xt,c ) [xt+1 ]
+
+> (69)
+
+= Ext+1 ∼q0,t (·| xt,c ) [xt+1 ψt+1 (xt+1 , c )] 
+
+ψt(xt, c )= Ext+1 ∼p0,t (·| xt,c ) [xt+1 ψt+1 (xt+1 , c )] 
+
+Ext+1 ∼p0,t (·| xt,c ) [ψt+1 (xt+1 , c )] 
+
+| {z }
+
+> := eμ⋆(xt,c,t )
+
++ Ext+1 ∼q0,t (·| xt,c ) [xt+1 ψt+1 (xt+1 , c )] 
+
+ψt(xt, c ) − Ext+1 ∼p0,t (·| xt,c ) [xt+1 ψt+1 (xt+1 , c )] 
+
+Ext+1 ∼p0,t (·| xt,c ) [ψt+1 (xt+1 , c )] 
+
+| {z }
+
+> := δ0(xt,c,t )
+
+. (71) Under this decomposition and the relation between μ and ϵ, we have 
+
+ϵ⋆(xt, c, t ) − ϵ0(xt, c, t ) = 
+
+pαt (1 − αt)
+
+βt
+
+(μ0(xt, c, t ) − μ⋆(xt, c, t )) =
+
+pαt (1 − αt)
+
+βt
+
+(μ0(xt, c, t ) − eμ⋆(xt, c, t ) − δ0(xt, c, t )) . (72) Define 
+
+eψt(xt, c ) := Ext+1 ∼p0,t (·| xt,c ) [ψt+1 (xt+1 , c )] , (73) then combining (71) and (72), we have 
+
+ϵ⋆(xt, c, t ) − ϵ0(xt, c, t )=
+
+pαt (1 − αt)
+
+βt
+
+− Ext+1 ∼p0,t (·| xt,c ) [xt+1 (ψt+1 (xt+1 , c ) − 1)] 
+
+eψt(xt, c ) + 1 − 1
+
+eψt(xt, c )
+
+!
+
+μ0(xt, c, t ) − δ0(xt, c, t )
+
+!
+
+,
+
+(74) where we use the fact that 
+
+μ0(xt, c, t ) = Ext+1 ∼p0,t (·| xt,c ) [xt+1 ] . (75) Recall in (23) we define the basis functions ϕω (xt, c, t ) as 
+
+ϕω (xt, c, t ) = 
+
+cos 
+
+ ω⊤μ0(xt, c, t )
+
+qeβt
+
+ , sin 
+
+ ω⊤μ0(xt, c, t )
+
+qeβt
+
+
+
+> ⊤
+
+, (76) and also define 
+
+ρω (xt+1 , t ) = 1
+
+q
+
+(2 π eβt)d
+
+cos 
+
+ ω⊤xt+1 
+
+qeβt
+
+ , sin 
+
+ ω⊤xt+1 
+
+qeβt
+
+
+
+> ⊤
+
+. (77) Then we can decompose the Gaussian reverse kernel p0,t (xt+1 |xt, c ) as 
+
+p0,t (xt+1 |xt, c ) = ⟨ϕω (xt, t ), ρ ω (xt+1 , t )⟩N (ω) , (78) 22 where 
+
+⟨fω , g ω ⟩N (ω) := Eω∼N (·| 0,Id)
+
+f ⊤ 
+
+> ω
+
+gω
+
+
+
+for any fω and gω .We define 
+
+h(xt, c, t ) := Ext+1 ∼p0,t (·| xt,c ) [xt+1 (ψt+1 (xt+1 , c ) − 1)] , (79) 
+
+z(xt, c, t ) := 1 − 1
+
+eψt(xt, c ) , (80) then by (74) and (7), 
+
+ϵ⋆(xt, c, t )= 1
+
+eψt(xt, c ) ϵ0(xt, c, t ) −√1 − αt
+
+βt
+
+√αt
+
+eψt(xt, c ) h(xt, c, t ) + 1 − 1
+
+eψt(xt, c )
+
+!
+
+xt − √αtδ0(xt, c, t )
+
+!
+
+= (1 − z(xt, c, t )) ϵ0(xt, c, t ) −√1 − αt
+
+βt
+
+(√αt(1 − z(xt, c, t )) h(xt, c, t ) + z(xt, c, t )xt − √αtδ0(xt, c, t )) . (81) Moreover, we can express h(xt, c, t ) as 
+
+h(xt, c, t ) = Eω∼N (0 ,Id)
+
+ Z 
+
+(ψt+1 (xt+1 , c ) − 1) xt+1 ρω (xt+1 , t )⊤dx t+1 
+
+| {z } 
+
+> W⋆(ω,c,t )∈Rd×2
+
+
+
+ϕω (xt, c, t )
+
+
+
+, (82) and express eψt(xt, c ) − 1 = z(xt,c,t )1−z(xt,c,t ) as 
+
+z(xt, c, t )1 − z(xt, c, t ) = eψt(xt, c ) − 1 (73) 
+
+= Eω∼N (0 ,Id)
+
+ Z 
+
+(ψt+1 (xt+1 , c ) − 1) ρω (xt+1 , t )⊤dx t+1 
+
+| {z }
+
+> u⋆(ω,c,t )∈R2
+
+
+
+ϕω (xt, c, t )
+
+
+
+, (83) We can use random Fourier features to approximate them as 
+
+h(xt, c, t ) = 1
+
+M
+
+> M
+
+X
+
+> i=1
+
+W ⋆(ωi, c, t )ϕωi (xt, c, t ) + δh(xt, c, t ), (84) 
+
+z(xt, c, t )1 − z(xt, c, t ) = 1
+
+M
+
+> M
+
+X
+
+> i=1
+
+u⋆(ωi, c, t )⊤ϕωi (xt, c, t ) + δz (xt, c, t ), (85) where ωii.i.d. 
+
+∼ N (0 , Id), i ∈ [M ]. Let 
+
+BW := ess sup 
+
+> ω∈Rd
+
+∥W ⋆(ω, c, t )∥F , V 2 
+
+> W
+
+:= ess sup 
+
+> ω∈Rd
+
+∥u⋆(ω, c, t )∥2 
+
+> F
+
+,Bu := ess sup 
+
+> ω∈Rd
+
+∥u⋆(ω, c, t )∥2 , V 2 
+
+> u
+
+:= ess sup 
+
+> ω∈Rd
+
+∥u⋆(ω, c, t )∥22 . (86) By Bernstein’s inequality (Kwon and Perchet [2017, Proposition E.3]), we have with probability at least 1 − δ,
+
+∥δh∥2 ⩽
+
+r 2V 2 
+
+> W
+
+log(2 /δ )
+
+M + 2BW log(2 /δ )3M , ∥δz ∥2 ⩽
+
+r 2V 2 
+
+> u
+
+log(2 /δ )
+
+M + 2Bu log(2 /δ )3M . (87) Finally, we bound δ0(xt, c, t ) defined in (71). 23 Recall we assume xT ∈ Bd
+
+∞(1), where we let 
+
+Bd
+
+∞(1) := xT ∈ Rd : ∥xT ∥∞ ⩽ 1 . (88) We let 
+
+rmin := inf 
+
+xT ∈Bd
+
+> ∞
+
+(1) ,c ∈C 
+
+r(xT , c ), rmax := sup 
+
+xT ∈Bd
+
+> ∞
+
+(1) ,c ∈C 
+
+r(xT , c ). (89) Then rmin and rmax are both finite, and by (66) we know that 
+
+ψmin := exp 
+
+ rmin 
+
+τ
+
+
+
+⩽ ψt(xt, c ) ⩽ ψmax := exp 
+
+ rmax 
+
+τ
+
+
+
+. (90) we define weighting function 
+
+wt(xt, c ) := ψt(xt, c )
+
+ψmin 
+
+, wt(xt, c ) := wt(xt, c ) − 1, (91) Then we have 
+
+δ0(xt, c, t ):= Ext+1 ∼q0,t (·| xt,c ) [xt+1 wt+1 (xt+1 , c )] 
+
+Ext+1 ∼q0,t (·| xt,c ) [wt+1 (xt+1 , c )] − Ext+1 ∼p0,t (·| xt,c ) [xt+1 wt+1 (xt+1 , c )] 
+
+Ext+1 ∼p0,t (·| xt,c ) [wt+1 (xt+1 , c )] = Ext+1 ∼q0,t (·| xt,c ) [( xt+1 − μ0(xt, c, t )) wt+1 (xt+1 , c )] 
+
+Ext+1 ∼q0,t (·| xt,c ) [wt+1 (xt+1 , c )] − Ext+1 ∼p0,t (·| xt,c ) [( xt+1 − μ0(xt, c, t )) wt+1 (xt+1 , c )] 
+
+Ext+1 ∼p0,t (·| xt,c ) [wt+1 (xt+1 , c )] = Ext+1 ∼q0,t (·| xt,c ) [( xt+1 − μ0(xt, c, t )) wt+1 (xt+1 , c )] 
+
+Ext+1 ∼q0,t (·| xt,c ) [wt+1 (xt+1 , c )] − Ext+1 ∼p0,t (·| xt,c ) [( xt+1 − μ0(xt, c, t )) wt+1 (xt+1 , c )] 
+
+Ext+1 ∼p0,t (·| xt,c ) [wt+1 (xt+1 , c )] (92) where the first line uses (71) and (67), and the third line follows from the fact that 
+
+μ0(xt, c, t ) = Ext+1 ∼p0,t (·| xt,c ) [xt+1 ] = Ext+1 ∼q0,t (·| xt,c ) [xt+1 ] (93) given by the optimality of ϵ0 and Lemma 2. Define 
+
+Aq,t := Ext+1 ∼q0,t (·| xt,c ) [( xt+1 − μ0(xt, c, t )) wt+1 (xt+1 , c )] ,Ap,t := Ext+1 ∼p0,t (·| xt,c ) [( xt+1 − μ0(xt, c, t )) wt+1 (xt+1 , c )] ,Bq,t := Ext+1 ∼q0,t (·| xt,c ) [wt+1 (xt+1 , c )] ,Bp,t := Ext+1 ∼p0,t (·| xt,c ) [wt+1 (xt+1 , c )] ,
+
+(94) Then 
+
+∥δ0(xt, c, t )∥2 = Aq,t 
+
+Bq,t 
+
+− Ap,t 
+
+Bp,t 2
+
+⩽ Aq,t − Ap,t 
+
+Bq,t 2
+
++ ∥Ap,t ∥2
+
+1
+
+Bp,t 
+
+− 1
+
+Bq,t 
+
+⩽ ∥Aq,t − Ap,t ∥2
+
+| {z }
+
+(i)
+
++ ∥Ap,t ∥2 |Bp,t − Bq,t |
+
+| {z }
+
+(ii )
+
+, (95) where we use the fact that 
+
+Bp,t ⩾ 1, Bq,t ⩾ 124 by our choice of wt+1 (c.f. (91)). Below we bound ( i) and ( ii ) in (95) separately utilizing the standard TV inequality: 
+
+∥Ep [g] − Eq [g]∥2 ⩽ p2TV ( p, q )
+
+r
+
+Ep
+
+h
+
+∥g∥22
+
+i
+
++ Eq
+
+h
+
+∥g∥22
+
+i
+
+. (96) for any vector-valued function g and probability measure p and q.Define 
+
+gt+1 := ( xt+1 − μ0(xt, c, t )) wt+1 (xt+1 , c ), (97) then by (91) we have 
+
+∥gt+1 ∥22 ⩽
+
+ ψmax 
+
+ψmin 
+
+− 1
+
+2
+
+∥xt+1 − μ0(xt, c, t )∥22 . (98) and by (96) we have (i) = Ext+1 ∼q0,t (·| xt,c ) [gt+1 ] − Ext+1 ∼p0,t (·| xt,c ) [gt+1 ] 2
+
+⩽
+
+q
+
+2TV ( q0,t , p 0,t )
+
+r
+
+Ext+1 ∼q0,t (·| xt,c )
+
+h
+
+∥gt+1 ∥22
+
+i
+
++ Ext+1 ∼p0,t (·| xt,c )
+
+h
+
+∥gt+1 ∥22
+
+i
+
+> (98)
+
+⩽
+
+ ψmax 
+
+ψmin 
+
+− 1
+
+ q 
+
+2TV ( q0,t , p 0,t )
+
+·
+
+r
+
+Ext+1 ∼q0,t (·| xt,c )
+
+h
+
+∥xt+1 − μ0(xt, c, t )∥22
+
+i
+
++ Ext+1 ∼p0,t (·| xt,c )
+
+h
+
+∥xt+1 − μ0(xt, c, t )∥22
+
+i
+
+, (99) where we write TV ( q0,t , p 0,t ) as a shorthand for TV ( q0,t (·| xt, c ), p 0,t (·| xt, c )). For (ii), by (98) we have 
+
+∥Ap,t ∥2 ⩽
+
+ ψmax 
+
+ψmin 
+
+− 1
+
+ r 
+
+Ext+1 ∼p0,t (·| xt,c )
+
+h
+
+∥xt+1 − μ0(xt, c, t )∥22
+
+i
+
+, (100) and by (96) we have 
+
+|Bp,t − Bq,t | ⩽
+
+q
+
+2TV ( q0,t , p 0,t )
+
+r
+
+Ext+1 ∼q0,t (·| xt,c )
+
+h
+
+∥wt+1 (xt+1 , c )∥22
+
+i
+
++ Ext+1 ∼p0,t (·| xt,c )
+
+h
+
+∥wt+1 (xt+1 , c )∥22
+
+i
+
+⩽ √2 ψmax 
+
+ψmin 
+
+q
+
+2TV ( q0,t , p 0,t ). (101) Combining The above two expressions, we have (ii ) ⩽ √2 ψmax 
+
+ψmin 
+
+ ψmax 
+
+ψmin 
+
+− 1
+
+ r 
+
+Ext+1 ∼q0,t (·| xt,c )
+
+h
+
+∥xt+1 − μ0(xt, c, t )∥22
+
+iq 
+
+2TV ( q0,t , p 0,t ) (102) Combining (99) and (102), we have 
+
+∥δ0(xt, c, t )∥2 ⩽
+
+ ψmax 
+
+ψmin 
+
+− 1
+
+  
+
+1 + √2 ψmax 
+
+ψmin 
+
+ q 
+
+2TV ( q0,t , p 0,t )
+
+·
+
+vuutExt+1 ∼q0,t (·| xt,c )
+
+h
+
+∥xt+1 − μ0(xt, c, t )∥22
+
+i| {z }
+
+> (a)
+
++ Ext+1 ∼p0,t (·| xt,c )
+
+h
+
+∥xt+1 − μ0(xt, c, t )∥22
+
+i| {z }
+
+> (b)
+
+.
+
+(103) 25 For (b), since q0,t (·| xt, c ) = N
+
+
+
+· μ0(xt, c, t ), eβtId
+
+
+
+, we have (b) := Ext+1 ∼p0,t (·| xt,c )
+
+h
+
+∥xt+1 − μ0(xt, c, t )∥22
+
+i
+
+= d eβt, (104) For (a), we have (a) = Ext+1 ∼q0,t (·| xt,c )
+
+h
+
+∥xt+1 − μ0(xt, c, t )∥22
+
+i
+
+= ExT ∼q0,t (·| xt,c )
+
+h
+
+Ext+1 ∼q0,t (·| xt,x T ,c )
+
+h
+
+∥xt+1 − μ0(xt, c, t )∥22
+
+ii 
+
+. (105) By (114) we can compute the inner expectation as 
+
+Ext+1 ∼q0,t (·| xt,x T ,c )
+
+h
+
+∥xt+1 − μ0(xt, c, t )∥22
+
+i
+
+= Eξ∼N (0 ,Id)
+
+"eμt(xt, x T , t ) − μ0(xt, c, t ) + 
+
+qeβtξ
+
+> 22
+
+#
+
+= ∥eμt(xt, x T , t ) − μ0(xt, c, t )∥22 + d eβt, (106) where 
+
+eβt = βt(1 − αt+1 )1 − αt
+
+, eμt(xt, x T , t ) = 
+
+√αt(1 − αt+1 )1 − αt
+
+xt + βt
+
+√αt+1 
+
+1 − αt
+
+xT . (107) Plugging (106) back into (105), we have (a) = ExT ∼q0,t (·| xt,c )
+
+h
+
+∥eμt(xt, x T , t ) − μ0(xt, c, t )∥22
+
+i
+
++ d eβt
+
+= ExT ∼q0,t (·| xt,c )
+
+heμt(xt, x T , t ) − ExT ∼q0,t (·| xt,c ) [eμt(xt, x T , t )] 22
+
+i
+
++ d eβt
+
+> (107)
+
+=
+
+ βt
+
+√αt+1 
+
+1 − αt
+
+2
+
+ExT ∼qt(·| xt,c )
+
+h
+
+∥xT − E [xT |xt, c ]∥22
+
+i
+
++ d eβt, (108) where the second equality follows from Lemma 2 and (117) in its proof. Plugging (108) and (104) back into (103), we have 
+
+∥δ0(xt, c, t )∥2 ⩽
+
+ ψmax 
+
+ψmin 
+
+− 1
+
+  
+
+1 + √2 ψmax 
+
+ψmin 
+
+ q 
+
+2TV ( q0,t , p 0,t )
+
+·
+
+s βt
+
+√αt+1 
+
+1 − αt
+
+2
+
+ExT ∼q0,t (·| xt,c )
+
+h
+
+∥xT − E [xT |xt, c ]∥22
+
+i
+
++ d( eβt + βt)
+
+⩽
+
+ ψmax 
+
+ψmin 
+
+− 1
+
+  
+
+1 + √2 ψmax 
+
+ψmin 
+
+ q 
+
+2TV ( q0,t , p 0,t )
+
+s βt
+
+√αt+1 
+
+1 − αt
+
+2
+
++ d( eβt + βt), (109) where the last inequality follows from our assumption that ∥xT ∥∞ ⩽ 1. 
+
+B.4 Proof of Lemma 1 
+
+Note that 
+
+ϵ (xt, c, t ) + √1 − αt∇xt log q⋆t (xt|c) 22
+
+= ϵ (xt, c, t ) + 
+
+√1 − αt
+
+q⋆t (xt|c) ∇xt
+
+Z
+
+p⋆ (xT |c) qt(xt|xT )dx T
+
+> 22
+
+= ∥ϵ (xt, c, t )∥22 + 2√1 − αt
+
+q⋆t (xt|c)
+
+
+
+ϵ (xt, c, t ) , ∇xt
+
+Z
+
+p⋆ (xT |c) qt(xt|xT )dx T
+
+
+
++ const 
+
+26 = ∥ϵ (xt, c, t )∥22
+
+1
+
+q⋆t (xt|c)
+
+Z
+
+p⋆ (xT |c) qt(xt|xT )dx T
+
+| {z }
+
+> =1
+
++ 2√1 − αt
+
+q⋆t (xt|c)
+
+Z
+
+p⋆ (xT |c) qt(xt|xT ) ⟨ϵ (xt, c, t ) , ∇xt log qt(xt|xT )⟩ dx T + const 
+
+= 1
+
+q⋆t (xt|c)
+
+Z
+
+p⋆ (xT |c) qt(xt|xT )
+
+
+
+∥ϵ (xt, c, t )∥22 + 2 √1 − αt ⟨ϵ (xt, c, t ) , ∇xt log qt(xt|xT )⟩
+
+
+
+dx T + const 
+
+= 1
+
+q⋆t (xt|c)
+
+Z
+
+p⋆ (xT |c) qt(xt|xT )
+
+
+
+ϵ (xt, c, t ) + √1 − αt∇xt log qt(xt|xT ) 22
+
+
+
+dx T + const , (110) where const denotes constants that are independent of ϵ.Integrate both sides of the above equation over xt ∼ q⋆t (·| c), we have 
+
+Ext∼q⋆t (·| c)
+
+h
+
+ϵ (xt, c, t ) + √1 − αt∇xt log q⋆t (xt|c) 22
+
+i
+
+= ExT ∼p⋆(·| c),xt∼qt(·| xT )
+
+h
+
+ϵ (xt, c, t ) + √1 − αt∇xt log qt(xt|xT ) 22
+
+i
+
++ const 
+
+= ExT ∼p⋆(·| c),ξ∼N (0 ,Id)
+
+h
+
+ξ − ϵ  √αtxT + √1 − αtξ, c, t  22
+
+i
+
++ const . (111) By comparing (111) with Lorg (·; p⋆), we obtain 
+
+Lorg (ϵ; p⋆) = 12 Ec∼pc,t ∼U ([ T −1]) ,xt∼q⋆t (·| c)
+
+h
+
+ϵ (xt, c, t ) + √1 − αt∇xt log q⋆t (xt|c) 22
+
+i
+
++ const . (112) Recall we assume supp ( pc) = C. Therefore, (112) indicates the minimum of Lorg (·; p⋆) is ϵp⋆ that satisfies (42). On the other hand, it’s obvious that for any g : Rd × C × [T ] → (0 , +∞), the minimum of L is also ϵp⋆ ,as long as (41) is well-defined. 
+
+B.5 Proof of Lemma 2 
+
+We let 
+
+μq (xt, c, t ) := Ext+1 ∼qt(·| xt,c ) [xt+1 ] . (113) First note that by the forward process rule (4) and Bayes’ rule, we have 
+
+qt(xt+1 |xt, x T ) = qt+1 (xt+1 |xT )pt(xt|xt+1 )
+
+qt(xt|xT ) = N
+
+
+
+xt+1 |eμt(xt, x T , t ), eβtId
+
+
+
+(114) with 
+
+eμt(xt, x T , t ) = 
+
+√αt(1 − αt+1 )1 − αt
+
+xt + βt
+
+√αt+1 
+
+1 − αt
+
+xT (115) and 
+
+eβt = βt(1 − αt+1 )1 − αt
+
+. (116) Thus we have 
+
+μq (xt, c, t ) = ExT ∼qt(·| xt,c ) [eμt(xt, x T , t )] = 
+
+√αt(1 − αt+1 )1 − αt
+
+xt + βt
+
+√αt+1 
+
+1 − αt
+
+ExT ∼qt(·| xt,c ) [xT ] . (117) 27 On the other hand, since ϵ⋆p minimizes the noise-prediction regression objective L0 (·; p) (c.f. (10)), we have 
+
+ϵ⋆p(xt, c, t ) = E[ξ|xt, c, t ] (4) 
+
+= E
+
+ xt − √αtxT
+
+√1 − αt
+
+xt, c, t 
+
+
+
+= xt
+
+√1 − αt
+
+−√αt
+
+√1 − αt
+
+ExT ∼qt(·| xt,c ) [xT ] , (118) from which we deduce 
+
+μ⋆p(xt, c, t ) = 1
+
+√αt
+
+xt − βt
+
+pαt (1 − αt) ϵ⋆p(xt, c, t )= 1
+
+√αt
+
+xt − βt
+
+pαt (1 − αt)
+
+ xt
+
+√1 − αt
+
+−√αt
+
+√1 − αt
+
+ExT ∼qt(·| xt,c ) [xT ]
+
+
+
+=
+
+√αt(1 − αt+1 )1 − αt
+
+xt + βt
+
+√αt+1 
+
+1 − αt
+
+ExT ∼qt(·| xt,c ) [xT ] (117) 
+
+= μq (xt, c, t ). (119) 
+
+# C Additional Experiment Details 
+
+Details on evaluation. For automatic evaluation, we found at test time, enlarging the side network guidance strength λmodel can help the finetuned models to achieve better performance, especially for SFT and RWL. Thus for SFT and RWL, we evaluate DiffCon, DiffCon-J, DiffCon-S with 1 /λ model ∈ { 0.1, 0.2, · · · , 1.0}
+
+and DiffCon-Naive with λmodel ∈ { 1.0, 2.0, · · · , 10 .0}; for PPO, we evaluate DiffCon, DiffCon-J, DiffCon-S with 1 /λ model ∈ { 0.7, 0.8, 0.9, 1.0} and DiffCon-Naive with λmodel ∈ { 1.0, 2.0, 3.0, 4.0}, and we report the best HPS-v2 win rate among them for each checkpoint. For human evaluation, we recruited more than 50 human raters 3 to rate the generated images of three pairs of network structures trained with PPO: (i) (gray-box) DiffCon vs. DiffCon-Naive, (ii) (white-box) DiffCon-J vs. LoRA, (iii) (white-box) DiffCon-S vs. LoRA. We randomly generate 50 prompts from the HPS-v2 prompt set. For each network structure we generate four images using different seeds for each prompt. The raters are tasked to evaluate a uniformly sampled pair of network structures out of the three, and are instructed to pick their favorite set based on the best-of-four to do evaluation. 
+
+DiffCon parameterization. We instantiate the side network sθ = ( zθ1 , h θ2 ) for DiffCon as a lightweight UNet operating on the latent space (4+1 channels at 64 × 64 for SD v1.4). It consists of standard UNet blocks ( DownBlock2D , CrossAttnDownBlock2D for the encoder, UpBlock2D , CrossAttnUpBlock2D for the decode, and CrossAttnMidBlock2D in the middle) similar as the ones used in diffusers von Platen et al. [2022]. See Table 2 for the details of the blocks. We found that using two DownBlock2D for the encoder and two UpBlock2D for the decoder works best, and the results presented in the main paper are under this structure. See Table 3 for the details of our side network structure under this choice. In our ablation study, we also tried other structures, see Appendix D for more details. 
+
+sθ (DiffCon) vs. sθ (DiffCon-Naive). Both DiffCon and DiffCon-Naive use the same lightweight UNet-style side network backbone, but they differ in (i) what is fed into the side network and (ii) how its output is used. In DiffCon, the side network is structured as sθ = ( zθ1 , h θ2 ) and is evaluated on the pretrained reverse mean μ0(xt, c, t ) (c.f. (27), (28)); one output head produces a scalar gate zθ1 (implemented as an extra output channel followed by a linear head), while the remaining channels form hθ2 . In contrast, DiffCon-Naive uses an almost identical backbone but removes this gating head (one fewer output channel) and does not split outputs; it directly predicts an additive residual that is added to ϵ0. We provide a detailed comparison in Table 4.  
+
+> 3The raters were paid contractors. They received their standard contracted wage, which is above the living wage in their country of employment.
+
+28 Table 2: Block definitions used in sθ . Common components: ResnetBlock2D : Standard ResNet block with GroupNorm, SiLU, and two Convolutional layers with kernel size 3 × 3 and stride 1. Transformer2DModel :spatial transformer with cross-attention. Downsample2D : a convolutional layer with kernel size 3 × 3 and stride 2. Upsample2D : 2 × Nearest Neighbor Resize + 3 × 3 conv, stride 1. 
+
+Block Name Structure & Sequence 
+
+CrossAttnDownBlock2D ResnetBlock2D Transformer2DModel Downsample2D (optional) 
+
+DownBlock2D ResnetBlock2D Downsample2D (optional) 
+
+CrossAttnMidBlock2D ResnetBlock2D Transformer2DModel ResnetBlock2D CrossAttnUpBlock2D ResnetBlock2D Transformer2DModel Upsample2D (optional) 
+
+UpBlock2D ResnetBlock2D Upsample2D (optional) 
+
+Table 3: Side network structure used in the main paper. 
+
+Configuration: layers per block =1, block out channels =(128, 256), sample size =64 × 64, 
+
+down block types =( DownBlock2D , DownBlock2D ), up block types =( UpBlock2D , UpBlock2D ). Stage Block Sequence Input Channels Output Channels Resolution Details Input conv Conv2D 4 128 64 × 64 → 64 × 64 ker 3 × 3, stride 1. Down block 0 DownBlock2D 128 128 64 × 64 → 32 × 32 Downsample: True. Down block 1 DownBlock2D 128 256 32 × 32 → 32 × 32 Downsample: False. Mid block CrossAttnMidBlock2D 256 256 32 × 32 → 32 × 32 -Up block 0 UpBlock2D 512 (256+256) 256 32 × 32 → 64 × 64 Skip from Down block 1. Upsample: True. Up block 1 UpBlock2D 384 (256+128) 128 64 × 64 → 64 × 64 Skip from Down block 0. Upsample: False. Output conv Conv2D 128 4 64 × 64 → 64 × 64 ker 3 × 3, stride 1. 
+
+DiffCon: sθ DiffCon-Naive: sθ
+
+Backbone lightweight UNet same backbone (by design) Side-net input (μ0(xt, c, t ), c, t ) (xt, c, t )Output parameterization (zθ1 , h θ2 ) single tensor (no split) Output channels (last conv) 5 (extra channel for zθ1 ) 4 (one fewer channel) How output is used controller-form correction (27), (28) direct residual: ϵθ = ϵ0 + λmodel sθ
+
+Intuition gated, structured control term ungated additive correction 
+
+Table 4: Side network variants in gray-box finetuning. Both methods share the same side-net backbone, but DiffCon uses a structured output ( z, f ) applied in the controller-form correction, while DiffCon-Naive directly adds an unsplit residual. 29 D Additional Experiment Results 
+
+Example generations. Table 5, 6, 7 shows some generation examples for each method under the SFT, RWL, and PPO settings. In addition, Figure 4, 5, 6, 7 show some generated images with varying guidance strength λmodel for both DiffCon and DiffCon-J methods under the SFT and RWL settings, demonstrating the effectiveness of guidance at inference time. Table 5: Qualitative comparison of different methods using SFT training. We compare Pretrained sd v1.4, DiffCon, DiffCon-Naive, LoRA, DiffCon-J, and DiffCon-S.       
+
+> Prompt Pretrained DiffCon DiffCon-Naive LoRA DiffCon-J DiffCon-S ”An intricate, biomechanical blue planet by Bruce Pennington”
+> ”A bluejay is eating spaghetti”
+> ”A crazy looking fish swimming in Alcatraz in the style of artgerm”
+> ”An oil painting by Frank Frazetta de-picting a humanoid spawn of dragons with scales, big eyes, and a menac-ing appearance”
+> ”An oil painting by Rembrandt depicting a muscu-lar cat wielding a weapon with dra-matic clouds in the background”
+
+Full automatic evaluation metrics. In Table 8, 9, 10, we report the HPS-v2 win rate vs. the pretrained model together with CLIP, CLIP-Aesthetics, and PickScore on the HPS-v2 test prompt set, for each algorithm at its reported checkpoint. We can see that HPS-v2 is improved by our methods, and the metrics are not compromised during our finetuning. 
+
+Our RWL v.s. DPOK [Fan et al., 2023, Algorithm 2]. We compare the heuristic reward weight loss in DPOK [Fan et al., 2023, Algorithm 2] and our proposed polynomial reward weighting (21) using LoRA in Figure 8. For DPOK, we set the learning rate to be 3e-6, the batch size to be 128 (twice of ours) and sample images (from the pretrained model for the teacher sampling setting, and from the current diffusion policy for the online sampling setting) every iteration (the sample frequency is also twice of ours). The other configurations for DPOK are the same as our RWL for LoRA. We can see that our proposed RWL achieves better HPS-v2 win rate than DPOK with 1/4 of the sample complexity. 30 Table 6: Qualitative comparison of different methods using RWL training. We compare Pretrained sd v1.4, DiffCon, DiffCon-Naive, LoRA, DiffCon-J, and DiffCon-S. 
+
+Prompt Pretrained DiffCon DiffCon-Naive LoRA DiffCon-J DiffCon-S ”A Victorian woman quietly sings by a lake at night surrounded by fireflies, moon, and stars, painted by Vincent van Gogh and Jacques-Louis David” 
+
+”Tetsuo and Kaneda engage in a race through Neo Tokyo in a pencil drawing fea-turing a scribbled style” 
+
+”A black cat wear-ing a suit and smoking a cigar” 
+
+”A dog sits in a white car with the door open” 
+
+”A painting of a cityscape with a red cloud shining light over a sea and bridge, by Greg Rutkowski and Thomas Kinkade” 
+
+(a) 1 /λ model = 0 .1 (b) 1 /λ model = 0 .3 (c) 1 /λ model = 0 .5 (d) 1 /λ model = 1 .0
+
+Figure 4: Generations with different guidance strengths λmodel using SFT with DiffCon. Prompt: “A black cat wearing a suit and smoking a cigar”. 31 Table 7: Qualitative comparison of different methods using PPO training. We compare Pretrained sd v1.4, DiffCon, DiffCon-Naive, LoRA, DiffCon-J, and DiffCon-S. 
+
+Prompt Pretrained DiffCon DiffCon-Naive LoRA DiffCon-J DiffCon-S ”A bike parked in front of a doorway” 
+
+”A cliff covered in blue blood” 
+
+”A knight in black armour holds a detailed silver sword in front of a castle” 
+
+”A lizard wearing sunglasses” 
+
+”A creepy el-dritch monster in a Swedish forest photographed from a low angle with detailed, realistic features and soft colors, inspired by Lovecraftian hor-ror and created by artist Simon St˚ alenhag” 
+
+(a) 1 /λ model = 0 .1 (b) 1 /λ model = 0 .3 (c) 1 /λ model = 0 .5 (d) 1 /λ model = 1 .0
+
+Figure 5: Generations with different guidance strengths λmodel using SFT with DiffCon-J. Prompt: “A bluejay is eating spaghetti”. 32 (a) 1 /λ model = 0 .1 (b) 1 /λ model = 0 .3 (c) 1 /λ model = 0 .5 (d) 1 /λ model = 1 .0
+
+Figure 6: Generations with different guidance strengths λmodel using RWL with DiffCon. Prompt: “A crazy looking fish swimming in Alcatraz in the style of artgerm”. 
+
+(a) 1 /λ model = 0 .03 (b) 1 /λ model = 0 .08 (c) 1 /λ model = 0 .125 (d) 1 /λ model = 1 .0
+
+Figure 7: Generations with different guidance strengths λmodel using RWL with DiffCon-J. Prompt: “A cute humanoid cat soldier wears a yellow raincoat, carries a rifle, and ventures through a dense forest, looking back over their shoulder”.            
+
+> Method # Params ↓Gray-box HPS-v2 win rate vs. pretrained model ↑Clip ↑Clip-Aesthetics ↑PickScore ↑
+
+Pretrained - - 0.500 0.2750 5.5163 0.2103 
+
+DiffCon (ours) 1.2 × 10 7 ✓ 0.6667 ± 0.0028 0.2744 ± 0.0004 5.4754 ± 0.0325 0.2105 ± 0.0001 DiffCon-Naive 1.2 × 10 7 ✓ 0.5655 ± 0.0165 0.2740 ± 0.0002 5.5153 ± 0.0048 0.2105 ± 0.0001 LoRA 1.7 × 10 7 0.5766 ± 0.0137 0.2760 ± 0.0002 5.5144 ± 0.0014 0.2107 ± 0.0000 
+
+DiffCon-J (ours) 1.6 × 10 7 0.6964 ± 0.0293 0.2747 ± 0.0002 5.4531 ± 0.0013 0.2103 ± 0.0001 
+
+DiffCon-S (ours) 1.6 × 10 7 0.6964 ± 0.0018 0.2747 ± 0.0010 5.4678 ± 0.0245 0.2104 ± 0.0003 Table 8: SFT evaluation results on HPS-v2 test prompt set at step 1000.            
+
+> Method # Params ↓Gray-box HPS-v2 win rate vs. pretrained model ↑Clip ↑Clip-Aesthetics ↑PickScore ↑
+
+Pretrained - - 0.500 0.2750 5.5163 0.2103 
+
+DiffCon (ours) 1.2 × 10 7 ✓ 0.6815 ± 0.0111 0.2732 ± 0.0009 5.4448 ± 0.0265 0.2105 ± 0.0001 DiffCon-Naive 1.2 × 10 7 ✓ 0.5060 ± 0.0190 0.2736 ± 0.0008 5.4977 ± 0.0118 0.2101 ± 0.0000 LoRA 1.7 × 10 7 0.6109 ± 0.0059 0.2696 ± 0.0007 5.4950 ± 0.0069 0.2096 ± 0.0003 
+
+DiffCon-J (ours) 1.6 × 10 7 0.6555 ± 0.0210 0.2712 ± 0.0007 5.5037 ± 0.0294 0.2100 ± 0.0004 
+
+DiffCon-S (ours) 1.6 × 10 7 0.7091 ± 0.0155 0.2710 ± 0.0010 5.4714 ± 0.0311 0.2102 ± 0.0004 Table 9: RWL evaluation results on HPS-v2 test prompt set at step 2000. 33 Method # Params ↓ Gray-box HPS-v2 win rate vs. pretrained model ↑ Clip ↑ Clip-Aesthetics ↑ PickScore ↑
+
+Pretrained - - 0.500 0.2750 5.5163 0.2103 
+
+DiffCon (ours) 1.2 × 10 7 ✓ 0.6957 ± 0.0152 0.2711 ± 0.0004 5.3370 ± 0.0219 0.2094 ± 0.0001 DiffCon-Naive 1.2 × 10 7 ✓ 0.5201 ± 0.0203 0.2748 ± 0.0006 5.5186 ± 0.0079 0.2106 ± 0.0000 LoRA 1.7 × 10 7 0.9048 ± 0.0084 0.2642 ± 0.0026 5.5631 ± 0.0642 0.2133 ± 0.0002 
+
+DiffCon-J (ours) 1.6 × 10 7 0.9353 ± 0.0079 0.2660 ± 0.0004 5.6292 ± 0.0657 0.2142 ± 0.0007 
+
+DiffCon-S (ours) 1.6 × 10 7 0.9315 ± 0.0164 0.2635 ± 0.0028 5.4989 ± 0.0846 0.2125 ± 0.0012 
+
+Table 10: PPO evaluation results on HPS-v2 test prompt set at step 2400. 
+
+(a) Teacher sampling setting (b) Online sampling setting 
+
+Figure 8: HPS-v2 win rate comparison between our polynomial reward weighting (LoRA, ours) and DPOK-RWL (LoRA) during RWL finetuning. (a) uses teacher sampling where the images for training at each iteration are generated by the pretrained model, and (b) uses online sampling where the images for training are generated by the current diffusion policy. 34 Ablation studies on learning rates for RL algorithms. We found LoRA performs better with higher learning rate (1e-4) for RWL and PPO, while DiffCon performs better with a lower learning rate (1e-5), as measured by HPS win rate (Figure 9).    
+
+> (a) RWL+DiffCon (b) RWL+LoRA (c) PPO+DiffCon (d) PPO+LoRA
+
+Figure 9: Learning rate ablation for RWL and PPO on HPS-v2 win rate (comparing 1e-4 vs. 1e-5). 
+
+Ablation studies on τKL for PPO. We provide the effectiveness of different τKL for PPO in Figure 10 to justify our choice of τKL =1e-4 in the main paper, which leads to the best performance. Note that when the KL regularization is too small (or is 0), the reward won’t go up.   
+
+> (a) DiffCon (b) LoRA (c) DiffCon-J
+
+Figure 10: Ablation studies on τKL for PPO on HPS-v2 win rate (five learning curves correspond to τKL ∈ { 0, 1e-5, 1e-4, 5e-4, 1e-3 }). τKL =1e-4 leads to the best performance. 
+
+Ablation studies on τRWL and weighting functions for RWL. In the main paper, we report RWL results using the polynomial reward weighting function wα (Eq. (21)). We first ablate τRWL under this polynomial weighting: smaller τRWL generally leads to better performance (Figure 11), but too small τRWL 
+
+(smaller than 0.0005) will cause instability in training (NaN in reward weight computation). Thus we choose 
+
+τRWL = 0 .0005 in the main paper. We additionally report RWL results under the exponential reward weighting function wKL (Eq. (20)) with τRWL = 0 .0015 in Figure 12. Consistent with our main results, our methods achieve higher HPS win rate than the baselines, and DiffCon (with fewer trainable parameters) outperforms the strong white-box LoRA baseline. 
+
+Ablation studies on side network structures. As mentioned in Appendix C, we found that using two 
+
+DownBlock2D for the encoder and two UpBlock2D for the decoder (i.e., down block types=( DownBlock2D ,
+
+DownBlock2D ), up block types=( UpBlock2D , UpBlock2D )) works best. We also tried different side network block combinations; see Table 11 and Figure 13 for more details. 35 (a) DiffCon (b) LoRA 
+
+Figure 11: Ablation studies on τRWL for RWL (three HPS-v2 win rate curves in each subfigure correspond to τRWL ∈ { 0.0005 , 0.0025 , 0.005 }). τRWL = 0 .0005 leads to the best performance. 
+
+Figure 12: RWL under the exponential reward weighting function wKL (Eq. (20)) with τRWL = 0 .0015 on HPS-v2 win rate. Table 11: Side network structure variants used in the ablation study. 
+
+Label # trainable params down block types up block types block out channels 1Res 11,702,717 DownBlock2D UpBlock2D 256 
+
+1Res+1Attn 13,391,549 CrossAttnDownBlock2D ,
+
+DownBlock2D UpBlock2D ,
+
+CrossAttnUpBlock2D (128, 256) 
+
+2Attn 18,519,485 CrossAttnDownBlock2D ,
+
+CrossAttnDownBlock2D CrossAttnUpBlock2D ,
+
+CrossAttnUpBlock2D (128, 256) 
+
+2Res 11,810,621 DownBlock2D ,
+
+DownBlock2D UpBlock2D ,
+
+UpBlock2D (128, 256) 
+
+36 (a) SFT (b) RWL (c) PPO 
+
+Figure 13: Ablation studies on DiffCon block structures evaluated by the HPS-v2 win rate curve. Each plot contains four curves corresponding to 1Res , 1Res+1Attn , 2Attn , and 2Res (main-paper setting). 
+
+Ablation studies on the input of the side network. Under our parameterization (27), we input 
+
+μ0(xt, c, t ) instead of xt to the side network. We found this leads to better performance for RWL, see Figure 14. 
+
+Figure 14: Ablation studies on the input of DiffCon for RWL, evaluated by the HPS-v2 win rate curve. The plot contains two curves corresponding to input mean =True or False, i.e., using the mean μ0(xt, c, t ) or xt
+
+as the input to the side network sθ .37

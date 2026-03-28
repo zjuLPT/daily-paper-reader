@@ -1,13 +1,13 @@
 {
   "mode": "standard",
-  "generated_at": "2026-03-28T13:33:22.073756+00:00",
+  "generated_at": "2026-03-28T13:42:35.055471+00:00",
   "stats": {
     "mode": "standard",
     "tag_count": 1,
     "deep_divecandidates": 6,
     "deep_cap": 6,
     "deep_selected": 6,
-    "quick_candidates": 13,
+    "quick_candidates": 23,
     "quick_skim_target": 11,
     "quick_selected": 11
   },
@@ -35,56 +35,19 @@
         "query:DiffTS"
       ],
       "llm_score": 10.0,
-      "llm_evidence_en": "diffusion-based method for time series anomaly detection",
-      "llm_evidence_cn": "基于扩散的时间序列异常检测方法",
-      "llm_evidence": "基于扩散的时间序列异常检测方法",
-      "canonical_evidence": "基于扩散的时间序列异常检测方法",
-      "llm_tldr_en": "Proposes a selective denoising diffusion model specifically designed for time series anomaly detection tasks.",
-      "llm_tldr_cn": "提出了一种专门为时间序列异常检测任务设计的选择性去噪扩散模型。",
-      "llm_tldr": "提出了一种专门为时间序列异常检测任务设计的选择性去噪扩散模型。",
+      "llm_evidence_en": "Diffusion models applied to time series anomaly detection",
+      "llm_evidence_cn": "扩散模型应用于时间序列异常检测",
+      "llm_evidence": "扩散模型应用于时间序列异常检测",
+      "canonical_evidence": "扩散模型应用于时间序列异常检测",
+      "llm_tldr_en": "Proposes AnomalyFilter, a selective denoising diffusion model for improved time series anomaly detection.",
+      "llm_tldr_cn": "提出了AnomalyFilter，一种用于改进时间序列异常检测的选择性去噪扩散模型。",
+      "llm_tldr": "提出了AnomalyFilter，一种用于改进时间序列异常检测的选择性去噪扩散模型。",
       "llm_tags": [
         "query:diffts"
       ],
       "matched_query_tag": "query:diffts",
       "matched_query_text": "research papers on diffusion models applied to time series tasks",
       "matched_requirement_id": "req-7",
-      "selection_source": "fresh_fetch"
-    },
-    {
-      "id": "2603.04767v1",
-      "source": "arxiv",
-      "title": "ConTSG-Bench: A Unified Benchmark for Conditional Time Series Generation",
-      "abstract": "Conditional time series generation plays a critical role in addressing data scarcity and enabling causal analysis in real-world applications. Despite its increasing importance, the field lacks a standardized and systematic benchmarking framework for evaluating generative models across diverse conditions. To address this gap, we introduce the Conditional Time Series Generation Benchmark (ConTSG-Bench). ConTSG-Bench comprises a large-scale, well-aligned dataset spanning diverse conditioning modalities and levels of semantic abstraction, first enabling systematic evaluation of representative generation methods across these dimensions with a comprehensive suite of metrics for generation fidelity and condition adherence. Both the quantitative benchmarking and in-depth analyses of conditional generation behaviors have revealed the traits and limitations of the current approaches, highlighting critical challenges and promising research directions, particularly with respect to precise structural controllability and downstream task utility under complex conditions.",
-      "authors": [
-        "Shaocheng Lan",
-        "Shuqi Gu",
-        "Zhangzhi Xiong",
-        "Kan Ren"
-      ],
-      "primary_category": "cs.LG",
-      "categories": [
-        "cs.LG"
-      ],
-      "published": "2026-03-05T03:30:52+00:00",
-      "link": "https://arxiv.org/pdf/2603.04767v1",
-      "tags": [
-        "keyword:DiffTS",
-        "query:DiffTS"
-      ],
-      "llm_score": 10.0,
-      "llm_evidence_en": "benchmark for conditional time series generation",
-      "llm_evidence_cn": "条件时间序列生成的基准测试",
-      "llm_evidence": "条件时间序列生成的基准测试",
-      "canonical_evidence": "条件时间序列生成的基准测试",
-      "llm_tldr_en": "Introduces ConTSG-Bench, a unified benchmark for evaluating conditional time series generation methods.",
-      "llm_tldr_cn": "引入ConTSG-Bench，这是一个用于评估条件时间序列生成方法的统一基准。",
-      "llm_tldr": "引入ConTSG-Bench，这是一个用于评估条件时间序列生成方法的统一基准。",
-      "llm_tags": [
-        "query:diffts"
-      ],
-      "matched_query_tag": "query:diffts",
-      "matched_query_text": "conditional diffusion frameworks for time series generation",
-      "matched_requirement_id": "req-6",
       "selection_source": "fresh_fetch"
     },
     {
@@ -111,12 +74,12 @@
       ],
       "llm_score": 10.0,
       "llm_evidence_en": "diffusion model used to probabilistically forecast turbulent flows",
-      "llm_evidence_cn": "扩散模型用于湍流的概率预测",
-      "llm_evidence": "扩散模型用于湍流的概率预测",
-      "canonical_evidence": "扩散模型用于湍流的概率预测",
-      "llm_tldr_en": "Leverages diffusion models for probabilistic forecasting of complex nonlinear dynamical systems over long horizons.",
-      "llm_tldr_cn": "利用扩散模型对复杂非线性动力系统进行长周期的概率预测。",
-      "llm_tldr": "利用扩散模型对复杂非线性动力系统进行长周期的概率预测。",
+      "llm_evidence_cn": "利用扩散模型对湍流进行概率预测",
+      "llm_evidence": "利用扩散模型对湍流进行概率预测",
+      "canonical_evidence": "利用扩散模型对湍流进行概率预测",
+      "llm_tldr_en": "Introduces an autoregressive diffusion objective for long-horizon probabilistic forecasting of complex dynamical systems.",
+      "llm_tldr_cn": "引入了一种自回归扩散目标，用于复杂动力系统（如湍流）的长期概率预测。",
+      "llm_tldr": "引入了一种自回归扩散目标，用于复杂动力系统（如湍流）的长期概率预测。",
       "llm_tags": [
         "query:diffts"
       ],
@@ -145,51 +108,86 @@
         "query:DiffTS"
       ],
       "llm_score": 9.0,
-      "llm_evidence_en": "DDPMs to generate risk-neutral asset price dynamics",
-      "llm_evidence_cn": "DDPM用于生成风险中性资产价格动态",
-      "llm_evidence": "DDPM用于生成风险中性资产价格动态",
-      "canonical_evidence": "DDPM用于生成风险中性资产价格动态",
-      "llm_tldr_en": "Develops a framework using diffusion models to generate financial asset price dynamics for derivative pricing.",
-      "llm_tldr_cn": "开发了一个使用扩散模型生成金融资产价格动态以进行衍生品定价的框架。",
-      "llm_tldr": "开发了一个使用扩散模型生成金融资产价格动态以进行衍生品定价的框架。",
+      "llm_evidence_en": "DDPMs for risk-neutral asset price dynamics",
+      "llm_evidence_cn": "用于风险中性资产价格动态的 DDPM",
+      "llm_evidence": "用于风险中性资产价格动态的 DDPM",
+      "canonical_evidence": "用于风险中性资产价格动态的 DDPM",
+      "llm_tldr_en": "Applies denoising diffusion probabilistic models to generate risk-neutral asset price dynamics for derivative pricing.",
+      "llm_tldr_cn": "应用去噪扩散概率模型生成用于衍生品定价的风险中性资产价格动态。",
+      "llm_tldr": "应用去噪扩散概率模型生成用于衍生品定价的风险中性资产价格动态。",
       "llm_tags": [
         "query:diffts"
       ],
       "matched_query_tag": "query:diffts",
-      "matched_query_text": "research papers on diffusion models applied to time series tasks",
-      "matched_requirement_id": "req-7",
+      "matched_query_text": "denoising diffusion probabilistic models applied to time series",
+      "matched_requirement_id": "req-4",
       "selection_source": "fresh_fetch"
     },
     {
-      "id": "2602.24083v1",
+      "id": "2603.19970v1",
       "source": "arxiv",
-      "title": "Neural Diffusion Intensity Models for Point Process Data",
-      "abstract": "Cox processes model overdispersed point process data via a latent stochastic intensity, but both nonparametric estimation of the intensity model and posterior inference over intensity paths are typically intractable, relying on expensive MCMC methods. We introduce Neural Diffusion Intensity Models, a variational framework for Cox processes driven by neural SDEs. Our key theoretical result, based on enlargement of filtrations, shows that conditioning on point process observations preserves the diffusion structure of the latent intensity with an explicit drift correction. This guarantees the variational family contains the true posterior, so that ELBO maximization coincides with maximum likelihood estimation under sufficient model capacity. We design an amortized encoder architecture that maps variable-length event sequences to posterior intensity paths by simulating the drift-corrected SDE, replacing repeated MCMC runs with a single forward pass. Experiments on synthetic and real-world data demonstrate accurate recovery of latent intensity dynamics and posterior paths, with orders-of-magnitude speedups over MCMC-based methods.",
+      "title": "Graph2TS: Structure-Controlled Time Series Generation via Quantile-Graph VAEs",
+      "abstract": "Although recent generative models can produce time series with close marginal distributions, they often face a fundamental tension between preserving global temporal structure and modeling stochastic local variations, particularly for highly volatile signals with weak or irregular periodicity. Direct distribution matching in such settings can amplify noise or suppress meaningful temporal patterns. In this work, we propose a structure-residual perspective on time-series generation, viewing temporal data as the combination of a structural backbone and stochastic residual dynamics, thereby motivating the separation of global organization from sample-level variability. Based on this insight, we represent time-series structure using a quantile-based transition graph that compactly captures global distributional and temporal dependencies. Building on this representation, we propose Graph2TS, a quantile-graph conditioned variational autoencoder that performs cross-modal generation from structural graphs to time series. By conditioning generation on structure rather than labels or metadata, the model preserves global temporal organization while enabling controlled stochastic variation. Experiments on diverse datasets, including sunspot, electricity load, ECG, and EEG signals, demonstrate improved distributional fidelity, temporal alignment, and representativeness compared to diffusion- and GAN-based baselines, highlighting structure-controlled and cross-modal generation as a promising direction for time-series modeling.",
       "authors": [
-        "Xinlong Du",
-        "Harsha Honnappa",
-        "Vinayak Rao"
+        "Shaoshuai Du",
+        "Joze M. Rozanec",
+        "Andy Pimentel",
+        "Ana-Lucia Varbanescu"
       ],
       "primary_category": "cs.LG",
       "categories": [
         "cs.LG",
-        "math.PR",
-        "stat.ML"
+        "cs.AI"
       ],
-      "published": "2026-02-27T15:21:06+00:00",
-      "link": "https://arxiv.org/pdf/2602.24083v1",
+      "published": "2026-03-20T14:12:11+00:00",
+      "link": "https://arxiv.org/pdf/2603.19970v1",
       "tags": [
         "keyword:DiffTS",
         "query:DiffTS"
       ],
       "llm_score": 8.0,
-      "llm_evidence_en": "diffusion structure for latent intensity in point processes",
-      "llm_evidence_cn": "点过程中潜在强度的扩散结构",
-      "llm_evidence": "点过程中潜在强度的扩散结构",
-      "canonical_evidence": "点过程中潜在强度的扩散结构",
-      "llm_tldr_en": "Develops a variational framework using neural SDEs to model latent intensities in point process data.",
-      "llm_tldr_cn": "开发了一个使用神经SDE建模点过程数据中潜在强度的变分框架。",
-      "llm_tldr": "开发了一个使用神经SDE建模点过程数据中潜在强度的变分框架。",
+      "llm_evidence_en": "structure-controlled time series generation",
+      "llm_evidence_cn": "结构控制的时间序列生成",
+      "llm_evidence": "结构控制的时间序列生成",
+      "canonical_evidence": "结构控制的时间序列生成",
+      "llm_tldr_en": "Proposes Graph2TS for time series generation by separating global structure from stochastic residual dynamics.",
+      "llm_tldr_cn": "提出了 Graph2TS，通过将全局结构与随机残差动力学分离来进行时间序列生成。",
+      "llm_tldr": "提出了 Graph2TS，通过将全局结构与随机残差动力学分离来进行时间序列生成。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "conditional diffusion frameworks for time series generation",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2603.20945v1",
+      "source": "arxiv",
+      "title": "Functional Estimation of Manifold-Valued Diffusion Processes",
+      "abstract": "Nonstationary high-dimensional time series are increasingly encountered in biomedical research as measurement technologies advance. Owing to the homeostatic nature of physiological systems, such datasets are often located on, or can be well approximated by, a low-dimensional manifold. Modeling such datasets by manifold-valued Itô diffusion processes has been shown to provide valuable insights and to guide the design of algorithms for clinical applications. In this paper, we propose Nadaraya-Watson type nonparametric estimators for the drift vector field and diffusion matrix of the process from one trajectory. Assuming a time-homogeneous stochastic differential equation on a smooth complete manifold without boundary, we show that as the sampling interval and kernel bandwidth vanish with increasing trajectory length, recurrence of the process yields asymptotic consistency and normality of the drift and diffusion estimators, as well as the associated occupation density. Analysis of the diffusion estimator further produces a tangent space estimator for dependent data, which has its own interest and is essential for drift estimation. Numerical experiments across a range of manifold configurations support the theoretical results.",
+      "authors": [
+        "Jacob McErlean",
+        "Hau-Tieng Wu"
+      ],
+      "primary_category": "stat.ME",
+      "categories": [
+        "stat.ME"
+      ],
+      "published": "2026-03-21T20:59:46+00:00",
+      "link": "https://arxiv.org/pdf/2603.20945v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Modeling nonstationary time series with manifold-valued diffusion processes",
+      "llm_evidence_cn": "使用流形值扩散过程对非平稳时间序列进行建模",
+      "llm_evidence": "使用流形值扩散过程对非平稳时间序列进行建模",
+      "canonical_evidence": "使用流形值扩散过程对非平稳时间序列进行建模",
+      "llm_tldr_en": "Develops nonparametric estimators for drift and diffusion in manifold-valued stochastic processes.",
+      "llm_tldr_cn": "为流形值随机过程中的漂移和扩散项开发了非参数估计器，适用于高维生物医学时间序列。",
+      "llm_tldr": "为流形值随机过程中的漂移和扩散项开发了非参数估计器，适用于高维生物医学时间序列。",
       "llm_tags": [
         "query:diffts"
       ],
@@ -220,13 +218,13 @@
         "query:DiffTS"
       ],
       "llm_score": 8.0,
-      "llm_evidence_en": "conditional diffusion models for data assimilation",
-      "llm_evidence_cn": "用于数据同化的条件扩散模型",
-      "llm_evidence": "用于数据同化的条件扩散模型",
-      "canonical_evidence": "用于数据同化的条件扩散模型",
-      "llm_tldr_en": "Proposes closed-form conditional diffusion models to assimilate system states with measurements using score functions.",
-      "llm_tldr_cn": "提出了闭式条件扩散模型，利用评分函数将系统状态与测量数据进行同化。",
-      "llm_tldr": "提出了闭式条件扩散模型，利用评分函数将系统状态与测量数据进行同化。",
+      "llm_evidence_en": "conditional diffusion models for data assimilation and state estimation",
+      "llm_evidence_cn": "用于数据同化和状态估计的条件扩散模型",
+      "llm_evidence": "用于数据同化和状态估计的条件扩散模型",
+      "canonical_evidence": "用于数据同化和状态估计的条件扩散模型",
+      "llm_tldr_en": "Proposes closed-form conditional diffusion models for data assimilation using kernel density estimation.",
+      "llm_tldr_cn": "提出了一种用于数据同化的闭式条件扩散模型，利用核密度估计实现高效的状态估计。",
+      "llm_tldr": "提出了一种用于数据同化的闭式条件扩散模型，利用核密度估计实现高效的状态估计。",
       "llm_tags": [
         "query:diffts"
       ],
@@ -238,306 +236,35 @@
   ],
   "quick_skim": [
     {
-      "id": "2602.23581v1",
+      "id": "2602.24083v1",
       "source": "arxiv",
-      "title": "SDMixer: Sparse Dual-Mixer for Time Series Forecasting",
-      "abstract": "Multivariate time series forecasting is widely applied in fields such as transportation, energy, and finance. However, the data commonly suffers from issues of multi-scale characteristics, weak correlations, and noise interference, which limit the predictive performance of existing models. This paper proposes a dual-stream sparse Mixer prediction framework that extracts global trends and local dynamic features from sequences in both the frequency and time domains, respectively. It employs a sparsity mechanism to filter out invalid information, thereby enhancing the accuracy of cross-variable dependency modeling. Experimental results demonstrate that this method achieves leading performance on multiple real-world scenario datasets, validating its effectiveness and generality. The code is available at https://github.com/SDMixer/SDMixer",
+      "title": "Neural Diffusion Intensity Models for Point Process Data",
+      "abstract": "Cox processes model overdispersed point process data via a latent stochastic intensity, but both nonparametric estimation of the intensity model and posterior inference over intensity paths are typically intractable, relying on expensive MCMC methods. We introduce Neural Diffusion Intensity Models, a variational framework for Cox processes driven by neural SDEs. Our key theoretical result, based on enlargement of filtrations, shows that conditioning on point process observations preserves the diffusion structure of the latent intensity with an explicit drift correction. This guarantees the variational family contains the true posterior, so that ELBO maximization coincides with maximum likelihood estimation under sufficient model capacity. We design an amortized encoder architecture that maps variable-length event sequences to posterior intensity paths by simulating the drift-corrected SDE, replacing repeated MCMC runs with a single forward pass. Experiments on synthetic and real-world data demonstrate accurate recovery of latent intensity dynamics and posterior paths, with orders-of-magnitude speedups over MCMC-based methods.",
       "authors": [
-        "Xiang Ao"
+        "Xinlong Du",
+        "Harsha Honnappa",
+        "Vinayak Rao"
       ],
       "primary_category": "cs.LG",
       "categories": [
         "cs.LG",
-        "cs.AI"
-      ],
-      "published": "2026-02-27T01:13:56+00:00",
-      "link": "https://arxiv.org/pdf/2602.23581v1",
-      "tags": [
-        "keyword:DiffTS",
-        "query:DiffTS"
-      ],
-      "llm_score": 7.0,
-      "llm_evidence_en": "dual-stream sparse Mixer for multivariate time series forecasting",
-      "llm_evidence_cn": "用于多元时间序列预测的双流稀疏 Mixer",
-      "llm_evidence": "用于多元时间序列预测的双流稀疏 Mixer",
-      "canonical_evidence": "用于多元时间序列预测的双流稀疏 Mixer",
-      "llm_tldr_en": "A sparse dual-mixer framework for forecasting that extracts global trends and local dynamic features.",
-      "llm_tldr_cn": "一种用于预测的稀疏双 Mixer 框架，可提取全局趋势和局部动态特征。",
-      "llm_tldr": "一种用于预测的稀疏双 Mixer 框架，可提取全局趋势和局部动态特征。",
-      "llm_tags": [
-        "query:diffts"
-      ],
-      "matched_query_tag": "query:diffts",
-      "matched_query_text": "methods using diffusion models for time series forecasting",
-      "matched_requirement_id": "req-3",
-      "selection_source": "fresh_fetch",
-      "quick_tier": "7"
-    },
-    {
-      "id": "2603.09148v1",
-      "source": "arxiv",
-      "title": "Modeling Trend Dynamics with Variational Neural ODEs for Information Popularity Prediction",
-      "abstract": "Predicting the future popularity of information in online social networks is a crucial yet challenging task, due to the complex spatiotemporal dynamics underlying information diffusion. Existing methods typically use structural or sequential patterns within the observation window as direct inputs for subsequent popularity prediction. However, most approaches lack the ability to explicitly model the overall trend of popularity up to the prediction time, which leads to limited predictive capability. To address these limitations, we propose VNOIP, a novel method based on variational neural Ordinary Differential Equations (ODEs) for information popularity prediction. Specifically, VNOIP introduces bidirectional jump ODEs with attention mechanisms to capture long-range dependencies and bidirectional context within cascade sequences. Furthermore, by jointly considering both cascade patterns and overall trend temporal patterns, VNOIP explicitly models the continuous-time dynamics of popularity trend trajectories with variational neural ODEs. Additionally, a knowledge distillation loss is employed to align the evolution of prior and posterior latent variables. Extensive experiments on real-world datasets demonstrate that VNOIP is highly competitive in both prediction accuracy and efficiency compared to state-of-the-art baselines.",
-      "authors": [
-        "Yuchen Wang",
-        "Dongpeng Hou",
-        "Weikai Jing",
-        "Chao Gao",
-        "Xianghua Li",
-        "Yang Liu"
-      ],
-      "primary_category": "cs.SI",
-      "categories": [
-        "cs.SI"
-      ],
-      "published": "2026-03-10T03:39:17+00:00",
-      "link": "https://arxiv.org/pdf/2603.09148v1",
-      "tags": [
-        "keyword:DiffTS",
-        "query:DiffTS"
-      ],
-      "llm_score": 6.0,
-      "llm_evidence_en": "spatiotemporal dynamics for information popularity prediction",
-      "llm_evidence_cn": "信息流行度预测的时空动态",
-      "llm_evidence": "信息流行度预测的时空动态",
-      "canonical_evidence": "信息流行度预测的时空动态",
-      "llm_tldr_en": "Uses variational neural ODEs to model trend dynamics for predicting future information popularity.",
-      "llm_tldr_cn": "使用变分神经常微分方程建模趋势动态，以预测未来的信息流行度。",
-      "llm_tldr": "使用变分神经常微分方程建模趋势动态，以预测未来的信息流行度。",
-      "llm_tags": [
-        "query:diffts"
-      ],
-      "matched_query_tag": "query:diffts",
-      "matched_query_text": "Time Series",
-      "matched_requirement_id": "req-1",
-      "selection_source": "fresh_fetch",
-      "quick_tier": "6"
-    },
-    {
-      "id": "2603.04951v1",
-      "source": "arxiv",
-      "title": "Retrieval-Augmented Generation with Covariate Time Series",
-      "abstract": "While RAG has greatly enhanced LLMs, extending this paradigm to Time-Series Foundation Models (TSFMs) remains a challenge. This is exemplified in the Predictive Maintenance of the Pressure Regulating and Shut-Off Valve (PRSOV), a high-stakes industrial scenario characterized by (1) data scarcity, (2) short transient sequences, and (3) covariate coupled dynamics. Unfortunately, existing time-series RAG approaches predominantly rely on generated static vector embeddings and learnable context augmenters, which may fail to distinguish similar regimes in such scarce, transient, and covariate coupled scenarios. To address these limitations, we propose RAG4CTS, a regime-aware, training-free RAG framework for Covariate Time-Series. Specifically, we construct a hierarchal time-series native knowledge base to enable lossless storage and physics-informed retrieval of raw historical regimes. We design a two-stage bi-weighted retrieval mechanism that aligns historical trends through point-wise and multivariate similarities. For context augmentation, we introduce an agent-driven strategy to dynamically optimize context in a self-supervised manner. Extensive experiments on PRSOV demonstrate that our framework significantly outperforms state-of-the-art baselines in prediction accuracy. The proposed system is deployed in Apache IoTDB within China Southern Airlines. Since deployment, our method has successfully identified one PRSOV fault in two months with zero false alarm.",
-      "authors": [
-        "Kenny Ye Liang",
-        "Zhongyi Pei",
-        "Huan Zhang",
-        "Yuhui Liu",
-        "Shaoxu Song",
-        "Jianmin Wang"
-      ],
-      "primary_category": "cs.AI",
-      "categories": [
-        "cs.AI"
-      ],
-      "published": "2026-03-05T08:45:24+00:00",
-      "link": "https://arxiv.org/pdf/2603.04951v1",
-      "tags": [
-        "keyword:DiffTS",
-        "query:DiffTS"
-      ],
-      "llm_score": 7.0,
-      "llm_evidence_en": "RAG framework for covariate time series foundation models",
-      "llm_evidence_cn": "协变量时间序列基础模型的RAG框架",
-      "llm_evidence": "协变量时间序列基础模型的RAG框架",
-      "canonical_evidence": "协变量时间序列基础模型的RAG框架",
-      "llm_tldr_en": "Introduces a regime-aware RAG framework for time-series foundation models in industrial scenarios.",
-      "llm_tldr_cn": "为工业场景下的时间序列基础模型引入了一种机制感知的RAG框架。",
-      "llm_tldr": "为工业场景下的时间序列基础模型引入了一种机制感知的RAG框架。",
-      "llm_tags": [
-        "query:diffts"
-      ],
-      "matched_query_tag": "query:diffts",
-      "matched_query_text": "Time Series",
-      "matched_requirement_id": "req-1",
-      "selection_source": "fresh_fetch",
-      "quick_tier": "7"
-    },
-    {
-      "id": "2603.13419v1",
-      "source": "arxiv",
-      "title": "Diffusion Models Generalize but Not in the Way You Might Think",
-      "abstract": "Standard evaluation metrics suggest that Denoising Diffusion Models based on U-Net or Transformer architectures generalize well in practice. However, as it can be shown that an optimal Diffusion Model fully memorizes the training data, the model error determines generalization. Here, we show that although sufficiently large denoiser models show increasing memorization of the training set with increasing training time, the resulting denoising trajectories do not follow this trend. Our experiments indicate that the reason for this observation is rooted in the fact that overfitting occurs at intermediate noise levels, but the distribution of noisy training data at these noise levels has little overlap with denoising trajectories during inference. To gain more insight, we make use of a 2D toy diffusion model to show that overfitting at intermediate noise levels is largely determined by model error and the density of the data support. While the optimal denoising flow field localizes sharply around training samples, sufficient model error or dense support on the data manifold suppresses exact recall, yielding a smooth, generalizing flow field. To further support our results, we investigate how several factors, such as training time, model size, dataset size, condition granularity, and diffusion guidance, influence generalization behavior.",
-      "authors": [
-        "Tim Kaiser",
-        "Markus Kollmann"
-      ],
-      "primary_category": "cs.LG",
-      "categories": [
-        "cs.LG"
-      ],
-      "published": "2026-03-12T21:02:17+00:00",
-      "link": "https://arxiv.org/pdf/2603.13419v1",
-      "tags": [
-        "keyword:DiffTS",
-        "query:DiffTS"
-      ],
-      "llm_score": 6.0,
-      "llm_evidence_en": "generalization analysis of denoising diffusion models",
-      "llm_evidence_cn": "去噪扩散模型的泛化分析",
-      "llm_evidence": "去噪扩散模型的泛化分析",
-      "canonical_evidence": "去噪扩散模型的泛化分析",
-      "llm_tldr_en": "Investigates how denoising diffusion models generalize despite memorizing training data.",
-      "llm_tldr_cn": "研究去噪扩散模型在记忆训练数据的情况下如何实现泛化。",
-      "llm_tldr": "研究去噪扩散模型在记忆训练数据的情况下如何实现泛化。",
-      "llm_tags": [
-        "query:diffts"
-      ],
-      "matched_query_tag": "query:diffts",
-      "matched_query_text": "research papers on diffusion models applied to time series tasks",
-      "matched_requirement_id": "req-7",
-      "selection_source": "fresh_fetch",
-      "quick_tier": "6"
-    },
-    {
-      "id": "2603.08803v1",
-      "source": "arxiv",
-      "title": "The Temporal Markov Transition Field",
-      "abstract": "The Markov Transition Field (MTF), introduced by Wang and Oates (2015), encodes a time series as a two-dimensional image by mapping each pair of time steps to the transition probability between their quantile states, estimated from a single global transition matrix. This construction is efficient when the transition dynamics are stationary, but produces a misleading representation when the process changes regime over time: the global matrix averages across regimes and the resulting image loses all information about \\emph{when} each dynamical regime was active. In this paper we introduce the \\emph{Temporal Markov Transition Field} (TMTF), an extension that partitions the series into $K$ contiguous temporal chunks, estimates a separate local transition matrix for each chunk, and assembles the image so that each row reflects the dynamics local to its chunk rather than the global average. The resulting $T \\times T$ image has $K$ horizontal bands of distinct texture, each encoding the transition dynamics of one temporal segment. We develop the formal definition, establish the key structural properties of the representation, work through a complete numerical example that makes the distinction from the global MTF concrete, analyse the bias--variance trade-off introduced by temporal chunking, and discuss the geometric interpretation of the local transition matrices in terms of process properties such as persistence, mean reversion, and trending behaviour. The TMTF is amplitude-agnostic and order-preserving, making it suitable as an input channel for convolutional neural networks applied to time series characterisation tasks.",
-      "authors": [
-        "Michael Leznik"
-      ],
-      "primary_category": "cs.LG",
-      "categories": [
-        "cs.LG",
+        "math.PR",
         "stat.ML"
       ],
-      "published": "2026-03-09T18:04:40+00:00",
-      "link": "https://arxiv.org/pdf/2603.08803v1",
+      "published": "2026-02-27T15:21:06+00:00",
+      "link": "https://arxiv.org/pdf/2602.24083v1",
       "tags": [
         "keyword:DiffTS",
         "query:DiffTS"
       ],
       "llm_score": 7.0,
-      "llm_evidence_en": "encodes time series as a two-dimensional image using Markov transitions",
-      "llm_evidence_cn": "使用马尔可夫转移将时间序列编码为二维图像",
-      "llm_evidence": "使用马尔可夫转移将时间序列编码为二维图像",
-      "canonical_evidence": "使用马尔可夫转移将时间序列编码为二维图像",
-      "llm_tldr_en": "Proposes Temporal Markov Transition Field to capture regime changes in non-stationary time series.",
-      "llm_tldr_cn": "提出时间马尔可夫转移场，以捕获非平稳时间序列中的状态切换。",
-      "llm_tldr": "提出时间马尔可夫转移场，以捕获非平稳时间序列中的状态切换。",
-      "llm_tags": [
-        "query:diffts"
-      ],
-      "matched_query_tag": "query:diffts",
-      "matched_query_text": "Time Series",
-      "matched_requirement_id": "req-1",
-      "selection_source": "fresh_fetch",
-      "quick_tier": "7"
-    },
-    {
-      "id": "2603.21342v1",
-      "source": "arxiv",
-      "title": "Generalized Discrete Diffusion from Snapshots",
-      "abstract": "We introduce Generalized Discrete Diffusion from Snapshots (GDDS), a unified framework for discrete diffusion modeling that supports arbitrary noising processes over large discrete state spaces. Our formulation encompasses all existing discrete diffusion approaches, while allowing significantly greater flexibility in the choice of corruption dynamics. The forward noising process relies on uniformization and enables fast arbitrary corruption. For the reverse process, we derive a simple evidence lower bound (ELBO) based on snapshot latents, instead of the entire noising path, that allows efficient training of standard generative modeling architectures with clear probabilistic interpretation. Our experiments on large-vocabulary discrete generation tasks suggest that the proposed framework outperforms existing discrete diffusion methods in terms of training efficiency and generation quality, and beats autoregressive models for the first time at this scale. We provide the code along with a blog post on the project page : \\href{https://oussamazekri.fr/gdds}{https://oussamazekri.fr/gdds}.",
-      "authors": [
-        "Oussama Zekri",
-        "Théo Uscidda",
-        "Nicolas Boullé",
-        "Anna Korba"
-      ],
-      "primary_category": "stat.ML",
-      "categories": [
-        "stat.ML",
-        "cs.AI",
-        "cs.CL",
-        "cs.LG"
-      ],
-      "published": "2026-03-22T17:58:01+00:00",
-      "link": "https://arxiv.org/pdf/2603.21342v1",
-      "tags": [
-        "keyword:DiffTS",
-        "query:DiffTS"
-      ],
-      "llm_score": 6.0,
-      "llm_evidence_en": "unified framework for discrete diffusion modeling",
-      "llm_evidence_cn": "离散扩散建模的统一框架",
-      "llm_evidence": "离散扩散建模的统一框架",
-      "canonical_evidence": "离散扩散建模的统一框架",
-      "llm_tldr_en": "Introduces a flexible discrete diffusion framework supporting arbitrary noising processes.",
-      "llm_tldr_cn": "引入了一种支持任意加噪过程的灵活离散扩散框架。",
-      "llm_tldr": "引入了一种支持任意加噪过程的灵活离散扩散框架。",
-      "llm_tags": [
-        "query:diffts"
-      ],
-      "matched_query_tag": "query:diffts",
-      "matched_query_text": "research papers on diffusion models applied to time series tasks",
-      "matched_requirement_id": "req-7",
-      "selection_source": "fresh_fetch",
-      "quick_tier": "6"
-    },
-    {
-      "id": "2603.11909v1",
-      "source": "arxiv",
-      "title": "EnTransformer: A Deep Generative Transformer for Multivariate Probabilistic Forecasting",
-      "abstract": "Reliable uncertainty quantification is critical in multivariate time series forecasting problems arising in domains such as energy systems and transportation networks, among many others. Although Transformer-based architectures have recently achieved strong performance for sequence modeling, most probabilistic forecasting approaches rely on restrictive parametric likelihoods or quantile-based objectives. They can struggle to capture complex joint predictive distributions across multiple correlated time series. This work proposes EnTransformer, a deep generative forecasting framework that integrates engression, a stochastic learning paradigm for modeling conditional distributions, with the expressive sequence modeling capabilities of Transformers. The proposed approach injects stochastic noise into the model representation and optimizes an energy-based scoring objective to directly learn the conditional predictive distribution without imposing parametric assumptions. This design enables EnTransformer to generate coherent multivariate forecast trajectories while preserving Transformers' capacity to effectively model long-range temporal dependencies and cross-series interactions. We evaluate our proposed EnTransformer on several widely used benchmarks for multivariate probabilistic forecasting, including Electricity, Traffic, Solar, Taxi, KDD-cup, and Wikipedia datasets. Experimental results demonstrate that EnTransformer produces well-calibrated probabilistic forecasts and consistently outperforms the benchmark models.",
-      "authors": [
-        "Rajdeep Pathak",
-        "Rahul Goswami",
-        "Madhurima Panja",
-        "Palash Ghosh",
-        "Tanujit Chakraborty"
-      ],
-      "primary_category": "cs.LG",
-      "categories": [
-        "cs.LG",
-        "cs.AI",
-        "stat.ML"
-      ],
-      "published": "2026-03-12T13:25:21+00:00",
-      "link": "https://arxiv.org/pdf/2603.11909v1",
-      "tags": [
-        "keyword:DiffTS",
-        "query:DiffTS"
-      ],
-      "llm_score": 7.0,
-      "llm_evidence_en": "deep generative forecasting framework for multivariate time series",
-      "llm_evidence_cn": "多变量时间序列的深度生成式预测框架",
-      "llm_evidence": "多变量时间序列的深度生成式预测框架",
-      "canonical_evidence": "多变量时间序列的深度生成式预测框架",
-      "llm_tldr_en": "Integrates engression with Transformers for probabilistic multivariate time series forecasting.",
-      "llm_tldr_cn": "将engression与Transformer结合，用于多变量时间序列的概率预测。",
-      "llm_tldr": "将engression与Transformer结合，用于多变量时间序列的概率预测。",
-      "llm_tags": [
-        "query:diffts"
-      ],
-      "matched_query_tag": "query:diffts",
-      "matched_query_text": "methods using diffusion models for time series forecasting",
-      "matched_requirement_id": "req-3",
-      "selection_source": "fresh_fetch",
-      "quick_tier": "7"
-    },
-    {
-      "id": "2603.22458v1",
-      "source": "arxiv",
-      "title": "MinerU-Diffusion: Rethinking Document OCR as Inverse Rendering via Diffusion Decoding",
-      "abstract": "Optical character recognition (OCR) has evolved from line-level transcription to structured document parsing, requiring models to recover long-form sequences containing layout, tables, and formulas. Despite recent advances in vision-language models, most existing systems rely on autoregressive decoding, which introduces sequential latency and amplifies error propagation in long documents. In this work, we revisit document OCR from an inverse rendering perspective, arguing that left-to-right causal generation is an artifact of serialization rather than an intrinsic property of the task. Motivated by this insight, we propose MinerU-Diffusion, a unified diffusion-based framework that replaces autoregressive sequential decoding with parallel diffusion denoising under visual conditioning. MinerU-Diffusion employs a block-wise diffusion decoder and an uncertainty-driven curriculum learning strategy to enable stable training and efficient long-sequence inference. Extensive experiments demonstrate that MinerU-Diffusion consistently improves robustness while achieving up to 3.2x faster decoding compared to autoregressive baselines. Evaluations on the proposed Semantic Shuffle benchmark further confirm its reduced dependence on linguistic priors and stronger visual OCR capability.",
-      "authors": [
-        "Hejun Dong",
-        "Junbo Niu",
-        "Bin Wang",
-        "Weijun Zeng",
-        "Wentao Zhang",
-        "Conghui He"
-      ],
-      "primary_category": "cs.CV",
-      "categories": [
-        "cs.CV"
-      ],
-      "published": "2026-03-23T18:25:17+00:00",
-      "link": "https://arxiv.org/pdf/2603.22458v1",
-      "tags": [
-        "keyword:DiffTS",
-        "query:DiffTS"
-      ],
-      "llm_score": 6.0,
-      "llm_evidence_en": "diffusion-based framework for sequence modeling in OCR",
-      "llm_evidence_cn": "OCR中基于扩散的序列建模框架",
-      "llm_evidence": "OCR中基于扩散的序列建模框架",
-      "canonical_evidence": "OCR中基于扩散的序列建模框架",
-      "llm_tldr_en": "Replaces autoregressive decoding with parallel diffusion decoding for structured document parsing.",
-      "llm_tldr_cn": "在结构化文档解析中，用并行扩散解码取代了自回归解码。",
-      "llm_tldr": "在结构化文档解析中，用并行扩散解码取代了自回归解码。",
+      "llm_evidence_en": "neural diffusion intensity models for point process data",
+      "llm_evidence_cn": "用于点过程数据的神经扩散强度模型",
+      "llm_evidence": "用于点过程数据的神经扩散强度模型",
+      "canonical_evidence": "用于点过程数据的神经扩散强度模型",
+      "llm_tldr_en": "Develops a variational framework for point processes driven by neural SDEs and diffusion structures.",
+      "llm_tldr_cn": "开发了一个由神经 SDE 驱动的变分框架，用于建模具有潜在扩散强度的点过程数据。",
+      "llm_tldr": "开发了一个由神经 SDE 驱动的变分框架，用于建模具有潜在扩散强度的点过程数据。",
       "llm_tags": [
         "query:diffts"
       ],
@@ -545,89 +272,36 @@
       "matched_query_text": "sequence modeling with diffusion processes for time-dependent data",
       "matched_requirement_id": "req-5",
       "selection_source": "fresh_fetch",
-      "quick_tier": "6"
-    },
-    {
-      "id": "2603.19899v1",
-      "source": "arxiv",
-      "title": "Deep Autocorrelation Modeling for Time-Series Forecasting: Progress and Prospects",
-      "abstract": "Autocorrelation is a defining characteristic of time-series data, where each observation is statistically dependent on its predecessors. In the context of deep time-series forecasting, autocorrelation arises in both the input history and the label sequences, presenting two central research challenges: (1) designing neural architectures that model autocorrelation in history sequences, and (2) devising learning objectives that model autocorrelation in label sequences. Recent studies have made strides in tackling these challenges, but a systematic survey examining both aspects remains lacking. To bridge this gap, this paper provides a comprehensive review of deep time-series forecasting from the perspective of autocorrelation modeling. In contrast to existing surveys, this work makes two distinctive contributions. First, it proposes a novel taxonomy that encompasses recent literature on both model architectures and learning objectives -- whereas prior surveys neglect or inadequately discuss the latter aspect. Second, it offers a thorough analysis of the motivations, insights, and progression of the surveyed literature from a unified, autocorrelation-centric perspective, providing a holistic overview of the evolution of deep time-series forecasting. The full list of papers and resources is available at https://github.com/Master-PLC/Awesome-TSF-Papers.",
-      "authors": [
-        "Hao Wang",
-        "Licheng Pan",
-        "Qingsong Wen",
-        "Jialin Yu",
-        "Zhichao Chen",
-        "Chunyuan Zheng",
-        "Xiaoxi Li",
-        "Zhixuan Chu",
-        "Chao Xu",
-        "Mingming Gong",
-        "Haoxuan Li",
-        "Yuan Lu",
-        "Zhouchen Lin",
-        "Philip Torr",
-        "Yan Liu"
-      ],
-      "primary_category": "stat.ML",
-      "categories": [
-        "stat.ML",
-        "cs.LG",
-        "stat.AP"
-      ],
-      "published": "2026-03-20T12:31:08+00:00",
-      "link": "https://arxiv.org/pdf/2603.19899v1",
-      "tags": [
-        "keyword:DiffTS",
-        "query:DiffTS"
-      ],
-      "llm_score": 7.0,
-      "llm_evidence_en": "comprehensive review of deep time-series forecasting",
-      "llm_evidence_cn": "深度时间序列预测的全面综述",
-      "llm_evidence": "深度时间序列预测的全面综述",
-      "canonical_evidence": "深度时间序列预测的全面综述",
-      "llm_tldr_en": "A systematic survey of deep time-series forecasting focusing on autocorrelation modeling in history and labels.",
-      "llm_tldr_cn": "从自相关建模的角度对深度学习时间序列预测进行了系统的综述。",
-      "llm_tldr": "从自相关建模的角度对深度学习时间序列预测进行了系统的综述。",
-      "llm_tags": [
-        "query:diffts"
-      ],
-      "matched_query_tag": "query:diffts",
-      "matched_query_text": "Time Series",
-      "matched_requirement_id": "req-1",
-      "selection_source": "fresh_fetch",
       "quick_tier": "7"
     },
     {
-      "id": "2603.19970v1",
+      "id": "2603.01552v1",
       "source": "arxiv",
-      "title": "Graph2TS: Structure-Controlled Time Series Generation via Quantile-Graph VAEs",
-      "abstract": "Although recent generative models can produce time series with close marginal distributions, they often face a fundamental tension between preserving global temporal structure and modeling stochastic local variations, particularly for highly volatile signals with weak or irregular periodicity. Direct distribution matching in such settings can amplify noise or suppress meaningful temporal patterns. In this work, we propose a structure-residual perspective on time-series generation, viewing temporal data as the combination of a structural backbone and stochastic residual dynamics, thereby motivating the separation of global organization from sample-level variability. Based on this insight, we represent time-series structure using a quantile-based transition graph that compactly captures global distributional and temporal dependencies. Building on this representation, we propose Graph2TS, a quantile-graph conditioned variational autoencoder that performs cross-modal generation from structural graphs to time series. By conditioning generation on structure rather than labels or metadata, the model preserves global temporal organization while enabling controlled stochastic variation. Experiments on diverse datasets, including sunspot, electricity load, ECG, and EEG signals, demonstrate improved distributional fidelity, temporal alignment, and representativeness compared to diffusion- and GAN-based baselines, highlighting structure-controlled and cross-modal generation as a promising direction for time-series modeling.",
+      "title": "Align-cDAE: Alzheimer's Disease Progression Modeling with Attention-Aligned Conditional Diffusion Auto-Encoder",
+      "abstract": "Generative AI framework-based modeling and prediction of longitudinal human brain images offer an efficient mechanism to track neurodegenerative progression, essential for the assessment of diseases like Alzheimer's. Among the existing generative approaches, recent diffusion-based models have emerged as an effective alternative to generate disease progression images. Incorporating multi-modal and non-imaging attributes as conditional information into diffusion frameworks has been shown to improve controllability during such generations. However, existing methods do not explicitly ensure that information from non-imaging conditioning modalities is meaningfully aligned with image features to introduce desirable changes in the generated images, such as modulation of progression-specific regions. Further, more precise control over the generation process can be achieved by introducing progression-relevant structure into the internal representations of the model, lacking in the existing approaches. To address these limitations, we propose a diffusion autoencoder-based framework for disease progression modeling that explicitly enforces alignment between different modalities. The alignment is enforced by introducing an explicit objective function that enables the model to focus on the regions exhibiting progression-related changes. Further, we devise a mechanism to better structure the latent representational space of the diffusion auto-encoding framework. Specifically, we assign separate latent subspaces for integrating progression-related conditions and retaining subject-specific identity information, allowing better-controlled image generation. These results demonstrate that enforcing alignment and better structuring of the latent representational space of diffusion auto-encoding framework leads to more anatomically precise modeling of Alzheimer's disease progression.",
       "authors": [
-        "Shaoshuai Du",
-        "Joze M. Rozanec",
-        "Andy Pimentel",
-        "Ana-Lucia Varbanescu"
+        "Ayantika Das",
+        "Keerthi Ram",
+        "Mohanasankar Sivaprakasam"
       ],
-      "primary_category": "cs.LG",
+      "primary_category": "cs.CV",
       "categories": [
-        "cs.LG",
-        "cs.AI"
+        "cs.CV"
       ],
-      "published": "2026-03-20T14:12:11+00:00",
-      "link": "https://arxiv.org/pdf/2603.19970v1",
+      "published": "2026-03-02T07:26:44+00:00",
+      "link": "https://arxiv.org/pdf/2603.01552v1",
       "tags": [
         "keyword:DiffTS",
         "query:DiffTS"
       ],
-      "llm_score": 7.0,
-      "llm_evidence_en": "generative models for structure-controlled time series generation",
-      "llm_evidence_cn": "结构控制的时间序列生成模型",
-      "llm_evidence": "结构控制的时间序列生成模型",
-      "canonical_evidence": "结构控制的时间序列生成模型",
-      "llm_tldr_en": "Proposes Graph2TS for time series generation by separating global structure from stochastic residuals.",
-      "llm_tldr_cn": "提出 Graph2TS，通过分离全局结构和随机残差来进行时间序列生成。",
-      "llm_tldr": "提出 Graph2TS，通过分离全局结构和随机残差来进行时间序列生成。",
+      "llm_score": 6.0,
+      "llm_evidence_en": "conditional diffusion auto-encoder for longitudinal image modeling",
+      "llm_evidence_cn": "用于纵向图像建模的条件扩散自动编码器",
+      "llm_evidence": "用于纵向图像建模的条件扩散自动编码器",
+      "canonical_evidence": "用于纵向图像建模的条件扩散自动编码器",
+      "llm_tldr_en": "Uses conditional diffusion to model disease progression in longitudinal brain images over time.",
+      "llm_tldr_cn": "利用条件扩散模型对随时间变化的纵向脑图像进行建模，以预测阿尔茨海默病的进展。",
+      "llm_tldr": "利用条件扩散模型对随时间变化的纵向脑图像进行建模，以预测阿尔茨海默病的进展。",
       "llm_tags": [
         "query:diffts"
       ],
@@ -635,41 +309,373 @@
       "matched_query_text": "conditional diffusion frameworks for time series generation",
       "matched_requirement_id": "req-6",
       "selection_source": "fresh_fetch",
-      "quick_tier": "7"
+      "quick_tier": "6"
     },
     {
-      "id": "2603.20945v1",
+      "id": "2603.00629v1",
       "source": "arxiv",
-      "title": "Functional Estimation of Manifold-Valued Diffusion Processes",
-      "abstract": "Nonstationary high-dimensional time series are increasingly encountered in biomedical research as measurement technologies advance. Owing to the homeostatic nature of physiological systems, such datasets are often located on, or can be well approximated by, a low-dimensional manifold. Modeling such datasets by manifold-valued Itô diffusion processes has been shown to provide valuable insights and to guide the design of algorithms for clinical applications. In this paper, we propose Nadaraya-Watson type nonparametric estimators for the drift vector field and diffusion matrix of the process from one trajectory. Assuming a time-homogeneous stochastic differential equation on a smooth complete manifold without boundary, we show that as the sampling interval and kernel bandwidth vanish with increasing trajectory length, recurrence of the process yields asymptotic consistency and normality of the drift and diffusion estimators, as well as the associated occupation density. Analysis of the diffusion estimator further produces a tangent space estimator for dependent data, which has its own interest and is essential for drift estimation. Numerical experiments across a range of manifold configurations support the theoretical results.",
+      "title": "Adapt Data to Model: Adaptive Transformation Optimization for Domain-shared Time Series Foundation Models",
+      "abstract": "Large time series models (LTMs) have emerged as powerful tools for universal forecasting, yet they often struggle with the inherent diversity and nonstationarity of real-world time series data, leading to an unsatisfactory trade-off between forecasting accuracy and generalization. Rather than continually finetuning new LTM instances for each domain, we propose a data-centric framework, time-series adaptive transformation optimization (TATO), that enables a single frozen pre-trained LTM to adapt to diverse downstream domains through an optimally configured transformation pipeline. Specifically, TATO constructs three representative types of transformations, including context slicing, scale normalization, and outlier correction, to help LTMs better align with target domain characteristics. To ensure robustness, we incorporate carefully selected time series augmentations and a two-stage ranking mechanism that filters out pipelines underperforming on specific metrics. Extensive experiments on state-of-the-art LTMs and widely used datasets demonstrate that TATO consistently and significantly improves domain-adaptive forecasting performance, achieving a maximum reduction in MSE of 65.4\\% and an average reduction of 13.6\\%. Moreover, TATO is highly efficient, typically completing optimization in under 2 minutes, making it practical for real-world deployment. The source code is available at https://github.com/thulab/TATO.",
       "authors": [
-        "Jacob McErlean",
-        "Hau-Tieng Wu"
+        "Yunzhong Qiu",
+        "Zhiyao Cen",
+        "Zhongyi Pei",
+        "Chen Wang",
+        "Jianmin Wang"
       ],
-      "primary_category": "stat.ME",
+      "primary_category": "cs.LG",
       "categories": [
-        "stat.ME"
+        "cs.LG"
       ],
-      "published": "2026-03-21T20:59:46+00:00",
-      "link": "https://arxiv.org/pdf/2603.20945v1",
+      "published": "2026-02-28T12:45:31+00:00",
+      "link": "https://arxiv.org/pdf/2603.00629v1",
       "tags": [
         "keyword:DiffTS",
         "query:DiffTS"
       ],
       "llm_score": 7.0,
-      "llm_evidence_en": "modeling high-dimensional time series by manifold-valued diffusion processes",
-      "llm_evidence_cn": "利用流形值扩散过程对高维时间序列建模",
-      "llm_evidence": "利用流形值扩散过程对高维时间序列建模",
-      "canonical_evidence": "利用流形值扩散过程对高维时间序列建模",
-      "llm_tldr_en": "Develops nonparametric estimators for manifold-valued diffusion processes applied to biomedical time series.",
-      "llm_tldr_cn": "为生物医学时间序列中的流形值扩散过程开发了非参数估计器。",
-      "llm_tldr": "为生物医学时间序列中的流形值扩散过程开发了非参数估计器。",
+      "llm_evidence_en": "Adaptive transformation for time series foundation models",
+      "llm_evidence_cn": "时间序列基础模型的自适应变换",
+      "llm_evidence": "时间序列基础模型的自适应变换",
+      "canonical_evidence": "时间序列基础模型的自适应变换",
+      "llm_tldr_en": "Introduces TATO, a data-centric framework to adapt frozen time-series foundation models to diverse domains.",
+      "llm_tldr_cn": "引入了TATO，一个以数据为中心的框架，用于将冻结的时间序列基础模型适配到不同领域。",
+      "llm_tldr": "引入了TATO，一个以数据为中心的框架，用于将冻结的时间序列基础模型适配到不同领域。",
       "llm_tags": [
         "query:diffts"
       ],
       "matched_query_tag": "query:diffts",
-      "matched_query_text": "sequence modeling with diffusion processes for time-dependent data",
-      "matched_requirement_id": "req-5",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.06981v1",
+      "source": "arxiv",
+      "title": "Diffusion Controller: Framework, Algorithms and Parameterization",
+      "abstract": "Controllable diffusion generation often relies on various heuristics that are seemingly disconnected without a unified understanding. We bridge this gap with Diffusion Controller (DiffCon), a unified control-theoretic view that casts reverse diffusion sampling as state-only stochastic control within (generalized) linearly-solvable Markov Decision Processes (LS-MDPs). Under this framework, control acts by reweighting the pretrained reverse-time transition kernels, balancing terminal objectives against an $f$-divergence cost. From the resulting optimality conditions, we derive practical reinforcement learning methods for diffusion fine-tuning: (i) f-divergence-regularized policy-gradient updates, including a PPO-style rule, and (ii) a regularizer-determined reward-weighted regression objective with a minimizer-preservation guarantee under the Kullback-Leibler (KL) divergence. The LS-MDP framework further implies a principled model form: the optimal score decomposes into a fixed pretrained baseline plus a lightweight control correction, motivating a side-network parameterization conditioned on exposed intermediate denoising outputs, enabling effective gray-box adaptation with a frozen backbone. Experiments on Stable Diffusion v1.4 across supervised and reward-driven finetuning show consistent gains in preference-alignment win rates and improved quality-efficiency trade-offs versus gray-box baselines and even the parameter-efficient white-box adapter LoRA.",
+      "authors": [
+        "Tong Yang",
+        "Moonkyung Ryu",
+        "Chih-Wei Hsu",
+        "Guy Tennenholtz",
+        "Yuejie Chi",
+        "Craig Boutilier",
+        "Bo Dai"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-03-07T01:49:59+00:00",
+      "link": "https://arxiv.org/pdf/2603.06981v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "unified control-theoretic view for diffusion fine-tuning",
+      "llm_evidence_cn": "扩散模型微调的统一控制理论视角",
+      "llm_evidence": "扩散模型微调的统一控制理论视角",
+      "canonical_evidence": "扩散模型微调的统一控制理论视角",
+      "llm_tldr_en": "Proposes a control-theoretic framework for fine-tuning diffusion models using reinforcement learning.",
+      "llm_tldr_cn": "提出了一种利用强化学习微调扩散模型的统一控制理论框架。",
+      "llm_tldr": "提出了一种利用强化学习微调扩散模型的统一控制理论框架。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "research papers on diffusion models applied to time series tasks",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.02840v1",
+      "source": "arxiv",
+      "title": "Adapting Time Series Foundation Models through Data Mixtures",
+      "abstract": "Time series foundation models (TSFMs) have become increasingly popular for zero-shot forecasting. However, for a new time series domain not fully covered by the pretraining set, performance can suffer. Therefore, when a practitioner cares about a new domain and has access to a set of related datasets, the question arises: how best to fine-tune a TSFM to improve zero-shot forecasting? A typical approach to this type of problem is to fine-tune a LoRA module on all datasets or separately on each dataset. Tuning a separate module on each dataset allows for the specialisation of the TSFM to different types of data distribution, by selecting differing combinations of per-dataset modules for different time series contexts. However, we find that, using per-dataset modules might not be optimal, since a time series dataset can contain data from several types of distributions, i.e. sub-domains. This can be due to the distribution shifting or having differing distributions for different dimensions of the time series. Hence, we propose MixFT which re-divides the data using Bayesian mixtures into sets that best represent the sub-domains present in the data, and fine-tunes separately on each of these sets. This re-division of the data ensures that each set is more homogeneous, leading to fine-tuned modules focused on specific sub-domains. Our experiments show that MixFT performs better than per-dataset methods and when fine-tuning a single module on all the data. This suggests that by re-partitioning the data to represent sub-domains we can better specialise TSFMs to improve zero-shot forecasting.",
+      "authors": [
+        "Thomas L. Lee",
+        "Edoardo M. Ponti",
+        "Amos Storkey"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "stat.ML"
+      ],
+      "published": "2026-03-03T10:38:54+00:00",
+      "link": "https://arxiv.org/pdf/2603.02840v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "fine-tuning time series foundation models",
+      "llm_evidence_cn": "微调时间序列基础模型",
+      "llm_evidence": "微调时间序列基础模型",
+      "canonical_evidence": "微调时间序列基础模型",
+      "llm_tldr_en": "Explores data mixture strategies for fine-tuning time series foundation models to improve zero-shot forecasting.",
+      "llm_tldr_cn": "探索微调时间序列基础模型的数据混合策略，以提高零样本预测性能。",
+      "llm_tldr": "探索微调时间序列基础模型的数据混合策略，以提高零样本预测性能。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.07261v1",
+      "source": "arxiv",
+      "title": "Turning Time Series into Algebraic Equations: Symbolic Machine Learning for Interpretable Modeling of Chaotic Time Series",
+      "abstract": "Chaotic time series are notoriously difficult to forecast. Small uncertainties in initial conditions amplify rapidly, while strong nonlinearities and regime dependent variability constrain predictability. Although modern deep learning often delivers strong short horizon accuracy, its black box nature limits scientific insight and practical trust in settings where understanding the underlying dynamics matters. To address this gap, we propose two complementary symbolic forecasters that learn explicit, interpretable algebraic equations from chaotic time series data. Symbolic Neural Forecaster (SyNF) adapts a neural network based equation learning architecture to the forecasting setting, enabling fully differentiable discovery of compact and interpretable algebraic relations. The Symbolic Tree Forecaster (SyTF) builds on evolutionary symbolic regression to search directly over equation structures under a principled accuracy complexity trade off. We evaluate both approaches in a rolling window nowcasting setting with one step ahead forecasting using several accuracy metrics and compare against a broad suite of baselines spanning classical statistical models, tree ensembles, and modern deep learning architectures. Numerical experiments cover a benchmark of 132 low dimensional chaotic attractors and two real world chaotic time series, namely weekly dengue incidence in San Juan and the Nino 3.4 sea surface temperature index. Across datasets, symbolic forecasters achieve competitive one step ahead accuracy while providing transparent equations that reveal salient aspects of the underlying dynamics.",
+      "authors": [
+        "Madhurima Panja",
+        "Grace Younes",
+        "Tanujit Chakraborty"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "nlin.CD",
+        "physics.data-an"
+      ],
+      "published": "2026-03-07T15:35:34+00:00",
+      "link": "https://arxiv.org/pdf/2603.07261v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "interpretable modeling of chaotic time series",
+      "llm_evidence_cn": "混沌时间序列的可解释建模",
+      "llm_evidence": "混沌时间序列的可解释建模",
+      "canonical_evidence": "混沌时间序列的可解释建模",
+      "llm_tldr_en": "Develops symbolic machine learning methods to derive interpretable algebraic equations for chaotic time series.",
+      "llm_tldr_cn": "开发了符号机器学习方法，为混沌时间序列推导出可解释的代数方程。",
+      "llm_tldr": "开发了符号机器学习方法，为混沌时间序列推导出可解释的代数方程。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.05092v1",
+      "source": "arxiv",
+      "title": "Aura: Universal Multi-dimensional Exogenous Integration for Aviation Time Series",
+      "abstract": "Time series forecasting has witnessed an increasing demand across diverse industrial applications, where accurate predictions are pivotal for informed decision-making. Beyond numerical time series data, reliable forecasting in practical scenarios requires integrating diverse exogenous factors. Such exogenous information is often multi-dimensional or even multimodal, introducing heterogeneous interactions that unimodal time series models struggle to capture. In this paper, we delve into an aviation maintenance scenario and identify three distinct types of exogenous factors that influence temporal dynamics through distinct interaction modes. Based on this empirical insight, we propose Aura, a universal framework that explicitly organizes and encodes heterogeneous external information according to its interaction mode with the target time series. Specifically, Aura utilizes a tailored tripartite encoding mechanism to embed heterogeneous features into well-established time series models, ensuring seamless integration of non-sequential context. Extensive experiments on a large-scale, three-year industrial dataset from China Southern Airlines, covering the Boeing 777 and Airbus A320 fleets, demonstrate that Aura consistently achieves state-of-the-art performance across all baselines and exhibits superior adaptability. Our findings highlight Aura's potential as a general-purpose enhancement for aviation safety and reliability.",
+      "authors": [
+        "Jiafeng Lin",
+        "Mengren Zheng",
+        "Simeng Ye",
+        "Yuxuan Wang",
+        "Huan Zhang",
+        "Yuhui Liu",
+        "Zhongyi Pei",
+        "Jianmin Wang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-03-05T12:05:15+00:00",
+      "link": "https://arxiv.org/pdf/2603.05092v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Aviation time series forecasting with exogenous factors",
+      "llm_evidence_cn": "结合外部因素的航空时间序列预测",
+      "llm_evidence": "结合外部因素的航空时间序列预测",
+      "canonical_evidence": "结合外部因素的航空时间序列预测",
+      "llm_tldr_en": "Proposes Aura, a framework for integrating multi-dimensional exogenous factors into aviation time series forecasting.",
+      "llm_tldr_cn": "提出了Aura框架，用于将多维外部因素整合到航空时间序列预测中。",
+      "llm_tldr": "提出了Aura框架，用于将多维外部因素整合到航空时间序列预测中。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.07514v1",
+      "source": "arxiv",
+      "title": "A Unified View of Drifting and Score-Based Models",
+      "abstract": "Drifting models train one-step generators by optimizing a mean-shift discrepancy induced by a kernel between the data and model distributions, with Laplace kernels used by default in practice. At each point, this discrepancy compares the kernel-weighted displacement toward nearby data samples with the corresponding displacement toward nearby model samples, yielding a transport direction for generated samples. In this paper, we make its relationship to the score-matching principle behind diffusion models precise by showing that drifting admits a score-based formulation on kernel-smoothed distributions. For Gaussian kernels, the population mean-shift field coincides with the score difference between the Gaussian-smoothed data and model distributions. This identity follows from Tweedie's formula, which links the score of a Gaussian-smoothed density to the corresponding conditional mean, and implies that Gaussian-kernel drifting is exactly a score-matching-style objective on smoothed distributions. It also clarifies the connection to Distribution Matching Distillation (DMD): both methods use score-mismatch transport directions, but drifting realizes the score signal nonparametrically from kernel neighborhoods, whereas DMD uses a pretrained diffusion teacher. Beyond Gaussians, we derive an exact decomposition for general radial kernels, and for the Laplace kernel we prove rigorous error bounds showing that drifting remains an accurate proxy for score matching in low-temperature and high-dimensional regimes.",
+      "authors": [
+        "Chieh-Hsin Lai",
+        "Bac Nguyen",
+        "Naoki Murata",
+        "Yuhta Takida",
+        "Toshimitsu Uesaka",
+        "Yuki Mitsufuji",
+        "Stefano Ermon",
+        "Molei Tao"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CV"
+      ],
+      "published": "2026-03-08T07:41:36+00:00",
+      "link": "https://arxiv.org/pdf/2603.07514v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Theoretical link between drifting models and score-based diffusion models",
+      "llm_evidence_cn": "漂移模型与基于分数的扩散模型之间的理论联系",
+      "llm_evidence": "漂移模型与基于分数的扩散模型之间的理论联系",
+      "canonical_evidence": "漂移模型与基于分数的扩散模型之间的理论联系",
+      "llm_tldr_en": "Establishes a precise relationship between drifting models and score-matching principles in diffusion models.",
+      "llm_tldr_cn": "建立了漂移模型与扩散模型中分数匹配原则之间的精确理论联系。",
+      "llm_tldr": "建立了漂移模型与扩散模型中分数匹配原则之间的精确理论联系。",
+      "llm_tags": [
+        "query:diffts:composite"
+      ],
+      "matched_query_tag": "query:diffts:composite",
+      "matched_query_text": "Papers central to 查询将扩散模型应用于时间序列任务的相关论文, especially work that connects or combines: Time Series; research on diffusion models for time-series data; methods using diffusion models for time series forecasting; denoising diffusion probabilistic models applied to time series; sequence modeling with diffusion processes for time-dependent data; conditional diffusion frameworks for time series generation; research papers on diffusion models applied to time series tasks.",
+      "matched_requirement_id": "req-composite-diffts",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.10071v1",
+      "source": "arxiv",
+      "title": "Dissecting Chronos: Sparse Autoencoders Reveal Causal Feature Hierarchies in Time Series Foundation Models",
+      "abstract": "Time series foundation models (TSFMs) are increasingly deployed in high-stakes domains, yet their internal representations remain opaque. We present the first application of sparse autoencoders (SAEs) to a TSFM, training TopK SAEs on activations of Chronos-T5-Large (710M parameters) across six layers. Through 392 single-feature ablation experiments, we establish that every ablated feature produces a positive CRPS degradation, confirming causal relevance. Our analysis reveals a depth-dependent hierarchy: early encoder layers encode low-level frequency features, the mid-encoder concentrates causally critical change-detection features, and the final encoder compresses a rich but less causally important taxonomy of temporal concepts. The most critical features reside in the mid-encoder (max single-feature Delta CRPS = 38.61), not in the semantically richest final encoder layer, where progressive ablation paradoxically improves forecast quality. These findings demonstrate that mechanistic interpretability transfers effectively to TSFMs and that Chronos-T5 relies on abrupt-dynamics detection rather than periodic pattern recognition.",
+      "authors": [
+        "Anurag Mishra"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-03-10T04:31:33+00:00",
+      "link": "https://arxiv.org/pdf/2603.10071v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "interpreting internal representations of time series foundation models",
+      "llm_evidence_cn": "解释时间序列基础模型的内部表示",
+      "llm_evidence": "解释时间序列基础模型的内部表示",
+      "canonical_evidence": "解释时间序列基础模型的内部表示",
+      "llm_tldr_en": "Uses sparse autoencoders to reveal causal feature hierarchies within time series foundation models like Chronos.",
+      "llm_tldr_cn": "使用稀疏自编码器揭示了 Chronos 等时间序列基础模型内部的因果特征层级。",
+      "llm_tldr": "使用稀疏自编码器揭示了 Chronos 等时间序列基础模型内部的因果特征层级。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.14062v1",
+      "source": "arxiv",
+      "title": "TMPDiff: Temporal Mixed-Precision for Diffusion Models",
+      "abstract": "Diffusion models are the go-to method for Text-to-Image generation, but their iterative denoising processes has high inference latency. Quantization reduces compute time by using lower bitwidths, but applies a fixed precision across all denoising timesteps, leaving an entire optimization axis unexplored. We propose TMPDiff, a temporal mixed-precision framework for diffusion models that assigns different numeric precision to different denoising timesteps. We hypothesize that quantization errors accumulate additively across timesteps, which we then validate experimentally. Based on our observations, we develop an adaptive bisectioning-based algorithm, which assigns per-step precisions with linear evaluation complexity, reducing an otherwise exponential search problem. Across four state-of-the-art diffusion models and three datasets, TMPDiff consistently outperforms uniform-precision baselines at matched speedup, achieving 10 to 20% improvement in perceptual quality. On FLUX.1-dev, TMPDiff achieves 90% SSIM relative to the full-precision model at a speedup of 2.5x over 16-bit inference.",
+      "authors": [
+        "Basile Lewandowski",
+        "Simon Kurz",
+        "Aditya Shankar",
+        "Robert Birke",
+        "Jian-Jia Chen",
+        "Lydia Y. Chen"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-03-14T18:06:46+00:00",
+      "link": "https://arxiv.org/pdf/2603.14062v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Optimization of diffusion models denoising process",
+      "llm_evidence_cn": "扩散模型去噪过程的优化",
+      "llm_evidence": "扩散模型去噪过程的优化",
+      "canonical_evidence": "扩散模型去噪过程的优化",
+      "llm_tldr_en": "Proposes a temporal mixed-precision framework to reduce inference latency in diffusion models.",
+      "llm_tldr_cn": "提出一种时间混合精度框架，通过为不同去噪步分配不同精度来降低扩散模型推理延迟。",
+      "llm_tldr": "提出一种时间混合精度框架，通过为不同去噪步分配不同精度来降低扩散模型推理延迟。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "denoising diffusion probabilistic models applied to time series",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.14709v1",
+      "source": "arxiv",
+      "title": "Cross-RAG: Zero-Shot Retrieval-Augmented Time Series Forecasting via Cross-Attention",
+      "abstract": "Recent advances in time series foundation models (TSFMs) demonstrate strong expressive capacity through large-scale pretraining across diverse time series domains. Zero-shot time series forecasting with TSFMs, however, exhibits limited generalization to unseen datasets, which retrieval-augmented forecasting addresses by leveraging an external knowledge base. Existing approaches rely on a fixed number of retrieved samples that may introduce irrelevant information. To this end, we propose Cross-RAG, a zero-shot retrieval-augmented forecasting framework that selectively attends to query-relevant retrieved samples. Cross-RAG models input-level relevance between the query and retrieved samples via query-retrieval cross-attention, while jointly incorporating information from the query and retrieved samples. Extensive experiments demonstrate that Cross-RAG consistently improves zero-shot forecasting performance across various TSFMs and RAG methods, and additional analyses confirm its effectiveness across diverse retrieval scenarios. Code is available at https://github.com/seunghan96/cross-rag/.",
+      "authors": [
+        "Seunghan Lee",
+        "Jaehoon Lee",
+        "Jun Seo",
+        "Sungdong Yoo",
+        "Minjae Kim",
+        "Tae Yoon Lim",
+        "Dongwan Kang",
+        "Hwanil Choi",
+        "SoonYoung Lee",
+        "Wonbin Ahn"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-03-16T01:35:24+00:00",
+      "link": "https://arxiv.org/pdf/2603.14709v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "retrieval-augmented time series forecasting framework",
+      "llm_evidence_cn": "检索增强的时间序列预测框架",
+      "llm_evidence": "检索增强的时间序列预测框架",
+      "canonical_evidence": "检索增强的时间序列预测框架",
+      "llm_tldr_en": "Proposes a zero-shot retrieval-augmented framework to improve time series foundation model generalization.",
+      "llm_tldr_cn": "提出了一种零样本检索增强框架，旨在提高时间序列基础模型的泛化能力。",
+      "llm_tldr": "提出了一种零样本检索增强框架，旨在提高时间序列基础模型的泛化能力。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
       "selection_source": "fresh_fetch",
       "quick_tier": "7"
     }

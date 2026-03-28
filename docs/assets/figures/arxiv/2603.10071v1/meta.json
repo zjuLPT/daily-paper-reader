@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.10071v1/fig-001.webp",
+      "caption": "Table 2: Feature taxonomy across layers. The final encoder (block 23) has the richest semantic coverage; the mid-encoder (block 11) concentrates change-detection features. Counts below 10 omitted.",
+      "page": 3,
+      "index": 1,
+      "width": 816,
+      "height": 331
+    },
+    {
+      "url": "assets/figures/arxiv/2603.10071v1/fig-002.webp",
+      "caption": "Figure 1: Progressive ablation curves across three encoder layers. CRPS is measured as features are cumulatively removed in order of decreasing decoder-norm contribution. Early and mid-encoder layers degrade sharply, while the final encoder remains flat or improves.",
+      "page": 4,
+      "index": 2,
+      "width": 706,
+      "height": 392
+    }
+  ]
+}
