@@ -1,0 +1,164 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-03-29T19:42:03.089662+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 3,
+    "quick_skim_target": 11,
+    "quick_selected": 3
+  },
+  "deep_dive": [
+    {
+      "id": "2603.21856v1",
+      "source": "arxiv",
+      "title": "Climate Prompting: Generating the Madden-Julian Oscillation using Video Diffusion and Low-Dimensional Conditioning",
+      "abstract": "Generative Deep Learning is a powerful tool for modeling of the Madden-Julian oscillation (MJO) in the tropics, yet its relationship to traditional theoretical frameworks remains poorly understood. Here we propose a video diffusion model, trained on atmospheric reanalysis, to synthetize long MJO sequences conditioned on key low-dimensional metrics. The generated MJOs capture key features including composites, power spectra and multiscale structures including convectively coupled waves, despite some bias. We then prompt the model to generate more tractable MJOs based on intentionally idealized low-dimensional conditionings, for example a perpetual MJO, an isolated modulation by seasons and/or the El Nino-Southern Oscillation, and so on. This enables deconstructing the underlying processes and identifying physical drivers. The present approach provides a practical framework for bridging the gap between low-dimensional MJO theory and high-resolution atmospheric complexity and will help tropical atmosphere prediction.",
+      "authors": [
+        "Sulian Thual",
+        "Feiyang Cai",
+        "Jingjing Wang",
+        "Feng Luo"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-03-23T11:47:17+00:00",
+      "link": "https://arxiv.org/pdf/2603.21856v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "video diffusion model to synthesize long MJO sequences",
+      "llm_evidence_cn": "视频扩散模型合成长MJO序列",
+      "llm_evidence": "视频扩散模型合成长MJO序列",
+      "canonical_evidence": "视频扩散模型合成长MJO序列",
+      "llm_tldr_en": "Uses video diffusion models conditioned on low-dimensional metrics to generate climate time series.",
+      "llm_tldr_cn": "利用受低维指标约束的视频扩散模型来生成和模拟气候科学中的长序列大气振荡。",
+      "llm_tldr": "利用受低维指标约束的视频扩散模型来生成和模拟气候科学中的长序列大气振荡。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "conditional diffusion frameworks for time series generation",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2603.22219v1",
+      "source": "arxiv",
+      "title": "Noise Titration: Exact Distributional Benchmarking for Probabilistic Time Series Forecasting",
+      "abstract": "Modern time series forecasting is evaluated almost entirely through passive observation of single historical trajectories, rendering claims about a model's robustness to non-stationarity fundamentally unfalsifiable. We propose a paradigm shift toward interventionist, exact-statistical benchmarking. By systematically titrating calibrated Gaussian observation noise into known chaotic and stochastic dynamical systems, we transform forecasting from a black-box sequence matching game into an exact distributional inference task. Because the underlying data-generating process and noise variance are mathematically explicit, evaluation can rely on exact negative log-likelihoods and calibrated distributional tests rather than heuristic approximations. To fully leverage this framework, we extend the Fern architecture into a probabilistic generative model that natively parameterizes the Symmetric Positive Definite (SPD) cone, outputting calibrated joint covariance structures without the computational bottleneck of generic Jacobian modeling. Under this rigorous evaluation, we find that state-of-the-art zero-shot foundation models behave consistently with the context-parroting mechanism, failing systematically under non-stationary regime shifts and elevated noise. In contrast, Fern explicitly captures the invariant measure and multivariate geometry of the underlying dynamics, maintaining structural fidelity and statistically sharp calibration precisely where massive sequence-matching models collapse.",
+      "authors": [
+        "Qilin Wang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "stat.ML"
+      ],
+      "published": "2026-03-23T17:14:11+00:00",
+      "link": "https://arxiv.org/pdf/2603.22219v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "probabilistic time series forecasting benchmarking using Gaussian observation noise",
+      "llm_evidence_cn": "使用高斯观测噪声进行概率时间序列预测基准测试",
+      "llm_evidence": "使用高斯观测噪声进行概率时间序列预测基准测试",
+      "canonical_evidence": "使用高斯观测噪声进行概率时间序列预测基准测试",
+      "llm_tldr_en": "Introduces a new benchmarking paradigm for probabilistic time series forecasting using exact-statistical titration.",
+      "llm_tldr_cn": "通过精确统计滴定法为概率时间序列预测引入了一种新的基准测试范式。",
+      "llm_tldr": "通过精确统计滴定法为概率时间序列预测引入了一种新的基准测试范式。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.22983v1",
+      "source": "arxiv",
+      "title": "Markov-Enforced Discrete Diffusion Model for Digital Semantic Symbol Error Correction",
+      "abstract": "Diffusion models (DMs) have achieved remarkable success across various domains owing to their strong generative and denoising capabilities. Meanwhile, semantic communication based on neural joint source-channel coding (JSCC) has emerged as a promising paradigm for robust and efficient image transmission. However, severe channel noise can still distort the transmitted semantic symbols, resulting in significant performance degradation. Applying DMs to digital semantic symbols, particularly in vector quantization (VQ)-based systems, is fundamentally challenging because the Markov assumption does not hold for the symbol transition dynamics. To address this issue, we introduce SSCDM, a semantic symbol correcting diffusion model whose discrete-time transition dynamics are constructed using solutions from continuous-time Markov chain theory. Furthermore, to promote synergy between DMs and JSCC, our DM structure embeds discrete symbols into a latent feature space using a learned VQ codebook, and a self-organizing map-based loss is incorporated during codebook learning to enhance the geometric vicinity between neighboring digital symbols, thereby promoting topology-preserving semantic representations. Experimental results show that the proposed method significantly improves image reconstruction quality and outperforms previous symbol-level denoising techniques under low signal-to-noise ratio scenarios and different datasets.",
+      "authors": [
+        "Yoon Huh",
+        "Jeongho Kang",
+        "Wan Choi"
+      ],
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "published": "2026-03-24T09:21:37+00:00",
+      "link": "https://arxiv.org/pdf/2603.22983v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "discrete diffusion model for symbol error correction",
+      "llm_evidence_cn": "用于符号纠错的离散扩散模型",
+      "llm_evidence": "用于符号纠错的离散扩散模型",
+      "canonical_evidence": "用于符号纠错的离散扩散模型",
+      "llm_tldr_en": "Adapts diffusion models for correcting errors in digital semantic symbol sequences.",
+      "llm_tldr_cn": "针对数字语义符号序列，提出了一种改进马尔可夫假设的离散扩散模型用于纠错。",
+      "llm_tldr": "针对数字语义符号序列，提出了一种改进马尔可夫假设的离散扩散模型用于纠错。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "denoising diffusion probabilistic models applied to time series",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.22586v1",
+      "source": "arxiv",
+      "title": "A Foundation Model for Instruction-Conditioned In-Context Time Series Tasks",
+      "abstract": "In-context learning (ICL) allows a model to adapt at inference time by conditioning on examples rather than updating parameters. Existing time-series foundation models use implicit positional context, retrieval, or task-specific objectives, but rarely explicit instruction-conditioned demonstrations. We present a foundation model for instruction-conditioned in-context time-series tasks based on a quantile-regression T5 encoder-decoder. Historical examples and queries are encoded with a structured tokenization scheme that marks target series, covariates, context, and task-specific future information. A hierarchical Transformer with per-example encoding, example-level fusion, and cross-example attention conditions decoding on demonstration pairs, enabling forecasting and related tasks without task-specific fine-tuning. We train on large-scale real and synthetic time series using supervised forecasting plus self-supervised tasks, including imputation, reconstruction, classification, anomaly detection, and source demixing. This multi-task training learns a distribution over task mappings and improves adaptation to local structure at inference time. Across diverse datasets, frequencies, and horizons, our method outperforms strong foundation baselines on point and probabilistic forecasting benchmarks, including fev-bench and GIFT-Eval, while remaining competitive on classification and anomaly detection.",
+      "authors": [
+        "Anish Saha",
+        "Konstantin Shmakov"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-03-23T21:24:41+00:00",
+      "link": "https://arxiv.org/pdf/2603.22586v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "foundation model for instruction-conditioned in-context time series tasks",
+      "llm_evidence_cn": "指令调节的上下文时间序列任务基础模型",
+      "llm_evidence": "指令调节的上下文时间序列任务基础模型",
+      "canonical_evidence": "指令调节的上下文时间序列任务基础模型",
+      "llm_tldr_en": "Develops a T5-based foundation model for in-context learning across various time series tasks.",
+      "llm_tldr_cn": "开发了一个基于 T5 的基础模型，用于各种时间序列任务的上下文学习。",
+      "llm_tldr": "开发了一个基于 T5 的基础模型，用于各种时间序列任务的上下文学习。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

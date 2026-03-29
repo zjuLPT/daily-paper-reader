@@ -1,0 +1,69 @@
+{
+  "label": "2026-03-29",
+  "date": "2026-03-29",
+  "generated_at": "2026-03-29T19:42:59",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202603/29/2603.21856v1-climate-prompting-generating-the-madden-julian-oscillation-using-video-diffusion-and-low-dimensional-conditioning",
+      "section": "deep",
+      "title_en": "Climate Prompting: Generating the Madden-Julian Oscillation using Video Diffusion and Low-Dimensional Conditioning",
+      "authors": "Sulian Thual, Feiyang Cai, Jingjing Wang, Feng Luo",
+      "date": "2026-03-23",
+      "pdf": "https://arxiv.org/pdf/2603.21856v1",
+      "score": "9.0",
+      "evidence": "视频扩散模型合成长MJO序列",
+      "tldr": "本文提出利用视频扩散模型并采用低维度气候指标进行条件控制，以合成和分析马登-朱利安振荡（MJO）的时序变化，帮助揭示其基本结构与物理驱动，从而在理论与高分辨率气候模拟间建立新连接。",
+      "tags": "query:diffts",
+      "abstract_en": "Generative Deep Learning is a powerful tool for modeling of the Madden-Julian oscillation (MJO) in the tropics, yet its relationship to traditional theoretical frameworks remains poorly understood. Here we propose a video diffusion model, trained on atmospheric reanalysis, to synthetize long MJO sequences conditioned on key low-dimensional metrics. The generated MJOs capture key features including composites, power spectra and multiscale structures including convectively coupled waves, despite some bias. We then prompt the model to generate more tractable MJOs based on intentionally idealized low-dimensional conditionings, for example a perpetual MJO, an isolated modulation by seasons and/or the El Nino-Southern Oscillation, and so on. This enables deconstructing the underlying processes and identifying physical drivers. The present approach provides a practical framework for bridging the gap between low-dimensional MJO theory and high-resolution atmospheric complexity and will help tropical atmosphere prediction.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202603/29/2603.22219v1-noise-titration-exact-distributional-benchmarking-for-probabilistic-time-series-forecasting",
+      "section": "quick",
+      "title_en": "Noise Titration: Exact Distributional Benchmarking for Probabilistic Time Series Forecasting",
+      "authors": "Qilin Wang",
+      "date": "2026-03-23",
+      "pdf": "https://arxiv.org/pdf/2603.22219v1",
+      "score": "7.0",
+      "evidence": "使用高斯观测噪声进行概率时间序列预测基准测试",
+      "tldr": "本文提出一种名为“噪声滴定”的分布式基准评估方法，通过向已知动态系统注入校准高斯噪声，将时间序列预测转化为可精确推断的分布任务，并扩展Fern架构实现原生协方差建模。结果显示，Fern在非平稳与高噪声环境下保持校准与结构稳定性，而现有大型模型系统性失效。",
+      "tags": "query:diffts",
+      "abstract_en": "Modern time series forecasting is evaluated almost entirely through passive observation of single historical trajectories, rendering claims about a model's robustness to non-stationarity fundamentally unfalsifiable. We propose a paradigm shift toward interventionist, exact-statistical benchmarking. By systematically titrating calibrated Gaussian observation noise into known chaotic and stochastic dynamical systems, we transform forecasting from a black-box sequence matching game into an exact distributional inference task. Because the underlying data-generating process and noise variance are mathematically explicit, evaluation can rely on exact negative log-likelihoods and calibrated distributional tests rather than heuristic approximations. To fully leverage this framework, we extend the Fern architecture into a probabilistic generative model that natively parameterizes the Symmetric Positive Definite (SPD) cone, outputting calibrated joint covariance structures without the computational bottleneck of generic Jacobian modeling. Under this rigorous evaluation, we find that state-of-the-art zero-shot foundation models behave consistently with the context-parroting mechanism, failing systematically under non-stationary regime shifts and elevated noise. In contrast, Fern explicitly captures the invariant measure and multivariate geometry of the underlying dynamics, maintaining structural fidelity and statistically sharp calibration precisely where massive sequence-matching models collapse.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202603/29/2603.22586v1-a-foundation-model-for-instruction-conditioned-in-context-time-series-tasks",
+      "section": "quick",
+      "title_en": "A Foundation Model for Instruction-Conditioned In-Context Time Series Tasks",
+      "authors": "Anish Saha, Konstantin Shmakov",
+      "date": "2026-03-23",
+      "pdf": "https://arxiv.org/pdf/2603.22586v1",
+      "score": "7.0",
+      "evidence": "指令调节的上下文时间序列任务基础模型",
+      "tldr": "本文提出了一种基于量化回归T5的指令条件上下文时间序列任务基础模型，通过结构化的token化和层次Transformer实现对历史示例与查询的编码与融合，无需任务特定微调即可完成预测、插补、分类等多任务学习，在多数据集上取得显著优于现有模型的性能。",
+      "tags": "query:diffts",
+      "abstract_en": "In-context learning (ICL) allows a model to adapt at inference time by conditioning on examples rather than updating parameters. Existing time-series foundation models use implicit positional context, retrieval, or task-specific objectives, but rarely explicit instruction-conditioned demonstrations. We present a foundation model for instruction-conditioned in-context time-series tasks based on a quantile-regression T5 encoder-decoder. Historical examples and queries are encoded with a structured tokenization scheme that marks target series, covariates, context, and task-specific future information. A hierarchical Transformer with per-example encoding, example-level fusion, and cross-example attention conditions decoding on demonstration pairs, enabling forecasting and related tasks without task-specific fine-tuning. We train on large-scale real and synthetic time series using supervised forecasting plus self-supervised tasks, including imputation, reconstruction, classification, anomaly detection, and source demixing. This multi-task training learns a distribution over task mappings and improves adaptation to local structure at inference time. Across diverse datasets, frequencies, and horizons, our method outperforms strong foundation baselines on point and probabilistic forecasting benchmarks, including fev-bench and GIFT-Eval, while remaining competitive on classification and anomaly detection.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202603/29/2603.22983v1-markov-enforced-discrete-diffusion-model-for-digital-semantic-symbol-error-correction",
+      "section": "quick",
+      "title_en": "Markov-Enforced Discrete Diffusion Model for Digital Semantic Symbol Error Correction",
+      "authors": "Yoon Huh, Jeongho Kang, Wan Choi",
+      "date": "2026-03-24",
+      "pdf": "https://arxiv.org/pdf/2603.22983v1",
+      "score": "6.0",
+      "evidence": "用于符号纠错的离散扩散模型",
+      "tldr": "本文提出一种基于马尔可夫链理论的离散扩散模型SSCDM，用于纠正数字语义通信中因通道噪声引起的符号错误。通过在潜空间中嵌入离散符号并引入自组织映射损失优化VQ码本结构，该方法有效提升JSCC系统的稳健性与图像重建性能。",
+      "tags": "query:diffts",
+      "abstract_en": "Diffusion models (DMs) have achieved remarkable success across various domains owing to their strong generative and denoising capabilities. Meanwhile, semantic communication based on neural joint source-channel coding (JSCC) has emerged as a promising paradigm for robust and efficient image transmission. However, severe channel noise can still distort the transmitted semantic symbols, resulting in significant performance degradation. Applying DMs to digital semantic symbols, particularly in vector quantization (VQ)-based systems, is fundamentally challenging because the Markov assumption does not hold for the symbol transition dynamics. To address this issue, we introduce SSCDM, a semantic symbol correcting diffusion model whose discrete-time transition dynamics are constructed using solutions from continuous-time Markov chain theory. Furthermore, to promote synergy between DMs and JSCC, our DM structure embeds discrete symbols into a latent feature space using a learned VQ codebook, and a self-organizing map-based loss is incorporated during codebook learning to enhance the geometric vicinity between neighboring digital symbols, thereby promoting topology-preserving semantic representations. Experimental results show that the proposed method significantly improves image reconstruction quality and outperforms previous symbol-level denoising techniques under low signal-to-noise ratio scenarios and different datasets.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

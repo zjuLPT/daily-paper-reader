@@ -6,37 +6,34 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-03-28
-- 运行时间：2026-03-28 19:21:13 UTC
+- 最新运行日期：2026-03-29
+- 运行时间：2026-03-29 19:42:57 UTC
 - 运行状态：成功
-- 本次总论文数：5
-- 精读区：2
+- 本次总论文数：4
+- 精读区：1
 - 速读区：3
 
 ### 今日简报（AI）
-今天聚焦于时间序列生成与预测方向，共精读 2 篇、速读 3 篇前沿论文。  
-值得关注的是连续时间扩散模型在医疗与自动驾驶中的创新，以及关联自适应方法提升多变量预测表现。  
-建议读者重点了解扩散模型在实际动态场景中的落地潜力与可解释性提升方案。
-- 详情：[/202603/28/README](/202603/28/README)
+今天深入解析气候生成新方法，并快速浏览时间序列预测与符号纠错最新模型。  
+最值得关注的是利用视频扩散与低维条件生成马登-朱利安振荡的突破。  
+建议读者关注气候模拟与时间序列基础模型的结合潜力，以把握未来科研趋势。
+- 详情：[/202603/29/README](/202603/29/README)
 
 ### 精读区论文标签
-1. [CDMT-EHR: A Continuous-Time Diffusion Framework for Generating Mixed-Type Time-Series Electronic Health Records](/202603/28/2603.23719v1-cdmt-ehr-a-continuous-time-diffusion-framework-for-generating-mixed-type-time-series-electronic-health-records)  
-   标签：评分：10.0/10、query:diffts
-   evidence：用于时间序列EHR生成的连续时间扩散模型
-2. [Temporally Decoupled Diffusion Planning for Autonomous Driving](/202603/28/2603.25462v1-temporally-decoupled-diffusion-planning-for-autonomous-driving)  
-   标签：评分：8.0/10、query:diffts
-   evidence：具有时间依赖性的轨迹生成扩散模型
+1. [Climate Prompting: Generating the Madden-Julian Oscillation using Video Diffusion and Low-Dimensional Conditioning](/202603/29/2603.21856v1-climate-prompting-generating-the-madden-julian-oscillation-using-video-diffusion-and-low-dimensional-conditioning)  
+   标签：评分：9.0/10、query:diffts
+   evidence：视频扩散模型合成长MJO序列
 
 ### 速读区论文标签
-1. [CoRA: Boosting Time Series Foundation Models for Multivariate Forecasting through Correlation-aware Adapter](/202603/28/2603.21828v1-cora-boosting-time-series-foundation-models-for-multivariate-forecasting-through-correlation-aware-adapter)  
+1. [Noise Titration: Exact Distributional Benchmarking for Probabilistic Time Series Forecasting](/202603/29/2603.22219v1-noise-titration-exact-distributional-benchmarking-for-probabilistic-time-series-forecasting)  
    标签：评分：7.0/10、query:diffts
-   evidence：用于多变量预测的时间序列基础模型
-2. [Embracing Heteroscedasticity for Probabilistic Time Series Forecasting](/202603/28/2603.24254v1-embracing-heteroscedasticity-for-probabilistic-time-series-forecasting)  
+   evidence：使用高斯观测噪声进行概率时间序列预测基准测试
+2. [A Foundation Model for Instruction-Conditioned In-Context Time Series Tasks](/202603/29/2603.22586v1-a-foundation-model-for-instruction-conditioned-in-context-time-series-tasks)  
    标签：评分：7.0/10、query:diffts
-   evidence：概率时间序列预测与生成式方法
-3. [Generalized Discrete Diffusion from Snapshots](/202603/28/2603.21342v1-generalized-discrete-diffusion-from-snapshots)  
+   evidence：指令调节的上下文时间序列任务基础模型
+3. [Markov-Enforced Discrete Diffusion Model for Digital Semantic Symbol Error Correction](/202603/29/2603.22983v1-markov-enforced-discrete-diffusion-model-for-digital-semantic-symbol-error-correction)  
    标签：评分：6.0/10、query:diffts
-   evidence：离散扩散建模的统一框架
+   evidence：用于符号纠错的离散扩散模型
 
 
 <div class="dpr-home-promo-card">

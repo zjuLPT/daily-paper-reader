@@ -1,0 +1,78 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.21856v1/fig-001.webp",
+      "caption": "Fig. 5 MJO Composites. a, c, e, g, Composites of UBC, ZBC, Q400 and OLR, by MJO phase 1- 8. b,d,f,h, Composites of pc1, pc2, by MJO phase 1-8. Here the model is prompted for a perpetual MJO as in Fig. 4. MJO phases are deduced from pc1, pc2. This is deduced from the perpetual MJO flow in Fig. 4",
+      "page": 25,
+      "index": 1,
+      "width": 776,
+      "height": 300
+    },
+    {
+      "url": "assets/figures/arxiv/2603.21856v1/fig-002.webp",
+      "caption": "Fig. 6 Model Prompt for a perpetual MJO with seasonal modulation. a, Conditionings pc1, pc2 as a function of time (sinusoides with period 73 days). b, Conditionings doyc, doys for seasons (sinusoides with period 1 year). c-d, Hovmollers (15N-15S) of OLR, UBC as a function of time and longitude. ef, Seasonal Power spectra (symmetric 15N-15S) for OLR and UBC, with seasonal multiplier centred on boreal winter. g-h, Seasonal power spectra with seasonal multiplier centred on boreal summer. This uses model version trained for MJO with Seasons (Tab. 2).",
+      "page": 26,
+      "index": 2,
+      "width": 776,
+      "height": 569
+    },
+    {
+      "url": "assets/figures/arxiv/2603.21856v1/fig-003.webp",
+      "caption": "Fig. 1 Model generated MJO sequence. a, Conditionings pc1 and pc2, as a function of time. b, Conditionings doys, doys and n34sst. c,d,e,f Hovmollers of sample fields, as a function of time and longitude: zonal winds (UBC), geopotential (ZBC), moisture (Q400) and convection (OLR). Fields are averaged over equatorial band (15N-15S). Here the model is prompted with observed conditionings from ERA5 1960-2022 (thus it regenerates the training record). All conditionings and fields are standardized. The principal components deduced directly from the sample fields match the conditionings (gray dashed lines in a).",
+      "page": 21,
+      "index": 3,
+      "width": 776,
+      "height": 433
+    },
+    {
+      "url": "assets/figures/arxiv/2603.21856v1/fig-004.webp",
+      "caption": "Fig. 2 Model generated power spectra. a, Power spectra of symmetric and asymmetric components 15N-15S, for UBC=U850-U200 (zonal wind velocity). MJO is within band k=1-3, w=0.01-0.03 (30- 90 days). Gray lines indicate analytical dispersion curves for major equatorial waves. b, Repeated for ZBC=Z850-Z200 (geopotential). c, Repeated for Q400 (moisture). d, Repeated for OLR (convection). Here the model is prompted with observed conditionings from ERA5 1960-2022, as in Fig. 1.",
+      "page": 22,
+      "index": 4,
+      "width": 776,
+      "height": 290
+    },
+    {
+      "url": "assets/figures/arxiv/2603.21856v1/fig-005.webp",
+      "caption": "Fig. 3 Ensemble Sampling. a, Conditionings pc1, pc2 as a function of time. b,c,d, Hovmollers (15N15S) for Observed Fields UBC, Q400, OLR from the ERA5 training record, as a function of time and longitude. e,f,g, Hovmollers for ensemble mean. h,i,j, Hovmollers for ensemble standard deviation. k,l,m, Hovmollers for ensemble difference, that is difference between one member and the ensemble mean. Here the model is prompted with observed ERA5 conditionings 1960-2022, but sampled 10 times.",
+      "page": 23,
+      "index": 5,
+      "width": 776,
+      "height": 777
+    },
+    {
+      "url": "assets/figures/arxiv/2603.21856v1/fig-006.webp",
+      "caption": "Fig. 8 Architecture of the video diffusion model. The model predicts the noise ϵθ added to the input atmospheric fields xt. It implements a 3D hierarchical U-Net architecture with tokens (conditionings) embedded within the Encoder/Decoder blocks via global and cross-attention pathways. Skip connections concatenate encoder output with corresponding decoder input. Encoders downsample while Decoders upsample the feature maps.",
+      "page": 28,
+      "index": 6,
+      "width": 844,
+      "height": 631
+    },
+    {
+      "url": "assets/figures/arxiv/2603.21856v1/fig-007.webp",
+      "caption": "Fig. 7 Model Prompt for a perpetual MJO with seasonal and ENSO modulation. a, Conditionings pc1, pc2 as a function of time (sinusoides with period 73 days). b, Conditionings doyc, doys for seasons (sinusoides with period 1 year), and n34sst for ENSO (sinusoide with period 2 years). Note all conditionings are 2-year periodic. c-f, Hovmollers (15N-15S) of Phase-Composite for UBC, ZBC, Q400, OLR, as a function of 2-year phase and longitude. Phase Composites are binned averages along the 2-year phase, which extracts the periodic signals. This uses model version trained for MJO with Seasons/ENSO (Tab. 2).",
+      "page": 27,
+      "index": 7,
+      "width": 776,
+      "height": 634
+    },
+    {
+      "url": "assets/figures/arxiv/2603.21856v1/fig-008.webp",
+      "caption": "Fig. 4 Model Prompt for a perpetual MJO. a, Conditionings pc1, pc2 as a function of time. b-c, Hovmollers (15N-15S) of OLR, UBC as a function of frame (i.e. time) and longitude. d-e, Power spectra (symmetric and antisymmetric 15N-15S) for OLR and UBC, following Fig. 2. This uses model version trained for MJO alone (Tab. 2).",
+      "page": 24,
+      "index": 8,
+      "width": 776,
+      "height": 490
+    },
+    {
+      "url": "assets/figures/arxiv/2603.21856v1/fig-009.webp",
+      "caption": "Table 3 Model parameters for architecture, training, and sampling.",
+      "page": 20,
+      "index": 9,
+      "width": 634,
+      "height": 345
+    }
+  ]
+}
