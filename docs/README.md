@@ -6,34 +6,22 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-03-29
-- 运行时间：2026-03-29 19:42:57 UTC
+- 最新运行日期：2026-03-30
+- 运行时间：2026-03-30 20:31:36 UTC
 - 运行状态：成功
-- 本次总论文数：4
-- 精读区：1
-- 速读区：3
+- 本次总论文数：0
+- 精读区：0
+- 速读区：0
 
 ### 今日简报（AI）
-今天深入解析气候生成新方法，并快速浏览时间序列预测与符号纠错最新模型。  
-最值得关注的是利用视频扩散与低维条件生成马登-朱利安振荡的突破。  
-建议读者关注气候模拟与时间序列基础模型的结合潜力，以把握未来科研趋势。
-- 详情：[/202603/29/README](/202603/29/README)
+> 今日无新推荐，系统未产出可展示论文。
+- 详情：[/202603/30/README](/202603/30/README)
 
 ### 精读区论文标签
-1. [Climate Prompting: Generating the Madden-Julian Oscillation using Video Diffusion and Low-Dimensional Conditioning](/202603/29/2603.21856v1-climate-prompting-generating-the-madden-julian-oscillation-using-video-diffusion-and-low-dimensional-conditioning)  
-   标签：评分：9.0/10、query:diffts
-   evidence：视频扩散模型合成长MJO序列
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [Noise Titration: Exact Distributional Benchmarking for Probabilistic Time Series Forecasting](/202603/29/2603.22219v1-noise-titration-exact-distributional-benchmarking-for-probabilistic-time-series-forecasting)  
-   标签：评分：7.0/10、query:diffts
-   evidence：使用高斯观测噪声进行概率时间序列预测基准测试
-2. [A Foundation Model for Instruction-Conditioned In-Context Time Series Tasks](/202603/29/2603.22586v1-a-foundation-model-for-instruction-conditioned-in-context-time-series-tasks)  
-   标签：评分：7.0/10、query:diffts
-   evidence：指令调节的上下文时间序列任务基础模型
-3. [Markov-Enforced Discrete Diffusion Model for Digital Semantic Symbol Error Correction](/202603/29/2603.22983v1-markov-enforced-discrete-diffusion-model-for-digital-semantic-symbol-error-correction)  
-   标签：评分：6.0/10、query:diffts
-   evidence：用于符号纠错的离散扩散模型
+- 本次无速读推荐。
 
 
 <div class="dpr-home-promo-card">
