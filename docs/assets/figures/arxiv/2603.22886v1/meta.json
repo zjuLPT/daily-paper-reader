@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.22886v1/fig-001.webp",
+      "caption": "Table 1: Factor recovery on synthetic data (T=200, N=20, r=5): dynamic vs. static DGP. Metrics after MCC-based matching where applicable. Higher is better for MCC and trace R2; lower for subspace distance and smoothness.",
+      "page": 5,
+      "index": 1,
+      "width": 826,
+      "height": 195
+    },
+    {
+      "url": "assets/figures/arxiv/2603.22886v1/fig-002.webp",
+      "caption": "Table 4: iVDFM causal intervention stress tests: varying T and misspecified r (base, regime, chain SCMs). IRF-MSE, IRF-MAE: mean squared / absolute error; Sign Acc: fraction of (time step, variable) pairs with correct sign; IRF Corr: Pearson correlation with ground truth. Mean ± std over five simulations.",
+      "page": 16,
+      "index": 2,
+      "width": 648,
+      "height": 894
+    }
+  ]
+}

@@ -1,0 +1,301 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-03-31T20:13:18.051418+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 6,
+    "quick_skim_target": 11,
+    "quick_selected": 6
+  },
+  "deep_dive": [
+    {
+      "id": "2603.28253v1",
+      "source": "arxiv",
+      "title": "MR-ImagenTime: Multi-Resolution Time Series Generation through Dual Image Representations",
+      "abstract": "Time series forecasting is vital across many domains, yet existing models struggle with fixed-length inputs and inadequate multi-scale modeling. We propose MR-CDM, a framework combining hierarchical multi-resolution trend decomposition, an adaptive embedding mechanism for variable-length inputs, and a multi-scale conditional diffusion process. Evaluations on four real-world datasets demonstrate that MR-CDM significantly outperforms state-of-the-art baselines (e.g., CSDI, Informer), reducing MAE and RMSE by approximately 6-10 to a certain degree.",
+      "authors": [
+        "Xianyong Xu",
+        "Yuanjun Zuo",
+        "Zhihong Huang",
+        "Yihan Qin",
+        "Haoxian Xu",
+        "Leilei Du",
+        "Haotian Wang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-03-30T10:25:35+00:00",
+      "link": "https://arxiv.org/pdf/2603.28253v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "Multi-scale conditional diffusion process for time series forecasting",
+      "llm_evidence_cn": "用于时间序列预测的多尺度条件扩散过程",
+      "llm_evidence": "用于时间序列预测的多尺度条件扩散过程",
+      "canonical_evidence": "用于时间序列预测的多尺度条件扩散过程",
+      "llm_tldr_en": "Proposes MR-CDM, a multi-resolution conditional diffusion framework for improved time series forecasting.",
+      "llm_tldr_cn": "提出MR-CDM框架，利用多分辨率条件扩散过程提升时间序列预测性能。",
+      "llm_tldr": "提出MR-CDM框架，利用多分辨率条件扩散过程提升时间序列预测性能。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "conditional diffusion frameworks for time series generation",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2603.22074v1",
+      "source": "arxiv",
+      "title": "MIHT: A Hoeffding Tree for Time Series Classification using Multiple Instance Learning",
+      "abstract": "Due to the prevalence of temporal data and its inherent dependencies in many real-world problems, time series classification is of paramount importance in various domains. However, existing models often struggle with series of variable length or high dimensionality. This paper introduces the MIHT (Multi-instance Hoeffding Tree) algorithm, an efficient model that uses multi-instance learning to classify multivariate and variable-length time series while providing interpretable results. The algorithm uses a novel representation of time series as \"bags of subseries,\" together with an optimization process based on incremental decision trees that distinguish relevant parts of the series from noise. This methodology extracts the underlying concept of series with multiple variables and variable lengths. The generated decision tree is a compact, white-box representation of the series' concept, providing interpretability insights into the most relevant variables and segments of the series. Experimental results demonstrate MIHT's superiority, as it outperforms 11 state-of-the-art time series classification models on 28 public datasets, including high-dimensional ones. MIHT offers enhanced accuracy and interpretability, making it a promising solution for handling complex, dynamic time series data.",
+      "authors": [
+        "Aurora Esteban",
+        "Amelia Zafra",
+        "Sebastián Ventura"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-03-23T15:06:43+00:00",
+      "link": "https://arxiv.org/pdf/2603.22074v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "time series classification using multiple instance learning",
+      "llm_evidence_cn": "使用多示例学习的时间序列分类",
+      "llm_evidence": "使用多示例学习的时间序列分类",
+      "canonical_evidence": "使用多示例学习的时间序列分类",
+      "llm_tldr_en": "Presents an efficient Hoeffding Tree algorithm for multivariate and variable-length time series classification.",
+      "llm_tldr_cn": "提出了一种高效的Hoeffding树算法，用于多变量和变长时间序列的分类。",
+      "llm_tldr": "提出了一种高效的Hoeffding树算法，用于多变量和变长时间序列的分类。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.25758v1",
+      "source": "arxiv",
+      "title": "A-SelecT: Automatic Timestep Selection for Diffusion Transformer Representation Learning",
+      "abstract": "Diffusion models have significantly reshaped the field of generative artificial intelligence and are now increasingly explored for their capacity in discriminative representation learning. Diffusion Transformer (DiT) has recently gained attention as a promising alternative to conventional U-Net-based diffusion models, demonstrating a promising avenue for downstream discriminative tasks via generative pre-training. However, its current training efficiency and representational capacity remain largely constrained due to the inadequate timestep searching and insufficient exploitation of DiT-specific feature representations. In light of this view, we introduce Automatically Selected Timestep (A-SelecT) that dynamically pinpoints DiT's most information-rich timestep from the selected transformer feature in a single run, eliminating the need for both computationally intensive exhaustive timestep searching and suboptimal discriminative feature selection. Extensive experiments on classification and segmentation benchmarks demonstrate that DiT, empowered by A-SelecT, surpasses all prior diffusion-based attempts efficiently and effectively.",
+      "authors": [
+        "Changyu Liu",
+        "James Chenhao Liang",
+        "Wenhao Yang",
+        "Yiming Cui",
+        "Jinghao Yang",
+        "Tianyang Wang",
+        "Qifan Wang",
+        "Dongfang Liu",
+        "Cheng Han"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI",
+        "cs.LG",
+        "eess.IV"
+      ],
+      "published": "2026-03-25T19:17:14+00:00",
+      "link": "https://arxiv.org/pdf/2603.25758v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Timestep selection for Diffusion Transformer representation learning",
+      "llm_evidence_cn": "扩散Transformer表示学习的时间步选择",
+      "llm_evidence": "扩散Transformer表示学习的时间步选择",
+      "canonical_evidence": "扩散Transformer表示学习的时间步选择",
+      "llm_tldr_en": "Introduces A-SelecT to optimize timestep selection in Diffusion Transformers for better representation learning.",
+      "llm_tldr_cn": "引入A-SelecT方法，优化扩散Transformer中的时间步选择以增强表示学习能力。",
+      "llm_tldr": "引入A-SelecT方法，优化扩散Transformer中的时间步选择以增强表示学习能力。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "research papers on diffusion models applied to time series tasks",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.22886v1",
+      "source": "arxiv",
+      "title": "Conditionally Identifiable Latent Representation for Multivariate Time Series with Structural Dynamics",
+      "abstract": "We propose the Identifiable Variational Dynamic Factor Model (iVDFM), which learns latent factors from multivariate time series with identifiability guarantees. By applying iVAE-style conditioning to the innovation process driving the dynamics rather than to the latent states, we show that factors are identifiable up to permutation and component-wise affine (or monotone invertible) transformations. Linear diagonal dynamics preserve this identifiability and admit scalable computation via companion-matrix and Krylov methods. We demonstrate improved factor recovery on synthetic data, stable intervention accuracy on synthetic SCMs, and competitive probabilistic forecasting on real-world benchmarks.",
+      "authors": [
+        "Minkey Chang",
+        "Jae-Young Kim"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-fin.GN",
+        "q-fin.ST"
+      ],
+      "published": "2026-03-24T07:35:27+00:00",
+      "link": "https://arxiv.org/pdf/2603.22886v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "multivariate time series forecasting and latent representation",
+      "llm_evidence_cn": "多变量时间序列预测与潜变量表示",
+      "llm_evidence": "多变量时间序列预测与潜变量表示",
+      "canonical_evidence": "多变量时间序列预测与潜变量表示",
+      "llm_tldr_en": "Proposes an identifiable variational dynamic factor model for multivariate time series forecasting.",
+      "llm_tldr_cn": "提出了一种具有可辨识性保证的变分动态因子模型，用于多变量时间序列预测。",
+      "llm_tldr": "提出了一种具有可辨识性保证的变分动态因子模型，用于多变量时间序列预测。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.27792v1",
+      "source": "arxiv",
+      "title": "What-If Explanations Over Time: Counterfactuals for Time Series Classification",
+      "abstract": "Counterfactual explanations emerge as a powerful approach in explainable AI, providing what-if scenarios that reveal how minimal changes to an input time series can alter the model's prediction. This work presents a survey of recent algorithms for counterfactual explanations for time series classification. We review state-of-the-art methods, spanning instance-based nearest-neighbor techniques, pattern-driven algorithms, gradient-based optimization, and generative models. For each, we discuss the underlying methodology, the models and classifiers they target, and the datasets on which they are evaluated. We highlight unique challenges in generating counterfactuals for temporal data, such as maintaining temporal coherence, plausibility, and actionable interpretability, which distinguish the temporal from tabular or image domains. We analyze the strengths and limitations of existing approaches and compare their effectiveness along key dimensions (validity, proximity, sparsity, plausibility, etc.). In addition, we implemented an open-source implementation library, Counterfactual Explanations for Time Series (CFTS), as a reference framework that includes many algorithms and evaluation metrics. We discuss this library's contributions in standardizing evaluation and enabling practical adoption of explainable time series techniques. Finally, based on the literature and identified gaps, we propose future research directions, including improved user-centered design, integration of domain knowledge, and counterfactuals for time series forecasting.",
+      "authors": [
+        "Udo Schlegel",
+        "Thomas Seidl"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "stat.ML"
+      ],
+      "published": "2026-03-29T18:06:23+00:00",
+      "link": "https://arxiv.org/pdf/2603.27792v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "generative models for time series counterfactual explanations",
+      "llm_evidence_cn": "用于时间序列反事实解释的生成模型",
+      "llm_evidence": "用于时间序列反事实解释的生成模型",
+      "canonical_evidence": "用于时间序列反事实解释的生成模型",
+      "llm_tldr_en": "Surveys counterfactual explanation methods for time series classification, including generative approaches.",
+      "llm_tldr_cn": "综述了时间序列分类的反事实解释方法，涵盖了生成模型等前沿技术。",
+      "llm_tldr": "综述了时间序列分类的反事实解释方法，涵盖了生成模型等前沿技术。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "research papers on diffusion models applied to time series tasks",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.24207v1",
+      "source": "arxiv",
+      "title": "IPatch: A Multi-Resolution Transformer Architecture for Robust Time-Series Forecasting",
+      "abstract": "Accurate forecasting of multivariate time series remains challenging due to the need to capture both short-term fluctuations and long-range temporal dependencies. Transformer-based models have emerged as a powerful approach, but their performance depends critically on the representation of temporal data. Traditional point-wise representations preserve individual time-step information, enabling fine-grained modeling, yet they tend to be computationally expensive and less effective at modeling broader contextual dependencies, limiting their scalability to long sequences. Patch-wise representations aggregate consecutive steps into compact tokens to improve efficiency and model local temporal dynamics, but they often discard fine-grained temporal details that are critical for accurate predictions in volatile or complex time series. We propose IPatch, a multi-resolution Transformer architecture that integrates both point-wise and patch-wise tokens, modeling temporal information at multiple resolutions. Experiments on 7 benchmark datasets demonstrate that IPatch consistently improves forecasting accuracy, robustness to noise, and generalization across various prediction horizons compared to single-representation baselines.",
+      "authors": [
+        "Aymane Harkati",
+        "Moncef Garouani",
+        "Olivier Teste",
+        "Julien Aligon",
+        "Mohamed Hamlich"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-03-25T11:31:32+00:00",
+      "link": "https://arxiv.org/pdf/2603.24207v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Transformer architecture for robust time-series forecasting",
+      "llm_evidence_cn": "用于鲁棒时间序列预测的Transformer架构",
+      "llm_evidence": "用于鲁棒时间序列预测的Transformer架构",
+      "canonical_evidence": "用于鲁棒时间序列预测的Transformer架构",
+      "llm_tldr_en": "Develops a multi-resolution Transformer to balance fine-grained and long-range dependencies in time series.",
+      "llm_tldr_cn": "开发了一种多分辨率Transformer，以平衡时间序列中的细粒度和长期依赖关系。",
+      "llm_tldr": "开发了一种多分辨率Transformer，以平衡时间序列中的细粒度和长期依赖关系。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.26017v1",
+      "source": "arxiv",
+      "title": "QuitoBench: A High-Quality Open Time Series Forecasting Benchmark",
+      "abstract": "Time series forecasting is critical across finance, healthcare, and cloud computing, yet progress is constrained by a fundamental bottleneck: the scarcity of large-scale, high-quality benchmarks. To address this gap, we introduce \\textsc{QuitoBench}, a regime-balanced benchmark for time series forecasting with coverage across eight trend$\\times$seasonality$\\times$forecastability (TSF) regimes, designed to capture forecasting-relevant properties rather than application-defined domain labels. The benchmark is built upon \\textsc{Quito}, a billion-scale time series corpus of application traffic from Alipay spanning nine business domains. Benchmarking 10 models from deep learning, foundation models, and statistical baselines across 232,200 evaluation instances, we report four key findings: (i) a context-length crossover where deep learning models lead at short context ($L=96$) but foundation models dominate at long context ($L \\ge 576$); (ii) forecastability is the dominant difficulty driver, producing a $3.64 \\times$ MAE gap across regimes; (iii) deep learning models match or surpass foundation models at $59 \\times$ fewer parameters; and (iv) scaling the amount of training data provides substantially greater benefit than scaling model size for both model families. These findings are validated by strong cross-benchmark and cross-metric consistency. Our open-source release enables reproducible, regime-aware evaluation for time series forecasting research.",
+      "authors": [
+        "Siqiao Xue",
+        "Zhaoyang Zhu",
+        "Wei Zhang",
+        "Rongyao Cai",
+        "Rui Wang",
+        "Yixiang Mu",
+        "Fan Zhou",
+        "Jianguo Li",
+        "Peng Di",
+        "Hang Yu"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-03-27T02:24:34+00:00",
+      "link": "https://arxiv.org/pdf/2603.26017v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "large-scale benchmark for time series forecasting",
+      "llm_evidence_cn": "大规模时间序列预测基准",
+      "llm_evidence": "大规模时间序列预测基准",
+      "canonical_evidence": "大规模时间序列预测基准",
+      "llm_tldr_en": "Presents a billion-scale, regime-balanced benchmark for evaluating time series forecasting models.",
+      "llm_tldr_cn": "提出了一个十亿规模、状态平衡的基准，用于评估时间序列预测模型。",
+      "llm_tldr": "提出了一个十亿规模、状态平衡的基准，用于评估时间序列预测模型。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

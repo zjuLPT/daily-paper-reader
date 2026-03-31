@@ -1,0 +1,54 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.25758v1/fig-001.webp",
+      "caption": "Table 1. Image Classification Results on FGVC Benchmark. The best results are highlighted in bold, and the second best are shown in underline. Same for Table 1-3. We report top-1 accuracy from 6 baselines and our A-SelecT on FGVC. Our approach achieves the best performance in 4 out of 6 datasets and ranks second in the remaining datasets. A-SelecT consistently outperforms U-Net-based diffusion models (i.e., DifFeed, GD, and SDXL) across all datasets. ⋆ means that ResNet-50 backbone is frozen during representation learning, and applied solely for feature extraction. This setting is consistent with other baselines’ design for fairness. See Appendix §S3 for more details.",
+      "page": 6,
+      "index": 1,
+      "width": 890,
+      "height": 217
+    },
+    {
+      "url": "assets/figures/arxiv/2603.25758v1/fig-002.webp",
+      "caption": "Figure 5. Impact of Feature and Block Selection. We present accuracy across the features Q, K, V , A, and O extracted from different transformer blocks on Oxford Flowers. Q and V achieve the highest accuracies (90.6% and 88.7%, respectively), while A, O, and K show comparatively lower performance. The middle transformer blocks yield the most discriminative representations, highlighting the importance of both feature and block selection for optimal performance. Additional experimental results on other datasets are provided in the Appendix §S7.",
+      "page": 7,
+      "index": 2,
+      "width": 457,
+      "height": 299
+    },
+    {
+      "url": "assets/figures/arxiv/2603.25758v1/fig-003.webp",
+      "caption": "Figure 2. Overview of Automatically Selected Timestep (A-SelecT). A-SelecT begins by simulating samplet at timestep t (see Eq. 1). This samplet is then processed through the diffusion backbone to extract the query feature Qt at each timestep t. Upon obtaining all Qt, their HFR are calculated. The timestep exhibiting the highest average HFR is subsequently selected for feature extraction. The query feature extracted at this optimal timestep t̂ is then fed into targeted discriminative tasks.",
+      "page": 3,
+      "index": 3,
+      "width": 977,
+      "height": 275
+    },
+    {
+      "url": "assets/figures/arxiv/2603.25758v1/fig-004.webp",
+      "caption": "Figure 6. Feature Visualization from CUB and Oxford Flowers. Visualizations of four feature sets from the 9-th block of SD 3.5. Each column represents Q feature extracted at timestep t ∈ {1, 50, 100, 150, 200, 250}. Notably, the differences among features from various timesteps are subtle and challenging to discern visually, showing that manually selecting the discriminative feature extraction is impractical. More examples in Appendix §S8.",
+      "page": 8,
+      "index": 4,
+      "width": 488,
+      "height": 294
+    },
+    {
+      "url": "assets/figures/arxiv/2603.25758v1/fig-005.webp",
+      "caption": "Figure 3. Visualizations of High-frequency vs. Low-frequency Information. We present a decomposition of the original features extracted from SD 3.5 into components that exclusively contain high-frequency and low-frequency information. The second column is the original features extracted from the model. As seen, the high-frequency features are shown to contain more discriminative information (i.e., edge, texture, corner information from the black footed albatross can be clearly preserved) than their low-frequency counterparts. Inspired by this, we design HFR to assess the significance of high-frequency information (see §3.3).",
+      "page": 4,
+      "index": 5,
+      "width": 416,
+      "height": 332
+    },
+    {
+      "url": "assets/figures/arxiv/2603.25758v1/fig-006.webp",
+      "caption": "Figure 4. Comparison of HFR and Fisher Score across timesteps on Oxford Flowers (top) and CUB (bottom). They show strong alignment, indicating that HFR captures discriminative characteristics consistent with the Fisher Score and serves as a reliable label-free indicator of feature separability.",
+      "page": 5,
+      "index": 6,
+      "width": 502,
+      "height": 375
+    }
+  ]
+}

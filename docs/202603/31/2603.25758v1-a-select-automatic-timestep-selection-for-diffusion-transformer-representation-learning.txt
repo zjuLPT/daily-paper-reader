@@ -1,0 +1,727 @@
+Title: A-SelecT: Automatic Timestep Selection for Diffusion Transformer Representation Learning
+
+URL Source: https://arxiv.org/pdf/2603.25758v1
+
+Published Time: Mon, 30 Mar 2026 00:04:24 GMT
+
+Number of Pages: 18
+
+Markdown Content:
+# A-SelecT: Automatic Timestep Selection for Diffusion Transformer Representation Learning 
+
+## Changyu Liu 1, James Chenhao Liang 2, Wenhao Yang 3, Yiming Cui 4, Jinghao Yang 5,
+
+## Tianyang Wang 6, Qifan Wang 7, Dongfang Liu 8, Cheng Han 1*
+
+1University of Missouri–Kansas City, 2U. S. Naval Research Laboratory, 3Lamar University, 
+
+4 University of Florida, 5University of Texas Rio Grande Valley, 6University of Alabama at Birmingham, 
+
+7Meta AI, 8Rochester Institute of Technology 
+
+cldb5@umkc.edu, james.c.liang.civ@us.navy.mil, wyang2@lamar.edu, cuiyiminghit@gmail.com, jinghao.yang@utrgv.edu, tw2@uab.edu, wqfcr@meta.com, dongfang.liu@rit.edu, chk9k@umsystem.edu 
+
+## Abstract 
+
+Diffusion models have significantly reshaped the field of generative artificial intelligence and are now increasingly explored for their capacity in discriminative representation learning. Diffusion Transformer (DiT) has recently gained attention as a promising alternative to conventional U-Net-based diffusion models, demonstrating a promising avenue for downstream discriminative tasks via generative pre-training. However, its current training efficiency and repre-sentational capacity remain largely constrained due to the inadequate timestep searching and insufficient exploitation of DiT-specific feature representations. In light of this view, we introduce Automatically Selected Timestep (A-SelecT) that dynamically pinpoints DiT’s most information-rich timestep from the selected transformer feature in a single run, eliminating the need for both computationally inten-sive exhaustive timestep searching and suboptimal discrim-inative feature selection. Extensive experiments on classifi-cation and segmentation benchmarks demonstrate that DiT, empowered by A-SelecT, surpasses all prior diffusion-based attempts efficiently and effectively. 
+
+## 1. Introduction 
+
+In computer vision, representation learning is critical for extracting robust and discriminative features from raw vi-sual data [95]. For decades, Convolutional Neural Net-works (CNNs) [32, 47, 48, 76] and Vision Transformers (ViTs) [5, 11, 22, 55] have served as the foundational ar-chitectures for tasks like image classification and semantic segmentation. Diffusion models have recently emerged as 
+
+> *
+
+Corresponding author Timestep        
+
+> Accuracy
+> 79.0
+> 77.0
+> 75.0
+> 73.0
+> 71.0
+> 69.0
+> 67.0
+> 65.0
+> 0.6215
+> 0.6205
+> 0.6195
+> Timestep
+> 150 350 400 300 250 200 100
+> 91.0
+> 89.0
+> 87.0
+> 85.0
+> 83.0
+> 81.0
+> 0.627
+> 0.625
+> 0.621
+> 0.619
+> (b) CUB (a) Oxford Flowers
+> HFR value Accuracy
+> 0.623
+> 0.617
+> 50 1
+> 0.6210
+> 0.6200
+> 0.6190
+> 0.6220
+> 150 350 400 300 250 200 100 50 1
+> 0.6225
+> HFR HFR
+
+Figure 1. A Preliminary Study on the impact of the High-Frequency Ratio (HFR) with classification performance on Oxford Flowers (a) and CUB (b). The green curve represents the HFR val-ues, and the red curve are classification accuracies. We have two key observations: I. HFR values exhibit a positive correlation with classification accuracies. II. The highest classification accuracy is achieved when the HFR value reaches its maximum. More results in Appendix §S2 
+
+a potent alternative for representation learning through gen-erative pre-training. Among these, Diffusion Transformer (DiT) [70] has demonstrated remarkable scalability and su-perior performance in image generation. This success po-sitions DiT as a highly promising candidate for extracting discriminative features via generative pre-training, directly challenging the long-standing dominance of traditional dis-criminative models in feature extraction tasks. Despite DiT’s promising avenue for discriminative rep-resentation learning, two critical challenges notably im-pede its effectiveness as a feature extractor: ❶ Inadequate Timestep Searching. Identifying the optimal denoising timestep for extracting the most informative features across potentially hundreds of steps remains a non-trivial and often computationally intensive task; and ❷ Insufficient Repre-
+
+> arXiv:2603.25758v1 [cs.CV] 25 Mar 2026
+
+sentation Selection. The representational quality exhibits variation across transformer blocks, and identifying which specific components within the target block yield the most discriminative features remains a DiT-specific challenge that is yet to be comprehensively investigated. To address these fundamental challenges, we propose a novel framework, Automatically Selected Timestep (A-SelecT), designed to enable DiT as an efficient and effective representation feature extractor. Specifically, to solve chal-lenge ❶, our approach first introduces the High-Frequency Ratio (HFR), a principled method designed to dynamically identify the most informative timestep in a single pass. Our designed HFR, based on extensive observations and exper-iments, is always positively correlated to stronger DiT dis-criminative behavior (see Fig. 1). To solve challenge ❷,we perform an in-depth analysis of DiT transformer block’s components, examining their representational quality. Our proposed method offers several key advantages that significantly advance the state of the art of diffusion at-tempts. First, A-SelecT dramatically reduces computational overhead ( i.e ., ∼21 ×) by reducing the reliance on expen-sive traversal search or subjective manual selections. For the first time, A-SelecT can automatically select the opti-mal timestep for feature extraction in a single trial via HFR (see §3.3). Second, our comprehensive analysis of the in-ner transformer design of DiT (see §4.3) ensures that the selected features are empirically optimal for diverse repre-sentation learning downstream tasks (see §4.2) — achieving 82.5% on FGVC and 45.0% on ADE20K. Altogether, our proposed A-SelecT firmly establishes DiT as a strong alter-native to traditional CNN and ViT feature extractors. 
+
+## 2. Related Work 
+
+2.1. Fast Fourier Transform in Vision 
+
+Fast Fourier Transform (FFT) [2, 67] is an effective algo-rithm for computing the Discrete Fourier Transform of a sequence, enabling the transformation of signals from the temporal or spatial domain into the frequency domain. FFT is widely employed in applications such as audio signal analysis [9, 36, 62, 88], radar signal analysis [8, 35, 75, 91], and image processing [7, 23, 37, 81]. In computer vision, by revealing the underlying frequency components, which are often more informative and interpretable than raw signals, FFT plays a foundational role in numerous tasks, including deblurring [40, 45, 60, 99], super-resolution [17, 25, 52], and texture analysis [61, 90, 94]. Some recent works [4, 18, 44, 69, 85] explore the use of FFT in analyzing the behav-ior of vision transformers, revealing that they often exhibit low-pass filtering behavior, thereby resulting in struggling to retain high-frequency information. High-frequency in-formation, however, has been demonstrated to be crucial for capturing fine-grained details in representation learn-ing [25, 45, 85, 94]. Regarding DiT, the denoising process introduces timestep-dependent noise levels, which can di-rectly influence the amount of high-frequency information preserved in features. Recognizing the critical role of high-frequency information in representation learning, we tailor HFR, a dedicated approach that identifies and selects high-frequency-rich features from DiT, thereby improving its ef-fectiveness as a feature extractor for discriminative tasks. 
+
+2.2. Diffusion Models for Feature Extraction 
+
+Diffusion models have recently demonstrated their capa-bilities in representation learning. Their generative pre-trained models are generally utilized in three primary ways: 
+
+Training-free [13, 49] applies Bayes’ theorem without re-quiring additional training. However, they suffer from im-practically slow inference. Fine-tuning [3, 16, 26, 30, 33, 38, 42, 78] involves fully updating the backbone of genera-tive pre-trained diffusion models, which is naturally compu-tationally expensive and extremely time-consuming. Fea-ture extraction [6, 27, 57, 63, 65, 80, 93], on the other hand, employs features extracted from pre-trained diffusion mod-els to train a lightweight downstream network, providing a way more effective alternative on discriminative perfor-mance. Though promising, this way suffers from extended training overhead and less effective representation learning. For training overhead, identifying the most informative timestep for feature extraction from diffusion models re-mains challenging, as the denoising process involves nu-merous steps. Straightforward approaches include traver-sal search [54, 96, 97] and fixed search [38, 93], which brute-force trains a downstream network for each individ-ual timestep, and extracts features solely from the final timestep ( i.e ., fixed), respectively. While traversal search 
+
+is computationally impractical, studies [64, 65] show that 
+
+fixed search also leads to suboptimal performance. Less ef-fective representation learning is another critical challenge. Attempts such as feature visualization [63] rely only on manual inspection of feature maps, which is subjective and impractical. Shown in §5.1, we confirm that human judg-ments in DiT are inconsistent, leading to unsatisfying per-formance. Other attempts ( e.g ., Denoising Diffusion Au-toencoders [89], Latent Denoising Autoencoder [16], REP-resentation Alignment [92]) directly extract features from the DiT layer-wise outputs, without considering the detailed inner design of DiT-specific transformer architecture, ulti-mately resulting in less effective representation learning. Acknowledging the major insufficiency on the two direc-tions, we utilize HFR as a reliable high-frequency indicator for fast and accurate automatic timestep selection, and offer an in-depth examination of the representational dynamics within DiT transformer blocks, altogether establishing DiT as an efficient and effective feature extractor. 150  
+
+> 350
+> 400
+> 300
+> 250
+> 200
+> 100
+> 50
+> 1
+> 0.627 0.625 0.621 0.619 0.623 0.617
+
+... ...   
+
+> t
+> 0-th
+> block
+> Tuned Frozen MMDiT
+
+Diffusion Transformer 
+
+... 
+
+Discriminative tasks  
+
+> Gadwall Cardinal Bobolink
+> Image classification
+> Semantic segmentation
+
+...      
+
+> i-th
+> block
+> (I -1) -th
+> block
+> KQVAO
+> HFR
+
+E(fHF )
+
+E(fOrigin )t = 
+
+> t
+> t
+> HFR
+> sample Qtt
+
+Figure 2. Overview of Automatically Selected Timestep (A-SelecT). A-SelecT begins by simulating sample t at timestep t (see Eq. 1). This sample t is then processed through the diffusion backbone to extract the query feature Qt at each timestep t. Upon obtaining all Qt,their HFR are calculated. The timestep exhibiting the highest average HFR is subsequently selected for feature extraction. The query feature extracted at this optimal timestep ˆt is then fed into targeted discriminative tasks. 
+
+## 3. Method 
+
+We begin by introducing diffusion model fundamentals in §3.1. Subsequently, in §3.2, we formally define the timestep selection problem for DiT representation learning. To ad-dress this problem, §3.3 introduces High-Frequency Ra-tio (HFR). As detailed in §3.4, we automatically assess the optimality of the timestep selection for the discrimi-native feature in only a single trial via HFR. Hence, we term our method as Automatically Selected Timestep (A-SelecT). Finally §3.5 provides theoretical insights into why HFR functions as a reliable and principled indicator. 
+
+3.1. Preliminaries 
+
+Diffusion models, such as Stable Diffusion 3.5 [24] and EDM [41], are fundamentally conceptualized through the framework of ordinary differential equations [14, 77], en-capsulating the forward diffusion process and the backward denoising process. Specifically, in the forward process, the model constructs a noised representation zt by interpolat-ing between the initial data representation and a stochastic noise component, expressed as: 
+
+zt = αt · ϵ + (1 − αt) · z0, (1) where z0 is the original representation, ϵ ∼ N (0 , I ) is the Gaussian noise introduced into z0, and αt ∈ [0 , 1] is a time-dependent scalar that controls the temperature of the noise. The backward process, also known as the sampling or denoising phase, progressively removes the noise and re-constructs the original data representation iteratively as: 
+
+zt−1 = zt + ∆ α · vθ (zt, α t), (2) where ∆α is calculated by αt − αt−1 and denotes the step size. vθ (zt, α t) is a velocity vector that indicates the de-noising direction. It progressively guides zt towards the target data distribution. By integrating the velocity field over time, the model reverses the forward diffusion process, transforming the noise into a reconstructed representation. 
+
+3.2. Problem Formulation 
+
+This study investigates the structural framework of Stable Diffusion (SD) 3.5 [24], with a focus on identifying op-timal selection of DiT features for learning discriminative representation. Specifically, our objective is to determine the timestep ˆt ∈ [1 , T ] at which the selected feature from DiT exhibits optimal representation learning properties. However, accurately identifying ˆt poses several key chal-lenges. First , the number of timesteps is large ( i.e ., T steps) and the optimal timestep is pretty flexible. For different dis-criminative datasets, their optimal timesteps can exhibit sig-nificant variation (see Fig. 1). Second , the overall computa-tional cost of finding the maximum performance at the op-timal timestep becomes noticeably high when conducting a brute-force search (see §5.2). Third , the alternative ap-proach to visualizing features at each step to assess their dis-criminative quality manually is highly subjective and heav-ily relies on human judgments (see §5.1). In practice, the diffusion models comprise I blocks, each configured as a multimodal DiT (MMDiT) block. Unlike the U-Net [74] architecture, where the input and output di-mensions vary [79, 84], each block in the MMDiT main-tains consistent dimensions throughout, ensuring unifor-mity across all processing stages. This distinctive design distinguishes DiT from conventional U-Net-based diffusion models in structural composition, thereby necessitating dis-tinct approaches to representation learning. Within the i-th MMDiT block ( i ∈ [0 , I − 1] ), the atten-tion layer is a critical component, processing Query Qi, Key 
+
+Ki, and Value V i as inputs. Our analysis, detailed in §4.3, identifies the optimality, where both the output from atten-tion layers ( i.e ., Ai) and the representations derived from the MMDiT block ( i.e ., Oi) could be considered as poten-tial candidates for discriminative feature extraction. With-out loss of generality, we comprehensively study the opti-mal candidates in §3.4. We aim to analyze Qi extracted from a total of T timesteps in the backward process. For clarity, we denote Qi as Q for the remainder of this study. 
+
+3.3. High-Frequency Ratio 
+
+To tackle these challenges, we observe and introduce the High-Frequency Ratio (HFR), a novel quantitative met-ric designed to identify the level of informative feature at timestep t ∈ [1 , T ]. HFR quantifies the extent to which the high-frequency information from the t-th step feature con-tributes to the overall feature representation. A higher HFR signifies a more favorable capability of the feature to cap-ture the high-frequency information, and vice versa. 
+
+Observation of High-Frequency Components. HFR is inspired by our observation that high-frequency informa-tion, which includes fine image details such as edges, tex-tures, and corners, faithfully possesses more discriminative power. We thus employ a Gaussian high-pass filter to sep-arate the original diffusion features into components con-taining solely high-frequency information and those with solely low-frequency information (see Fig. 3). This sepa-ration allows us to visually compare the two types of fea-tures, clearly demonstrating that high-frequency features contain more discriminative details for downstream repre-sentation learning than their low-frequency counterparts. The preliminary results strongly support our observation (see Fig. 1), indicating that timesteps characterized by fea-tures with higher HFR values ( i.e ., greater capacity for high-frequency information) is positively related to superior dis-criminative performance across datasets. 
+
+Definition of the High-Frequency Ratio. Based on this in-sight, we define the High-Frequency Ratio at timestep t as: HFR t = E(f t
+
+> HF
+
+)
+
+E(f t
+
+> Origin
+
+) . (3) Here E(·) is the summation of the squared magnitudes of its constituent values and represents the energy of the fea-ture representation. At timestep t, f t 
+
+> Origin
+
+is the original fea-ture extracted from the diffusion model. f t 
+
+> HF
+
+is the high-frequency component extracted from f t 
+
+> Origin
+
+as: 
+
+f t 
+
+> HF
+
+= F −1(G ⊙ F (f t
+
+> Origin
+
+)) , (4) where F (·) and F −1(·) denote the Fast Fourier Transforma-tion (FFT) and its inverse, respectively. ⊙ is the Hadamard product, and G(·) is a Gaussian high-pass filter. 
+
+Preliminary Results. To assess the efficacy of the HFR, we conducted preliminary experiments on image classification, specifically on CUB [83] and Oxford Flowers [66] datasets        
+
+> Image Original Low-freq High-freq Figure 3. Visualizations of High-frequency vs. Low-frequency Information. We present a decomposition of the original features extracted from SD 3.5 into components that exclusively contain high-frequency and low-frequency information. The second col-umn is the original features extracted from the model. As seen, the high-frequency features are shown to contain more discriminative information ( i.e ., edge, texture, corner information from the black footed albatross can be clearly preserved) than their low-frequency counterparts. Inspired by this, we design HFR to assess the signif-icance of high-frequency information (see §3.3).
+
+over T timesteps ( i.e ., T = 1000 ). For each timestep t,we train a separate downstream classifier, report its per-formance, and compute its HFR. The results, as shown in Fig. 1, clearly demonstrate a positive correlation between HFR values and the classification performance: the highest accuracy is achieved at the timestep where the HFR is max-imized. We report consistent results on other datasets and tasks (see Appendix §S2), clearly showing the efficacy of HFR as a robust indicator of discriminative feature quality. To demonstrate HFR’s generalization, we further extend it on different DiT models (see Appendix §S14), where the results align with our current observations. 
+
+3.4. Automatically Selected Timestep (A-SelecT) 
+
+Leveraging HFR as the frequency-aware criterion, we can automatically select the optimal timestep for discrimina-tion. Hence, our objective thus turns into extracting the most informative feature for downstream representation learning at timestep t, which aims to identify the timestep that yields the highest HFR value among all potential candi-date features. We name the automatic searching pipeline as Automatically Selected Timestep (A-SelecT) (see Fig. 2). As experimentally shown in §4.3, both Q and V yield strong results on downstream representation learning; however, 
+
+Q averagely achieves superior discriminative results com-pared to K and V . We thus apply HFR on query feature Q
+
+at timestep t, denoted as Qt for consistency in our study. To compute the HFR t for the query feature Qt, the con-ventional method typically involves progressing through the backward diffusion process to obtain sample t−1 from a noise, and subsequently feeding this sample t−1 into the diffusion backbone to extract Qt. However, this is notably time-consuming due to the extensive sampling. Follow-ing [65], we instead employ the forward process ( i.e ., Eq. 1) to simulate sample t−1 by combining a single input image from training data with a noise sampled from a standard Gaussian distribution N (0 , I ). In this manner, the com-putational overhead is significantly reduced by bypassing the time-intensive backward process ( i.e ., ∼100 × faster). Once sample t−1 is simulated, we can directly extract Qt
+
+from diffusion backbone. Next, this feature from a sin-gle input is utilized to calculate its HFR t following Eq. 3. To perform an evaluation across the dataset, we compute the HFR for each image and subsequently get the average HFR as: ˜HFR t = 1
+
+> N
+
+PNi=0 HFR t, where N is the dataset length. Lastly, we are able to automatically choose the high-est ˜HFR t value by spanning across all T as: 
+
+t′ = arg max  
+
+> t∈[1 ,T ]
+
+˜HFR t. (5) Here, t′ is the timestep found by A-SelecT for extract-ing discriminative features from the diffusion model. We experimentally show that t′ is always equal to ˆt under dif-ferent downstream representation learning tasks, indicating the effectiveness of A-SelecT (see §4.2 and §4.3). 
+
+3.5. Understanding HFR with Fisher Score 
+
+To further explore why HFR acts as a robust indicator for timestep selection, we analyze its relationship with the 
+
+Fisher Score : a classical and widely used criterion for eval-uating the discriminative power of features in statistical learning [1, 19, 28, 34]. It measures how effectively fea-tures distinguish between classes by comparing the vari-ability across different classes to the variability within each class, where higher Fisher Scores indicate better class sep-arability and stronger discriminative capability. Formally, given a dataset of feature embeddings {xi}Ni=1 extracted from a trained model and their corresponding class labels 
+
+yi ∈ { 1, . . . , C }. The overall Fisher Score is defined as: 
+
+J = tr( Sb)tr( Sw) , (6) where tr( ·) denotes the matrix trace operator. Sb and Sw
+
+represent the between-class and within-class variations, re-spectively. They are defined as: 
+
+Sw =
+
+> C
+
+X
+
+> k=1
+
+X
+
+> xi∈D k
+
+(xi − μk)( xi − μk)⊤, (7) 
+
+Sb =
+
+> C
+
+X
+
+> k=1
+
+nk(μk − μ)( μk − μ)⊤, (8) 1 50 100 150 200 250 300 350 400         
+
+> Timestep
+> 0.45
+> 0.50
+> 0.55
+> 0.60
+> 0.65
+> 0.70
+> Fisher Score
+> Oxford Flowers
+> Fisher Score
+> HFR
+> 150 100 150 200 250 300 350 400
+> Timestep
+> 0.16
+> 0.18
+> 0.20
+> 0.22
+> 0.24
+> 0.26
+> 0.28
+> 0.30
+> Fisher Score
+> CUB
+> Fisher Score
+> HFR
+> 0.600
+> 0.605
+> 0.610
+> 0.615
+> 0.620
+> 0.625
+> 0.630
+> HFR
+> 0.616
+> 0.618
+> 0.620
+> 0.622
+> 0.624
+> 0.626
+> 0.628
+> 0.630
+> HFR
+
+Figure 4. Comparison of HFR and Fisher Score across time-steps on Oxford Flowers (top) and CUB (bottom). They show strong alignment, indicating that HFR captures discriminative characteristics consistent with the Fisher Score and serves as a re-liable label-free indicator of feature separability. 
+
+where μk ∈ Rd represents the mean embedding of class k,
+
+μ the global mean of all samples, nk the number of samples in class k, and Dk the set of samples belonging to class k.The ratio J quantifies the balance between inter-class sep-aration and intra-class compactness, offering a principled and reliable measure of feature discriminability. We then compute the Fisher Scores of features extracted at different timesteps and compare them with our proposed HFR (see Fig. 4). They exhibit highly aligned trends, indi-cating that HFR quantifies feature discriminability in a man-ner consistent with the established statistical principles and providing theoretical justification for its effectiveness. The reason we do not directly adopt Fisher Score as the crite-rion is that it requires ground truth label information, which is unavailable during testing. As it is infeasible to compute, HFR stands as the only effective alternative. To sum up, we prove that HFR is not merely an empirical indicator but a theoretically grounded criterion for identifying the most discriminative timestep in A-SelecT. Additional details on Fisher Score are provided in Appendix §S13. 
+
+## 4. Experiment 
+
+We present a comprehensive analysis of A-SelecT through a series of traditional representation learning tasks, including image classification and semantic segmentation. We detail the datasets utilized, outline the implementation specifics, and compare our approach against state-of-the-art baselines to substantiate its efficacy in this section as well. More ex-periments are provided in Appendix §S1-§S14. Method Aircraft Stanford Cars CUB Stanford Dogs Oxford Flowers NABirds Mean ResNet-50 ⋆ [32] 63.8% 68.8% 64.0% 82.3% 82.5% 54.2% 69.3% SimCLR [15] 46.4% 40.9% 43.9% 64.2% 86.2% 35.9% 52.9% SwAV [10] 58.2% 57.6% 63.8% 74.9% 91.8% 54.1% 66.7% MAGE [53] 67.6% 73.4% 77.7% 88.2% 86.8% 76.7% 78.4% GD [64] 57.2% 24.5% 32.8% 58.3% 78.4% 20.1% 45.2% DifFeed [65] 73.2% 82.7% 71.0% 81.3% 90.1% 70.7% 78.2% SDXL [63] 73.7% 83.2% 71.9% 82.1% 87.5% 71.6% 78.3% Ours 77.5% 86.1% 78.6% 83.5% 90.6% 78.4% 82.5%      
+
+> Table 1. Image Classification Results on FGVC Benchmark. The best results are highlighted in bold , and the second best are shown in underline. Same for Table 1-3. We report top-1 accuracy from 6 baselines and our A-SelecT on FGVC. Our approach achieves the best performance in 4 out of 6 datasets and ranks second in the remaining datasets. A-SelecT consistently outperforms U-Net-based diffusion models ( i.e ., DifFeed, GD, and SDXL) across all datasets. ⋆means that ResNet-50 backbone is frozen during representation learning, and applied solely for feature extraction. This setting is consistent with other baselines’ design for fairness. See Appendix §S3 for more details.
+
+4.1. Experimental Setup 
+
+Datasets. Our evaluation comprehensively encompasses both classification and segmentation tasks. For classifi-cation, we evaluate on ImageNet dataset [20] and Fine-Grained Visual Classification (FGVC) benchmark, includ-ing six separate datasets: Caltech-UCSD Birds (CUB) [83], Aircraft [59], Stanford Cars [46], NABirds [82], Stanford Dogs [43], and Oxford Flowers [66]. For the segmentation task, the ADE20K dataset [98] serves as the benchmark. 
+
+Baselines. To evaluate the effectiveness of A-SelecT, we compare it with several state-of-the-art approaches re-lated to our study. For image classification, we include three diffusion-based methods ( i.e ., DifFeed [65], GD [64], SDXL [63]), a GAN-based method ( i.e ., BigBiGAN [21]), four self-supervised learning methods ( i.e ., SimCLR [15], SwAV [10], MAE [33], MAGE [53]) and a supervised base-line ( i.e ., ResNet-50 [32]). Note that for fairness, we in-troduce ResNet-50 as a feature extractor for FGVC, which keeps the model completely frozen. Since ResNet-50 is generally pre-trained on ImageNet, we do not report its re-sult in Table 2 for fair comparison. For semantic segmen-tation, we further include a diffusion-based method ( i.e ., SDXL-t [63]), and one additional self-supervised learn-ing method ( i.e ., DreamTeacher [50]). By benchmark-ing A-SelecT with these, we assess the effectiveness of our method in extracting high-quality discriminative fea-tures and its potential advantages over conventional self-supervised or generative paradigms, more excitingly, sur-passing some supervised baselines, revealing a promising future for utilizing generative pre-training models. More re-sults on other DiT models are provided in Appendix §S14. 
+
+Implementation Details. We follow the implementation settings with DifFeed [65], maintaining the pre-trained DiT frozen while only training the downstream discriminative heads (see §2.2). Architectural level differently, we extract features from Stable Diffusion 3.5 Medium [24], which comprises 24 MMDiT blocks and features a backward pro-cess with 1,000 time steps for denoising. Data prepro-cessing involves normalization using a mean of [0.5, 0.5, 0.5] and a standard deviation of [0.5, 0.5, 0.5], accompa-nied by random flipping, resizing, and cropping of images, with crop sizes variably selected from the dimensions {256, 512, 1024 }. For optimization, we employ AdamW opti-mizer [56], regulated by a cosine annealing schedule with-out warm-up epochs, experimenting with initial learning rates of {0.001, 0.002, 0.003 }. The batch size is set at 
+
+8. Features are extracted from layers {0, 3, 6, 9, 12, 15, 18, 21, 23 }, with the final feature set consistently extracted from the 9-th block for all tasks. Training extends over 28 
+
+epochs for classification tasks and 160 K iterations for seg-mentation tasks, following established protocols [87]. 
+
+Reproducibility. A-SelecT is implemented in Pytorch [68]. Experiments are conducted on NVIDIA A6000 GPUs. Our implementation will be released for reproducibility. We provide the pseudo code in Appendix Algorithm 1. 
+
+4.2. Main Results 
+
+A-SelecT on FGVC. Table 1 reports the top-1 accuracy on FGVC benchmark. These results lead to several key obser-vations. First , when compared to SDXL, another diffusion-based discriminative approach, our method consistently de-livers superior performance across ALL tasks. For ex-ample, our method achieves substantial improvements on NABirds ( i.e ., 6.8% ) and CUB ( i.e ., 6.7% ), respectively. 
+
+Second , when compared to other strong baselines, our A-SelecT can get superior performance in 4 out of 6 tasks. In the remaining two tasks, we are still able to achieve the second-highest performance ( e.g ., 90.6% vs. 91.8% on Oxford Flowers). This clearly demonstrates that DiT can serve as a strong discriminative learner, even when com-pared to models specifically designed for discrimination. 
+
+Third , leveraging the capabilities of A-SelecT, we could de-termine the optimal step for selecting the diffusion discrim-inative feature, ensuring both training efficiency and robust model performance. More discussions are included in §5. Method Top-1 Acc SimCLR [15] 69.3% SwAV [10] 75.3% MAE [33] 73.5% MAGE [53] 78.9% 
+
+BigBiGAN [21] 60.8% DifFeed [65] 77.0% SDXL [63] 77.2% GD [64] 71.9% Ours 78.2% 
+
+Table 2. Image Classification Re-sults on ImageNet [20]. 
+
+A-SelecT on ImageNet. 
+
+We further conduct ima-ge classification on Ima-geNet for completeness. As shown in Table 2, our method achieves 78.2% 
+
+accuracy, outperforming diffusion-based models DifFeed and SDXL by 
+
+1.2% and 1.0% , respecti-vely, while demonstrating a compelling improve-ment over the GAN-based model ( i.e ., BigBiGAN) by a substantial margin of 17.4% . Furthermore, A-SelecT shows superior performance compared to most existing self-supervised learning approaches and yields results comparable to those achieved by MAGE ( i.e ., 78.2% vs. 
+
+78.9%), a leading method in self-supervised learning. These results are impressive and strengthen that, beyond DiT conventional application in image generation, it exhibits great potential in discrimination. Method mIoU ResNet-50 [32] 40.9% SimCLR [15] 39.9% SwAV [10] 41.2% MAE (ViT-B) [33] 40.8% MAE (ViT-L) [33] 45.8% 
+
+DreamTeacher [50] 42.5% DifFeed [65] 44.0% SDXL [63] 43.5% SDXL-t † [63] 45.7% Ours 45.0% 
+
+Table 3. Semantic Segmentation on ADE20K [98]. †: SDXL-t uses features from other mod-els (i.e ., SD1.5 [73] and Play-ground2 [51]), which is unfair when compared to other baselines. 
+
+Results on Semantic Segmentation. To further explore the generalizabil-ity of A-SelecT, we dir-ectly apply it to the sema-ntic segmentation task, ADE20K. As shown in Table 3, our method attai-ins a mean Intersection over Union (mIoU) of 45.0%, exceeding the Dif-Feed by 1.0% . A-SelecT further outperforms the supervised ResNet-50 by 
+
+4.1% , and exceeds the performance of most self-supervised learning meth-ods. For example, our method achieves 3.8% improvement when compared to SwAV and comparable performance to MAE with ViT-L [22], respectively. It is noteworthy that during the training of the segmentation head, we freeze the whole diffusion backbone completely. MAE, on the other hand, necessitates full fine-tuning of the whole backbone with the segmentation head during training. In conclusion, A-SelecT in segmentation substantiate the strong potential of DiT in attaining state-of-the-art performance. 
+
+4.3. Diagnostic Experiments 
+
+Impact of Feature Selection. We first analyze the impact of feature selection on the performance of HFR at a fixed timestep. Since the MMDiT block is a transformer-based layer (see §3.2), a natural choice for feature selection in-0     
+
+> 3
+> 6
+> 9
+> 12
+> 15
+> 18
+> 21 23
+> Block
+> A
+> O
+> K
+> V
+> Q
+> Feature
+> 40%
+> 50%
+> 60%
+> 70%
+> 80%
+> 90%
+> AOKVQ
+> 74.5%
+> 78.4% 72.3%
+> 88.7%
+> 90.6%
+> Accuracy
+
+Figure 5. Impact of Feature and Block Selection. We present accuracy across the features Q, K, V , A, and O extracted from different transformer blocks on Oxford Flowers. Q and V achieve the highest accuracies (90.6% and 88.7%, respectively), while A,
+
+O, and K show comparatively lower performance. The middle transformer blocks yield the most discriminative representations, highlighting the importance of both feature and block selection for optimal performance. Additional experimental results on other datasets are provided in the Appendix §S7. 
+
+cludes Query ( Q), Key ( K), and Value ( V ). Additionally, we consider the output of the attention layer ( A) and the fi-nal output of the MMDiT block ( O) as potential candidate features. To investigate their effectiveness, we extract them at dataset-specific timesteps: t = 50 for CUB, t = 100 
+
+for Oxford Flowers and Stanford Cars, and t = 1 for Air-craft. For consistency, we adopt the same timestep config-uration in all subsequent ablation studies. For the Oxford Flowers dataset (see Fig. 5), Q achieves the highest accu-racy at 90.6%, followed by V , which attains 88.7%. The remaining features ( K, A, and O) yield lower accuracies. A similar trend is observed across CUB, Aircraft, and Stan-ford Cars (see Appendix §S7). These findings demonstrate that feature selection from different DiT components has a significant impact on the A-SelecT discriminative perfor-mance. Supplemented by the results presented in Appendix §S6, both Q and V achieve comparable discriminative per-formance, but in most cases, Q outperforms V . To ensure consistency and maximize performance, we adopt Q as the default feature throughout all experiments. 
+
+Impact of Block Selection. As introduced in §4.1, we adopt SD 3.5, a DiT-based diffusion model with 24 MMDiT blocks. Since the choice of block can strongly influence dis-criminative performance, we investigate the effect of select-ing different blocks for feature extraction. We train individ-ual classifiers using features from different blocks to assess their discriminative effectiveness. Results in Fig. 5 indicate that the most effective features come from a middle layer. This observation is consistent with findings of [31, 44], which explains that early blocks primarily capture coarse information, while later blocks focus on fine details. The Image 1 50 100 150 200 250 Figure 6. Feature Visualization from CUB and Oxford Flow-ers. Visualizations of four feature sets from the 9-th block of SD 3.5. Each column represents Q feature extracted at timestep 
+
+t ∈ { 1, 50 , 100 , 150 , 200 , 250 }. Notably, the differences among features from various timesteps are subtle and challenging to dis-cern visually, showing that manually selecting the discriminative feature extraction is impractical. More examples in Appendix §S8. 
+
+middle layers thus combine both types of information, mak-ing them more critical for discrimination. We further dis-cuss fusing multiple blocks’ features in Appendix §S5. 
+
+Impact of Input Resolution. DiT possesses the advan-tageous property of accommodating variable input resolu-tions. We thus explore whether the input resolution of an image would influence DiT’s discriminative performance. Specifically, we extract Q from the 9-th block with different input sizes ( i.e ., 256 , 512 , and 1, 024 ). As seen in Table 4, we stop at the input size of 512 because performance satu-ration is observed around this point. Further enlarging the resolution would result in a decrease in performance ( e.g ., 90.6% vs. 81.7% on Oxford Flowers). We argue that this may be due to overparameterization [29, 39, 86]. 
+
+## 5. Discussions on A-SelecT 
+
+While the above results highlight the robustness of A-SelecT across discriminative tasks, it naturally raises the question of the necessity of incorporating A-SelecT into dif-fusion model feature selection. To investigate this, we con-duct feature visualization and traversal search, adhering to recent advancements in diffusion models [12, 63, 65], ap-plied to SD 3.5 to ensure a fair comparison. All experiments are conducted on CUB and Oxford Flowers datasets. Input Resolution Oxford Flowers CUB Aircraft Stanford Cars              
+
+> 256 85.3% 69.3% 71.5% 85.7%
+> 512 90.6% 78.6% 77.5% 86.1%
+> 1,024 81.7% 66.2% 73.6 % 82.7%
+
+Table 4. Impact of Input Resolution ranging from 256 to 1, 024 .An input size of 512 yields the highest accuracies.                                 
+
+> Method Oxford Flowers CUB DiT-Visualization 83.0% 72.3% Ours 90.6% 78.6%
+> (a) Comparision between A-SelecT and Feature Visualization.
+> Oxford Flowers CUB GPU Phase Ours DiT-Traversal Search Ours DiT-Traversal Search hours Tuning 0.8 hrs 16.8 hrs 2.2 hrs 47.0 hrs ∼21 ×
+> A-SelecT 0.6 hrs 0 hrs 1.6 hrs 0 hrs -Total 1.4 hrs 16.8 hrs 3.9 hrs 47.0 hrs ∼12 ×
+> (b) Comparison between A-SelecT and Traversal Search. The table presents the total time (in GPU hours) required by A-SelecT and traversal search to identify the optimal timestep ˆt.
+
+Table 5. Discussions on A-SelecT w.r.t feature visualization and traversal search further confirm the significance of our ap-proach, showing outstanding automatic discriminative feature se-lection and training efficiency. 
+
+5.1. DiT with Feature Visualization 
+
+We follow [63] and extract features at multiple timesteps: 1000, 950, 900, 850, 800, 700, 650, 600, 550, 500, 450, 400, 350, 300, 250, 200, 150, 100, 50, 1. We then visual-ize and subjectively select ( i.e ., manual selection, following [63]) timestep 1 for CUB and 250 for Oxford Flowers, re-spectively, as they appear to contain the most discriminative information. Feature visualization results are presented in Fig. 6. The results, as depicted in Table 5a, indicate that the timesteps selected through the visualization strategy do not yield reliable outcomes. For example, we notice a substan-tial performance gap when compared to our approach on CUB ( i.e ., 72.3% vs. 78.6%). Moreover, manually compar-ing image visualizations across different timesteps proves to be both labor-intensive and challenging, significantly im-peding efficient analysis. Consequently, we argue that fea-ture visualization is both impractical and inefficient for dif-fusion model discriminative feature selection. 
+
+5.2. DiT with Traversal Search 
+
+In traversal search, we exhaustively train separate models at different timesteps: 1000, 950, 900, 850, 800, 700, 650, 600, 550, 500, 450, 400, 350, 300, 250, 200, 150, 100, 50, 1. As introduced in §3.4, A-SelecT involves computing HFR values for different timesteps, and selecting the timestep with the highest value for feature extraction. We only need to train the discriminative head in a single trial. In contrast, traversal search requires iterative training of the discrimina-tive head until the optimal timestep is identified. This in-creased granularity is directly associated with an extended duration of training time, in this case, ∼21 × when com-pared to our A-SelecT (see Table 5b). The results demon-strate that our method is ∼12 × faster than traversal search, which significantly enhances the efficiency of the feature selection. Notably, the efficiency advantage becomes even more pronounced with extended training. 6. Conclusion 
+
+DiT has recently emerged as a promising alternative to traditional U-Net-based diffusion models for representa-tion learning. However, its potential for discriminative tasks remains largely underexploited due to two core lim-itations: the lack of principled timestep selection and in-sufficient analysis of DiT’s internal representations. To ad-dress these challenges, we propose A-SelecT, a novel au-tomatic timestep selection framework for effective and ef-ficient DiT representation learning. Comprehensive experi-ments demonstrate that A-SelecT is able to: I. significantly optimize training schedules for DiT representation learning; and II. ensure peak performance among competitive meth-ods. We posit that our research constitutes a foundational contribution to diffusion model representation learning. 
+
+Acknowledgments 
+
+This research was supported by the National Science Foun-dation under Grant No. 2450068. This work used NCSA Delta GPU through allocation CIS250460 from the Ad-vanced Cyberinfrastructure Coordination Ecosystem: Ser-vices & Support (ACCESS) program, which is supported by U.S. National Science Foundation grants No. 2138259, No. 2138286, No. 2138307, No. 2137603, and No. 2138296. The views and conclusions contained herein are those of the authors and should not be interpreted as necessarily representing the official policies or en-dorsements, either expressed or implied, of the U.S. Naval Research Laboratory (NRL) or the U.S. Government. 
+
+## References 
+
+[1] Do˘ gukan Aksu, Serpil ¨ Ustebay, Muhammed Ali Aydin, and T¨ ulin Atmaca. Intrusion detection with comparative analy-sis of supervised learning techniques and fisher score feature selection algorithm. In ISCSIC , 2018. 5 [2] Luis B Almeida. The fractional fourier transform and time-frequency representations. IEEE TSP , 2002. 2 [3] Tomer Amit, Tal Shaharbany, Eliya Nachmani, and Lior Wolf. Segdiff: Image segmentation with diffusion proba-bilistic models. arXiv preprint arXiv:2112.00390 , 2021. 2 [4] Sotiris Anagnostidis, Gregor Bachmann, Yeongmin Kim, Jonas Kohler, Markos Georgopoulos, Artsiom Sanakoyeu, Yuming Du, Albert Pumarola, Ali Thabet, and Edgar Sch¨ onfeld. Flexidit: Your diffusion transformer can easily generate high-quality samples with less compute. In CVPR ,2025. 2 [5] Hangbo Bao, Li Dong, Songhao Piao, and Furu Wei. Beit: Bert pre-training of image transformers. In ICLR , 2022. 1 [6] Dmitry Baranchuk, Ivan Rubachev, Andrey Voynov, Valentin Khrulkov, and Artem Babenko. Label-efficient se-mantic segmentation with diffusion models, 2021. 2 [7] Normand Beaudoin and Steven S Beauchemin. An accurate discrete fourier transform for image processing. In ICPR ,2002. 2 [8] David Brandwood. Fourier transforms in radar and signal processing . Artech House, 2012. 2 [9] Pablo Cancela, Mart´ ın Rocamora, and Ernesto L´ opez. An efficient multi-resolution spectral transform for music analy-sis. In ISMIR , 2009. 2 [10] Mathilde Caron, Ishan Misra, Julien Mairal, Priya Goyal, Pi-otr Bojanowski, and Armand Joulin. Unsupervised learn-ing of visual features by contrasting cluster assignments. In 
+
+NeurIPS , 2020. 6, 7 [11] Mathilde Caron, Hugo Touvron, Ishan Misra, Herv´ e J´ egou, Julien Mairal, Piotr Bojanowski, and Armand Joulin. Emerg-ing properties in self-supervised vision transformers. In 
+
+ICCV , 2021. 1 [12] Cl´ ement Chadebec, Onur Tasar, Sanjeev Sreetharan, and Benjamin Aubin. Lbm: Latent bridge matching for fast image-to-image translation, 2025. 8 [13] Huanran Chen, Yinpeng Dong, Shitong Shao, Zhongkai Hao, Xiao Yang, Hang Su, and Jun Zhu. Your diffusion model is secretly a certifiably robust classifier, 2025. 2 [14] Ricky TQ Chen, Yulia Rubanova, Jesse Bettencourt, and David K Duvenaud. Neural ordinary differential equations. In NeurIPS , 2018. 3 [15] Ting Chen, Simon Kornblith, Mohammad Norouzi, and Ge-offrey Hinton. A simple framework for contrastive learning of visual representations. In ICLR , 2020. 6, 7 [16] Xinlei Chen, Zhuang Liu, Saining Xie, and Kaiming He. De-constructing denoising diffusion models for self-supervised learning. In ICLR , 2025. 2 [17] Dong Cheng and Kit Ian Kou. Fft multichannel interpolation and application to image super-resolution. Signal Process-ing , 2019. 2 [18] Tao Dai, Jianping Wang, Hang Guo, Jinmin Li, Jinbao Wang, and Zexuan Zhu. Freqformer: Frequency-aware transformer for lightweight image super-resolution. In IJCAI , 2024. 2 [19] Valber Elias de Almeida, David Douglas de Sousa Fer-nandes, Paulo Henrique Gonc ¸alves Dias Diniz, Adriano de Ara´ ujo Gomes, Germano V´ eras, Roberto Kawakami Har-rop Galv˜ ao, and Mario Cesar Ugulino Araujo. Scores se-lection via fisher’s discriminant power in pca-lda to improve the classification of food data. Food Chemistry , 363:130296, 2021. 5 [20] Jia Deng, Wei Dong, Richard Socher, Li-Jia Li, Kai Li, and Li Fei-Fei. Imagenet: A large-scale hierarchical image database. In CVPR , 2009. 6, 7, 1 [21] Jeff Donahue and Karen Simonyan. Large scale adversarial representation learning. In NeurIPS , 2019. 6, 7 [22] Alexey Dosovitskiy, Lucas Beyer, Alexander Kolesnikov, Dirk Weissenborn, Xiaohua Zhai, Thomas Unterthiner, Mostafa Dehghani, Matthias Minderer, Georg Heigold, Syl-vain Gelly, et al. An image is worth 16x16 words: Trans-formers for image recognition at scale. In ICLR , 2021. 1, 7[23] Todd A Ell and Stephen J Sangwine. Hypercomplex fourier transforms of color images. IEEE TIP , 2006. 2 [24] Patrick Esser, Sumith Kulal, Andreas Blattmann, Rahim Entezari, Jonas M¨ uller, Harry Saini, Yam Levi, Dominik Lorenz, Axel Sauer, Frederic Boesel, et al. Scaling recti-fied flow transformers for high-resolution image synthesis. In ICML , 2024. 3, 6, 1 [25] Dario Fuoli, Luc Van Gool, and Radu Timofte. Fourier space losses for efficient perceptual image super-resolution. In 
+
+ICCV , 2021. 2 [26] Gonzalo Martin Garcia, Karim Abou Zeid, Christian Schmidt, Daan de Geus, Alexander Hermans, and Bastian Leibe. Fine-tuning image-conditional diffusion models is easier than you think, 2024. 2 [27] Gonzalo Martin Garcia, Karim Abou Zeid, Christian Schmidt, Daan De Geus, Alexander Hermans, and Bastian Leibe. Fine-tuning image-conditional diffusion models is easier than you think. In WACV , 2025. 2 [28] Quanquan Gu, Zhenhui Li, and Jiawei Han. Generalized fisher score for feature selection, 2012. 5 [29] Cheng Han, Qifan Wang, Yiming Cui, Zhiwen Cao, Wen-guan Wang, Siyuan Qi, and Dongfang Liu. E2vpt: An ef-fective and efficient approach for visual prompt tuning. In 
+
+ICCV , 2023. 8 [30] Xizewen Han, Huangjie Zheng, and Mingyuan Zhou. Card: Classification and regression diffusion models. In NeurIPS ,2022. 2 [31] Ali Hatamizadeh, Jiaming Song, Guilin Liu, Jan Kautz, and Arash Vahdat. Diffit: Diffusion vision transformers for im-age generation. In ECCV , 2024. 7 [32] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for image recognition. In CVPR ,2016. 1, 6, 7 [33] Kaiming He, Xinlei Chen, Saining Xie, Yanghao Li, Piotr Doll´ ar, and Ross Girshick. Masked autoencoders are scalable vision learners. In CVPR , 2022. 2, 6, 7 [34] Xiaofei He, Deng Cai, and Partha Niyogi. Laplacian score for feature selection. In NeurIPS , 2005. 5 [35] Jinmoo Heo, Yongchul Jung, Seongjoo Lee, and Yunho Jung. Fpga implementation of an efficient fft processor for fmcw radar signal processing. Sensors , 2021. 2 [36] Shawn Hershey, Sourish Chaudhuri, Daniel PW Ellis, Jort F Gemmeke, Aren Jansen, R Channing Moore, Manoj Plakal, Devin Platt, Rif A Saurous, Bryan Seybold, et al. Cnn ar-chitectures for large-scale audio classification. In ICASSP ,2017. 2 [37] B Hinman, Jared Bernstein, and D Staelin. Short-space fourier transform image processing. In ICASSP , 1984. 2 [38] Yuanfeng Ji, Zhe Chen, Enze Xie, Lanqing Hong, Xihui Liu, Zhaoqiang Liu, Tong Lu, Zhenguo Li, and Ping Luo. Ddp: Diffusion model for dense visual prediction. In ICCV , 2023. 2[39] Menglin Jia, Luming Tang, Bor-Chun Chen, Claire Cardie, Serge Belongie, Bharath Hariharan, and Ser-Nam Lim. Vi-sual prompt tuning. In ECCV , 2022. 8 [40] Xingyu Jiang, Xiuhui Zhang, Ning Gao, and Yue Deng. When fast fourier transform meets transformer for image restoration. In ECCV , 2024. 2 [41] Tero Karras, Miika Aittala, Timo Aila, and Samuli Laine. Elucidating the design space of diffusion-based generative models. In NeurIPS , 2022. 3 [42] Bingxin Ke, Anton Obukhov, Shengyu Huang, Nando Met-zger, Rodrigo Caye Daudt, and Konrad Schindler. Repurpos-ing diffusion-based image generators for monocular depth estimation. In CVPR , 2024. 2 [43] Aditya Khosla, Nityananda Jayadevaprakash, Bangpeng Yao, and Fei-Fei Li. Novel dataset for fine-grained image categorization: Stanford dogs. In CVPR workshop , 2011. 6, 1[44] Yeongmin Kim, Sotiris Anagnostidis, Yuming Du, Edgar Sch¨ onfeld, Jonas Kohler, Markos Georgopoulos, Albert Pumarola, Ali Thabet, and Artsiom Sanakoyeu. Autoregres-sive distillation of diffusion transformers. In CVPR , 2025. 2, 7[45] Lingshun Kong, Jiangxin Dong, Jianjun Ge, Mingqiang Li, and Jinshan Pan. Efficient frequency domain-based trans-formers for high-quality image deblurring. In CVPR , 2023. 2[46] Jonathan Krause, Michael Stark, Jia Deng, and Li Fei-Fei. 3d object representations for fine-grained categorization. In 
+
+ICCV workshop , 2013. 6, 1 [47] Alex Krizhevsky, Ilya Sutskever, and Geoffrey E Hinton. Imagenet classification with deep convolutional neural net-works. In NeurIPS , 2012. 1 [48] Yann LeCun, L´ eon Bottou, Yoshua Bengio, and Patrick Haffner. Gradient-based learning applied to document recog-nition. Proceedings of the IEEE , 2002. 1 [49] Alexander C Li, Mihir Prabhudesai, Shivam Duggal, Ellis Brown, and Deepak Pathak. Your diffusion model is secretly a zero-shot classifier. In CVPR , 2023. 2 [50] Daiqing Li, Huan Ling, Amlan Kar, David Acuna, Se-ung Wook Kim, Karsten Kreis, Antonio Torralba, and Sanja Fidler. Dreamteacher: Pretraining image backbones with deep generative models. In ICCV , 2023. 6, 7 [51] Daiqing Li, Aleks Kamko, Ehsan Akhgari, Ali Sabet, Lin-miao Xu, and Suhail Doshi. Playground v2. 5: Three in-sights towards enhancing aesthetic quality in text-to-image generation, 2024. 7 [52] Junxuan Li, Shaodi You, and Antonio Robles-Kelly. Afrequency domain neural network for fast image super-resolution. In IJCNN , 2018. 2 [53] Tianhong Li, Huiwen Chang, Shlok Mishra, Han Zhang, Dina Katabi, and Dilip Krishnan. Mage: Masked generative encoder to unify representation learning and image synthe-sis. In CVPR , 2023. 6, 7 [54] Xinghui Li, Jingyi Lu, Kai Han, and Victor Adrian Prisacariu. Sd4match: Learning to prompt stable diffusion model for semantic matching. In CVPR , 2024. 2 [55] Ze Liu, Han Hu, Yutong Lin, Zhuliang Yao, Zhenda Xie, Yixuan Wei, Jia Ning, Yue Cao, Zheng Zhang, Li Dong, et al. Swin transformer v2: Scaling up capacity and resolution. In 
+
+CVPR , 2022. 1 [56] Ilya Loshchilov and Frank Hutter. Decoupled weight decay regularization. In ICML , 2017. 6 [57] Grace Luo, Lisa Dunlap, Dong Huk Park, Aleksander Holyn-ski, and Trevor Darrell. Diffusion hyperfeatures: Search-ing through time and space for semantic correspondence. In 
+
+NeurIPS , 2023. 2 [58] Nanye Ma, Mark Goldstein, Michael S Albergo, Nicholas M Boffi, Eric Vanden-Eijnden, and Saining Xie. Sit: Exploring flow and diffusion-based generative models with scalable in-terpolant transformers. In ECCV , 2024. 5 [59] Subhransu Maji, Esa Rahtu, Juho Kannala, Matthew Blaschko, and Andrea Vedaldi. Fine-grained visual classi-fication of aircraft, 2013. 6, 1 [60] Xintian Mao, Yiming Liu, Fengze Liu, Qingli Li, Wei Shen, and Yan Wang. Intriguing findings of frequency selection for image deblurring. In AAAI , 2023. 2 [61] Morteza Mardani, Guilin Liu, Aysegul Dundar, Shiqiu Liu, Andrew Tao, and Bryan Catanzaro. Neural ffts for universal texture image synthesis. In NeurIPS , 2020. 2 [62] David Meg´ ıas, Jordi Serra-Ruiz, and Mehdi Fallahpour. Ef-ficient self-synchronised blind audio watermarking system based on time domain and fft amplitude modification. Signal Processing , 2010. 2 [63] Benyuan Meng, Qianqian Xu, Zitai Wang, Xiaochun Cao, and Qingming Huang. Not all diffusion model activations have been evaluated as discriminative features. In NeurIPS ,2024. 2, 6, 7, 8, 1, 3 [64] Soumik Mukhopadhyay, Matthew Gwilliam, Vatsal Agar-wal, Namitha Padmanabhan, Archana Swaminathan, Srinidhi Hegde, Tianyi Zhou, and Abhinav Shrivastava. Diffusion models beat gans on image classification, 2023. 2, 6, 7 [65] Soumik Mukhopadhyay, Matthew Gwilliam, Yosuke Yam-aguchi, Vatsal Agarwal, Namitha Padmanabhan, Archana Swaminathan, Tianyi Zhou, Jun Ohya, and Abhinav Shri-vastava. Do text-free diffusion models learn discriminative visual representations? In ECCV , 2024. 2, 5, 6, 7, 8 [66] Maria-Elena Nilsback and Andrew Zisserman. Automated flower classification over a large number of classes. In 
+
+ICVGIP , 2008. 4, 6, 1 [67] Henri J Nussbaumer. The fast fourier transform. In Fast Fourier transform and convolution algorithms . Springer, 1981. 2 [68] Adam Paszke, Sam Gross, Francisco Massa, Adam Lerer, James Bradbury, Gregory Chanan, Trevor Killeen, Zeming Lin, Natalia Gimelshein, Luca Antiga, Alban Desmaison, Andreas Kopf, Edward Yang, Zachary DeVito, Martin Rai-son, Alykhan Tejani, Sasank Chilamkurthy, Benoit Steiner, Lu Fang, Junjie Bai, and Soumith Chintala. Pytorch: An imperative style, high-performance deep learning library. In 
+
+NeurIPS , 2019. 6 [69] Badri N Patro, Vinay P Namboodiri, and Vijay S Ag-neeswaran. Spectformer: Frequency and attention is what you need in a vision transformer. In WACV , 2025. 2 [70] William Peebles and Saining Xie. Scalable diffusion models with transformers. In ICCV , 2023. 1, 4, 5 [71] Alec Radford, Jong Wook Kim, Chris Hallacy, Aditya Ramesh, Gabriel Goh, Sandhini Agarwal, Girish Sastry, Amanda Askell, Pamela Mishkin, Jack Clark, et al. Learn-ing transferable visual models from natural language super-vision. In ICML . PmLR, 2021. 1 [72] Colin Raffel, Noam Shazeer, Adam Roberts, Katherine Lee, Sharan Narang, Michael Matena, Yanqi Zhou, Wei Li, and Peter J Liu. Exploring the limits of transfer learning with a unified text-to-text transformer. JMLR , 21(140), 2020. 1 [73] Robin Rombach, Andreas Blattmann, Dominik Lorenz, Patrick Esser, and Bj¨ orn Ommer. High-resolution image syn-thesis with latent diffusion models. In CVPR , 2022. 7 [74] Olaf Ronneberger, Philipp Fischer, and Thomas Brox. U-net: Convolutional networks for biomedical image segmentation. In MICCAI , 2015. 3 [75] MIMRAMZ Sifuzzaman, M Rafiq Islam, and Mostafa Z Ali. Application of wavelet transform and its advantages com-pared to fourier transform. Journal of Physical Sciences ,2009. 2 [76] Karen Simonyan and Andrew Zisserman. Very deep convo-lutional networks for large-scale image recognition. In ICLR ,2015. 1 [77] Yang Song, Jascha Sohl-Dickstein, Diederik P Kingma, Ab-hishek Kumar, Stefano Ermon, and Ben Poole. Score-based generative modeling through stochastic differential equa-tions. In ICLR , 2021. 3 [78] Nick Stracke, Stefan Andreas Baumann, Kolja Bauer, Frank Fundel, and Bj¨ orn Ommer. Cleandift: Diffusion features without noise. In CVPR , 2025. 2 [79] Xibo Sun, Jiarui Fang, Aoyu Li, and Jinzhe Pan. Unveil-ing redundancy in diffusion transformers (dits): A systematic study, 2024. 3 [80] Luming Tang, Menglin Jia, Qianqian Wang, Cheng Perng Phoo, and Bharath Hariharan. Emergent correspondence from image diffusion. In NeurIPS , 2023. 2 [81] Isa Servan Uzun, Abbes Amira, and Ahmed Bouridane. Fpga implementations of fast fourier transforms for real-time sig-nal and image processing. IEE Proceedings-Vision, Image and Signal Processing , 2005. 2 [82] Grant Van Horn, Steve Branson, Ryan Farrell, Scott Haber, Jessie Barry, Panos Ipeirotis, Pietro Perona, and Serge Be-longie. Building a bird recognition app and large scale dataset with citizen scientists: The fine print in fine-grained dataset collection. In ICCV , 2015. 6, 1 [83] Catherine Wah, Steve Branson, Peter Welinder, Pietro Per-ona, and Serge Belongie. The caltech-ucsd birds-200-2011 dataset. Technical Report CNS-TR-2011-001, California In-stitute of Technology, 2011. 4, 6, 1, 2 [84] Jianyi Wang, Zhijie Lin, Meng Wei, Yang Zhao, Ceyuan Yang, Chen Change Loy, and Lu Jiang. Seedvr: Seeding in-finity in diffusion transformer towards generic video restora-tion, 2025. 3 [85] Peihao Wang, Wenqing Zheng, Tianlong Chen, and Zhangyang Wang. Anti-oversmoothing in deep vision trans-formers via the fourier domain analysis: From theory to practice. In ICLR , 2022. 2 [86] Taowen Wang, Yiyang Liu, James Chenhao Liang, Yiming Cui, Yuning Mao, Shaoliang Nie, Jiahao Liu, Fuli Feng, Zenglin Xu, Cheng Han, et al. M2pt: Multimodal prompt tuning for zero-shot instruction learning. In EMNLP , 2024. 8[87] Wenguan Wang, Cheng Han, Tianfei Zhou, and Dongfang Liu. Visual recognition with deep nearest centroids. In ICLR ,2023. 6 [88] Bo Wu and Xiao-Ping Zhang. Environmental sound clas-sification via time–frequency attention and framewise self-attention-based deep neural networks. IoT-J , 2021. 2 [89] Weilai Xiang, Hongyu Yang, Di Huang, and Yunhong Wang. Denoising diffusion autoencoders are unified self-supervised learners. In ICCV , 2023. 2, 4 [90] Chang-zhen Xiong, Jun-yi Xu, Jian-cheng Zou, and Dong-xu Qi. Texture classification based on emd and fft. Journal of Zhejiang University-Science A , 2006. 2 [91] Jia Xu, Ji Yu, Ying-Ning Peng, and Xiang-Gen Xia. Radon-fourier transform for radar target detection, i: Generalized doppler filter bank. IEEE TAES , 2011. 2 [92] Sihyun Yu, Sangkyung Kwak, Huiwon Jang, Jongheon Jeong, Jonathan Huang, Jinwoo Shin, and Saining Xie. Representation alignment for generation: Training diffusion transformers is easier than you think. In ICLR , 2025. 2 [93] Denis Zavadski, Damjan Kalˇ san, and Carsten Rother. Primedepth: Efficient monocular depth estimation with a sta-ble diffusion preimage. In ACCV , 2024. 2 [94] Runjia Zeng, Cheng Han, Qifan Wang, Chunshu Wu, Tong Geng, Lifu Huangg, Ying Nian Wu, and Dongfang Liu. Vi-sual fourier prompt tuning. In NeurIPS , 2024. 2 [95] Daokun Zhang, Jie Yin, Xingquan Zhu, and Chengqi Zhang. Network representation learning: A survey. IEEE T-Data ,2018. 1 [96] Junyi Zhang, Charles Herrmann, Junhwa Hur, Luisa Pola-nia Cabrera, Varun Jampani, Deqing Sun, and Ming-Hsuan Yang. A tale of two features: Stable diffusion complements dino for zero-shot semantic correspondence. In NeurIPS ,2023. 2 [97] Junyi Zhang, Charles Herrmann, Junhwa Hur, Eric Chen, Varun Jampani, Deqing Sun, and Ming-Hsuan Yang. Telling left from right: Identifying geometry-aware semantic corre-spondence. In CVPR , 2024. 2 [98] Bolei Zhou, Hang Zhao, Xavier Puig, Sanja Fidler, Adela Barriuso, and Antonio Torralba. Scene parsing through ade20k dataset. In CVPR , 2017. 6, 7, 1 [99] Shihao Zhou, Jinshan Pan, Jinglei Shi, Duosheng Chen, Lishen Qu, and Jufeng Yang. Seeing the unseen: A fre-quency prompt guided transformer for image restoration. In 
+
+ECCV , 2024. 2 A-SelecT: Automatic Timestep Selection for Diffusion Transformer Representation Learning 
+
+# Supplementary Material 
+
+The supplementary is organized as follows: • §S1 details the Datasets utilized in the study, including sta-tistical descriptions of each dataset. • §S2 offers Additional Preliminary Results .• §S3 provides more Implementation Details .• §S4 offers Additional Visualizations of feature decompo-sition. • §S5 presents new Discussions on Feature Fusion .• §S6 presents Discussions on Feature Selection between Query and Value .• §S7 provides Additional Results on Impact of Feature and Block Selection .• §S8 offers Additional Feature Visualization Examples .• §S9 presents Visualization Feature Selection Results .• §S10 presents Discussions on Impact of Resolution on HFR .• §S11 provides DDAE Classification Results on FGVC .• §S12 provides Additional Details on HFR .• §S13 provides Additional Details on Fisher Score .• §S14 provides Additional HFR Results across multiple DiT Models .• §S15 gathers Additional Discussions on license, repro-ducibility, technical contributions, social impact and lim-itations, and future work. 
+
+## S1. Datasets 
+
+In Table S1, we provide statistical information of FGVC benchmark ( i.e ., Caltech-UCSD Birds (CUB) [83], Air-craft [59], Stanford Cars [46], NABirds [82], Stanford Dogs [43], Oxford Flowers [66]), ImageNet [20], and ADE20K [98]. Dataset Class Number Training Number Test Number Aircraft 100 6,667 3,333 Stanford Cars 196 8,144 8,041 CUB 200 5,994 5,794 Stanford Dogs 120 12,000 8,580 Oxford Flowers 102 2,040 6,149 NABirds 555 23,929 24,633 ImageNet 1,000 1.28M 50,000 ADE20K 150 2,0210 2000 
+
+Table S1. Datasets Statistical Details. 
+
+## S2. Additional Preliminary Results 
+
+We present additional preliminary results illustrating the re-lationship between HFR and classification accuracy on the Stanford Cars and Aircraft datasets, as shown in Fig. S1. Timestep          
+
+> Accuracy
+> 77.0
+> 74.0
+> 71.0
+> 68 .0
+> 65 .0
+> 62 .0
+> 59 .0
+> 56 .0
+> 0.62 0
+> 0.6 14
+> 0.6 08
+> Timestep
+> 150 350 400 300 250 200 100
+> 86 .0
+> 83.0
+> 80.0
+> 77 .0
+> 74 .0
+> 71.0
+> 0.62 40
+> 0.62 25
+> 0.6 195
+> 0.61 80
+> (b) Aircraft (a) Stanford Car s
+> HFR value Accuracy
+> 0.6 210
+> 0.61 65
+> 50 1
+> 0.6 17
+> 0.6 11
+> 0.6 05
+> 0.62 3
+> 150 350 400 300 250 200 100 50 1
+> 0.62 6
+> HFR HFR
+
+Figure S1. More Preliminary Results on the impact of the High-Frequency Ratio (HFR) with classification performance on Stanford Cars (a) and Aircraft (b). 
+
+The results indicate a clear positive correlation: classification accuracy is consistently highest at the timestep where HFR reaches its maximum. Similar trends are observed on CUB and Oxford Flowers, further supporting HFR as a reliable and robust indicator of discriminative feature quality. 
+
+## S3. Additional Implementation Details 
+
+Here we provide more implementation details for our experi-ments. SD 3.5 [24] released Large version model with 8 bil-lion weights, while Medium version with 2 billion weights. In our experiment, we use the SD 3.5 Medium, comprising 24 
+
+MMDiT blocks and features a backward process with 1,000 time steps for denoising. Given that SD 3.5 operates as a text-to-image model, we standardized the text condition to an empty string, ensuring uniformity across all features extrac-tion. For text encoding, we exclusively employed the CLIP-G/14 encoder [71], electing not to utilize the CLIP-L/14 [71] or T5 XXL text encoders [72]. For a fair comparison, we include SDXL [63]) as a baseline, utilizing its U-Net back-bone with 2.6 billion weights. This model is trained with textual conditioning, consistent with our SD 3.5 backbone. For the classification task, we report SDXL results under the same setting as our method. We also use an empty string as the text condition for SDXL. For the ImageNet classification task, we do not report results for ResNet-50, as publicly avail-able pretrained ResNet-50 checkpoints are mostly trained on ImageNet. Utilizing these models for evaluation will lead to an unfair comparison. Image Original Low-freq High-freq Figure S2. More Visualization of Feature Decomposition Exam-ples from CUB, Oxford Flowers and Stanford Dogs . We present six sets of decomposition of the original features extracted from SD 3.5 into components that exclusively contain high-frequency and low-frequency information. 
+
+## S4. Additional Results on High-Frequency Components 
+
+In Fig. S2, we provide more visualization results by decom-posing of the original extracted features into components that exclusively contain high-frequency and low-frequency infor-mation. As seen, high-frequency features turn to contain more discriminative information, which is consistent with our observation in the main paper §3.3. 
+
+## S5. Discussions on Feature Fusion 
+
+One major research question that may arise is whether we can achieve better performance when utilizing features from mul-tiple blocks or different timesteps. We thus conduct an exper-iment on CUB dataset in Table S2. The results indicate that incorporating additional features does not enhance accuracy. Block Timestep CUB [83] 9-th + 6-th 50 71.9% 9-th + 12-th 50 72.5% 9-th 50 + 1 76.1% 9-th 50 + 100 78.0% 9-th 50 78.6% 
+
+Table S2. Impact of Feature Fusion . We extract features from different blocks at the same timestep and from the same block at various timesteps. The results indicate that the addition of more features does not lead to an improvement in performance; rather, it may actually decrease performance.                                                                                                                                      
+
+> Aircraft CUB Timestep Query Value Key Query Value Key 177.5% 76.6% 72.1% 72.3% 71.3% 47.5% 50 74.3% 73.4% 69.7% 78.6% 76.1% 68.2% 100 74.2% 74.0% 70.7% 77.9% 73.1% 64.2% 150 74.6% 74.9% 62.0% 75.0% 71.0% 56.7% 200 66.5% 72.0% 48.7% 72.2% 68.7% 62.0% 250 72.5% 55.6% 59.6% 67.3% 66.0% 63.3% 300 68.9% 47.2% 59.8% 63.9% 63.8% 56.7% 350 63.8% 62.6% 56.8% 64.8% 43.8% 58.3% 400 53.5% 54.0% 37.8% 63.6% 52.0% 41.8% 450 43.8% 55.2% 56.1% 57.7% 17.3% 35.5% 500 45.9% 49.5% 28.9% 37.2% 40.5% 35.8% 550 30.1% 21.3% 30.0% 27.2% 33.5% 26.3% 600 35.7% 17.5% 23.5% 27.5% 25.2% 24.5% 650 25.8% 20.5% 10.3% 19.8% 16.5% 17.2% 700 15.3% 9.7% 6.3% 15.5% 13.0% 7.2% 750 12.0% 9.9% 8.1% 12.3% 7.8% 5.3% 800 6.6% 5.1% 6.7% 8.0% 3.7% 2.1% 850 5.8% 3.0% 4.8% 4.2% 3.5% 3.5% 900 3.4% 3.3% 3.7% 2.0% 3.5% 1.9% 950 2.2% 2.5% 2.7% 1.3% 1.7% 1.2% 1000 1.3% 1.5% 1.6% 0.8% 0.8% 0.6%
+
+Table S3. Accuracies of Query, Value, and Key Features Across Timesteps , respectively. We report top-1 classification accuracy us-ing query, value and key features at various diffusion timesteps on the Aircraft and CUB datasets. While query and value features show similar performance overall, query features outperform in a greater number of cases. 
+
+Even worse, the additional operations deteriorate our model’s performance. This decrease in performance can be attributed to the increased complexity introduced to the model. We pro-pose that the augmented complexity burdens the downstream classifier, thereby impairing its effectiveness. 
+
+## S6. Discussions on Feature Selection 
+
+Table S3 presents the classification accuracies of query, value, and key features on the CUB and Aircraft across different timesteps, respectively. We observe that both query and value features achieve comparable performance, substantially out-performing the key feature. Notably, the query feature gen-erally outperforms the value feature in most cases. Based on this observation, we adopt the query feature for DiT represen-Image 1 50 100 150 200 250 Figure S3. More Feature Visualization Examples from CUB and Oxford Flowers. We present visualizations of three feature sets extracted from the 9-th block of SD 3.5. The columns represent features extracted at different timesteps. 
+
+tation learning for all experiments. 
+
+## S7. Additional Results on Impact of Feature and Block Selection 
+
+In Fig. S4, we provide additional results analyzing the impact of block and feature selection across multiple datasets, in-cluding CUB, Aircraft, and Stanford Cars. Consistent to the results shown in our main paper, the block and feature influ-ence the performance. Consistent with the main paper (§4.3), both factors strongly influence representation’s discrimina-tive performance. Among transformer block components, Q
+
+features achieve the highest accuracy, followed by V , while 
+
+K, A, and O perform worse. For block selection, features from middle layers consistently outperform those from early or late layers, as they capture a balanced mix of coarse and fine-grained representations. These findings confirm that op-timal feature and block choices are crucial for maximizing discrimination. 
+
+## S8. Additional Feature Visualization Examples 
+
+In Fig. S3, we provide more visualization examples of fea-tures extracted at different timesteps. Consistent to the results shown in our main paper, manual selections of discriminative features at different timesteps are impractical and ambiguous. 
+
+## S9. Visualization Feature Selection Results 
+
+We exam the visualization feature selection method from [63] further for DiT block selection on the CUB and Oxford Flow-ers datasets, visualizing features at timestep 50 for CUB and Block CUB Oxford Flowers 7-th 66.2% 52.0% 7-th + 0-th 69.7% 84.3% 7-th + 0-th + 20-th 66.2% 67.2% 7-th + 0-th + 20-th + 12-th 58.5% 73.0%  
+
+> Table S4. Visualization Feature Selection Results on DiT .
+
+timestep 100 for Oxford Flowers in Fig. S5. Based on visu-alization, we manually identify the most informative features from blocks 7, 0, 20, and 12. These selected features are subsequently combined and evaluated on downstream tasks. However, Table S4 shows that these selected features under-perform compared to the single feature from block 9. This suggests that the visualization selection method is not effec-tive for the DiT model. 
+
+## S10. Discussions on Impact of Resolution on HFR 
+
+In Table S5, we report the classification accuracies of query features on the CUB dataset across different input resolu-tions ( i.e ., 256 , 512 , and 1, 024 ) and timesteps ( i.e ., 1000 ,
+
+950 , 900 , 850 , 800 , 750 , 700 , 650 , 600 , 550 , 500 , 450 , 400 ,
+
+350 , 300 , 250 , 200 , 150 , 100 , 50 , 1). The results indicate that the optimal timestep yielding the highest classification performance varies with the input resolution. Notably, these optimal timesteps consistently correspond to the highest HFR values, suggesting that HFR remains robust to changes in res-olution. This implies that HFR effectively identifies the opti-mal timestep regardless of the input resolution. CUB Aircraft Stanford Car Figure S4. Impact of Feature and Block Selection. We show more block and feature performance on CUB, Aircraft, and Stanford Car. The figure shows the consistent result with Oxford Flower dataset. 
+
+Figure S5. Feature Visualization Across Blocks on CUB and Oxford Flowers. The first column shows original input images and subsequent columns presents feature visualizations extracted from the 0-th to 23-th block of SD 3.5. The top three rows correspond to samples from CUB and the bottom three rows are from Oxford Flowers.                                                                                                                                       
+
+> 256 512 1024 Timestep Acc. HFR Acc. HFR Acc. HFR 171.5% 0.6163 72.3% 0.6199 65.2% 0.6180 50 69.3% 0.6131 78.6% 0.6223 66.2% 0.6195 100 68.2% 0.6110 77.9% 0.6221 67.8% 0.6208 150 62.0% 0.6092 75.0% 0.6217 74.8% 0.6234
+> 200 61.3% 0.6077 72.2% 0.6212 69.7% 0.6164 250 57.8% 0.6059 67.3% 0.6200 72.4% 0.6144 300 46.5% 0.6045 63.9% 0.6201 70.0% 0.6128 350 34.0% 0.6031 64.8% 0.6186 63.3% 0.6111 400 27.5% 0.6020 63.6% 0.6171 68.2% 0.6096 450 26.2% 0.6011 57.7% 0.6155 53.3% 0.6082 500 14.3% 0.5998 37.2% 0.6138 52.0% 0.6067 550 14.5% 0.5987 27.2% 0.6123 51.7% 0.6055 600 11.7% 0.5977 27.5% 0.6112 46.2% 0.6048 650 7.3% 0.5962 19.8% 0.6100 36.3% 0.6039 700 5.7% 0.5943 15.5% 0.6090 38.7% 0.6034 750 4.3% 0.5916 12.3% 0.6075 24.4% 0.6025 800 3.5% 0.5889 8.0% 0.6063 16.8% 0.6019 850 2.0% 0.5857 4.2% 0.6042 11.1% 0.6000 900 1.7% 0.5824 2.0% 0.6013 8.2% 0.5959 950 1.2% 0.5711 1.3% 0.5946 2.7% 0.5851 1000 1.2% 0.5720 0.8% 0.5870 0.8% 0.5789
+
+Table S5. Accuracies and HFR across Input Resolutions and Timesteps on CUB. The highest classification accuracy consistently corresponds to the highest HFR value across input resolutions. 
+
+## S11. DDAE Classification Results on FGVC 
+
+Denoising Diffusion Autoencoders (DDAE) [89] extracts layer-wise output features from Diffusion Transformer [70]. We evaluate DDAE on FGVC datasets ( i.e ., Aircraft, Stanford Cars, CUB, Stanford Dogs, Oxford Flowers and NABirds) and compare it against our method. The results, in Table S6, demonstrate that our method significantly outperforms DDAE across all datasets. For example, our method achieves 
+
+86.1% accuracy on Stanford Cars and 78.4% on NABirds, compared to 20.0% and 17.1% with DDAE, respectively. These consistent gains across datasets demonstrate the effec-tiveness of our approach. Dataset DDAE Ours Aircraft 19.3% 77.5% 
+
+Stanford Cars 20.0% 86.1% 
+
+CUB 25.4% 78.6% 
+
+Stanford Dogs 49.2% 83.5% 
+
+Oxford Flowers 73.4% 90.6% 
+
+NABirds 17.1% 78.4% 
+
+Mean 34.1% 82.5% 
+
+Table S6. DDAE Classification Results on FGVC. S12. Additional Details on HFR 
+
+We compute HFR on the test dataset to ensure that it captures discriminative information from unseen data. The Gaussian high-pass filter threshold is set to 30. 
+
+## S13. Additional Details on Fisher Score 
+
+We compute the Fisher score on the test dataset same as HFR. To obtain a one-dimensional embedding for each sample, we apply mean pooling over the token dimension of the two-dimensional feature representations. More results about rela-tionship between Fisher Score and HFR are shown in Fig. S6 
+
+## S14. Additional HFR Results across multiple DiT Models 
+
+To further examine the generalization of our proposed HFR, we evaluate it on different DiT models, including Vanilla DiT [70] and SiT [58], using Oxford Flowers dataset un-der the same experimental settings as in §4.1. As shown in Fig. S7, HFR values exhibit strong alignment with classifi-cation accuracy across both models. The highest accuracy consistently appears at the timestep where HFR reaches its maximum, demonstrating the robustness and generalization of HFR across DiT models. 
+
+## S15. Discussion 
+
+S15.1. Asset License and Consent 
+
+Stable Diffusion 3.5 is licensed under https:// huggingface.co/stabilityai/stable-diffusion-3.5-large/blob main/LICENSE.md 1 50 100 150 200 250 300 350 400 450 500 550 600 650 700 750 800 850 900 950 1000                     
+
+> Timestep
+> 0.00
+> 0.02
+> 0.04
+> 0.06
+> 0.08
+> 0.10
+> 0.12
+> 0.14
+> Fisher Score
+> Aircraft
+> Fisher Score
+> HFR
+> 150 100 150 200 250 300 350 400 450 500 550 600 650 700 750 800 850 900 950 1000
+> Timestep
+> 0.00
+> 0.02
+> 0.04
+> 0.06
+> 0.08
+> 0.10
+> 0.12
+> 0.14
+> Fisher Score
+> Stanford Cars
+> Fisher Score
+> HFR
+> 0.56
+> 0.57
+> 0.58
+> 0.59
+> 0.60
+> 0.61
+> 0.62
+> 0.63
+> HFR
+> 0.56
+> 0.57
+> 0.58
+> 0.59
+> 0.60
+> 0.61
+> 0.62
+> 0.63
+> HFR
+
+Figure S6. More Comparison of HFR and Fisher Score across timesteps on Aircraft (top) and Stanford Cars (bottom). The results show that HFR and Fisher Score exhibit consistent trends. Timestep         
+
+> Accuracy
+> 72.0
+> 69.0
+> 66 .0
+> 63 .0
+> 60 .0
+> 57 .0
+> 54 .0
+> 51 .0
+> 0.6 54
+> 0.6 38
+> 0.6 22
+> Timestep
+> 150 350 400 300 250 200 100
+> 70 .0
+> 64 .0
+> 58 .0
+> 52 .0
+> 46.0
+> 40.0
+> 0.6 35
+> 0.62 8
+> 0.6 14
+> 0.6 07
+> (b) SiT (a) Vanilla DiT
+> HFR value Accuracy
+> 0.6 21
+> 0.600
+> 50 1
+> 0.6 46
+> 0.6 30
+> 0.61 4
+> 0.6 62
+> 150 350 400 300 250 200 100 50 1
+> 0.6 70
+> HFR HFR
+
+Figure S7. Comparison of HFR and Classification Accuracy across multiple DiT Models on Oxford Flowers. The alignment of peak accuracy with maximum HFR values demonstrates the con-sistent generalization of HFR. 
+
+Algorithm 1 Pseudo-code of A-SelecT in a PyTorch-like style. 
+
+# timesteps: timesteps used for computing HFR # epochs: number of training epochs # dif_model_path: diffusion model path def A-SelecT(timesteps, epochs, dif_model_path): pipe = StableDiffusion3Pipeline. from_pretrained(dif_model_path) downstream_network = setup_head() optimizer = AdamW(downstream_network. named_parameters()) HFR_list = [] #get optimal timestep for t in timesteps: HFR_t = compute_HFR(t, train_dataloader, pipe) HFR_list.append(HFR_t) optimal_t, highest_HFR = get_optimal_t( HFR_list) #train downstream network for epoch in range(epochs): for step, batch in enumerate(train_loader ): features = pipe.transformer.extract( batch, optimal_t) output = downstream_network(features) loss = loss_fn(output, batch) loss.backward() optimizer.step() downstream_network.zero_grad() 
+
+S15.2. Reproducibility 
+
+To guarantee reproducibility, our full implementation shall be publicly released upon paper acceptance. We provide the pseudo code of our proposed A-SelecT in Algorithm 1. 
+
+S15.3. Technical Contributions 
+
+Our study presents three principal technical contributions: 
+
+First , the inspiration for this research derives from the ob-servation that high-frequency details, such as edges, textures, and corners, typically harbor more discriminative informa-tion. This insight has led to the development of the High-Frequency Ratio (HFR) metric. Second , a significant chal-lenge in using diffusion models for extracting features is the selection of the most informative timestep from the extensive denoising trajectory. Traditional methods depend on exhaus-tive brute force searching or subjective manual selection, both of which are inefficient and potentially inaccurate. Our im-plementation of the HFR addresses this issue by providing a reliable and computationally efficient method for identify-ing the optimal timestep. Third , this paper is pioneering in its analysis of Diffusion Transformer (DiT)-based models for feature extraction. Through comprehensive experiments, we demonstrate that our approach not only overcomes the limi-tations of existing methods but also achieves state-of-the-art performance, substantiating the efficacy of DiT-based models as robust tools in representation learning. 
+
+S15.4. Limitations 
+
+Although our HFR performs effectively for selecting a single feature within the DiT model, it remains unclear whether this approach is equally viable for simultaneously selecting mul-tiple features. In §S5, we find that under the pipeline of A-SelecT, additional features from different blocks or timesteps do not lead to better performance. However, other quanti-tative metric might be suitable under such the scenarios. In this sense, further investigation is needed to ascertain the ap-plicability and effectiveness of the HFR metric in involving multi-feature extraction from DiT models. 
+
+S15.5. Future Work 
+
+As discussed in §S15.4, although our ablation study in §S5 demonstrates that incorporating more features leads to dimin-ished downstream performance, it is plausible that additional features could provide more discriminative information. The effective utilization of this increased information warrants further investigation. Furthermore, incorporating additional features introduces new challenges, including training effi-ciency and the precise identification of multiple discrimina-tive feature candidates.

@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.27792v1/fig-001.webp",
+      "caption": "Table 1. Overview of counterfactual explanation methods for time series classification, including publication year and supported data type (U: univariate, M: multivariate).",
+      "page": 5,
+      "index": 1,
+      "width": 714,
+      "height": 752
+    },
+    {
+      "url": "assets/figures/arxiv/2603.27792v1/fig-002.webp",
+      "caption": "Fig. 1. A FordA sample with various counterfactual methods applied to a CNN trained to classify the data between normal and anomaly classes.",
+      "page": 16,
+      "index": 2,
+      "width": 519,
+      "height": 1087
+    }
+  ]
+}
