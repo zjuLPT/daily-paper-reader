@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2603.24495v1/fig-001.webp",
+      "caption": "Figure 2.3: The points 𝑅𝑧𝑖(𝑥) + 𝑧𝑖 are all mapped back to 𝑥 under the function 𝑓 from Lemma 2.1. Consequently, the reflected process𝑋𝑡 moves from 𝑦 to 𝑥 if and only if the Brownian motion 𝐵𝑡 moves from 𝑦 to 𝑥 or to any of the points 𝑅𝑧𝑖(𝑥) + 𝑧𝑖.",
+      "page": 8,
+      "index": 1,
+      "width": 654,
+      "height": 356
+    },
+    {
+      "url": "assets/figures/arxiv/2603.24495v1/fig-002.webp",
+      "caption": "Figure 2.2: Simulation of a reflected Brownian motion (green) along with the non-reflected version (blue) that is used for its construction using Lemma 2.1.",
+      "page": 8,
+      "index": 2,
+      "width": 477,
+      "height": 500
+    },
+    {
+      "url": "assets/figures/arxiv/2603.24495v1/fig-003.webp",
+      "caption": "Figure 3.1: Example of a domain 𝑀 ⊂ ℝ3 and its lower-dimensional representation 𝑀∗ ⊂ ℝ2 .",
+      "page": 15,
+      "index": 3,
+      "width": 648,
+      "height": 298
+    }
+  ]
+}

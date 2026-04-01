@@ -1,0 +1,39 @@
+{
+  "label": "2026-04-01",
+  "date": "2026-04-01",
+  "generated_at": "2026-04-01T20:04:54",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202604/01/2603.22962v1-asymptotic-learning-curves-for-diffusion-models-with-random-features-score-and-manifold-data",
+      "section": "quick",
+      "title_en": "Asymptotic Learning Curves for Diffusion Models with Random Features Score and Manifold Data",
+      "authors": "Anand Jerry George, Nicolas Macris",
+      "date": "2026-03-24",
+      "pdf": "https://arxiv.org/pdf/2603.22962v1",
+      "score": "6.0",
+      "evidence": "扩散模型中去噪分数匹配的理论行为",
+      "tldr": "本文研究扩散模型在低维流形数据上的去噪得分匹配理论表现，采用随机特征网络对得分函数建模并分析高维极限下误差的渐近性质。结果显示，线性流形的学习复杂度与内在维度线性相关，而在非线性流形上这种优势显著减弱，揭示了结构数据对扩散模型的微妙影响。",
+      "tags": "query:diffts",
+      "abstract_en": "We study the theoretical behavior of denoising score matching--the learning task associated to diffusion models--when the data distribution is supported on a low-dimensional manifold and the score is parameterized using a random feature neural network. We derive asymptotically exact expressions for the test, train, and score errors in the high-dimensional limit. Our analysis reveals that, for linear manifolds the sample complexity required to learn the score function scales linearly with the intrinsic dimension of the manifold, rather than with the ambient dimension. Perhaps surprisingly, the benefits of low-dimensional structure starts to diminish once we have a non-linear manifold. These results indicate that diffusion models can benefit from structured data; however, the dependence on the specific type of structure is subtle and intricate.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/01/2603.24495v1-reflected-diffusion-models-adapt-to-low-dimensional-data",
+      "section": "quick",
+      "title_en": "Reflected diffusion models adapt to low-dimensional data",
+      "authors": "Asbjørn Holk, Claudia Strauch, Lukas Trottner",
+      "date": "2026-03-25",
+      "pdf": "https://arxiv.org/pdf/2603.24495v1",
+      "score": "6.0",
+      "evidence": "反射扩散模型的统计分析",
+      "tldr": "该研究针对受限于超立方体的低维数据，解析并扩展了反射扩散模型的数学理论。通过对转移密度进行可实现的无限级数展开，作者建立了评分函数的分析界及其用稀疏ReLU网络近似的结果，最终证明生成算法在1- Wasserstein距离下达到自适应于数据内在维度的近最优收敛率。",
+      "tags": "query:diffts",
+      "abstract_en": "While the mathematical foundations of score-based generative models are increasingly well understood for unconstrained Euclidean spaces, many practical applications involve data restricted to bounded domains. This paper provides a statistical analysis of reflected diffusion models on the hypercube $[0,1]^D$ for target distributions supported on $d$-dimensional linear subspaces. A primary challenge in this setting is the absence of Gaussian transition kernels, which play a central role in standard theory in $\\mathbb{R}^D$. By employing an easily implementable infinite series expansion of the transition densities, we develop analytic tools to bound the score function and its approximation by sparse ReLU networks. For target densities with Sobolev smoothness $α$, we establish a convergence rate in the $1$-Wasserstein distance of order $n^{-\\frac{α+1-δ}{2α+d}}$ for arbitrarily small $δ> 0$, demonstrating that the generative algorithm fully adapts to the intrinsic dimension $d$. These results confirm that the presence of reflecting boundaries does not degrade the fundamental statistical efficiency of the diffusion paradigm, matching the almost optimal rates known for unconstrained settings.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

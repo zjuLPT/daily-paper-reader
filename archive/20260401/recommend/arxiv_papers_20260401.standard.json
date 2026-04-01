@@ -1,0 +1,92 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-01T20:04:27.319095+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2603.22962v1",
+      "source": "arxiv",
+      "title": "Asymptotic Learning Curves for Diffusion Models with Random Features Score and Manifold Data",
+      "abstract": "We study the theoretical behavior of denoising score matching--the learning task associated to diffusion models--when the data distribution is supported on a low-dimensional manifold and the score is parameterized using a random feature neural network. We derive asymptotically exact expressions for the test, train, and score errors in the high-dimensional limit. Our analysis reveals that, for linear manifolds the sample complexity required to learn the score function scales linearly with the intrinsic dimension of the manifold, rather than with the ambient dimension. Perhaps surprisingly, the benefits of low-dimensional structure starts to diminish once we have a non-linear manifold. These results indicate that diffusion models can benefit from structured data; however, the dependence on the specific type of structure is subtle and intricate.",
+      "authors": [
+        "Anand Jerry George",
+        "Nicolas Macris"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "stat.ML"
+      ],
+      "published": "2026-03-24T08:58:12+00:00",
+      "link": "https://arxiv.org/pdf/2603.22962v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "theoretical behavior of denoising score matching in diffusion models",
+      "llm_evidence_cn": "扩散模型中去噪分数匹配的理论行为",
+      "llm_evidence": "扩散模型中去噪分数匹配的理论行为",
+      "canonical_evidence": "扩散模型中去噪分数匹配的理论行为",
+      "llm_tldr_en": "Analyzes the learning curves and sample complexity of diffusion models using random feature scores.",
+      "llm_tldr_cn": "分析了使用随机特征分数的扩散模型的学习曲线和样本复杂度。",
+      "llm_tldr": "分析了使用随机特征分数的扩散模型的学习曲线和样本复杂度。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "denoising diffusion probabilistic models applied to time series",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2603.24495v1",
+      "source": "arxiv",
+      "title": "Reflected diffusion models adapt to low-dimensional data",
+      "abstract": "While the mathematical foundations of score-based generative models are increasingly well understood for unconstrained Euclidean spaces, many practical applications involve data restricted to bounded domains. This paper provides a statistical analysis of reflected diffusion models on the hypercube $[0,1]^D$ for target distributions supported on $d$-dimensional linear subspaces. A primary challenge in this setting is the absence of Gaussian transition kernels, which play a central role in standard theory in $\\mathbb{R}^D$. By employing an easily implementable infinite series expansion of the transition densities, we develop analytic tools to bound the score function and its approximation by sparse ReLU networks. For target densities with Sobolev smoothness $α$, we establish a convergence rate in the $1$-Wasserstein distance of order $n^{-\\frac{α+1-δ}{2α+d}}$ for arbitrarily small $δ> 0$, demonstrating that the generative algorithm fully adapts to the intrinsic dimension $d$. These results confirm that the presence of reflecting boundaries does not degrade the fundamental statistical efficiency of the diffusion paradigm, matching the almost optimal rates known for unconstrained settings.",
+      "authors": [
+        "Asbjørn Holk",
+        "Claudia Strauch",
+        "Lukas Trottner"
+      ],
+      "primary_category": "math.ST",
+      "categories": [
+        "math.ST",
+        "stat.ML"
+      ],
+      "published": "2026-03-25T16:37:33+00:00",
+      "link": "https://arxiv.org/pdf/2603.24495v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "statistical analysis of reflected diffusion models",
+      "llm_evidence_cn": "反射扩散模型的统计分析",
+      "llm_evidence": "反射扩散模型的统计分析",
+      "canonical_evidence": "反射扩散模型的统计分析",
+      "llm_tldr_en": "Provides a statistical analysis of reflected diffusion models for data restricted to bounded domains.",
+      "llm_tldr_cn": "对受限于有界域数据的反射扩散模型进行了统计分析。",
+      "llm_tldr": "对受限于有界域数据的反射扩散模型进行了统计分析。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "denoising diffusion probabilistic models applied to time series",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
