@@ -1,0 +1,46 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.00283v1/fig-001.webp",
+      "caption": "Fig. 2: Predicted reachable sets for the Duffing oscillator at six time steps k.",
+      "page": 6,
+      "index": 1,
+      "width": 870,
+      "height": 762
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00283v1/fig-002.webp",
+      "caption": "Fig. 1: Pipeline overview for the data-driven reachability analysis via diffusion models. From left to right: (1) trajectory data is collected from the nonlinear dynamical system at discrete time steps; (2) a time-conditioned DDPM is trained to denoise states, with the reconstruction error serving as a nonconformity score; (3) the LTT procedure selects a threshold qk for the nonconformity score that controls the false negative rate with PAC guarantee; (4) the predicted reachable set is the sublevel set of all states whose score does not exceed qk.",
+      "page": 2,
+      "index": 2,
+      "width": 1046,
+      "height": 323
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00283v1/fig-003.webp",
+      "caption": "Fig. 3: Ablation visualizations at k=149. Top row: effect of training data size N (model 2048×12). Bottom row: effect of model capacity (hidden dim × layers, N=106).",
+      "page": 7,
+      "index": 3,
+      "width": 850,
+      "height": 561
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00283v1/fig-004.webp",
+      "caption": "Fig. 5: Sensitivity analysis for the Gray-Scott system at t=29. (a) Acceptance rate under Gaussian perturbation. (b),(c) Score distributions for clean in-set, perturbed in-set, and different-parameter samples.",
+      "page": 8,
+      "index": 4,
+      "width": 1052,
+      "height": 1045
+    },
+    {
+      "url": "assets/figures/arxiv/2604.00283v1/fig-005.webp",
+      "caption": "TABLE II: Ablation studies on the Duffing oscillator.",
+      "page": 5,
+      "index": 5,
+      "width": 494,
+      "height": 323
+    }
+  ]
+}
