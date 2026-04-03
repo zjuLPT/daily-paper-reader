@@ -6,37 +6,33 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-04-02
-- 运行时间：2026-04-02 19:40:09 UTC
+- 最新运行日期：2026-04-03
+- 运行时间：2026-04-03 20:09:18 UTC
 - 运行状态：成功
-- 本次总论文数：5
-- 精读区：2
-- 速读区：3
+- 本次总论文数：4
+- 精读区：0
+- 速读区：4
 
 ### 今日简报（AI）
-今天聚焦扩散模型与复杂动态系统建模，共阅读 5 篇论文。  
-值得重点关注的是扩散模型在可达性分析与时空生成中的新方法，兼顾理论保障与预测精度。  
-建议读者关注数据驱动安全验证及跨尺度动态预测的结合应用。
-- 详情：[/202604/02/README](/202604/02/README)
+聚焦扩散模型新进展，今日速读了 4 篇最新研究。重点关注扩散模型在射电干扰消除与偏微分方程物理求解中的应用突破。建议普通读者下步关注扩散模型与物理、工程问题结合的实际案例。
+- 详情：[/202604/03/README](/202604/03/README)
 
 ### 精读区论文标签
-1. [Data-Driven Reachability Analysis via Diffusion Models with PAC Guarantees](/202604/02/2604.00283v1-data-driven-reachability-analysis-via-diffusion-models-with-pac-guarantees)  
-   标签：评分：9.0/10、query:diffts
-   evidence：用于时间演化状态分布的去噪扩散概率模型
-2. [Predictor-Driven Diffusion for Spatiotemporal Generation](/202604/02/2604.00327v1-predictor-driven-diffusion-for-spatiotemporal-generation)  
-   标签：评分：9.0/10、query:diffts
-   evidence：用于时空生成和时间预测的预测器驱动扩散模型
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [Embedded Variational Neural Stochastic Differential Equations for Learning Heterogeneous Dynamics](/202604/02/2604.00669v1-embedded-variational-neural-stochastic-differential-equations-for-learning-heterogeneous-dynamics)  
+1. [A Conditional Denoising Diffusion Probabilistic Model for RFI Mitigation in Synthetic Aperture Interferometric Radiometer](/202604/03/2604.01531v1-a-conditional-denoising-diffusion-probabilistic-model-for-rfi-mitigation-in-synthetic-aperture-interferometric-radiometer)  
    标签：评分：7.0/10、query:diffts
-   evidence：使用神经常微分方程对复杂的社会经济时间数据建模
-2. [NeuroDDAF: Neural Dynamic Diffusion-Advection Fields with Evidential Fusion for Air Quality Forecasting](/202604/02/2604.01175v1-neuroddaf-neural-dynamic-diffusion-advection-fields-with-evidential-fusion-for-air-quality-forecasting)  
-   标签：评分：7.0/10、query:diffts
-   evidence：用于空气质量预测的神经动态扩散-平流场
-3. [Drift-AR: Single-Step Visual Autoregressive Generation via Anti-Symmetric Drifting](/202604/02/2603.28049v1-drift-ar-single-step-visual-autoregressive-generation-via-anti-symmetric-drifting)  
+   evidence：用于遥感信号处理的去噪扩散概率模型
+2. [DRiffusion: Draft-and-Refine Process Parallelizes Diffusion Models with Ease](/202604/03/2603.25872v1-driffusion-draft-and-refine-process-parallelizes-diffusion-models-with-ease)  
    标签：评分：6.0/10、query:diffts
-   evidence：自回归与扩散混合模型用于序列建模
+   evidence：扩散模型的并行采样框架
+3. [Diffusion models with physics-guided inference for solving partial differential equations](/202604/03/2604.01242v1-diffusion-models-with-physics-guided-inference-for-solving-partial-differential-equations)  
+   标签：评分：6.0/10、query:diffts
+   evidence：用于求解偏微分方程的物理引导推理扩散模型
+4. [Smoothing the Landscape: Causal Structure Learning via Diffusion Denoising Objectives](/202604/03/2604.02250v1-smoothing-the-landscape-causal-structure-learning-via-diffusion-denoising-objectives)  
+   标签：评分：6.0/10、query:diffts
+   evidence：用于因果结构学习的扩散去噪目标
 
 
 <div class="dpr-home-promo-card">

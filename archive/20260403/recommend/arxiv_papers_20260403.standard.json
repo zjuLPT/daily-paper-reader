@@ -1,0 +1,169 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-03T20:08:51.583201+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 4,
+    "quick_skim_target": 11,
+    "quick_selected": 4
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2604.01531v1",
+      "source": "arxiv",
+      "title": "A Conditional Denoising Diffusion Probabilistic Model for RFI Mitigation in Synthetic Aperture Interferometric Radiometer",
+      "abstract": "In Earth remote sensing, spatial-frequency domain visibility samples are inversely transformed into spatial-domain brightness temperature (BT) images through the signal processing pipeline of synthetic aperture interferometric radiometers (SAIR). However, L-band radio-frequency interference (RFI) contaminates the measured visibilities and severely degrades BT image quality, thereby impairing geophysical parameter retrieval. To address this issue, we propose VFDM, a Visibility-Function Diffusion Model based on Denoising Diffusion Probabilistic Models (DDPM), to mitigate RFI in the spatial-frequency domain while preserving fine-scale structures consistent with natural scene statistics. Furthermore, we construct a comprehensive dataset comprising more than ten thousand pairs of RFI-free natural scene visibility sample sets and their corresponding simulated contaminated counterparts, categorized by varying RFI intensities, numbers, and distributions. Finally, comprehensive experiments on both simulated and real-world data demonstrate the effectiveness and robustness of the proposed VFDM-based approach.",
+      "authors": [
+        "Yuankai Luo",
+        "Han Zhou",
+        "Jinlong Hao",
+        "Dong Zhu",
+        "Fei Hu"
+      ],
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "published": "2026-04-02T02:05:46+00:00",
+      "link": "https://arxiv.org/pdf/2604.01531v1",
+      "tags": [
+        "keyword:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "denoising diffusion probabilistic model for signal processing in remote sensing",
+      "llm_evidence_cn": "用于遥感信号处理的去噪扩散概率模型",
+      "llm_evidence": "用于遥感信号处理的去噪扩散概率模型",
+      "canonical_evidence": "用于遥感信号处理的去噪扩散概率模型",
+      "llm_tldr_en": "Applies DDPM to mitigate radio-frequency interference in synthetic aperture interferometric radiometers.",
+      "llm_tldr_cn": "应用DDPM模型来减轻合成孔径干涉辐射计中的射频干扰。",
+      "llm_tldr": "应用DDPM模型来减轻合成孔径干涉辐射计中的射频干扰。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "denoising diffusion probabilistic models applied to time series",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.25872v1",
+      "source": "arxiv",
+      "title": "DRiffusion: Draft-and-Refine Process Parallelizes Diffusion Models with Ease",
+      "abstract": "Diffusion models have achieved remarkable success in generating high-fidelity content but suffer from slow, iterative sampling, resulting in high latency that limits their use in interactive applications. We introduce DRiffusion, a parallel sampling framework that parallelizes diffusion inference through a draft-and-refine process. DRiffusion employs skip transitions to generate multiple draft states for future timesteps and computes their corresponding noises in parallel, which are then used in the standard denoising process to produce refined results. Theoretically, our method achieves an acceleration rate of $\\tfrac{1}{n}$ or $\\tfrac{2}{n+1}$, depending on whether the conservative or aggressive mode is used, where $n$ denotes the number of devices. Empirically, DRiffusion attains 1.4$\\times$-3.7$\\times$ speedup across multiple diffusion models while incur minimal degradation in generation quality: on MS-COCO dataset, both FID and CLIP remain largely on par with those of the original model, while PickScore and HPSv2.1 show only minor average drops of 0.17 and 0.43, respectively. These results verify that DRiffusion delivers substantial acceleration and preserves perceptual quality.",
+      "authors": [
+        "Runsheng Bai",
+        "Chengyu Zhang",
+        "Yangdong Deng"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-03-26T19:58:42+00:00",
+      "link": "https://arxiv.org/pdf/2603.25872v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "parallel sampling framework for diffusion models",
+      "llm_evidence_cn": "扩散模型的并行采样框架",
+      "llm_evidence": "扩散模型的并行采样框架",
+      "canonical_evidence": "扩散模型的并行采样框架",
+      "llm_tldr_en": "Proposes DRiffusion, a draft-and-refine process to parallelize and accelerate diffusion model inference.",
+      "llm_tldr_cn": "提出DRiffusion，一种通过草稿-细化过程并行化并加速扩散模型推理的方法。",
+      "llm_tldr": "提出DRiffusion，一种通过草稿-细化过程并行化并加速扩散模型推理的方法。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "research papers on diffusion models applied to time series tasks",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.01242v1",
+      "source": "arxiv",
+      "title": "Diffusion models with physics-guided inference for solving partial differential equations",
+      "abstract": "Diffusion models have recently emerged as powerful stochastic frameworks for high-dimensional inference and generation. However, existing applications to partial differential equations (PDEs) predominantly rely on physics-informed training strategies, which tightly couple learning with specific governing equations and limit generalization across problem settings. In this work, we propose a diffusion model with physics-guided inference for solving PDEs, in which the diffusion model is trained using standard data-driven procedures, while physical laws are incorporated exclusively during the reverse inference stage. The reverse diffusion dynamics is guided by a PDE residual energy function, combined with Gaussian smoothing and explicit boundary enforcement, yielding a physically consistent stochastic iteration that is independent of the training process. From a numerical standpoint, the proposed framework can be interpreted as a diffusion-inspired implicit solver that converges to the PDE solution even when initialized from random noise and perturbed by stochastic fluctuations. The method is validated on classical PDE equation such as Poisson, Diffusion, and Burgers equations with varying coefficients. Numerical results demonstrate robust convergence, high accuracy, and strong generalization without retraining, highlighting the proposed framework as a unified alternative to classical numerical solvers and physics-informed neural networks.",
+      "authors": [
+        "Yi Bing",
+        "Liu Jia",
+        "Fu Jinyang",
+        "Peng Xiang"
+      ],
+      "primary_category": "math.NA",
+      "categories": [
+        "math.NA",
+        "physics.comp-ph"
+      ],
+      "published": "2026-03-31T01:18:54+00:00",
+      "link": "https://arxiv.org/pdf/2604.01242v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion model for solving partial differential equations with physics-guided inference",
+      "llm_evidence_cn": "用于求解偏微分方程的物理引导推理扩散模型",
+      "llm_evidence": "用于求解偏微分方程的物理引导推理扩散模型",
+      "canonical_evidence": "用于求解偏微分方程的物理引导推理扩散模型",
+      "llm_tldr_en": "Proposes a diffusion model for solving PDEs by incorporating physical laws during the reverse inference stage.",
+      "llm_tldr_cn": "提出一种在反向推理阶段结合物理定律的扩散模型，用于求解偏微分方程。",
+      "llm_tldr": "提出一种在反向推理阶段结合物理定律的扩散模型，用于求解偏微分方程。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "research papers on diffusion models applied to time series tasks",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.02250v1",
+      "source": "arxiv",
+      "title": "Smoothing the Landscape: Causal Structure Learning via Diffusion Denoising Objectives",
+      "abstract": "Understanding causal dependencies in observational data is critical for informing decision-making. These relationships are often modeled as Bayesian Networks (BNs) and Directed Acyclic Graphs (DAGs). Existing methods, such as NOTEARS and DAG-GNN, often face issues with scalability and stability in high-dimensional data, especially when there is a feature-sample imbalance. Here, we show that the denoising score matching objective of diffusion models could smooth the gradients for faster, more stable convergence. We also propose an adaptive k-hop acyclicity constraint that improves runtime over existing solutions that require matrix inversion. We name this framework Denoising Diffusion Causal Discovery (DDCD). Unlike generative diffusion models, DDCD utilizes the reverse denoising process to infer a parameterized causal structure rather than to generate data. We demonstrate the competitive performance of DDCDs on synthetic benchmarking data. We also show that our methods are practically useful by conducting qualitative analyses on two real-world examples. Code is available at this url: https://github.com/haozhu233/ddcd.",
+      "authors": [
+        "Hao Zhu",
+        "Di Zhou",
+        "Donna Slonim"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "stat.ML"
+      ],
+      "published": "2026-04-02T16:41:20+00:00",
+      "link": "https://arxiv.org/pdf/2604.02250v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion denoising objectives for causal structure learning",
+      "llm_evidence_cn": "用于因果结构学习的扩散去噪目标",
+      "llm_evidence": "用于因果结构学习的扩散去噪目标",
+      "canonical_evidence": "用于因果结构学习的扩散去噪目标",
+      "llm_tldr_en": "Uses diffusion denoising score matching to improve causal structure learning in observational data.",
+      "llm_tldr_cn": "利用扩散去噪评分匹配来改进观测数据中的因果结构学习。",
+      "llm_tldr": "利用扩散去噪评分匹配来改进观测数据中的因果结构学习。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "research papers on diffusion models applied to time series tasks",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

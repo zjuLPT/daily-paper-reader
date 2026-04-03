@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.01531v1/fig-001.webp",
+      "caption": "Figure 3: RFI mitigation examples on real data. (a) Scene 3 (snapshot ID: 691840761) and (b)-(e) corresponding results after applying CLEAN, RPCA, RNN-DFT, VFDM respectively. (f) Scene 4 (snapshot ID: 691840910) and (g)-(j) corresponding results after applying CLEAN, RPCA, RNN-DFT, VFDM respectively.",
+      "page": 8,
+      "index": 1,
+      "width": 940,
+      "height": 374
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01531v1/fig-002.webp",
+      "caption": "Figure 2: RFI mitigation examples on simulated data. (a) Scene 1 (snapshot ID: 691841314); (b) weak RFI contamination of scene 1 and (c)-(f) corresponding results after applying CLEAN, RPCA, RNN-DFT, VFDM respectively. (g) Scene 2 (snapshot ID: 691834271); (h) hybrid RFI contamination of scene 2 and (i)-(l) corresponding results after applying CLEAN, RPCA, RNNDFT, VFDM respectively.",
+      "page": 6,
+      "index": 2,
+      "width": 940,
+      "height": 328
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01531v1/fig-003.webp",
+      "caption": "Table 2: Quantitative evaluation under different RFI modes.",
+      "page": 7,
+      "index": 3,
+      "width": 633,
+      "height": 323
+    },
+    {
+      "url": "assets/figures/arxiv/2604.01531v1/fig-004.webp",
+      "caption": "Figure 1: Overview of the Proposed VFDM. The diffusion process starts from RS,0 and Gaussian noise is gradually added to RS,t−1 to obtain RS,t until t = T . The reverse process starts from random noise and generates RS,t−1 from RS,t. The contaminated covariance matrix is incorporated into the reverse process as a condition to guide the reconstruction of the natural covariance matrix.",
+      "page": 4,
+      "index": 4,
+      "width": 937,
+      "height": 359
+    }
+  ]
+}

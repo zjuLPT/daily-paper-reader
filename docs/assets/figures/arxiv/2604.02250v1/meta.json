@@ -1,0 +1,134 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.02250v1/fig-001.webp",
+      "caption": "Figure 4: Inferred Causal Network around Lethal Outcome in Myocardial Infarction",
+      "page": 11,
+      "index": 1,
+      "width": 786,
+      "height": 567
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02250v1/fig-002.webp",
+      "caption": "Figure 8: Effect of Diffusion timestep and noise schedule",
+      "page": 25,
+      "index": 2,
+      "width": 902,
+      "height": 354
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02250v1/fig-003.webp",
+      "caption": "Figure 13: Inferred Causal Network around Lethal Outcome in Myocardial Infarction by NOTEARS.",
+      "page": 47,
+      "index": 3,
+      "width": 904,
+      "height": 725
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02250v1/fig-004.webp",
+      "caption": "Figure 9: Reversed Edge Analysis",
+      "page": 30,
+      "index": 4,
+      "width": 902,
+      "height": 333
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02250v1/fig-005.webp",
+      "caption": "Figure 1: Model architectures of proposed models in this paper. Note that the reverse path does not generate new samples and the only focus is to learn W via the denoising objective.",
+      "page": 7,
+      "index": 5,
+      "width": 636,
+      "height": 460
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02250v1/fig-006.webp",
+      "caption": "Figure 6: Comparison of some results from NOTEARS-Linear and NOTEARS-Denoising. Execution times are displayed on the top-right corner of each figure.",
+      "page": 22,
+      "index": 6,
+      "width": 902,
+      "height": 946
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02250v1/fig-007.webp",
+      "caption": "Figure 11: Time Costs from the Non-linear Diversity Experiments",
+      "page": 34,
+      "index": 7,
+      "width": 722,
+      "height": 754
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02250v1/fig-008.webp",
+      "caption": "Figure 3: DDCD Linear and Nonlinear models demonstrate robust scalability and accuracy on synthetic benchmarks.",
+      "page": 10,
+      "index": 8,
+      "width": 902,
+      "height": 1029
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02250v1/fig-009.webp",
+      "caption": "Table 4: NOTEARS MI Edges",
+      "page": 35,
+      "index": 9,
+      "width": 856,
+      "height": 602
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02250v1/fig-010.webp",
+      "caption": "Figure 12: Inferred Causal Network in an Aging Study.",
+      "page": 35,
+      "index": 10,
+      "width": 902,
+      "height": 535
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02250v1/fig-011.webp",
+      "caption": "Table 1: Optimization Strategy Comparison: Augmented Lagrangian vs. Linear Multiplier",
+      "page": 23,
+      "index": 11,
+      "width": 912,
+      "height": 236
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02250v1/fig-012.webp",
+      "caption": "Figure 7: Change of DAG constraint h under different k-hop schedules",
+      "page": 24,
+      "index": 12,
+      "width": 904,
+      "height": 648
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02250v1/fig-013.webp",
+      "caption": "Figure 2: The denoising objective accelerates convergence by smoothing gradients. (a) Average runtime vs. sample size (10 runs). (b) L-BFGS-B steps to convergence; NOTEARSDenoising requires significantly fewer iterations. (c) Gradient norm trajectories during the first iteration on full data (n = 2, 000); the denoising objective yields a stable descent compared to the volatile gradients of the linear baseline. (First 5 steps omitted for clarity).",
+      "page": 9,
+      "index": 13,
+      "width": 814,
+      "height": 339
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02250v1/fig-014.webp",
+      "caption": "Table 3: DDCD Smooth MI Edges",
+      "page": 31,
+      "index": 14,
+      "width": 840,
+      "height": 354
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02250v1/fig-015.webp",
+      "caption": "Figure 10: SHD Results from the Non-linear Diversity Experiments",
+      "page": 31,
+      "index": 15,
+      "width": 722,
+      "height": 756
+    },
+    {
+      "url": "assets/figures/arxiv/2604.02250v1/fig-016.webp",
+      "caption": "Figure 5: Example Weight Estimates on Graphs with 1,000 nodes. Number of samples in both cases is 2,000.",
+      "page": 20,
+      "index": 16,
+      "width": 602,
+      "height": 604
+    }
+  ]
+}
