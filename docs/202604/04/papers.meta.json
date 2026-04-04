@@ -1,0 +1,39 @@
+{
+  "label": "2026-04-04",
+  "date": "2026-04-04",
+  "generated_at": "2026-04-04T19:20:04",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202604/04/2603.28344v1-interpretable-models-for-forecasting-high-dimensional-functional-time-series",
+      "section": "quick",
+      "title_en": "Interpretable models for forecasting high-dimensional functional time series",
+      "authors": "Han Lin Shang, Cristian F. Jiménez-Varón",
+      "date": "2026-03-30",
+      "pdf": "https://arxiv.org/pdf/2603.28344v1",
+      "score": "7.0",
+      "evidence": "高维函数型时间序列预测",
+      "tldr": "本文研究高维函数时间序列的可解释建模与预测，提出利用函数方差分析分解数据的确定性和随机成分，并结合函数因子模型对残差趋势进行建模。方法在日本地区死亡率预测中表现优异，兼顾解释性与预测准确性。",
+      "tags": "query:diffts",
+      "abstract_en": "We study the modeling and forecasting of high-dimensional functional time series, which can be temporally dependent and cross-sectionally correlated. We implement a functional analysis of variance (FANOVA) to decompose high-dimensional functional time series, such as subnational age- and sex-specific mortality observed over years, into two distinct components: a deterministic mean structure and a residual process varying over time. Unlike purely statistical dimensionality-reduction techniques, the FANOVA decomposition provides a direct and interpretable framework by partitioning the series into effects attributable to data-specific factors, such as regional and sex-level variations, and a grand functional mean. From the residual process, we implement a functional factor model to capture the remaining stochastic trends. By combining the forecasts of the residual component with the estimated deterministic structure, we obtain the forecasted curves for high-dimensional functional time series. Illustrated by the age-specific Japanese subnational mortality rates from 1975 to 2023, we evaluate and compare the accuracy of the point and interval forecasts across various forecast horizons. The results demonstrate that leveraging these interpretable components not only clarifies the underlying drivers of the data but also improves forecast accuracy, providing more transparent insights for evidence-based policy decisions.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/04/2604.01261v1-dysco-dynamic-semantic-compression-for-effective-long-term-time-series-forecasting",
+      "section": "quick",
+      "title_en": "DySCo: Dynamic Semantic Compression for Effective Long-term Time Series Forecasting",
+      "authors": "Xiang Ao, Yinyu Tan, Mengru Chen",
+      "date": "2026-04-01",
+      "pdf": "https://arxiv.org/pdf/2604.01261v1",
+      "score": "7.0",
+      "evidence": "长期时间序列预测框架",
+      "tldr": "本文提出DySCo框架，通过动态语义压缩实现高效的长期时间序列预测。采用熵引导动态采样选取高信息片段、频率分解保留关键细节、跨尺度混合融合全局与局部信息，在减少冗余和计算成本的同时显著提升预测精度。",
+      "tags": "query:diffts",
+      "abstract_en": "Time series forecasting (TSF) is critical across domains such as finance, meteorology, and energy. While extending the lookback window theoretically provides richer historical context, in practice, it often introduces irrelevant noise and computational redundancy, preventing models from effectively capturing complex long-term dependencies. To address these challenges, we propose a Dynamic Semantic Compression (DySCo) framework. Unlike traditional methods that rely on fixed heuristics, DySCo introduces an Entropy-Guided Dynamic Sampling (EGDS) mechanism to autonomously identify and retain high-entropy segments while compressing redundant trends. Furthermore, we incorporate a Hierarchical Frequency-Enhanced Decomposition (HFED) strategy to separate high-frequency anomalies from low-frequency patterns, ensuring that critical details are preserved during sparse sampling. Finally, a Cross-Scale Interaction Mixer(CSIM) is designed to dynamically fuse global contexts with local representations, replacing simple linear aggregation. Experimental results demonstrate that DySCo serves as a universal plug-and-play module, significantly enhancing the ability of mainstream models to capture long-term correlations with reduced computational cost.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

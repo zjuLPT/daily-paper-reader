@@ -6,33 +6,27 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-04-03
-- 运行时间：2026-04-03 20:09:18 UTC
+- 最新运行日期：2026-04-04
+- 运行时间：2026-04-04 19:19:58 UTC
 - 运行状态：成功
-- 本次总论文数：4
+- 本次总论文数：2
 - 精读区：0
-- 速读区：4
+- 速读区：2
 
 ### 今日简报（AI）
-聚焦扩散模型新进展，今日速读了 4 篇最新研究。重点关注扩散模型在射电干扰消除与偏微分方程物理求解中的应用突破。建议普通读者下步关注扩散模型与物理、工程问题结合的实际案例。
-- 详情：[/202604/03/README](/202604/03/README)
+今天速读了两篇关于高维与长时序预测的论文。重点探讨可解释模型设计及动态语义压缩在提升预测效率方面的潜力。建议继续关注时序预测在跨领域数据压缩与模型可解释性上的结合进展。
+- 详情：[/202604/04/README](/202604/04/README)
 
 ### 精读区论文标签
 - 本次无精读推荐。
 
 ### 速读区论文标签
-1. [A Conditional Denoising Diffusion Probabilistic Model for RFI Mitigation in Synthetic Aperture Interferometric Radiometer](/202604/03/2604.01531v1-a-conditional-denoising-diffusion-probabilistic-model-for-rfi-mitigation-in-synthetic-aperture-interferometric-radiometer)  
+1. [Interpretable models for forecasting high-dimensional functional time series](/202604/04/2603.28344v1-interpretable-models-for-forecasting-high-dimensional-functional-time-series)  
    标签：评分：7.0/10、query:diffts
-   evidence：用于遥感信号处理的去噪扩散概率模型
-2. [DRiffusion: Draft-and-Refine Process Parallelizes Diffusion Models with Ease](/202604/03/2603.25872v1-driffusion-draft-and-refine-process-parallelizes-diffusion-models-with-ease)  
-   标签：评分：6.0/10、query:diffts
-   evidence：扩散模型的并行采样框架
-3. [Diffusion models with physics-guided inference for solving partial differential equations](/202604/03/2604.01242v1-diffusion-models-with-physics-guided-inference-for-solving-partial-differential-equations)  
-   标签：评分：6.0/10、query:diffts
-   evidence：用于求解偏微分方程的物理引导推理扩散模型
-4. [Smoothing the Landscape: Causal Structure Learning via Diffusion Denoising Objectives](/202604/03/2604.02250v1-smoothing-the-landscape-causal-structure-learning-via-diffusion-denoising-objectives)  
-   标签：评分：6.0/10、query:diffts
-   evidence：用于因果结构学习的扩散去噪目标
+   evidence：高维函数型时间序列预测
+2. [DySCo: Dynamic Semantic Compression for Effective Long-term Time Series Forecasting](/202604/04/2604.01261v1-dysco-dynamic-semantic-compression-for-effective-long-term-time-series-forecasting)  
+   标签：评分：7.0/10、query:diffts
+   evidence：长期时间序列预测框架
 
 
 <div class="dpr-home-promo-card">
