@@ -1,0 +1,39 @@
+{
+  "label": "2026-04-05",
+  "date": "2026-04-05",
+  "generated_at": "2026-04-05T20:03:46",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202604/05/2603.28048v1-self-organizing-score-based-data-assimilation",
+      "section": "deep",
+      "title_en": "Self-Organizing Score-based Data Assimilation",
+      "authors": "Yuma Yamaoka, Seiichi Uchida, Shoji Toyota",
+      "date": "2026-03-30",
+      "pdf": "https://arxiv.org/pdf/2603.28048v1",
+      "score": "10.0",
+      "evidence": "利用扩散模型从观测时间序列数据中推断潜状态",
+      "tldr": "本文提出了一种自组织评分驱动数据同化方法，用于在非线性、高维状态空间模型中同时推断潜在状态和未知参数。该方法结合扩散模型的高效 SDA 框架与经典自组织技术，实现高效联合推断并在神经科学和大气科学等复杂动态系统中验证其性能。",
+      "tags": "query:diffts",
+      "abstract_en": "A state-space model is a statistical framework for inferring latent states from observed time-series data. However, inference with nonlinear and high-dimensional state-space models remains challenging. To this end, an approach based on diffusion models-a powerful class of deep generative models-has been developed, known as Score-based Data Assimilation (SDA). However, SDA cannot be directly applied when the latent-state transition depends on unknown parameters that must be inferred jointly with the latent states. To overcome this limitation, we propose a framework that enables SDA to handle latent states with unknown parameters. A key feature of the proposed method is the incorporation of the self-organization technique, which has been used in classical state-space modeling for the joint estimation of latent states and parameters. By integrating this classical technique into modern SDA, our method enables joint inference of latent states and unknown parameters while maintaining the high training efficiency of SDA. The effectiveness of the proposed approach is validated through numerical experiments on dynamical systems arising in neuroscience and atmospheric science. In addition, its scalability is demonstrated using a high-dimensional Kolmogorov flow, with the data dimension on the order of several hundred thousand.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/05/2603.28048v2-self-organizing-score-based-data-assimilation",
+      "section": "deep",
+      "title_en": "Self-Organizing Score-based Data Assimilation",
+      "authors": "Yuma Yamaoka, Seiichi Uchida, Shoji Toyota",
+      "date": "2026-03-30",
+      "pdf": "https://arxiv.org/pdf/2603.28048v2",
+      "score": "9.0",
+      "evidence": "基于评分的扩散模型用于时间序列隐状态推断",
+      "tldr": "本文提出了一种自组织得分驱动数据同化（Self-Organizing SDA）框架，将传统状态空间模型的自组织技术与现代得分基数据同化方法结合，实现了同时推断潜在状态和未知参数的能力，并在多个高维复杂系统中验证了其高效性和优越性。",
+      "tags": "query:diffts",
+      "abstract_en": "A state-space model is a statistical framework for inferring latent states from observed time-series data. However, inference with nonlinear and high-dimensional state-space models remains challenging. To this end, an approach based on diffusion models-a powerful class of deep generative models-has been developed, known as Score-based Data Assimilation (SDA). However, SDA cannot be directly applied when the latent-state transition depends on unknown parameters that must be inferred jointly with the latent states. To overcome this limitation, we propose a framework that enables SDA to handle latent states with unknown parameters. A key feature of the proposed method is the incorporation of the self-organization technique, which has been used in classical state-space modeling for the joint estimation of latent states and parameters. By integrating this classical technique into modern SDA, our method enables joint inference of latent states and unknown parameters while maintaining the high training efficiency of SDA. The effectiveness of the proposed approach is validated through numerical experiments on dynamical systems arising in neuroscience and atmospheric science. In addition, its scalability is demonstrated using a high-dimensional Kolmogorov flow, with the data dimension on the order of several hundred thousand.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

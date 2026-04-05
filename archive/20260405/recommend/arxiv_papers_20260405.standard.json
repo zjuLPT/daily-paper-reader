@@ -1,0 +1,89 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-05T20:02:59.666291+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 0,
+    "quick_skim_target": 11,
+    "quick_selected": 0
+  },
+  "deep_dive": [
+    {
+      "id": "2603.28048v1",
+      "source": "arxiv",
+      "title": "Self-Organizing Score-based Data Assimilation",
+      "abstract": "A state-space model is a statistical framework for inferring latent states from observed time-series data. However, inference with nonlinear and high-dimensional state-space models remains challenging. To this end, an approach based on diffusion models-a powerful class of deep generative models-has been developed, known as Score-based Data Assimilation (SDA). However, SDA cannot be directly applied when the latent-state transition depends on unknown parameters that must be inferred jointly with the latent states. To overcome this limitation, we propose a framework that enables SDA to handle latent states with unknown parameters. A key feature of the proposed method is the incorporation of the self-organization technique, which has been used in classical state-space modeling for the joint estimation of latent states and parameters. By integrating this classical technique into modern SDA, our method enables joint inference of latent states and unknown parameters while maintaining the high training efficiency of SDA. The effectiveness of the proposed approach is validated through numerical experiments on dynamical systems arising in neuroscience and atmospheric science. In addition, its scalability is demonstrated using a high-dimensional Kolmogorov flow, with the data dimension on the order of several hundred thousand.",
+      "authors": [
+        "Yuma Yamaoka",
+        "Seiichi Uchida",
+        "Shoji Toyota"
+      ],
+      "primary_category": "cs.CE",
+      "categories": [
+        "cs.CE"
+      ],
+      "published": "2026-03-30T05:24:24+00:00",
+      "link": "https://arxiv.org/pdf/2603.28048v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "diffusion models for inferring latent states from observed time-series data",
+      "llm_evidence_cn": "利用扩散模型从观测时间序列数据中推断潜状态",
+      "llm_evidence": "利用扩散模型从观测时间序列数据中推断潜状态",
+      "canonical_evidence": "利用扩散模型从观测时间序列数据中推断潜状态",
+      "llm_tldr_en": "Enhances score-based data assimilation with self-organization for time-series state-space modeling.",
+      "llm_tldr_cn": "通过自组织技术增强基于分数的扩散模型，用于时间序列状态空间建模。",
+      "llm_tldr": "通过自组织技术增强基于分数的扩散模型，用于时间序列状态空间建模。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "research papers on diffusion models applied to time series tasks",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2603.28048v2",
+      "source": "arxiv",
+      "title": "Self-Organizing Score-based Data Assimilation",
+      "abstract": "A state-space model is a statistical framework for inferring latent states from observed time-series data. However, inference with nonlinear and high-dimensional state-space models remains challenging. To this end, an approach based on diffusion models-a powerful class of deep generative models-has been developed, known as Score-based Data Assimilation (SDA). However, SDA cannot be directly applied when the latent-state transition depends on unknown parameters that must be inferred jointly with the latent states. To overcome this limitation, we propose a framework that enables SDA to handle latent states with unknown parameters. A key feature of the proposed method is the incorporation of the self-organization technique, which has been used in classical state-space modeling for the joint estimation of latent states and parameters. By integrating this classical technique into modern SDA, our method enables joint inference of latent states and unknown parameters while maintaining the high training efficiency of SDA. The effectiveness of the proposed approach is validated through numerical experiments on dynamical systems arising in neuroscience and atmospheric science. In addition, its scalability is demonstrated using a high-dimensional Kolmogorov flow, with the data dimension on the order of several hundred thousand.",
+      "authors": [
+        "Yuma Yamaoka",
+        "Seiichi Uchida",
+        "Shoji Toyota"
+      ],
+      "primary_category": "cs.CE",
+      "categories": [
+        "cs.CE"
+      ],
+      "published": "2026-03-30T05:24:24+00:00",
+      "link": "https://arxiv.org/pdf/2603.28048v2",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "score-based diffusion models for latent state inference in time-series",
+      "llm_evidence_cn": "基于评分的扩散模型用于时间序列隐状态推断",
+      "llm_evidence": "基于评分的扩散模型用于时间序列隐状态推断",
+      "canonical_evidence": "基于评分的扩散模型用于时间序列隐状态推断",
+      "llm_tldr_en": "Extends score-based diffusion models to handle latent state estimation with unknown parameters in time-series.",
+      "llm_tldr_cn": "扩展了基于评分的扩散模型，使其能够处理带有未知参数的时间序列隐状态估计。",
+      "llm_tldr": "扩展了基于评分的扩散模型，使其能够处理带有未知参数的时间序列隐状态估计。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "research on diffusion models for time-series data",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": []
+}
