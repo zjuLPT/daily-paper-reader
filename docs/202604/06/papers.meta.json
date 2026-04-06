@@ -1,0 +1,69 @@
+{
+  "label": "2026-04-06",
+  "date": "2026-04-06",
+  "generated_at": "2026-04-06T19:55:55",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202604/06/2604.02577v1-roman-a-multiscale-routing-operator-for-convolutional-time-series-models",
+      "section": "quick",
+      "title_en": "ROMAN: A Multiscale Routing Operator for Convolutional Time Series Models",
+      "authors": "Gonzalo Uribarri",
+      "date": "2026-04-02",
+      "pdf": "https://arxiv.org/pdf/2604.02577v1",
+      "score": "7.0",
+      "evidence": "卷积时间序列模型的多尺度算子",
+      "tldr": "该研究提出ROMAN算子，用于时间序列建模中的多尺度表示，通过将时间尺度和粗时间位置信息映射到显式通道结构，减少序列长度并提高计算效率。实验显示ROMAN在多种卷积模型中可增强结构感知与任务表现，为时间序列分类提供新型高效表示。",
+      "tags": "query:diffts",
+      "abstract_en": "We introduce ROMAN (ROuting Multiscale representAtioN), a deterministic operator for time series that maps temporal scale and coarse temporal position into an explicit channel structure while reducing sequence length. ROMAN builds an anti-aliased multiscale pyramid, extracts fixed-length windows from each scale, and stacks them as pseudochannels, yielding a compact representation on which standard convolutional classifiers can operate. In this way, ROMAN provides a simple mechanism to control the inductive bias of downstream models: it can reduce temporal invariance, make temporal pooling implicitly coarse-position-aware, and expose multiscale interactions through channel mixing, while often improving computational efficiency by shortening the processed time axis. We formally analyze the ROMAN operator and then evaluate it in two complementary ways by measuring its impact as a preprocessing step for four representative convolutional classifiers: MiniRocket, MultiRocket, a standard CNN-based classifier, and a fully convolutional network (FCN) classifier. First, we design synthetic time series classification tasks that isolate coarse position awareness, long-range correlation, multiscale interaction, and full positional invariance, showing that ROMAN behaves consistently with its intended mechanism and is most useful when class information depends on temporal structure that standard pooled convolution tends to suppress. Second, we benchmark the same models with and without ROMAN on long-sequence subsets of the UCR and UEA archives, showing that ROMAN provides a practically useful alternative representation whose effect on accuracy is task-dependent, but whose effect on efficiency is often favorable. Code is available at https://github.com/gon-uri/ROMAN",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/06/2603.27996v1-from-independent-to-correlated-diffusion-generalized-generative-modeling-with-probabilistic-computers",
+      "section": "quick",
+      "title_en": "From Independent to Correlated Diffusion: Generalized Generative Modeling with Probabilistic Computers",
+      "authors": "Nihal Sanjay Singh, Mazdak Mohseni-Rajaee, Shaila Niazi, Kerem Y. Camsari",
+      "date": "2026-03-30",
+      "pdf": "https://arxiv.org/pdf/2603.27996v1",
+      "score": "6.0",
+      "evidence": "扩散过程的广义生成建模",
+      "tldr": "本文提出一种广义扩散生成模型，通过将独立噪声注入替换为包含相互作用结构的马尔可夫链蒙特卡洛（MCMC）动态，实现相关扩散，并利用概率计算机进行高效采样，在2D铁磁伊辛模型和3D自旋玻璃模型中得到更接近真实分布的样本。",
+      "tags": "query:diffts",
+      "abstract_en": "Diffusion models have emerged as a powerful framework for generative tasks in deep learning. They decompose generative modeling into two computational primitives: deterministic neural-network evaluation and stochastic sampling. Current implementations usually place most computation in the neural network, but diffusion as a framework allows a broader range of choices for the stochastic transition kernel. Here, we generalize the stochastic sampling component by replacing independent noise injection with Markov chain Monte Carlo (MCMC) dynamics that incorporate known interaction structure. Standard independent diffusion is recovered as a special case when couplings are set to zero. By explicitly incorporating Ising couplings into the diffusion dynamics, the noising and denoising processes exploit spatial correlations representative of the target system. The resulting framework maps naturally onto probabilistic computers (p-computers) built from probabilistic bits (p-bits), which provide orders-of-magnitude advantages in sampling throughput and energy efficiency over GPUs. We demonstrate the approach on equilibrium states of the 2D ferromagnetic Ising model and the 3D Edwards-Anderson spin glass, showing that correlated diffusion produces samples in closer agreement with MCMC reference distributions than independent diffusion. More broadly, the framework shows that p-computers can enable new classes of diffusion algorithms that exploit structured probabilistic sampling for generative modeling.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/06/2604.02028v1-why-gaussian-diffusion-models-fail-on-discrete-data",
+      "section": "quick",
+      "title_en": "Why Gaussian Diffusion Models Fail on Discrete Data?",
+      "authors": "Alexander Shabalin, Simon Elistratov, Viacheslav Meshchaninov, Ildus Sadrtdinov, Dmitry Vetrov",
+      "date": "2026-04-02",
+      "pdf": "https://arxiv.org/pdf/2604.02028v1",
+      "score": "6.0",
+      "evidence": "高斯扩散模型（DDPM）在离散数据上的分析",
+      "tldr": "本文探究高斯扩散模型在离散数据生成任务中失效的原因，发现噪声数据在特定采样区间呈多模态分布，导致采样点偏离有效分布区域。作者基于随机层次模型分析这一现象，并提出结合自条件和q-sampling方法的改进方案，在文本、代码和蛋白质生成任务中有效提升了生成质量。",
+      "tags": "query:diffts",
+      "abstract_en": "Diffusion models have become a standard approach for generative modeling in continuous domains, yet their application to discrete data remains challenging. We investigate why Gaussian diffusion models with the DDPM solver struggle to sample from discrete distributions that are represented as a mixture of delta-distributions in the continuous space. Using a toy Random Hierarchy Model, we identify a critical sampling interval in which the density of noisified data becomes multimodal. In this regime, DDPM occasionally enters low-density regions between modes producing out-of-distribution inputs for the model and degrading sample quality. We show that existing heuristics, including self-conditioning and a solver we term q-sampling, help alleviate this issue. Furthermore, we demonstrate that combining self-conditioning with switching from DDPM to q-sampling within the critical interval improves generation quality on real data. We validate these findings across conditional and unconditional tasks in multiple domains, including text, programming code, and proteins.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/06/2604.02751v1-understanding-latent-diffusability-via-fisher-geometry",
+      "section": "quick",
+      "title_en": "Understanding Latent Diffusability via Fisher Geometry",
+      "authors": "Jing Gu, Morteza Mardani, Wonjun Lee, Dongmian Zou, Gilad Lerman",
+      "date": "2026-04-03",
+      "pdf": "https://arxiv.org/pdf/2604.02751v1",
+      "score": "6.0",
+      "evidence": "潜空间扩散模型的理论分析",
+      "tldr": "本文提出基于费舍尔几何的新框架，揭示扩散模型在潜空间退化的根本原因。研究通过分解最小均方误差变化的费舍尔信息贡献，量化潜空间可扩散性，并提出维度压缩、切向失真、曲率注入三项几何惩罚及保持扩散性的条件，为诊断与改善潜空间扩散失败提供了实用工具。",
+      "tags": "query:diffts",
+      "abstract_en": "Diffusion models often degrade when trained in latent spaces (e.g., VAEs), yet the formal causes remain poorly understood. We quantify latent-space diffusability through the rate of change of the Minimum Mean Squared Error (MMSE) along the diffusion trajectory. Our framework decomposes this MMSE rate into contributions from Fisher Information (FI) and Fisher Information Rate (FIR). We demonstrate that while global isometry ensures FI alignment, FIR is governed by the encoder's local geometric properties. Our analysis explicitly decouples latent geometric distortion into three measurable penalties: dimensional compression, tangential distortion, and curvature injection. We derive theoretical conditions for FIR preservation across spaces, ensuring maintained diffusability. Experiments across diverse autoencoding architectures validate our framework and establish these efficient FI and FIR metrics as a robust diagnostic suite for identifying and mitigating latent diffusion failure.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

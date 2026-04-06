@@ -1,0 +1,169 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-06T19:55:20.836815+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 4,
+    "quick_skim_target": 11,
+    "quick_selected": 4
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2604.02577v1",
+      "source": "arxiv",
+      "title": "ROMAN: A Multiscale Routing Operator for Convolutional Time Series Models",
+      "abstract": "We introduce ROMAN (ROuting Multiscale representAtioN), a deterministic operator for time series that maps temporal scale and coarse temporal position into an explicit channel structure while reducing sequence length. ROMAN builds an anti-aliased multiscale pyramid, extracts fixed-length windows from each scale, and stacks them as pseudochannels, yielding a compact representation on which standard convolutional classifiers can operate. In this way, ROMAN provides a simple mechanism to control the inductive bias of downstream models: it can reduce temporal invariance, make temporal pooling implicitly coarse-position-aware, and expose multiscale interactions through channel mixing, while often improving computational efficiency by shortening the processed time axis. We formally analyze the ROMAN operator and then evaluate it in two complementary ways by measuring its impact as a preprocessing step for four representative convolutional classifiers: MiniRocket, MultiRocket, a standard CNN-based classifier, and a fully convolutional network (FCN) classifier. First, we design synthetic time series classification tasks that isolate coarse position awareness, long-range correlation, multiscale interaction, and full positional invariance, showing that ROMAN behaves consistently with its intended mechanism and is most useful when class information depends on temporal structure that standard pooled convolution tends to suppress. Second, we benchmark the same models with and without ROMAN on long-sequence subsets of the UCR and UEA archives, showing that ROMAN provides a practically useful alternative representation whose effect on accuracy is task-dependent, but whose effect on efficiency is often favorable. Code is available at https://github.com/gon-uri/ROMAN",
+      "authors": [
+        "Gonzalo Uribarri"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-04-02T23:19:19+00:00",
+      "link": "https://arxiv.org/pdf/2604.02577v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "multiscale operator for convolutional time series models",
+      "llm_evidence_cn": "卷积时间序列模型的多尺度算子",
+      "llm_evidence": "卷积时间序列模型的多尺度算子",
+      "canonical_evidence": "卷积时间序列模型的多尺度算子",
+      "llm_tldr_en": "Introduces ROMAN, a multiscale routing operator to improve efficiency and inductive bias in time series models.",
+      "llm_tldr_cn": "引入ROMAN多尺度路由算子，旨在提升时间序列模型的效率和归纳偏置。",
+      "llm_tldr": "引入ROMAN多尺度路由算子，旨在提升时间序列模型的效率和归纳偏置。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2603.27996v1",
+      "source": "arxiv",
+      "title": "From Independent to Correlated Diffusion: Generalized Generative Modeling with Probabilistic Computers",
+      "abstract": "Diffusion models have emerged as a powerful framework for generative tasks in deep learning. They decompose generative modeling into two computational primitives: deterministic neural-network evaluation and stochastic sampling. Current implementations usually place most computation in the neural network, but diffusion as a framework allows a broader range of choices for the stochastic transition kernel. Here, we generalize the stochastic sampling component by replacing independent noise injection with Markov chain Monte Carlo (MCMC) dynamics that incorporate known interaction structure. Standard independent diffusion is recovered as a special case when couplings are set to zero. By explicitly incorporating Ising couplings into the diffusion dynamics, the noising and denoising processes exploit spatial correlations representative of the target system. The resulting framework maps naturally onto probabilistic computers (p-computers) built from probabilistic bits (p-bits), which provide orders-of-magnitude advantages in sampling throughput and energy efficiency over GPUs. We demonstrate the approach on equilibrium states of the 2D ferromagnetic Ising model and the 3D Edwards-Anderson spin glass, showing that correlated diffusion produces samples in closer agreement with MCMC reference distributions than independent diffusion. More broadly, the framework shows that p-computers can enable new classes of diffusion algorithms that exploit structured probabilistic sampling for generative modeling.",
+      "authors": [
+        "Nihal Sanjay Singh",
+        "Mazdak Mohseni-Rajaee",
+        "Shaila Niazi",
+        "Kerem Y. Camsari"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.ET"
+      ],
+      "published": "2026-03-30T03:36:20+00:00",
+      "link": "https://arxiv.org/pdf/2603.27996v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "generalized generative modeling with diffusion processes",
+      "llm_evidence_cn": "扩散过程的广义生成建模",
+      "llm_evidence": "扩散过程的广义生成建模",
+      "canonical_evidence": "扩散过程的广义生成建模",
+      "llm_tldr_en": "Generalizes diffusion models by replacing independent noise with correlated MCMC dynamics for generative tasks.",
+      "llm_tldr_cn": "通过将独立噪声替换为相关的MCMC动力学，推广了用于生成任务的扩散模型。",
+      "llm_tldr": "通过将独立噪声替换为相关的MCMC动力学，推广了用于生成任务的扩散模型。",
+      "llm_tags": [
+        "query:diffts:composite"
+      ],
+      "matched_query_tag": "query:diffts:composite",
+      "matched_query_text": "Papers central to 查询将扩散模型应用于时间序列任务的相关论文, especially work that connects or combines: Time Series; research on diffusion models for time-series data; methods using diffusion models for time series forecasting; denoising diffusion probabilistic models applied to time series; sequence modeling with diffusion processes for time-dependent data; conditional diffusion frameworks for time series generation; research papers on diffusion models applied to time series tasks.",
+      "matched_requirement_id": "req-composite-diffts",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.02028v1",
+      "source": "arxiv",
+      "title": "Why Gaussian Diffusion Models Fail on Discrete Data?",
+      "abstract": "Diffusion models have become a standard approach for generative modeling in continuous domains, yet their application to discrete data remains challenging. We investigate why Gaussian diffusion models with the DDPM solver struggle to sample from discrete distributions that are represented as a mixture of delta-distributions in the continuous space. Using a toy Random Hierarchy Model, we identify a critical sampling interval in which the density of noisified data becomes multimodal. In this regime, DDPM occasionally enters low-density regions between modes producing out-of-distribution inputs for the model and degrading sample quality. We show that existing heuristics, including self-conditioning and a solver we term q-sampling, help alleviate this issue. Furthermore, we demonstrate that combining self-conditioning with switching from DDPM to q-sampling within the critical interval improves generation quality on real data. We validate these findings across conditional and unconditional tasks in multiple domains, including text, programming code, and proteins.",
+      "authors": [
+        "Alexander Shabalin",
+        "Simon Elistratov",
+        "Viacheslav Meshchaninov",
+        "Ildus Sadrtdinov",
+        "Dmitry Vetrov"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-04-02T13:35:02+00:00",
+      "link": "https://arxiv.org/pdf/2604.02028v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "analysis of Gaussian diffusion models (DDPM) on discrete data",
+      "llm_evidence_cn": "高斯扩散模型（DDPM）在离散数据上的分析",
+      "llm_evidence": "高斯扩散模型（DDPM）在离散数据上的分析",
+      "canonical_evidence": "高斯扩散模型（DDPM）在离散数据上的分析",
+      "llm_tldr_en": "Investigates why Gaussian diffusion models fail on discrete data and suggests heuristics to improve sampling.",
+      "llm_tldr_cn": "研究高斯扩散模型在离散数据上失效的原因，并提出改进采样的启发式方法。",
+      "llm_tldr": "研究高斯扩散模型在离散数据上失效的原因，并提出改进采样的启发式方法。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "denoising diffusion probabilistic models applied to time series",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.02751v1",
+      "source": "arxiv",
+      "title": "Understanding Latent Diffusability via Fisher Geometry",
+      "abstract": "Diffusion models often degrade when trained in latent spaces (e.g., VAEs), yet the formal causes remain poorly understood. We quantify latent-space diffusability through the rate of change of the Minimum Mean Squared Error (MMSE) along the diffusion trajectory. Our framework decomposes this MMSE rate into contributions from Fisher Information (FI) and Fisher Information Rate (FIR). We demonstrate that while global isometry ensures FI alignment, FIR is governed by the encoder's local geometric properties. Our analysis explicitly decouples latent geometric distortion into three measurable penalties: dimensional compression, tangential distortion, and curvature injection. We derive theoretical conditions for FIR preservation across spaces, ensuring maintained diffusability. Experiments across diverse autoencoding architectures validate our framework and establish these efficient FI and FIR metrics as a robust diagnostic suite for identifying and mitigating latent diffusion failure.",
+      "authors": [
+        "Jing Gu",
+        "Morteza Mardani",
+        "Wonjun Lee",
+        "Dongmian Zou",
+        "Gilad Lerman"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-04-03T05:52:09+00:00",
+      "link": "https://arxiv.org/pdf/2604.02751v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "theoretical analysis of diffusion models in latent spaces",
+      "llm_evidence_cn": "潜空间扩散模型的理论分析",
+      "llm_evidence": "潜空间扩散模型的理论分析",
+      "canonical_evidence": "潜空间扩散模型的理论分析",
+      "llm_tldr_en": "Analyzes latent-space diffusability using Fisher Geometry to understand performance degradation in diffusion models.",
+      "llm_tldr_cn": "利用费舍尔几何分析潜空间可扩散性，探讨扩散模型性能下降的理论原因。",
+      "llm_tldr": "利用费舍尔几何分析潜空间可扩散性，探讨扩散模型性能下降的理论原因。",
+      "llm_tags": [
+        "query:diffts:composite"
+      ],
+      "matched_query_tag": "query:diffts:composite",
+      "matched_query_text": "Papers central to 查询将扩散模型应用于时间序列任务的相关论文, especially work that connects or combines: Time Series; research on diffusion models for time-series data; methods using diffusion models for time series forecasting; denoising diffusion probabilistic models applied to time series; sequence modeling with diffusion processes for time-dependent data; conditional diffusion frameworks for time series generation; research papers on diffusion models applied to time series tasks.",
+      "matched_requirement_id": "req-composite-diffts",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

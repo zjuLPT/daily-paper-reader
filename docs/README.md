@@ -6,29 +6,35 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-04-05
-- 运行时间：2026-04-05 20:03:42 UTC
+- 最新运行日期：2026-04-06
+- 运行时间：2026-04-06 19:55:49 UTC
 - 运行状态：成功
-- 本次总论文数：2
-- 精读区：2
-- 速读区：0
+- 本次总论文数：4
+- 精读区：0
+- 速读区：4
 
 ### 今日简报（AI）
-今天精读了两次《Self-Organizing Score-based Data Assimilation》，深入探讨自组织方法与数据同化结合的新路径。  
-重点值得关注的是其在提高非线性系统观测融合与预测精度方面的潜力。  
-建议下步可关注其与生成模型或真实气象数据结合的实际应用。
-- 详情：[/202604/05/README](/202604/05/README)
+今日速读三篇论文，聚焦时序建模新算子与扩散模型的生成机制。  
+值得关注的是多尺度路由在时间序列中的表现，以及高斯扩散处理离散数据的局限。  
+下步可重点跟进扩散模型在离散与相关生成任务上的改进方向。
+- 详情：[/202604/06/README](/202604/06/README)
 
 ### 精读区论文标签
-1. [Self-Organizing Score-based Data Assimilation](/202604/05/2603.28048v1-self-organizing-score-based-data-assimilation)  
-   标签：评分：10.0/10、query:diffts
-   evidence：利用扩散模型从观测时间序列数据中推断潜状态
-2. [Self-Organizing Score-based Data Assimilation](/202604/05/2603.28048v2-self-organizing-score-based-data-assimilation)  
-   标签：评分：9.0/10、query:diffts
-   evidence：基于评分的扩散模型用于时间序列隐状态推断
+- 本次无精读推荐。
 
 ### 速读区论文标签
-- 本次无速读推荐。
+1. [ROMAN: A Multiscale Routing Operator for Convolutional Time Series Models](/202604/06/2604.02577v1-roman-a-multiscale-routing-operator-for-convolutional-time-series-models)  
+   标签：评分：7.0/10、query:diffts
+   evidence：卷积时间序列模型的多尺度算子
+2. [From Independent to Correlated Diffusion: Generalized Generative Modeling with Probabilistic Computers](/202604/06/2603.27996v1-from-independent-to-correlated-diffusion-generalized-generative-modeling-with-probabilistic-computers)  
+   标签：评分：6.0/10、query:diffts
+   evidence：扩散过程的广义生成建模
+3. [Why Gaussian Diffusion Models Fail on Discrete Data?](/202604/06/2604.02028v1-why-gaussian-diffusion-models-fail-on-discrete-data)  
+   标签：评分：6.0/10、query:diffts
+   evidence：高斯扩散模型（DDPM）在离散数据上的分析
+4. [Understanding Latent Diffusability via Fisher Geometry](/202604/06/2604.02751v1-understanding-latent-diffusability-via-fisher-geometry)  
+   标签：评分：6.0/10、query:diffts
+   evidence：潜空间扩散模型的理论分析
 
 
 <div class="dpr-home-promo-card">
