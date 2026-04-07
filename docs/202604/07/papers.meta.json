@@ -1,0 +1,39 @@
+{
+  "label": "2026-04-07",
+  "date": "2026-04-07",
+  "generated_at": "2026-04-07T20:24:14",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202604/07/2604.03303v1-downscaling-weather-forecasts-from-low--to-high-resolution-with-diffusion-models",
+      "section": "deep",
+      "title_en": "Downscaling weather forecasts from Low- to High-Resolution with Diffusion Models",
+      "authors": "Joffrey Dumont Le Brazidec, Simon Lang, Martin Leutbecher, Baudouin Raoult, Gert Mertes, Florian Pinault, Aristofanis Tsiringakis, Pedro Maciel, Ana Prieto Nemesio, Jan Polster, Cathal O Brien, Matthew Chantry",
+      "date": "2026-03-30",
+      "pdf": "https://arxiv.org/pdf/2604.03303v1",
+      "score": "9.0",
+      "evidence": "基于扩散模型的天气预报降尺度方法",
+      "tldr": "本文提出一种基于扩散模型的全球气象降尺度方法，在Anemoi框架下将低分辨率集合预报转换为高分辨率集合。通过学习高低分辨率场之间的残差分布，模型成功重建小尺度结构并生成极端天气事件，相比原始IFS集合显著提升表面要素的概率预测能力。",
+      "tags": "query:diffts",
+      "abstract_en": "We introduce a probabilistic diffusion-based method for global atmospheric downscaling implemented within the Anemoi framework. The approach transforms low-resolution ensemble forecasts into high-resolution ensembles by learning the conditional distribution of finer-scale residuals, defined as the difference between the high-resolution fields and the interpolated low-resolution inputs. The system is trained on reforecast pairs from ECMWF IFS, using coarse fields at 100 km to reconstruct fine-scale variability at 30 km resolution. The bulk of the training focuses on recovering small-scale structures, while fine-tuning in high-noise regimes enables the generation of extremes. Evaluation against the medium-range IFS ensemble target shows that the model increases probabilistic skill (FCRPS) for surface variables, reproduces target power spectra at small scales, captures physically consistent multivariate relationships such as wind-pressure coupling, and generates extreme values consistent with those of the target ensemble in tropical cyclones.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/07/2604.03779v1-countsdiff-a-diffusion-model-on-the-natural-numbers-for-generation-and-imputation-of-count-based-data",
+      "section": "quick",
+      "title_en": "CountsDiff: A Diffusion Model on the Natural Numbers for Generation and Imputation of Count-Based Data",
+      "authors": "Renzo G. Soatto, Anders Hoel, Greycen Ren, Shorna Alam, Stephen Bates, Nikolaos P. Daskalakis, Caroline Uhler, Maria Skoularidou",
+      "date": "2026-04-04",
+      "pdf": "https://arxiv.org/pdf/2604.03779v1",
+      "score": "6.0",
+      "evidence": "用于计数型数据生成和插补的扩散模型",
+      "tldr": "本文提出CountsDiff，这是一种针对自然数分布的扩散模型，用以处理计数型数据生成与插补问题。该方法简化了Blackout扩散框架的表达，通过生存概率调度和显式损失权重实现灵活设计，并结合连续时间训练、分类器自由引导及非单调逆向机制。实验表明CountsDiff在图像和生物计数数据上均达到了或超越现有模型的表现。",
+      "tags": "query:diffts",
+      "abstract_en": "Diffusion models have excelled at generative tasks for both continuous and token-based domains, but their application to discrete ordinal data remains underdeveloped. We present CountsDiff, a diffusion framework designed to natively model distributions on the natural numbers. CountsDiff extends the Blackout diffusion framework by simplifying its formulation through a direct parameterization in terms of a survival probability schedule and an explicit loss weighting. This introduces flexibility through design parameters with direct analogues in existing diffusion modeling frameworks. Beyond this reparameterization, CountsDiff introduces features from modern diffusion models, previously absent in counts-based domains, including continuous-time training, classifier-free guidance, and churn/remasking reverse dynamics that allow non-monotone reverse trajectories. We propose an initial instantiation of CountsDiff and validate it on natural image datasets (CIFAR-10, CelebA), exploring the effects of varying the introduced design parameters in a complex, well-studied, and interpretable data domain. We then highlight biological count assays as a natural use case, evaluating CountsDiff on single-cell RNA-seq imputation in a fetal cell and heart cell atlas. Remarkably, we find that even this simple instantiation matches or surpasses the performance of a state-of-the-art discrete generative model and leading RNA-seq imputation methods, while leaving substantial headroom for further gains through optimized design choices in future work.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

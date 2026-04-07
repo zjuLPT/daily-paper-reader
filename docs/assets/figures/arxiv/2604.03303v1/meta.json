@@ -1,0 +1,110 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.03303v1/fig-001.webp",
+      "caption": "Figure 2: Schematic of the diffusion-based downscaling model. At each denoising step, the model takes as input on the O320 grid: (i) the current noisy residual estimate, (ii) static and temporal forcing fields, and (iii) the coarse O96 atmospheric fields interpolated to O320 (D96→320). These features are processed by an encoder–processor–decoder graph neural network: the encoder projects information from O320 to the hidden grid, the processor applies 16 successive graph-transformer layers on the hidden graph, and the decoder projects the result back to O320. In the lower panel, the pink boxes represent these three consecutive components. The model output is a prediction of the residual on O320, which is added to the interpolated coarse field to reconstruct the final high-resolution field.",
+      "page": 6,
+      "index": 1,
+      "width": 1015,
+      "height": 943
+    },
+    {
+      "url": "assets/figures/arxiv/2604.03303v1/fig-002.webp",
+      "caption": "Figure 5: Subseasonal ensemble forecast first member (first column), medium-range ensemble forecast first member (second column), and downscaling with the diffusion model of two subseasonal members (third and fourth columns, with the third corresponding to downscaling of the first column). Results are shown for the Amazon rainforest at lead time 24h. Rows display 10u, 10v, 2t, and T850. The diffusion model generates stochastic and physically consistent small-scale features.",
+      "page": 11,
+      "index": 2,
+      "width": 1051,
+      "height": 784
+    },
+    {
+      "url": "assets/figures/arxiv/2604.03303v1/fig-003.webp",
+      "caption": "Figure 8: Normalised pdfs of mean sea level pressure (980–1015 hPa) and 10-meter wind speed (0–30 m/s) for Hurricane Idalia across ensemble members, initialized on 26-30 August 2023, with a 1 to 5-days lead time. The pdfs represent the distributions of gridpoint values within the cyclone region, normalised by the corresponding distribution of the operational analysis. They are shown for the target IFS medium-range ensemble forecasts, the input IFS subseasonal ensemble forecasts, and the downscaled reconstructions (before and after finetuning). The accompanying map illustrates Idalia’s track from 27 to 31 August 2023, marking stages from tropical depression to major hurricane. Idalia cyclone track is adapted from NOAA/NHC https://www.nhc.noaa.gov/data/tcr/index.php?season=2023&basin=atl.",
+      "page": 15,
+      "index": 3,
+      "width": 1047,
+      "height": 1092
+    },
+    {
+      "url": "assets/figures/arxiv/2604.03303v1/fig-004.webp",
+      "caption": "Figure 1: Hurricanes Idalia and Franklin as seen in the subseasonal ensemble forecast (eefo, O96 resolution) and its AI-based downscaling to O320 resolution. The background field in each panel shows the lowresolution O96 input, while the inset (black frame) shows the corresponding downscaled O320 prediction from the diffusion model. Top: mean sea level pressure (hPa). Bottom: 10-metre wind speed (m/s). Initialisation date: 29 August 2023, +24 h lead time (valid 30 August 2023), ensemble member 6. The downscaled fields resolve the tight inner-core structure of both tropical cyclones — including the pressure minima and eyewall wind maxima — that is absent from the coarse input.",
+      "page": 2,
+      "index": 4,
+      "width": 535,
+      "height": 979
+    },
+    {
+      "url": "assets/figures/arxiv/2604.03303v1/fig-005.webp",
+      "caption": "Figure 3: Receptive field of the GNN processor for a randomly selected node (red). The figure shows how many nodes receive its information after 2, 10, and 16 message-passing layers—that is, across the corresponding 2-, 10-, and 16-hop neighborhoods. The graph structure is fixed; only the range of information propagation increases.",
+      "page": 7,
+      "index": 5,
+      "width": 997,
+      "height": 346
+    },
+    {
+      "url": "assets/figures/arxiv/2604.03303v1/fig-006.webp",
+      "caption": "Figure 4: Fair Continuous Ranked Probability Score (FCRPS) for 2-metre temperature (left) and 10-metre wind speed (right) over the Northern Hemisphere extratropics, from forecast day 1 to 10 (20240201–20240225), evaluated against SYNOP station observations. Comparison between the downscaled ensemble forecast, the IFS medium-range ensemble forecast, and the subseasonal ensemble forecast (input).",
+      "page": 10,
+      "index": 6,
+      "width": 1069,
+      "height": 366
+    },
+    {
+      "url": "assets/figures/arxiv/2604.03303v1/fig-007.webp",
+      "caption": "Figure 11: Local fields of mean sea level pressure (960–1015 hPa) and wind speed (0–30 m/s) for Tropical Cyclone Hilary across ensemble members at 24-hour lead time, initialized on 17 August 2023. The first column shows the target IFS medium-range ensemble forecast MSLP, the second column displays the input IFS subseasonal ensemble forecast MSLP, and the third and fourth columns present the MSLP and wind fields, respectively, reconstructed through downscaling of the IFS subseasonal ensemble forecast.",
+      "page": 18,
+      "index": 7,
+      "width": 1069,
+      "height": 652
+    },
+    {
+      "url": "assets/figures/arxiv/2604.03303v1/fig-008.webp",
+      "caption": "Figure 7: Comparison of global amplitude spectra of weather variables from the subseasonal forecasts, the medium-range forecasts, and the downscaled subseasonal forecasts. The spectra are evaluated over the full globe at forecast day 6 and are based on 31 forecast initialisation dates and 10 ensemble members per date, corresponding to a sample of 310 forecasts.",
+      "page": 13,
+      "index": 8,
+      "width": 1052,
+      "height": 587
+    },
+    {
+      "url": "assets/figures/arxiv/2604.03303v1/fig-009.webp",
+      "caption": "Figure 10: Normalised pdfs of mean sea level pressure (960–1015 hPa) and 10-meter wind speed (0–30 m/s) for Hurricane Hilary across ensemble members, initialized on 16-20 August 2023, with a 1 to 5-days lead time. The pdfs represent the distributions of gridpoint values within the cyclone region (approximately the dashed orange line), normalised by the corresponding distribution of the operational analysis. They are shown for the target IFS medium-range ensemble forecasts, the input IFS subseasonal ensemble forecasts, and the downscaled reconstructions (before and after finetuning). The map illustrates the cyclone’s track from 16 to 20 August 2023, marking stages from tropical depression to major hurricane. Hilary cyclone track is adapted from NOAA/NHC https://www.nhc.noaa.gov/data/tcr/index.php?season=2023&basin=epac.",
+      "page": 17,
+      "index": 9,
+      "width": 1047,
+      "height": 1095
+    },
+    {
+      "url": "assets/figures/arxiv/2604.03303v1/fig-010.webp",
+      "caption": "Figure 6: Subseasonal ensemble forecast first member (first column), medium-range ensemble forecast first member (second column), and downscaling with the diffusion model of two subseasonal members (third and fourth columns, with the third corresponding to downscaling of the first column). Results are shown for the Himalayas at lead time 24h. Rows display 10u, 10v, 2t, and T850. The diffusion model generates physically consistent small-scale features.",
+      "page": 12,
+      "index": 10,
+      "width": 1051,
+      "height": 784
+    },
+    {
+      "url": "assets/figures/arxiv/2604.03303v1/fig-011.webp",
+      "caption": "Table 2: Summary of the two-stage training procedure.",
+      "page": 9,
+      "index": 11,
+      "width": 902,
+      "height": 260
+    },
+    {
+      "url": "assets/figures/arxiv/2604.03303v1/fig-012.webp",
+      "caption": "Table 1: Meteorological fields, levels, and normalisation used for training Anemoi-D2.",
+      "page": 5,
+      "index": 12,
+      "width": 1019,
+      "height": 548
+    },
+    {
+      "url": "assets/figures/arxiv/2604.03303v1/fig-013.webp",
+      "caption": "Figure 9: Mean sea level pressure (985–1015 hPa) and wind speed (0–30 m/s) for tropical cyclone Idalia for three ensemble members at 24-hour lead time, initialized on 28 August 2023. The first column shows the target IFS medium-range ensemble forecast MSLP, the second column displays the input IFS subseasonal ensemble forecast MSLP, and the third and fourth columns present the MSLP and wind fields, respectively, reconstructed through downscaling of the IFS subseasonal ensemble forecast.",
+      "page": 16,
+      "index": 13,
+      "width": 1069,
+      "height": 716
+    }
+  ]
+}

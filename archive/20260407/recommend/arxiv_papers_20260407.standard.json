@@ -1,0 +1,107 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-07T20:22:50.704273+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2604.03303v1",
+      "source": "arxiv",
+      "title": "Downscaling weather forecasts from Low- to High-Resolution with Diffusion Models",
+      "abstract": "We introduce a probabilistic diffusion-based method for global atmospheric downscaling implemented within the Anemoi framework. The approach transforms low-resolution ensemble forecasts into high-resolution ensembles by learning the conditional distribution of finer-scale residuals, defined as the difference between the high-resolution fields and the interpolated low-resolution inputs. The system is trained on reforecast pairs from ECMWF IFS, using coarse fields at 100 km to reconstruct fine-scale variability at 30 km resolution. The bulk of the training focuses on recovering small-scale structures, while fine-tuning in high-noise regimes enables the generation of extremes. Evaluation against the medium-range IFS ensemble target shows that the model increases probabilistic skill (FCRPS) for surface variables, reproduces target power spectra at small scales, captures physically consistent multivariate relationships such as wind-pressure coupling, and generates extreme values consistent with those of the target ensemble in tropical cyclones.",
+      "authors": [
+        "Joffrey Dumont Le Brazidec",
+        "Simon Lang",
+        "Martin Leutbecher",
+        "Baudouin Raoult",
+        "Gert Mertes",
+        "Florian Pinault",
+        "Aristofanis Tsiringakis",
+        "Pedro Maciel",
+        "Ana Prieto Nemesio",
+        "Jan Polster",
+        "Cathal O Brien",
+        "Matthew Chantry"
+      ],
+      "primary_category": "physics.ao-ph",
+      "categories": [
+        "physics.ao-ph",
+        "cs.AI"
+      ],
+      "published": "2026-03-30T09:38:36+00:00",
+      "link": "https://arxiv.org/pdf/2604.03303v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Diffusion-based method for weather forecast downscaling",
+      "llm_evidence_cn": "基于扩散模型的天气预报降尺度方法",
+      "llm_evidence": "基于扩散模型的天气预报降尺度方法",
+      "canonical_evidence": "基于扩散模型的天气预报降尺度方法",
+      "llm_tldr_en": "Uses conditional diffusion models to generate high-resolution weather forecast ensembles.",
+      "llm_tldr_cn": "利用条件扩散模型生成高分辨率的天气预报集合。",
+      "llm_tldr": "利用条件扩散模型生成高分辨率的天气预报集合。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "methods using diffusion models for time series forecasting",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2604.03779v1",
+      "source": "arxiv",
+      "title": "CountsDiff: A Diffusion Model on the Natural Numbers for Generation and Imputation of Count-Based Data",
+      "abstract": "Diffusion models have excelled at generative tasks for both continuous and token-based domains, but their application to discrete ordinal data remains underdeveloped. We present CountsDiff, a diffusion framework designed to natively model distributions on the natural numbers. CountsDiff extends the Blackout diffusion framework by simplifying its formulation through a direct parameterization in terms of a survival probability schedule and an explicit loss weighting. This introduces flexibility through design parameters with direct analogues in existing diffusion modeling frameworks. Beyond this reparameterization, CountsDiff introduces features from modern diffusion models, previously absent in counts-based domains, including continuous-time training, classifier-free guidance, and churn/remasking reverse dynamics that allow non-monotone reverse trajectories. We propose an initial instantiation of CountsDiff and validate it on natural image datasets (CIFAR-10, CelebA), exploring the effects of varying the introduced design parameters in a complex, well-studied, and interpretable data domain. We then highlight biological count assays as a natural use case, evaluating CountsDiff on single-cell RNA-seq imputation in a fetal cell and heart cell atlas. Remarkably, we find that even this simple instantiation matches or surpasses the performance of a state-of-the-art discrete generative model and leading RNA-seq imputation methods, while leaving substantial headroom for further gains through optimized design choices in future work.",
+      "authors": [
+        "Renzo G. Soatto",
+        "Anders Hoel",
+        "Greycen Ren",
+        "Shorna Alam",
+        "Stephen Bates",
+        "Nikolaos P. Daskalakis",
+        "Caroline Uhler",
+        "Maria Skoularidou"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-04-04T16:06:14+00:00",
+      "link": "https://arxiv.org/pdf/2604.03779v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion model for generation and imputation of count-based data",
+      "llm_evidence_cn": "用于计数型数据生成和插补的扩散模型",
+      "llm_evidence": "用于计数型数据生成和插补的扩散模型",
+      "canonical_evidence": "用于计数型数据生成和插补的扩散模型",
+      "llm_tldr_en": "Introduces CountsDiff, a diffusion framework for modeling discrete ordinal count data distributions.",
+      "llm_tldr_cn": "引入了CountsDiff，这是一个用于建模离散序数计数数据分布的扩散框架。",
+      "llm_tldr": "引入了CountsDiff，这是一个用于建模离散序数计数数据分布的扩散框架。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "research papers on diffusion models applied to time series tasks",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
