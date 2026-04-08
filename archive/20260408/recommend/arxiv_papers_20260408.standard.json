@@ -1,0 +1,174 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-08T20:42:16.377142+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 3,
+    "quick_skim_target": 11,
+    "quick_selected": 3
+  },
+  "deep_dive": [
+    {
+      "id": "2604.05257v1",
+      "source": "arxiv",
+      "title": "Extending Tabular Denoising Diffusion Probabilistic Models for Time-Series Data Generation",
+      "abstract": "Diffusion models are increasingly being utilised to create synthetic tabular and time series data for privacy-preserving augmentation. Tabular Denoising Diffusion Probabilistic Models (TabDDPM) generate high-quality synthetic data from heterogeneous tabular datasets but assume independence between samples, limiting their applicability to time-series domains where temporal dependencies are critical. To address this, we propose a temporal extension of TabDDPM, introducing sequence awareness through the use of lightweight temporal adapters and context-aware embedding modules. By reformulating sensor data into windowed sequences and explicitly modeling temporal context via timestep embeddings, conditional activity labels, and observed/missing masks, our approach enables the generation of temporally coherent synthetic sequences. Compared to baseline and interpolation techniques, validation using bigram transition matrices and autocorrelation analysis shows enhanced temporal realism, diversity, and coherence. On the WISDM accelerometer dataset, the suggested system produces synthetic time-series that closely resemble real world sensor patterns and achieves comparable classification performance (macro F1-score 0.64, accuracy 0.71). This is especially advantageous for minority class representation and preserving statistical alignment with real distributions. These developments demonstrate that diffusion based models provide effective and adaptable solutions for sequential data synthesis when they are equipped for temporal reasoning. Future work will explore scaling to longer sequences and integrating stronger temporal architectures.",
+      "authors": [
+        "Umang Dobhal",
+        "Christina Garcia",
+        "Sozo Inoue"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-04-06T23:46:40+00:00",
+      "link": "https://arxiv.org/pdf/2604.05257v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "Extending Tabular Denoising Diffusion Probabilistic Models for Time-Series Data Generation",
+      "llm_evidence_cn": "将表格去噪扩散概率模型扩展到时间序列数据生成",
+      "llm_evidence": "将表格去噪扩散概率模型扩展到时间序列数据生成",
+      "canonical_evidence": "将表格去噪扩散概率模型扩展到时间序列数据生成",
+      "llm_tldr_en": "Proposes a temporal extension of TabDDPM using adapters to model dependencies in time-series data generation.",
+      "llm_tldr_cn": "提出 TabDDPM 的时间扩展版本，通过适配器建模时间依赖性以生成高质量序列数据。",
+      "llm_tldr": "提出 TabDDPM 的时间扩展版本，通过适配器建模时间依赖性以生成高质量序列数据。",
+      "llm_tags": [
+        "query:diffts:composite"
+      ],
+      "matched_query_tag": "query:diffts:composite",
+      "matched_query_text": "Papers central to 查询将扩散模型应用于时间序列任务的相关论文, especially work that connects or combines: Time Series; research on diffusion models for time-series data; methods using diffusion models for time series forecasting; denoising diffusion probabilistic models applied to time series; sequence modeling with diffusion processes for time-dependent data; conditional diffusion frameworks for time series generation; research papers on diffusion models applied to time series tasks.",
+      "matched_requirement_id": "req-composite-diffts",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2604.04271v1",
+      "source": "arxiv",
+      "title": "A Family of Open Time-Series Foundation Models for the Radio Access Network",
+      "abstract": "The Radio Access Network (RAN) is evolving into a programmable and disaggregated infrastructure that increasingly relies on AI-native algorithms for optimization and closed-loop control. However, current RAN intelligence is still largely built from task-specific models tailored to individual functions, resulting in model fragmentation, limited knowledge sharing across tasks, poor generalization, and increased system complexity. To address these limitations, we introduce TimeRAN, a unified multi-task learning framework for time-series modeling in the RAN. TimeRAN leverages a lightweight time-series foundation model with few task-specific heads to learn transferable representations that can be efficiently adapted across diverse tasks with limited supervision. To enable large-scale pretraining, we further curate and open-source TimeRAN DataPile, the largest time-series corpus for RAN analytics to date, comprising over 355K time series and 0.56B measurements across diverse telemetry sources, protocol layers, and deployment scenarios. We evaluate TimeRAN across a comprehensive set of RAN analytics tasks, including anomaly detection, classification, forecasting, and imputation, and show that it achieves state-of-the-art performance with minimal or no task-specific fine-tuning. Finally, we integrate TimeRAN into a proof-of-concept 5G testbed and demonstrate that it operates efficiently with limited resource requirements in real-world scenarios.",
+      "authors": [
+        "Ioannis Panitsas",
+        "Leandros Tassiulas"
+      ],
+      "primary_category": "cs.NI",
+      "categories": [
+        "cs.NI",
+        "cs.LG"
+      ],
+      "published": "2026-04-05T21:24:04+00:00",
+      "link": "https://arxiv.org/pdf/2604.04271v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "time-series foundation models for RAN",
+      "llm_evidence_cn": "无线接入网的时间序列基础模型",
+      "llm_evidence": "无线接入网的时间序列基础模型",
+      "canonical_evidence": "无线接入网的时间序列基础模型",
+      "llm_tldr_en": "Introduces TimeRAN, a multi-task foundation model for time-series modeling in radio networks.",
+      "llm_tldr_cn": "引入 TimeRAN，一个用于无线接入网时间序列建模的统一多任务学习基础模型框架。",
+      "llm_tldr": "引入 TimeRAN，一个用于无线接入网时间序列建模的统一多任务学习基础模型框架。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.05551v1",
+      "source": "arxiv",
+      "title": "FastDiSS: Few-step Match Many-step Diffusion Language Model on Sequence-to-Sequence Generation--Full Version",
+      "abstract": "Self-conditioning has been central to the success of continuous diffusion language models, as it allows models to correct previous errors. Yet its ability degrades precisely in the regime where diffusion is most attractive for deployment: few-step sampling for fast inference. In this study, we show that when models only have a few denoising steps, inaccurate self-conditioning induces a substantial approximation gap; this mistake compounds across denoising steps and ultimately dominate the sample quality. To address this, we propose a novel training framework that handles these errors during learning by perturbing the self-conditioning signal to match inference noise, improving robustness to prior estimation errors. In addition, we introduce a token-level noise-awareness mechanism that prevents training from saturation, hence improving optimization. Extensive experiments across conditional generation benchmarks demonstrate that our framework surpasses standard continuous diffusion models while providing up to 400x faster inference speed, and remains competitive against other one-step diffusion frameworks.",
+      "authors": [
+        "Dat Nguyen-Cong",
+        "Tung Kieu",
+        "Hoang Thanh-Tung"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-04-07T07:52:08+00:00",
+      "link": "https://arxiv.org/pdf/2604.05551v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion language model for sequence-to-sequence generation",
+      "llm_evidence_cn": "用于序列到序列生成的扩散语言模型",
+      "llm_evidence": "用于序列到序列生成的扩散语言模型",
+      "canonical_evidence": "用于序列到序列生成的扩散语言模型",
+      "llm_tldr_en": "Proposes FastDiSS to improve few-step sampling robustness in diffusion-based sequence generation.",
+      "llm_tldr_cn": "提出 FastDiSS 框架，通过扰动自调节信号提高扩散语言模型在少步采样下的鲁棒性。",
+      "llm_tldr": "提出 FastDiSS 框架，通过扰动自调节信号提高扩散语言模型在少步采样下的鲁棒性。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "sequence modeling with diffusion processes for time-dependent data",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.04475v1",
+      "source": "arxiv",
+      "title": "Discrete Prototypical Memories for Federated Time Series Foundation Models",
+      "abstract": "Leveraging Large Language Models (LLMs) as federated learning (FL)-based time series foundation models offers a promising way to transfer the generalization capabilities of LLMs to time series data while preserving access to private data. However, the semantic misalignment between time-series data and the text-centric latent space of existing LLMs often leads to degraded performance. Meanwhile, the parameter-sharing mechanism in existing FL methods model heterogeneous cross-domain time-series data into a unified continuous latent space, which contradicts the fact that time-series semantics frequently manifest as discrete and recurring regimes. To address these limitations, we propose \\textsc{FeDPM}, a federated framework for time-series foundation models based on discrete prototypical memories. Specifically, we learn local prototypical memory priors for intra-domain time-series data. We then align cross-domain memories to promote a unified discrete latent space and introduce a domain-specific memory update mechanism to balance shared and personalized prototypical knowledge. Extensive experiments demonstrate the efficiency and effectiveness of \\textsc{FeDPM}. The code is publicly available at https://anonymous.4open.science/r/FedUnit-64D1.",
+      "authors": [
+        "Liwei Deng",
+        "Qingxiang Liu",
+        "Xinhe Niu",
+        "Shengchao Chen",
+        "Sheng Sun",
+        "Yuankai Wu",
+        "Guodong Long",
+        "Yuxuan Liang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-04-06T06:57:08+00:00",
+      "link": "https://arxiv.org/pdf/2604.04475v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "federated time series foundation models",
+      "llm_evidence_cn": "联邦时间序列基础模型",
+      "llm_evidence": "联邦时间序列基础模型",
+      "canonical_evidence": "联邦时间序列基础模型",
+      "llm_tldr_en": "Proposes FeDPM to align time-series semantics with LLM latent spaces in a federated setting.",
+      "llm_tldr_cn": "提出 FeDPM 框架，通过离散原型记忆解决联邦学习中时间序列与大语言模型的语义对齐问题。",
+      "llm_tldr": "提出 FeDPM 框架，通过离散原型记忆解决联邦学习中时间序列与大语言模型的语义对齐问题。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
