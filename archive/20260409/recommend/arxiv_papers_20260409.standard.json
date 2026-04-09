@@ -1,0 +1,412 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-09T19:55:01.419258+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 8,
+    "quick_skim_target": 11,
+    "quick_selected": 8
+  },
+  "deep_dive": [
+    {
+      "id": "2604.05257v1",
+      "source": "arxiv",
+      "title": "Extending Tabular Denoising Diffusion Probabilistic Models for Time-Series Data Generation",
+      "abstract": "Diffusion models are increasingly being utilised to create synthetic tabular and time series data for privacy-preserving augmentation. Tabular Denoising Diffusion Probabilistic Models (TabDDPM) generate high-quality synthetic data from heterogeneous tabular datasets but assume independence between samples, limiting their applicability to time-series domains where temporal dependencies are critical. To address this, we propose a temporal extension of TabDDPM, introducing sequence awareness through the use of lightweight temporal adapters and context-aware embedding modules. By reformulating sensor data into windowed sequences and explicitly modeling temporal context via timestep embeddings, conditional activity labels, and observed/missing masks, our approach enables the generation of temporally coherent synthetic sequences. Compared to baseline and interpolation techniques, validation using bigram transition matrices and autocorrelation analysis shows enhanced temporal realism, diversity, and coherence. On the WISDM accelerometer dataset, the suggested system produces synthetic time-series that closely resemble real world sensor patterns and achieves comparable classification performance (macro F1-score 0.64, accuracy 0.71). This is especially advantageous for minority class representation and preserving statistical alignment with real distributions. These developments demonstrate that diffusion based models provide effective and adaptable solutions for sequential data synthesis when they are equipped for temporal reasoning. Future work will explore scaling to longer sequences and integrating stronger temporal architectures.",
+      "authors": [
+        "Umang Dobhal",
+        "Christina Garcia",
+        "Sozo Inoue"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-04-06T23:46:40+00:00",
+      "link": "https://arxiv.org/pdf/2604.05257v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "Extending Denoising Diffusion Probabilistic Models for time-series data generation",
+      "llm_evidence_cn": "将去噪扩散概率模型扩展到时间序列数据生成",
+      "llm_evidence": "将去噪扩散概率模型扩展到时间序列数据生成",
+      "canonical_evidence": "将去噪扩散概率模型扩展到时间序列数据生成",
+      "llm_tldr_en": "Introduces a temporal extension of TabDDPM to capture dependencies in time-series data generation.",
+      "llm_tldr_cn": "引入了TabDDPM的时间扩展版本，用于捕获时间序列数据生成中的时间依赖性。",
+      "llm_tldr": "引入了TabDDPM的时间扩展版本，用于捕获时间序列数据生成中的时间依赖性。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "denoising diffusion probabilistic models applied to time series",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.07159v1",
+      "source": "arxiv",
+      "title": "SBBTS: A Unified Schrödinger-Bass Framework for Synthetic Financial Time Series",
+      "abstract": "We study the problem of generating synthetic time series that reproduce both marginal distributions and temporal dynamics, a central challenge in financial machine learning. Existing approaches typically fail to jointly model drift and stochastic volatility, as diffusion-based methods fix the volatility while martingale transport models ignore drift. We introduce the Schrödinger-Bass Bridge for Time Series (SBBTS), a unified framework that extends the Schrödinger-Bass formulation to multi-step time series. The method constructs a diffusion process that jointly calibrates drift and volatility and admits a tractable decomposition into conditional transport problems, enabling efficient learning. Numerical experiments on the Heston model demonstrate that SBBTS accurately recovers stochastic volatility and correlation parameters that prior SchrödingerBridge methods fail to capture. Applied to S&P 500 data, SBBTS-generated synthetic time series consistently improve downstream forecasting performance when used for data augmentation, yielding higher classification accuracy and Sharpe ratio compared to real-data-only training. These results show that SBBTS provides a practical and effective framework for realistic time series generation and data augmentation in financial applications.",
+      "authors": [
+        "Alexandre Alouadi",
+        "Grégoire Loeper",
+        "Célian Marsala",
+        "Othmane Mazhar",
+        "Huyên Pham"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-04-08T14:49:08+00:00",
+      "link": "https://arxiv.org/pdf/2604.07159v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "Diffusion process for multi-step time series generation",
+      "llm_evidence_cn": "用于多步时间序列生成的扩散过程",
+      "llm_evidence": "用于多步时间序列生成的扩散过程",
+      "canonical_evidence": "用于多步时间序列生成的扩散过程",
+      "llm_tldr_en": "Introduces SBBTS, a unified Schrödinger-Bass framework for generating synthetic financial time series.",
+      "llm_tldr_cn": "引入 SBBTS，一个用于生成合成金融时间序列的统一 Schrödinger-Bass 框架。",
+      "llm_tldr": "引入 SBBTS，一个用于生成合成金融时间序列的统一 Schrödinger-Bass 框架。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "conditional diffusion frameworks for time series generation",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2604.05175v1",
+      "source": "arxiv",
+      "title": "Graph Signal Diffusion Models for Wireless Resource Allocation",
+      "abstract": "We consider constrained ergodic resource optimization in wireless networks with graph-structured interference. We train a diffusion model policy to match expert conditional distributions over resource allocations. By leveraging a primal-dual (expert) algorithm, we generate primal iterates that serve as draws from the corresponding expert conditionals for each training network instance. We view the allocations as stochastic graph signals supported on known channel state graphs. We implement the diffusion model architecture as a U-Net hierarchy of graph neural network (GNN) blocks, conditioned on the channel states and additional node states. At inference, the learned generative model amortizes the iterative expert policy by directly sampling allocation vectors from the near-optimal conditional distributions. In a power-control case study, we show that time-sharing the generated power allocations achieves near-optimal ergodic sum-rate utility and near-feasible ergodic minimum-rates, with strong generalization and transferability across network states.",
+      "authors": [
+        "Yigit Berkay Uslu",
+        "Samar Hadou",
+        "Shirin Saeedi Bidokhti",
+        "Alejandro Ribeiro"
+      ],
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP",
+        "cs.IT",
+        "cs.LG"
+      ],
+      "published": "2026-04-06T21:12:25+00:00",
+      "link": "https://arxiv.org/pdf/2604.05175v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Diffusion models applied to wireless resource allocation tasks",
+      "llm_evidence_cn": "扩散模型应用于无线资源分配任务",
+      "llm_evidence": "扩散模型应用于无线资源分配任务",
+      "canonical_evidence": "扩散模型应用于无线资源分配任务",
+      "llm_tldr_en": "Uses graph signal diffusion models to optimize wireless resource allocation by matching expert distributions.",
+      "llm_tldr_cn": "利用图信号扩散模型通过匹配专家分布来优化无线资源分配。",
+      "llm_tldr": "利用图信号扩散模型通过匹配专家分布来优化无线资源分配。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "research papers on diffusion models applied to time series tasks",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.00481v1",
+      "source": "arxiv",
+      "title": "Tucker Diffusion Model for High-dimensional Tensor Generation",
+      "abstract": "Statistical inference on large-dimensional tensor data has been extensively studied in the literature and widely used in economics, biology, machine learning, and other fields, but how to generate a structured tensor with a target distribution is still a new problem. As profound AI generators, diffusion models have achieved remarkable success in learning complex distributions. However, their extension to generating multi-linear tensor-valued observations remains underexplored. In this work, we propose a novel Tucker diffusion model for learning high-dimensional tensor distributions. We show that the score function admits a structured decomposition under the low Tucker rank assumption, allowing it to be both accurately approximated and efficiently estimated using a carefully tailored tensor-shaped architecture named Tucker-Unet. Furthermore, the distribution of generated tensors, induced by the estimated score function, converges to the true data distribution at a rate depending on the maximum of tensor mode dimensions, thereby offering a clear theoretical advantage over the naive vectorized approach, which has a product dependence. Empirically, compared to existing approaches, the Tucker diffusion model demonstrates strong practical potential in synthetic and real-world tensor generation tasks, achieving comparable and sometimes even superior statistical performance with significantly reduced training and sampling costs.",
+      "authors": [
+        "Jianhua Guo",
+        "Xinbing Kong",
+        "Zeyu Li",
+        "Junfan Mao"
+      ],
+      "primary_category": "stat.ME",
+      "categories": [
+        "stat.ME",
+        "stat.ML"
+      ],
+      "published": "2026-04-01T04:55:18+00:00",
+      "link": "https://arxiv.org/pdf/2604.00481v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion model for high-dimensional tensor generation",
+      "llm_evidence_cn": "用于高维张量生成的扩散模型",
+      "llm_evidence": "用于高维张量生成的扩散模型",
+      "canonical_evidence": "用于高维张量生成的扩散模型",
+      "llm_tldr_en": "Proposes a Tucker diffusion model for high-dimensional tensor distributions using low-rank assumptions.",
+      "llm_tldr_cn": "提出了一种基于低秩假设的Tucker扩散模型，用于学习和生成高维张量分布。",
+      "llm_tldr": "提出了一种基于低秩假设的Tucker扩散模型，用于学习和生成高维张量分布。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "research papers on diffusion models applied to time series tasks",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.06473v1",
+      "source": "arxiv",
+      "title": "MICA: Multivariate Infini Compressive Attention for Time Series Forecasting",
+      "abstract": "Multivariate forecasting with Transformers faces a core scalability challenge: modeling cross-channel dependencies via attention compounds attention's quadratic sequence complexity with quadratic channel scaling, making full cross-channel attention impractical for high-dimensional time series. We propose Multivariate Infini Compressive Attention (MICA), an architectural design to extend channel-independent Transformers to channel-dependent forecasting. By adapting efficient attention techniques from the sequence dimension to the channel dimension, MICA adds a cross-channel attention mechanism to channel-independent backbones that scales linearly with channel count and context length. We evaluate channel-independent Transformer architectures with and without MICA across multiple forecasting benchmarks. MICA reduces forecast error over its channel-independent counterparts by 5.4% on average and up to 25.4% on individual datasets, highlighting the importance of explicit cross-channel modeling. Moreover, models with MICA rank first among deep multivariate Transformer and MLP baselines. MICA models also scale more efficiently with respect to both channel count and context length than Transformer baselines that compute attention across both the temporal and channel dimensions, establishing compressive attention as a practical solution for scalable multivariate forecasting.",
+      "authors": [
+        "Willa Potosnak",
+        "Nina Żukowska",
+        "Michał Wiliński",
+        "Dan Howarth",
+        "Ignacy Stępka",
+        "Mononito Goswami",
+        "Artur Dubrawski"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-04-07T21:19:00+00:00",
+      "link": "https://arxiv.org/pdf/2604.06473v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Attention mechanism for multivariate time series forecasting",
+      "llm_evidence_cn": "多变量时间序列预测的注意力机制",
+      "llm_evidence": "多变量时间序列预测的注意力机制",
+      "canonical_evidence": "多变量时间序列预测的注意力机制",
+      "llm_tldr_en": "Proposes MICA to enable efficient cross-channel attention in high-dimensional time series forecasting.",
+      "llm_tldr_cn": "提出 MICA，在高维时间序列预测中实现高效的跨通道注意力机制。",
+      "llm_tldr": "提出 MICA，在高维时间序列预测中实现高效的跨通道注意力机制。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "methods using diffusion models for time series forecasting",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.05064v1",
+      "source": "arxiv",
+      "title": "Dynamic Linear Coregionalization for Realistic Synthetic Multivariate Time Series",
+      "abstract": "Synthetic data is essential for training foundation models for time series (FMTS), but most generators assume static correlations, and are typically missing realistic inter-channel dependencies. We introduce DynLMC, a Dynamic Linear Model of Coregionalization, that incorporates time-varying, regime-switching correlations and cross-channel lag structures. Our approach produces synthetic multivariate time series with correlation dynamics that closely resemble real data. Fine-tuning three foundational models on DynLMC-generated data yields consistent zero-shot forecasting improvements across nine benchmarks. Our results demonstrate that modeling dynamic inter-channel correlations enhances FMTS transferability, highlighting the importance of data-centric pretraining.",
+      "authors": [
+        "Annita Vapsi",
+        "Penghang Liu",
+        "Saheed Obitayo",
+        "Aakriti",
+        "Manoj Cherukumalli",
+        "Prathamesh Patil",
+        "Amit Varshney",
+        "Nicolas Marchesotti",
+        "Elizabeth Fons",
+        "Vamsi K. Potluru",
+        "Manuela Veloso"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-04-06T18:11:20+00:00",
+      "link": "https://arxiv.org/pdf/2604.05064v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Synthetic multivariate time series for foundation models",
+      "llm_evidence_cn": "用于基础模型的合成多变量时间序列",
+      "llm_evidence": "用于基础模型的合成多变量时间序列",
+      "canonical_evidence": "用于基础模型的合成多变量时间序列",
+      "llm_tldr_en": "Introduces DynLMC to generate realistic synthetic time series with dynamic inter-channel correlations.",
+      "llm_tldr_cn": "引入 DynLMC，生成具有动态通道间相关性的真实合成时间序列。",
+      "llm_tldr": "引入 DynLMC，生成具有动态通道间相关性的真实合成时间序列。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.06413v1",
+      "source": "arxiv",
+      "title": "ODE-free Neural Flow Matching for One-Step Generative Modeling",
+      "abstract": "Diffusion and flow matching models generate samples by learning time-dependent vector fields whose integration transports noise to data, requiring tens to hundreds of network evaluations at inference. We instead learn the transport map directly. We propose Optimal Transport Neural Flow Matching (OT-NFM), an ODE-free generative framework that parameterizes the flow map with neural flows, enabling true one-step generation with a single forward pass. We show that naive flow-map training suffers from mean collapse, where inconsistent noise-data pairings drive all outputs toward the data mean. We prove that consistent coupling is necessary for non-degenerate learning and address this using optimal transport pairings with scalable minibatch and online coupling strategies. Experiments on synthetic benchmarks and image generation tasks (MNIST and CIFAR-10) demonstrate competitive sample quality while reducing inference to a single network evaluation.",
+      "authors": [
+        "Xiao Shou"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-04-07T19:49:57+00:00",
+      "link": "https://arxiv.org/pdf/2604.06413v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "ODE-free generative framework for diffusion and flow matching",
+      "llm_evidence_cn": "用于扩散和流匹配的无ODE生成框架",
+      "llm_evidence": "用于扩散和流匹配的无ODE生成框架",
+      "canonical_evidence": "用于扩散和流匹配的无ODE生成框架",
+      "llm_tldr_en": "Proposes an ODE-free generative framework for one-step sampling, improving efficiency in diffusion-like models.",
+      "llm_tldr_cn": "提出了一种无ODE生成框架，实现单步采样，提高了类扩散模型的推理效率。",
+      "llm_tldr": "提出了一种无ODE生成框架，实现单步采样，提高了类扩散模型的推理效率。",
+      "llm_tags": [
+        "query:diffts:composite"
+      ],
+      "matched_query_tag": "query:diffts:composite",
+      "matched_query_text": "Papers central to 查询将扩散模型应用于时间序列任务的相关论文, especially work that connects or combines: Time Series; research on diffusion models for time-series data; methods using diffusion models for time series forecasting; denoising diffusion probabilistic models applied to time series; sequence modeling with diffusion processes for time-dependent data; conditional diffusion frameworks for time series generation; research papers on diffusion models applied to time series tasks.",
+      "matched_requirement_id": "req-composite-diffts",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.07018v1",
+      "source": "arxiv",
+      "title": "Time Series Gaussian Chain Graph Models",
+      "abstract": "Time series graphical models have recently received considerable attention for characterizing (conditional) dependence structures in multivariate time series. In many applications, the multivariate series exhibit variable-partitioned blockwise dependence, with distinct patterns within and across blocks. In this paper, we introduce a new class of time series Gaussian chain graph models that represent contemporaneous and lagged causal relations via directed edges across blocks, while capturing within-block conditional dependencies through undirected edges. In the frequency domain, this formulation induces a cross-frequency shared group sparse plus group low-rank decomposition of the inverse spectral density matrices, which we exploit to establish identifiability of the time series chain graph structure. Building on this, we then propose a three-stage learning procedure for estimating the undirected and directed edge sets, which involves optimizing a regularized Whittle likelihood with a group lasso penalty to encourage group sparsity and a novel tensor-unfolding nuclear norm penalty to enforce group low-rank structure. We investigate the asymptotic properties of the proposed method, ensuring its consistency for exact recovery of the chain graph structure. The superior empirical performance of the proposed method is demonstrated through both extensive simulation studies and an application to U.S. macroeconomic data that highlights key monetary policy transmission mechanisms.",
+      "authors": [
+        "Qin Fang",
+        "Xinghao Qiao",
+        "Zihan Wang"
+      ],
+      "primary_category": "stat.ME",
+      "categories": [
+        "stat.ME",
+        "stat.ML"
+      ],
+      "published": "2026-04-08T12:36:51+00:00",
+      "link": "https://arxiv.org/pdf/2604.07018v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Graphical models for multivariate time series dependence",
+      "llm_evidence_cn": "多变量时间序列依赖关系的图模型",
+      "llm_evidence": "多变量时间序列依赖关系的图模型",
+      "canonical_evidence": "多变量时间序列依赖关系的图模型",
+      "llm_tldr_en": "Introduces Gaussian chain graph models to capture causal and conditional dependencies in time series.",
+      "llm_tldr_cn": "引入高斯链图模型，用于捕捉时间序列中的因果和条件依赖关系。",
+      "llm_tldr": "引入高斯链图模型，用于捕捉时间序列中的因果和条件依赖关系。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.07169v1",
+      "source": "arxiv",
+      "title": "Amortized Filtering and Smoothing with Conditional Normalizing Flows",
+      "abstract": "Bayesian filtering and smoothing for high-dimensional nonlinear dynamical systems are fundamental yet challenging problems in many areas of science and engineering. In this work, we propose AFSF, a unified amortized framework for filtering and smoothing with conditional normalizing flows. The core idea is to encode each observation history into a fixed-dimensional summary statistic and use this shared representation to learn both a forward flow for the filtering distribution and a backward flow for the backward transition kernel. Specifically, a recurrent encoder maps each observation history to a fixed-dimensional summary statistic whose dimension does not depend on the length of the time series. Conditioned on this shared summary statistic, the forward flow approximates the filtering distribution, while the backward flow approximates the backward transition kernel. The smoothing distribution over an entire trajectory is then recovered by combining the terminal filtering distribution with the learned backward flow through the standard backward recursion. By learning the underlying temporal evolution structure, AFSF also supports extrapolation beyond the training horizon. Moreover, by coupling the two flows through shared summary statistics, AFSF induces an implicit regularization across latent state trajectories and improves trajectory-level smoothing. In addition, we develop a flow-based particle filtering variant that provides an alternative filtering procedure and enables ESS-based diagnostics when explicit model factors are available. Numerical experiments demonstrate that AFSF provides accurate approximations of both filtering distributions and smoothing paths.",
+      "authors": [
+        "Tiangang Cui",
+        "Xiaodong Feng",
+        "Chenlong Pei",
+        "Xiaoliang Wan",
+        "Tao Zhou"
+      ],
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.LG",
+        "math.NA"
+      ],
+      "published": "2026-04-08T14:59:43+00:00",
+      "link": "https://arxiv.org/pdf/2604.07169v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Amortized filtering and smoothing for time series observation history",
+      "llm_evidence_cn": "时间序列观测历史的摊销滤波与平滑",
+      "llm_evidence": "时间序列观测历史的摊销滤波与平滑",
+      "canonical_evidence": "时间序列观测历史的摊销滤波与平滑",
+      "llm_tldr_en": "Proposes AFSF, a framework using conditional normalizing flows for nonlinear dynamical systems.",
+      "llm_tldr_cn": "提出 AFSF，一个利用条件归一化流处理非线性动力系统的框架。",
+      "llm_tldr": "提出 AFSF，一个利用条件归一化流处理非线性动力系统的框架。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "sequence modeling with diffusion processes for time-dependent data",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.07213v1",
+      "source": "arxiv",
+      "title": "Diffusion Processes on Implicit Manifolds",
+      "abstract": "High-dimensional data are often modeled as lying near a low-dimensional manifold. We study how to construct diffusion processes on this data manifold in the implicit setting. That is, using only point cloud samples and without access to charts, projections, or other geometric primitives. Our main contribution is a data-driven SDE that captures intrinsic diffusion on the underlying manifold while being defined in ambient space. The construction relies on estimating the diffusion's infinitesimal generator and its carré-du-champ (CDC) from a proximity graph built from the data. The generator and CDC together encode the local stochastic and geometric structure of the intended diffusion. We show that, as the number of samples grows, the induced process converges in law on the space of probability paths to its smooth manifold counterpart. We call this construction Implicit Manifold-valued Diffusions (IMDs), and furthermore present a numerical simulation procedure using Euler-Maruyama integration. This gives a rigorous basis for practical implementations of diffusion dynamics on data manifolds, and opens new directions for manifold-aware sampling, exploration, and generative modeling.",
+      "authors": [
+        "Victor Kawasaki-Borruat",
+        "Clara Grotehans",
+        "Pierre Vandergheynst",
+        "Adam Gosztolai"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "math.PR"
+      ],
+      "published": "2026-04-08T15:34:21+00:00",
+      "link": "https://arxiv.org/pdf/2604.07213v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Diffusion processes on implicit manifolds for high-dimensional data",
+      "llm_evidence_cn": "高维数据隐式流形上的扩散过程",
+      "llm_evidence": "高维数据隐式流形上的扩散过程",
+      "canonical_evidence": "高维数据隐式流形上的扩散过程",
+      "llm_tldr_en": "Constructs data-driven diffusion processes on implicit manifolds using SDEs for high-dimensional point clouds.",
+      "llm_tldr_cn": "利用随机微分方程在隐式流形上构建数据驱动的扩散过程，适用于高维点云数据。",
+      "llm_tldr": "利用随机微分方程在隐式流形上构建数据驱动的扩散过程，适用于高维点云数据。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "sequence modeling with diffusion processes for time-dependent data",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

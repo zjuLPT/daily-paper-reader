@@ -1,0 +1,54 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.07018v1/fig-001.webp",
+      "caption": "Figure 3: Estimated conditional independence graph for the FRED-MD data.",
+      "page": 30,
+      "index": 1,
+      "width": 899,
+      "height": 255
+    },
+    {
+      "url": "assets/figures/arxiv/2604.07018v1/fig-002.webp",
+      "caption": "Table 3: The average (standard error) of recall, precision, MCC, and SHD across 100 simulation runs for Design 2.",
+      "page": 29,
+      "index": 2,
+      "width": 983,
+      "height": 500
+    },
+    {
+      "url": "assets/figures/arxiv/2604.07018v1/fig-003.webp",
+      "caption": "Table 2: The average (standard error) of recall, precision, MCC, and SHD across 100 simulation runs for Design 1.",
+      "page": 28,
+      "index": 3,
+      "width": 983,
+      "height": 497
+    },
+    {
+      "url": "assets/figures/arxiv/2604.07018v1/fig-004.webp",
+      "caption": "Figure 1: The left panel presents a toy time series chain graph with colors indicating different chain components, and the right panel displays the supports of the original pΩ,A,Bq in the first column and the permuted pΩ,A,Bq in the second column.",
+      "page": 4,
+      "index": 4,
+      "width": 920,
+      "height": 475
+    },
+    {
+      "url": "assets/figures/arxiv/2604.07018v1/fig-005.webp",
+      "caption": "Figure 4: The boxplots of the estimated causal ordering for the FRED-MD data.",
+      "page": 31,
+      "index": 5,
+      "width": 676,
+      "height": 279
+    },
+    {
+      "url": "assets/figures/arxiv/2604.07018v1/fig-006.webp",
+      "caption": "Table 1: The comparison among three chain graph models.",
+      "page": 5,
+      "index": 6,
+      "width": 980,
+      "height": 194
+    }
+  ]
+}
