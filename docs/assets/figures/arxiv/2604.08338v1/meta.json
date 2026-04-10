@@ -1,0 +1,86 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.08338v1/fig-001.webp",
+      "caption": "FIG. 3. PDF of simulated rainfall data using Eq. (3). Green histograms represent the simulated rainfall amplitudes, while the red and blue curves show Log-Normal and Gamma PDF fits, respectively. Panels (a) and (b) illustrate a transition from Log-Normal to Gamma PDF as the arrival amplitude parameter θ increases from 0.03 to 0.5. Panels (c) and (d) show a shift from Gamma to Log-Normal PDF as the standard deviation of the arrival amplitude σ1 increases from 0.05 to 1. Insets display the same PDFs on a log–log scale for better visualization of the distribution tails.",
+      "page": 6,
+      "index": 1,
+      "width": 1048,
+      "height": 630
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08338v1/fig-002.webp",
+      "caption": "FIG. 9. Multifractal analysis of the simulated rainfall time series. Blue curves are obtained by analyzing the simulated rainfall data which follows Log-Normal PDF and orange curves are obtained using the simulated rainfall data which follows Gamma PDF. (a) Variation of generalized Hurst exponent (Hq) with different moments (q). (b) Variation of mass exponent (τq) with different moments (q). (c) Variation of multifractral spectrum (Dq) with singularity exponent (or Hölder exponent (hq)).",
+      "page": 11,
+      "index": 2,
+      "width": 1029,
+      "height": 378
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08338v1/fig-003.webp",
+      "caption": "FIG. C.1. Variation of the PDF of extreme events of the simulated rainfall time series with different parametric values. Three rows are representing three different parametric values of the mean intensity of the arrival process (λ), the mean of the amplitude of the arrival process (θ) and standard deviation of the amplitude of the arrival process (σ1).",
+      "page": 15,
+      "index": 3,
+      "width": 1060,
+      "height": 699
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08338v1/fig-004.webp",
+      "caption": "FIG. 8. Wavelet analysis of the simulated rainfall time series. (a)Temporal evolution of the simulated rain data. (b)Wavelet spectrum of the data shown in (a). (c)Global wavelet power spectrum of the same data showing the local frequency peaks present in the time series.",
+      "page": 10,
+      "index": 4,
+      "width": 1036,
+      "height": 614
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08338v1/fig-005.webp",
+      "caption": "FIG. B.1. Temporal evolution of simulated rainfall data in different regions of different parameters. Five different rows contain the simulated rainfall data for five different parameters and from left to right, values of the parameters increases gradually.",
+      "page": 14,
+      "index": 5,
+      "width": 1062,
+      "height": 673
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08338v1/fig-006.webp",
+      "caption": "FIG. 6. Variation of the PDF of dry patch duration for different parametric values with exponential fit (in red). Four different rows indicate the gradual increment in the parametric values of µ ((a)-(c)), σ ((d)-(f)), σ1 ((g)-(i)) and λ ((j)-(l)) respectively. τ indicates the characteristic dry patch duration for each case.",
+      "page": 8,
+      "index": 6,
+      "width": 1062,
+      "height": 762
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08338v1/fig-007.webp",
+      "caption": "FIG. 2. Temporal evolution of the simulated rainfall data. (a) Time series, (b) Cumulative time series for different realizations (indicated by different colors named as R1, R2 etc.), (c) Mean Square Displacement (MSD) of the simulated cumulative rainfall time series varies with time lag τ with an exponent α = 1.82 ± 0.04 in log-log scale. α > 1 indicates that it is a superdiffusive process which matches with the observed result.",
+      "page": 4,
+      "index": 7,
+      "width": 512,
+      "height": 434
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08338v1/fig-008.webp",
+      "caption": "FIG. D.2. Variation of multifractral spectrum (Dq) with singularity exponent (or Hölder exponent (hq)) of the simulated rainfall time series. (a) to (d) shows the behaviour of it with the variation of σ, λ, θ and σ1.",
+      "page": 17,
+      "index": 8,
+      "width": 1031,
+      "height": 585
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08338v1/fig-009.webp",
+      "caption": "FIG. 7. Power spectral density (PSD) of simulated rainfall time series. The thin colored lines correspond to twenty different realizations and the thick black line shows their mean behavior. (a) PSD of the simulated rainfall data which follows the Log-Normal PDF (b) PSD of the simulated rainfall data which follows the Gamma PDF.",
+      "page": 9,
+      "index": 9,
+      "width": 1060,
+      "height": 500
+    },
+    {
+      "url": "assets/figures/arxiv/2604.08338v1/fig-010.webp",
+      "caption": "FIG. D.1. Variation of Generalized Hurst exponent Hq with different moments (q) of the simulated rainfall time series. (a) to (d) shows the behaviour of it with the variation of σ, λ, θ and σ1.",
+      "page": 16,
+      "index": 10,
+      "width": 1022,
+      "height": 571
+    }
+  ]
+}

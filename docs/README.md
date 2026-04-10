@@ -6,52 +6,31 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-04-09
-- 运行时间：2026-04-09 19:57:44 UTC
+- 最新运行日期：2026-04-10
+- 运行时间：2026-04-10 20:22:19 UTC
 - 运行状态：成功
-- 本次总论文数：10
-- 精读区：2
-- 速读区：8
+- 本次总论文数：3
+- 精读区：1
+- 速读区：2
 
 ### 今日简报（AI）
-聚焦时间序列与扩散模型，今日共研读 10 篇前沿论文。  
-最亮点是两个 10 分精读：表格扩散模型拓展至时序生成、以及统一薛定谔-Bass 框架用于金融序列合成。  
-建议关注扩散模型在金融与高维数据生成中的跨域应用潜力。
-- 详情：[/202604/09/README](/202604/09/README)
+1) 今日聚焦偏差约束扩散模型及其在偏微分方程仿真中的高效训练，同时浏览两篇工业预测与降雨建模研究。  
+2) 精读论文提出通过限制扩散偏差减少重建误差，显示物理导向的生成模型在工程仿真中潜力显著。  
+3) 建议关注偏差控制与物理残差网络结合的趋势，以提升模型可靠性和实际可用性。
+- 详情：[/202604/10/README](/202604/10/README)
 
 ### 精读区论文标签
-1. [Extending Tabular Denoising Diffusion Probabilistic Models for Time-Series Data Generation](/202604/09/2604.05257v1-extending-tabular-denoising-diffusion-probabilistic-models-for-time-series-data-generation)  
-   标签：评分：10.0/10、query:diffts
-   evidence：将去噪扩散概率模型扩展到时间序列数据生成
-2. [SBBTS: A Unified Schrödinger-Bass Framework for Synthetic Financial Time Series](/202604/09/2604.07159v1-sbbts-a-unified-schrdinger-bass-framework-for-synthetic-financial-time-series)  
-   标签：评分：10.0/10、query:diffts
-   evidence：用于多步时间序列生成的扩散过程
+1. [Bias-Constrained Diffusion Schedules for PDE Emulations: Reconstruction Error Minimization and Efficient Unrolled Training](/202604/10/2604.08357v1-bias-constrained-diffusion-schedules-for-pde-emulations-reconstruction-error-minimization-and-efficient-unrolled-training)  
+   标签：评分：8.0/10、query:diffts
+   evidence：用于时空动力学的条件扩散模型
 
 ### 速读区论文标签
-1. [Graph Signal Diffusion Models for Wireless Resource Allocation](/202604/09/2604.05175v1-graph-signal-diffusion-models-for-wireless-resource-allocation)  
+1. [DSPR: Dual-Stream Physics-Residual Networks for Trustworthy Industrial Time Series Forecasting](/202604/10/2604.07393v1-dspr-dual-stream-physics-residual-networks-for-trustworthy-industrial-time-series-forecasting)  
    标签：评分：7.0/10、query:diffts
-   evidence：扩散模型应用于无线资源分配任务
-2. [MICA: Multivariate Infini Compressive Attention for Time Series Forecasting](/202604/09/2604.06473v1-mica-multivariate-infini-compressive-attention-for-time-series-forecasting)  
+   evidence：工业时间序列预测框架
+2. [Controlling the rain fall statistics using Mean-Reverting Jump Diffusion model](/202604/10/2604.08338v1-controlling-the-rain-fall-statistics-using-mean-reverting-jump-diffusion-model)  
    标签：评分：7.0/10、query:diffts
-   evidence：多变量时间序列预测的注意力机制
-3. [Tucker Diffusion Model for High-dimensional Tensor Generation](/202604/09/2604.00481v1-tucker-diffusion-model-for-high-dimensional-tensor-generation)  
-   标签：评分：6.0/10、query:diffts
-   evidence：用于高维张量生成的扩散模型
-4. [Dynamic Linear Coregionalization for Realistic Synthetic Multivariate Time Series](/202604/09/2604.05064v1-dynamic-linear-coregionalization-for-realistic-synthetic-multivariate-time-series)  
-   标签：评分：6.0/10、query:diffts
-   evidence：用于基础模型的合成多变量时间序列
-5. [ODE-free Neural Flow Matching for One-Step Generative Modeling](/202604/09/2604.06413v1-ode-free-neural-flow-matching-for-one-step-generative-modeling)  
-   标签：评分：6.0/10、query:diffts
-   evidence：用于扩散和流匹配的无ODE生成框架
-6. [Time Series Gaussian Chain Graph Models](/202604/09/2604.07018v1-time-series-gaussian-chain-graph-models)  
-   标签：评分：6.0/10、query:diffts
-   evidence：多变量时间序列依赖关系的图模型
-7. [Amortized Filtering and Smoothing with Conditional Normalizing Flows](/202604/09/2604.07169v1-amortized-filtering-and-smoothing-with-conditional-normalizing-flows)  
-   标签：评分：6.0/10、query:diffts
-   evidence：时间序列观测历史的摊销滤波与平滑
-8. [Diffusion Processes on Implicit Manifolds](/202604/09/2604.07213v1-diffusion-processes-on-implicit-manifolds)  
-   标签：评分：6.0/10、query:diffts
-   evidence：高维数据隐式流形上的扩散过程
+   evidence：均值回归跳跃扩散模型模拟降雨时间序列
 
 
 <div class="dpr-home-promo-card">
