@@ -6,31 +6,29 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-04-10
-- 运行时间：2026-04-10 20:22:19 UTC
+- 最新运行日期：2026-04-11
+- 运行时间：2026-04-11 19:17:42 UTC
 - 运行状态：成功
-- 本次总论文数：3
-- 精读区：1
+- 本次总论文数：2
+- 精读区：0
 - 速读区：2
 
 ### 今日简报（AI）
-1) 今日聚焦偏差约束扩散模型及其在偏微分方程仿真中的高效训练，同时浏览两篇工业预测与降雨建模研究。  
-2) 精读论文提出通过限制扩散偏差减少重建误差，显示物理导向的生成模型在工程仿真中潜力显著。  
-3) 建议关注偏差控制与物理残差网络结合的趋势，以提升模型可靠性和实际可用性。
-- 详情：[/202604/10/README](/202604/10/README)
+探索期权定价与视频生成双领域，速读两篇前沿研究。  
+值得关注的是更复杂的金融模型框架和扩散式视频字幕生成的非自回归创新。  
+建议进一步跟进扩散模型在多模态生成中的趋势，挖掘跨领域融合机会。
+- 详情：[/202604/11/README](/202604/11/README)
 
 ### 精读区论文标签
-1. [Bias-Constrained Diffusion Schedules for PDE Emulations: Reconstruction Error Minimization and Efficient Unrolled Training](/202604/10/2604.08357v1-bias-constrained-diffusion-schedules-for-pde-emulations-reconstruction-error-minimization-and-efficient-unrolled-training)  
-   标签：评分：8.0/10、query:diffts
-   evidence：用于时空动力学的条件扩散模型
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [DSPR: Dual-Stream Physics-Residual Networks for Trustworthy Industrial Time Series Forecasting](/202604/10/2604.07393v1-dspr-dual-stream-physics-residual-networks-for-trustworthy-industrial-time-series-forecasting)  
+1. [Beyond Black-Scholes: A Computational Framework for Option Pricing Using Heston, GARCH, and Jump Diffusion Models](/202604/11/2604.06068v1-beyond-black-scholes-a-computational-framework-for-option-pricing-using-heston-garch-and-jump-diffusion-models)  
    标签：评分：7.0/10、query:diffts
-   evidence：工业时间序列预测框架
-2. [Controlling the rain fall statistics using Mean-Reverting Jump Diffusion model](/202604/10/2604.08338v1-controlling-the-rain-fall-statistics-using-mean-reverting-jump-diffusion-model)  
-   标签：评分：7.0/10、query:diffts
-   evidence：均值回归跳跃扩散模型模拟降雨时间序列
+   evidence：用于金融时间序列（期权定价）的跳跃扩散模型
+2. [DiffVC: A Non-autoregressive Framework Based on Diffusion Model for Video Captioning](/202604/11/2604.08084v1-diffvc-a-non-autoregressive-framework-based-on-diffusion-model-for-video-captioning)  
+   标签：评分：6.0/10、query:diffts
+   evidence：用于视频字幕序列生成的条件扩散模型
 
 
 <div class="dpr-home-promo-card">

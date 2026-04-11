@@ -1,0 +1,39 @@
+{
+  "label": "2026-04-11",
+  "date": "2026-04-11",
+  "generated_at": "2026-04-11T19:17:46",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202604/11/2604.06068v1-beyond-black-scholes-a-computational-framework-for-option-pricing-using-heston-garch-and-jump-diffusion-models",
+      "section": "quick",
+      "title_en": "Beyond Black-Scholes: A Computational Framework for Option Pricing Using Heston, GARCH, and Jump Diffusion Models",
+      "authors": "Karmanpartap Singh Sidhu, Pranshi Saxena",
+      "date": "2026-04-07",
+      "pdf": "https://arxiv.org/pdf/2604.06068v1",
+      "score": "7.0",
+      "evidence": "用于金融时间序列（期权定价）的跳跃扩散模型",
+      "tldr": "本文提出一种超越传统Black-Scholes的计算框架，利用蒙特卡洛模拟结合GARCH、Heston和Merton跳跃扩散模型，提升期权定价的准确性。实证结果显示Heston模型效果最佳，Merton适用于高波动资产，GARCH有助于未来价格预测。",
+      "tags": "query:diffts",
+      "abstract_en": "This research addresses accurate option pricing by employing models beyond the traditional Black-Scholes framework. While Black-Scholes provides a closed-form solution, it is limited by assumptions of constant volatility, no dividends, and continuous price movements. To overcome these limitations, we use Monte Carlo simulation alongside the GARCH model, Heston stochastic volatility model, and Merton jump-diffusion model. The Black-Scholes-Monte Carlo method simulates diverse stock price paths using geometric Brownian motion. The GARCH model forecasts time-varying volatility from historical data. The Heston model incorporates stochastic volatility to capture volatility clustering and skew. The Merton jump-diffusion model adds sudden price jumps via a Poisson process. Results show the Heston model consistently produces estimates closer to market prices, while the Merton model performs well for volatile assets with sudden price movements. The GARCH model provides improved volatility forecasts for future option price prediction. All experiments used live market data from November 2024.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/11/2604.08084v1-diffvc-a-non-autoregressive-framework-based-on-diffusion-model-for-video-captioning",
+      "section": "quick",
+      "title_en": "DiffVC: A Non-autoregressive Framework Based on Diffusion Model for Video Captioning",
+      "authors": "Junbo Wang, Liangyu Fu, Yuke Li, Yining Zhu, Ya Jing, Xuecheng Wu, Jiangbin Zheng",
+      "date": "2026-04-09",
+      "pdf": "https://arxiv.org/pdf/2604.08084v1",
+      "score": "6.0",
+      "evidence": "用于视频字幕序列生成的条件扩散模型",
+      "tldr": "本研究针对视频字幕生成中自回归方法速度慢和误差累积的问题，提出了基于扩散模型的非自回归框架DiffVC。该方法通过判别式条件扩散建模视觉约束，提高生成文本的质量，并实现并行解码以加快生成。实验结果在多个数据集上显示其优于现有非自回归方法，达到接近自回归性能的水平。",
+      "tags": "query:diffts",
+      "abstract_en": "Current video captioning methods usually use an encoder-decoder structure to generate text autoregressively. However, autoregressive methods have inherent limitations such as slow generation speed and large cumulative error. Furthermore, the few non-autoregressive counterparts suffer from deficiencies in generation quality due to the lack of sufficient multimodal interaction modeling. Therefore, we propose a non-autoregressive framework based on Diffusion model for Video Captioning (DiffVC) to address these issues. Its parallel decoding can effectively solve the problems of generation speed and cumulative error. At the same time, our proposed discriminative conditional Diffusion Model can generate higher-quality textual descriptions. Specifically, we first encode the video into a visual representation. During training, Gaussian noise is added to the textual representation of the ground-truth caption. Then, a new textual representation is generated via the discriminative denoiser with the visual representation as a conditional constraint. Finally, we input the new textual representation into a non-autoregressive language model to generate captions. During inference, we directly sample noise from the Gaussian distribution for generation. Experiments on MSVD, MSR-VTT, and VATEX show that our method can outperform previous non-autoregressive methods and achieve comparable performance to autoregressive methods, e.g., it achieved a maximum improvement of 9.9 on the CIDEr and improvement of 2.6 on the B@4, while having faster generation speed. The source code will be available soon.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

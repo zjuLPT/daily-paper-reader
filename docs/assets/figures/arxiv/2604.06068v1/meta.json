@@ -1,0 +1,86 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.06068v1/fig-001.webp",
+      "caption": "Fig. 4. Estimated Option price Vs Market price for AMC",
+      "page": 6,
+      "index": 1,
+      "width": 529,
+      "height": 337
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06068v1/fig-002.webp",
+      "caption": "TABLE I DESCRIPTION OF STOCK PORTFOLIO SELECTION",
+      "page": 3,
+      "index": 2,
+      "width": 470,
+      "height": 271
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06068v1/fig-003.webp",
+      "caption": "Fig. 5. Estimated Option price Vs Market price for AMC",
+      "page": 8,
+      "index": 3,
+      "width": 475,
+      "height": 283
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06068v1/fig-004.webp",
+      "caption": "Fig. 2. Estimated Option price Vs Market price for MARA",
+      "page": 4,
+      "index": 4,
+      "width": 475,
+      "height": 279
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06068v1/fig-005.webp",
+      "caption": "Fig. 1. Estimated Option price Vs Market price for SHOPIFY",
+      "page": 4,
+      "index": 5,
+      "width": 475,
+      "height": 302
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06068v1/fig-006.webp",
+      "caption": "TABLE XI ESTIMATED OPTION PRICE VS MARKET PRICE FOR TESLA",
+      "page": 9,
+      "index": 6,
+      "width": 470,
+      "height": 321
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06068v1/fig-007.webp",
+      "caption": "Fig. 6. Estimated Option price Vs Market price for TESLA",
+      "page": 9,
+      "index": 7,
+      "width": 475,
+      "height": 290
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06068v1/fig-008.webp",
+      "caption": "TABLE XII ESTIMATED OPTION PRICE VS MARKET PRICE FOR MONTE CARLO METHOD AND HESTON MODEL FOR TESLA",
+      "page": 9,
+      "index": 8,
+      "width": 462,
+      "height": 321
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06068v1/fig-009.webp",
+      "caption": "Fig. 7. Estimated Option price Vs Market price for Monte Carlo Method and Heston Model for TESLA",
+      "page": 9,
+      "index": 9,
+      "width": 475,
+      "height": 279
+    },
+    {
+      "url": "assets/figures/arxiv/2604.06068v1/fig-010.webp",
+      "caption": "Fig. 3. Estimated Option price Vs Market price for META",
+      "page": 5,
+      "index": 10,
+      "width": 475,
+      "height": 310
+    }
+  ]
+}
