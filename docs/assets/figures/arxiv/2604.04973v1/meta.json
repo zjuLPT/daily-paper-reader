@@ -1,0 +1,62 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.04973v1/fig-001.webp",
+      "caption": "Figure 2: Linear mixing experiment: final matched source recovery results.",
+      "page": 11,
+      "index": 1,
+      "width": 1044,
+      "height": 472
+    },
+    {
+      "url": "assets/figures/arxiv/2604.04973v1/fig-002.webp",
+      "caption": "Figure 3: Linear mixing experiment: convergence of the main loss terms, reconstruction MSE, source-wise correlations, and learned GP length-scales.",
+      "page": 11,
+      "index": 2,
+      "width": 1044,
+      "height": 419
+    },
+    {
+      "url": "assets/figures/arxiv/2604.04973v1/fig-003.webp",
+      "caption": "Figure 6: Reverse diffusion paths at the final epoch.",
+      "page": 13,
+      "index": 3,
+      "width": 1044,
+      "height": 358
+    },
+    {
+      "url": "assets/figures/arxiv/2604.04973v1/fig-004.webp",
+      "caption": "Figure 7: Nonlinear mixing experiment: final matched source recovery results.",
+      "page": 13,
+      "index": 4,
+      "width": 1044,
+      "height": 527
+    },
+    {
+      "url": "assets/figures/arxiv/2604.04973v1/fig-005.webp",
+      "caption": "Figure 1: Overall architecture of the proposed StrADiff Framework.",
+      "page": 10,
+      "index": 5,
+      "width": 1044,
+      "height": 654
+    },
+    {
+      "url": "assets/figures/arxiv/2604.04973v1/fig-006.webp",
+      "caption": "Figure 4: Reverse diffusion paths at the beginning of training.",
+      "page": 12,
+      "index": 6,
+      "width": 1044,
+      "height": 408
+    },
+    {
+      "url": "assets/figures/arxiv/2604.04973v1/fig-007.webp",
+      "caption": "Figure 5: Reverse diffusion paths at an intermediate stage of training (epoch 3000).",
+      "page": 12,
+      "index": 7,
+      "width": 1044,
+      "height": 308
+    }
+  ]
+}

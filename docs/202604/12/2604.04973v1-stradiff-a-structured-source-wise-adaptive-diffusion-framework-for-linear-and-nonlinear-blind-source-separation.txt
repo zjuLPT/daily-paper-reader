@@ -1,0 +1,918 @@
+Title: StrADiff: A Structured Source-Wise Adaptive Diffusion Framework for Linear and Nonlinear Blind Source Separation
+
+URL Source: https://arxiv.org/pdf/2604.04973v1
+
+Published Time: Wed, 08 Apr 2026 00:01:21 GMT
+
+Number of Pages: 16
+
+Markdown Content:
+# StrADiff: A Structured Source-Wise Adaptive Diffusion Framework for Linear and Nonlinear Blind Source Separation 
+
+Yuan-Hao Wei 
+
+Yuan-Hao.Wei@outlook.com; yuan-hao.wei@connect.polyu.hk; yuanhao.wei1993@gmail.com 
+
+Abstract 
+
+This paper presents a Structured Source-Wise Adaptive Diffusion Framework for linear and non-linear blind source separation. The framework interprets each latent dimension as a source component and assigns to it an individual adaptive diffusion mechanism, thereby establishing source-wise latent modeling rather than relying on a single shared latent prior. The resulting formulation learns source recovery and the mixing/reconstruction process jointly within a unified end-to-end objective, allowing model parameters and latent sources to adapt simultaneously during training. This yields a common framework for both linear and nonlinear blind source separation. In the present instantiation, each source is further equipped with its own adaptive Gaussian process (GP) prior to impose source-wise temporal structure on the latent trajectories, while the overall framework is not restricted to Gaussian process priors and can in principle accommodate other structured source priors. The proposed model thus provides a general structured diffusion-based route to unsupervised source recovery, with potential relevance beyond blind source separation to interpretable latent modeling, source-wise disentanglement, and potentially identifiable nonlinear latent-variable learning under appropriate structural conditions. 
+
+Keywords: blind source separation (BSS); linear/nonlinear mixing; diffusion model; source-wise latent modeling; structured prior; Gaussian process (GP) prior; unsupervised source recovery; interpretable latent-variable modeling 
+
+# 1 Introduction 
+
+Recent advances in generative modeling have greatly expanded the ability of latent-variable models to represent complex observations through expressive nonlinear decoders and flexible stochastic generation mechanisms Ho et al. (2020); Song et al. (2021); Rombach et al. (2022). Yet, in many scientific and engi-neering problems, generation quality alone is not the ultimate goal. One often hopes that different latent variables will correspond to different underlying factors, so that the learned representation is not merely expressive, but also structured, interpretable, and potentially identifiable. This broader objective has mo-tivated growing interest in structured generative modeling, where latent variables are encouraged to carry distinct semantic, temporal, or dynamical roles rather than being absorbed into a single undifferentiated latent code Hyv¨ arinen et al. (2023); Kivva et al. (2022). This issue is closely connected to the problem of disentanglement and nonlinear latent-variable re-covery. In particular, nonlinear independent component analysis (ICA) has clarified that meaningful unsupervised recovery of latent components generally requires additional structure beyond unconstrained latent independence Hyv¨ arinen et al. (2019); Khemakhem et al. (2020); Hyv¨ arinen et al. (2023). Tempo-ral information, auxiliary variables, and latent dynamics have all been shown to provide routes toward more principled nonlinear source recovery and latent factor identification Hyv¨ arinen and Morioka (2017); Hyv¨ arinen et al. (2019); H¨ alv¨ a and Hyv¨ arinen (2020). More recently, identifiability results for deep generative models have further reinforced the importance of structural assumptions in latent-variable 
+
+> arXiv:2604.04973v1 [stat.ML] 4 Apr 2026
+
+StrADiff: A Structured Source-Wise Adaptive Diffusion Framework for Linear and Nonlinear Blind Source Separation 
+
+learning Kivva et al. (2022); Wang et al. (2025). From this perspective, blind source separation (BSS) can be viewed not only as a signal processing task, but also as a concrete testbed for studying how latent dimensions may be driven toward different interpretable roles under structured generative assumptions. Among recent generative approaches, diffusion and score-based models are particularly attractive for this purpose. Foundational works such as DDPM and score-based generative modeling through stochastic differential equations established diffusion as a powerful framework for transforming simple noise distribu-tions into complex data distributions through multi-step denoising dynamics Ho et al. (2020); Song et al. (2021). Later developments, including latent diffusion, further showed that diffusion can be deployed in structured latent spaces rather than only in the raw observation space Rombach et al. (2022). At the same time, a line of work has begun to investigate diffusion not just as a sampler, but as a representation learner. Diffusion autoencoders sought meaningful and decodable latent codes Preechakul et al. (2022), denoising diffusion autoencoders were shown to learn useful self-supervised representations Xiang et al. (2023), and bottleneck diffusion models further demonstrated that compact diffusion-guided representa-tions can exhibit emergent semantic and even partially disentangled structure Hudson et al. (2024). These developments suggest that diffusion models need not be viewed purely as black-box generators; they can also serve as structured latent modeling tools. A parallel line of research has explored diffusion models as priors for inverse problems. Score-based and diffusion posterior sampling methods have shown that diffusion models can act as powerful generative regularizers when the unknown quantity is constrained only indirectly through measurements Song et al. (2022); Chung et al. (2023). This view has already influenced source separation. Deep generative priors were first used to separate sources in a Bayesian framework without requiring explicit source models in closed form Jayaram and Thickstun (2020). More recently, score-based source separation applied inde-pendently trained score priors to recover superimposed communication signals Jayashankar et al. (2023). Diffusion-based source separation has also been advanced in blind speech separation through ArrayDPS Xu et al. (2025), extended to multi-view source separation with learned diffusion priors Wagner-Carena et al. (2025), and paralleled by related continuous-time generative formulations such as source separation by flow matching Scheibler et al. (2025). These studies clearly show that diffusion-type generative priors are becoming a serious route for solving separation and inverse problems. At the same time, diffusion models have also begun to enter the domain of disentangled and inter-pretable latent modeling more directly. DisDiff introduced unsupervised disentanglement within diffusion probabilistic models Yang et al. (2023), cross-attention-based diffusion was shown to provide a strong inductive bias for disentanglement Yang et al. (2024), and later work further improved latent-unit seman-tics within diffusion-based disentangled representation learning Jun et al. (2025). Theoretical analysis has also started to examine when and how diffusion models can disentangle latent variables under weak forms of supervision such as multiple views or partial labels Wang et al. (2025). Taken together, these works indicate that diffusion models are increasingly relevant not only for generation and inverse prob-lems, but also for the broader goal of learning structured, interpretable, and potentially identifiable latent representations. Nevertheless, most existing diffusion-based formulations still use diffusion in a relatively global man-ner. Even when the downstream goal involves multiple sources or multiple latent factors, the generative mechanism is often shared across the latent representation, or the diffusion prior is imposed at the whole-source level and then used externally in posterior sampling Jayashankar et al. (2023); Xu et al. (2025); Wagner-Carena et al. (2025). From the standpoint of structured latent modeling, this leaves a useful gap. If different latent dimensions are intended to represent different underlying components, then it is natural to ask whether each latent dimension should possess its own adaptive generative pathway and its own structural regularization, so that specialization can emerge directly within training. Such a design is especially appealing for temporally structured signals, where different latent components may exhibit clearly different dynamic scales or correlation patterns. Motivated by this perspective, this paper proposes StrADiff, a structured source-wise adaptive dif-2Yuan-Hao Wei 
+
+fusion framework in which each latent dimension is interpreted as one source component and assigned its own reverse diffusion branch. In the present implementation, each branch is further equipped with its own adaptive Gaussian process (GP) prior so that source-wise temporal structure can be imposed directly on the recovered latent trajectories. An explicit mixing or reconstruction map connects the recovered latent sources to the observations, yielding a unified end-to-end objective in which source-wise latent genera-tion, source-specific structural regularization, and observation-space reconstruction are optimized jointly. Although the experiments in this paper are conducted on linear and nonlinear blind source separation problems, the role of BSS here is mainly methodological: it provides a clear and interpretable setting in which the behavior of source-wise structured latent diffusion can be examined concretely. Under this view, the present work should be understood as a preliminary study toward broader structured generative modeling rather than as a separation method motivated only by BSS itself. Its significance lies in showing that diffusion-based latent generation can be organized in a source-wise manner, with different latent branches adapting toward different structured roles during unsupervised training. While GP priors are adopted here as one specific instantiation for temporally structured signals, the overall framework is not restricted to GP priors and can in principle be extended to other structured source priors. This makes the proposed formulation potentially relevant not only to blind source separation, but also to future research on interpretable latent-variable modeling, source-wise disentanglement, and identifiable nonlinear latent-variable learning under stronger structural assumptions. 
+
+# 2 Methodology 
+
+2.1 Structured latent formulation for source-wise blind source separation 
+
+This section specifies the observation-space fitting term. While the structured prior regularizes latent trajectories, the reconstruction model enforces consistency with the measured mixtures. Let 
+
+Y = [ y1, . . . , yT ]⊤ ∈ RT ×m (1) denote the observed mixture sequence of length T , where each yt ∈ Rm is an m-dimensional observation. The aim is to recover 
+
+S = [ s1, . . . , sT ]⊤ ∈ RT ×n, (2) where st = ( s(1)  
+
+> t
+
+, . . . , s (n) 
+
+> t
+
+)⊤ contains the n latent source components at time index t.The central modeling assumption is that each latent dimension corresponds to one source process. Accordingly, instead of assigning a single shared latent generator to the whole vector st, a separate latent-generation mechanism is associated with each source dimension. Let 
+
+s(k) =
+
+h
+
+s(k)1 , . . . , s (k)
+
+> T
+
+i⊤
+
+∈ RT , k = 1 , . . . , n, (3) denote the entire trajectory of the k-th source. The full source matrix may then be written equivalently as 
+
+S =
+
+h
+
+s(1) , . . . , s(n)i
+
+. (4) This source-wise decomposition is the basic organizing principle of the model. Once the latent dimensions are explicitly aligned with source components, the remaining task is to specify how each source is generated and how the resulting source matrix explains the observed mixtures. To this end, the observation model is written through an explicit mixing map: 
+
+bY = gϕ(S), (5) where ϕ denotes the decoder or mixing parameters. This formulation covers both linear and nonlinear separation settings within the same notation: when linear mixing is desired, gϕ can be chosen as a linear 3StrADiff: A Structured Source-Wise Adaptive Diffusion Framework for Linear and Nonlinear Blind Source Separation 
+
+map; when nonlinear mixing is required, gϕ can be instantiated by a multilayer perceptron or another nonlinear parametrization. The reconstruction mechanism is therefore kept explicit, rather than absorbed into an implicit observation model. The above formulation specifies how sources are mapped to observations, but it does not yet specify how the sources themselves are generated. The next step is therefore to construct a source-wise latent generation mechanism that is compatible with the intended separation structure. 
+
+2.2 Source-wise latent diffusion generation 
+
+For each source k, a latent initial trajectory is introduced, 
+
+z(k) ∈ RT , (6) and a source-specific Gaussian distribution is assigned to it: 
+
+q
+
+
+
+z(k)
+
+= N
+
+
+
+z(k); μ(k), diag  σ2 ( k)
+
+, (7) where μ(k) ∈ RT and σ2 ( k) ∈ RT 
+
+> +
+
+are trainable source-wise parameters. Assuming independence across source dimensions at this initial latent level gives 
+
+q(Z) = 
+
+> n
+
+Y
+
+> k=1
+
+q
+
+
+
+z(k)
+
+, Z =
+
+h
+
+z(1) , . . . , z(n)i
+
+∈ RT ×n. (8) A sample from (7) is obtained by reparameterization: 
+
+z(k) = μ(k) + σ(k) ⊙ ϵ(k), ϵ(k) ∼ N (0, I), (9) where ⊙ denotes elementwise multiplication. At this stage, the latent initial variables only define source-wise Gaussian starting points. They do not yet constitute the recovered source trajectories used by the observation model. To obtain the actual latent sources, each sampled z(k) is further transformed through a dedicated reverse diffusion process. Let the variance-preserving schedule be given by 
+
+{βτ }Lτ =1 , ατ = 1 − βτ , ¯ατ =
+
+> τ
+
+Y
+
+> r=1
+
+αr, (10) where L is the number of reverse steps. For notational convenience, define 
+
+x(k) 
+
+> L
+
+:= z(k). (11) Following the standard notation in diffusion models, the subscript indicates the noise level rather than the chronological order of generation: x0 represents the clean signal, while xL represents the maximally noised state after L diffusion steps. Therefore, the generative process is carried out in the reverse direction, starting from xL and ending at x0.A source-specific ϵ-network 
+
+ϵθk : RT × [0 , 1] → RT (12) is then used to carry out the reverse trajectory. At step τ , the implied clean estimate is 
+
+bx(k)0,τ =
+
+x(k) 
+
+> τ
+
+− √1 − ¯ατ ϵθk
+
+
+
+x(k) 
+
+> τ
+
+, τ /L 
+
+
+
+√¯ατ + ε , (13) 4Yuan-Hao Wei 
+
+followed by the deterministic reverse update 
+
+x(k)  
+
+> τ−1
+
+= √¯ατ −1 bx(k)0,τ + p1 − ¯ατ −1 ϵθk
+
+
+
+x(k) 
+
+> τ
+
+, τ /L 
+
+
+
+, τ = L, . . . , 1. (14) The recovered source trajectory is then defined by the terminal state 
+
+s(k) := x(k)0 . (15) Collecting all source dimensions yields the overall latent generation map 
+
+S = fΘ(Z) = 
+
+h
+
+fθ1
+
+
+
+z(1) 
+
+, . . . , f θn
+
+
+
+z(n)i 
+
+, (16) where Θ = {θ1, . . . , θ n}. Hence, the actual sources supplied to the mixing map are not free trainable trajectories; they are the outputs of source-wise reverse diffusion starting from source-wise Gaussian latent variables. While the source-wise reverse diffusion mechanism provides an adaptive generator for latent source trajectories, it does not by itself enforce a prescribed temporal organization on those trajectories. To incorporate such structure, an additional source-wise prior is introduced in the latent space. 
+
+2.3 Source-wise structured GP prior 
+
+To introduce explicit temporal organization into the latent source trajectories, a structured prior is im-posed independently on each source. In the present instantiation, a Gaussian process prior is adopted. Let t = [ t1, . . . , t T ]⊤ be the normalized time grid. For the k-th source, define 
+
+s(k) ∼ N (0, K(k)), (17) with covariance entries 
+
+K(k) 
+
+> ij
+
+= σ2 
+
+> f
+
+exp 
+
+
+
+− (ti − tj )2
+
+2ℓ2
+
+> k
+
+
+
++ ξ δ ij , i, j = 1 , . . . , T, (18) where ℓk > 0 is the source-specific length-scale, σ2 
+
+> f
+
+is the kernel scale, ξ > 0 is a jitter coefficient, and δij 
+
+is the Kronecker delta. Under source-wise independence, the prior factorizes as 
+
+p(S) = 
+
+> n
+
+Y
+
+> k=1
+
+p
+
+
+
+s(k)
+
+=
+
+> n
+
+Y
+
+> k=1
+
+N
+
+
+
+s(k); 0, K(k)
+
+. (19) Taking logarithms gives log p(S) = 
+
+> n
+
+X
+
+> k=1
+
+log p
+
+
+
+s(k)
+
+= − 12
+
+> n
+
+X
+
+> k=1
+
+h
+
+T log(2 π) + log K(k) + s(k)⊤K(k)−1s(k)i
+
+. (20) Accordingly, the structured-prior penalty is defined as the normalized negative log-density 
+
+Lprior = − log p(S) = 12
+
+> n
+
+X
+
+> k=1
+
+h
+
+T log(2 π) + log K(k) + s(k)⊤K(k)−1s(k)i
+
+. (21) 5StrADiff: A Structured Source-Wise Adaptive Diffusion Framework for Linear and Nonlinear Blind Source Separation 
+
+The role of (21) is twofold. The quadratic form encourages each recovered source to lie in a source-specific temporally structured region, while the log-determinant term penalizes degenerate covariance settings and couples source recovery with prior adaptation through the learnable length-scales {ℓk}nk=1 .The GP term therefore acts in the latent space: it evaluates whether the recovered source trajectories are compatible with source-specific temporal structure. This is complementary to the observation model, which operates in the data space and evaluates whether the recovered sources can explain the measured mixtures. It is also worth clarifying why the present term is written as a log-density rather than as a KL divergence between the diffusion output and the GP prior. In the current formulation, the reverse diffusion process produces a sampled terminal trajectory s(k) for each source, rather than an explicit tractable distribution over s(k) at the output level. Since a KL divergence requires two distributions, it is therefore not directly available here. For this reason, the structured prior is imposed by evaluating the GP log-density of the recovered sample trajectory itself. 
+
+2.4 Reconstruction model and data fidelity term 
+
+Given the recovered sources S, the reconstructed observations are obtained by 
+
+bY = gϕ(S). (22) Let eY denote the centered and scaled version of the observed mixtures. A Gaussian reconstruction model with fixed variance coefficient νy leads to 
+
+p( eY | S) ∝ exp 
+
+
+
+− 12νy
+
+∥ eY − gϕ(S)∥2
+
+> F
+
+
+
+, (23) so that, up to an additive constant, the reconstruction loss becomes 
+
+Lrec = 12νy
+
+∥ eY − bY∥2 
+
+> F
+
+. (24) where ∥ eY − bY∥2 
+
+> F
+
+= PTt=1 
+
+Pmj=1 ( eYtj − bYtj )2 denotes the total squared reconstruction error. Here νy is a hyperparameter acting as an explicit weighting factor on the reconstruction term, cor-responding to H in Wei et al. (2024). In this sense, its role is analogous to the balancing effect of the coefficient used in β-VAE formulations Burgess et al. (2018). This term directly couples source generation and mixture fitting: the source trajectories produced by the source-wise reverse diffusion mechanism are accepted only insofar as they can be remixed through 
+
+gϕ to explain the observations. 
+
+2.5 Diffusion denoising objective 
+
+To train the source-wise reverse diffusion networks, an ϵ-prediction loss is imposed on the recovered source trajectories. For a randomly sampled step τ ∈ { 1, . . . , L } and source k, the forward noising relation is 
+
+x(k) 
+
+> τ
+
+= √¯ατ s(k) + √1 − ¯ατ η(k), η(k) ∼ N (0, I). (25) The per-source denoising objective is then 
+
+L(k)diff = Eτ, η(k)
+
+ 1
+
+T ϵθk
+
+
+
+x(k) 
+
+> τ
+
+, τ /L 
+
+
+
+− η(k) 22
+
+
+
+. (26) Averaging over sources gives 
+
+Ldiff = 1
+
+n
+
+> n
+
+X
+
+> k=1
+
+L(k)diff . (27) Note that (27) is not imposed on an externally fixed target source. Instead, it is imposed on the very latent source trajectories that are used by the reconstruction path. In this sense, source estimation and diffusion learning are coupled within the same optimization loop. 6Yuan-Hao Wei 
+
+2.6 Regularization of the diffusion starting distribution 
+
+Since the latent initial variables Z are learned through source-wise Gaussian parameters, an additional regularizer is introduced to prevent the initial latent distribution from drifting arbitrarily far from a standard normal reference: 
+
+p(Z) = 
+
+> n
+
+Y
+
+> k=1
+
+N (0, I) . (28) Using (8), the KL divergence is KL( q(Z) ∥ p(Z)) = 
+
+> n
+
+X
+
+> k=1
+
+KL 
+
+
+
+N
+
+
+
+μ(k), diag( σ2 ( k))
+
+
+
+N (0, I)
+
+
+
+= 12
+
+> n
+
+X
+
+> k=1
+> T
+
+X
+
+> t=1
+
+
+
+μ(k)
+
+> t
+
+2
+
++
+
+
+
+σ(k)
+
+> t
+
+2
+
+− 1 − log 
+
+
+
+σ(k)
+
+> t
+
+2
+
+. (29) Its normalized form is taken as 
+
+LKL = 12
+
+> n
+
+X
+
+> k=1
+> T
+
+X
+
+> t=1
+
+
+
+μ(k)
+
+> t
+
+2
+
++
+
+
+
+σ(k)
+
+> t
+
+2
+
+− 1 − log 
+
+
+
+σ(k)
+
+> t
+
+2
+
+. (30) The role of this term is not to force the final initial samples to remain visually identical to standard normal noise throughout training. Rather, it provides a soft regularization on the trainable Gaussian initial distribution itself. Without such a term, the learned latent initial variables may absorb too much source structure too early, causing the initial distribution to drift excessively and weakening the intended role of the reverse diffusion process. In this sense, the KL term helps stabilize optimization, preserves a meaningful Gaussian reference at the start level, and prevents the source-wise initial distribution from degenerating into an unconstrained collection of free latent templates. 
+
+2.7 Unified objective and joint optimization 
+
+At this point, all ingredients of the training criterion are available: the reconstruction term enforces mix-ture consistency, the structured prior regularizes latent temporal organization, the denoising term trains the reverse diffusion operators, and the KL term stabilizes the initial latent distribution. Combining the data-fidelity term, the source-wise structured-prior penalty, the source-wise diffusion denoising objective, and the initial-distribution regularization yields the final end-to-end objective 
+
+L
+
+
+
+S, Z, Θ, ϕ, {ℓk}nk=1 ; eY
+
+
+
+= Lrec + λprior Lprior + λdiff Ldiff + λKL LKL , (31) where λprior , λdiff , and λKL are nonnegative trade-off coefficients. Expanding (31) gives 
+
+L
+
+
+
+S, Z, Θ, ϕ, {ℓk}nk=1 ; eY
+
+
+
+= 12νy
+
+∥ eY − gϕ(S)∥2
+
+> F
+
++ λprior 
+
+> n
+
+X
+
+> k=1
+
+h
+
+T log(2 π) + log K(k) + s(k)⊤K(k)−1s(k)i
+
++ λdiff 
+
+> n
+
+X
+
+> k=1
+
+Eτ, η(k)
+
+ 1
+
+T ϵθk
+
+
+
+x(k) 
+
+> τ
+
+, τ /L 
+
+
+
+− η(k) 22
+
+
+
++ λKL 
+
+> n
+
+X
+
+> k=1
+> T
+
+X
+
+> t=1
+
+
+
+μ(k)
+
+> t
+
+2
+
++
+
+
+
+σ(k)
+
+> t
+
+2
+
+− 1 − log 
+
+
+
+σ(k)
+
+> t
+
+2
+
+. (32) 7StrADiff: A Structured Source-Wise Adaptive Diffusion Framework for Linear and Nonlinear Blind Source Separation 
+
+Equation (32) shows that source recovery, source-wise temporal regularization, diffusion denoising, and latent initial normalization are optimized simultaneously from the observed mixtures. Accordingly, the model performs source separation in an end-to-end manner rather than through a separate post-processing stage. Because each latent dimension is associated with its own diffusion mechanism, structured prior, and initial-distribution parameters, the separation process is realized within training itself: as opti-mization proceeds, these source-wise quantities are gradually driven toward different source-specific con-figurations, thereby encouraging different latent dimensions to specialize to different source components. Thus, the latent source trajectories, the source-wise diffusion mechanisms, the prior hyperparameters, and the explicit mixing map are all adapted jointly in a single unsupervised training process. 
+
+2.8 Monte Carlo source estimation 
+
+After training, source uncertainty is estimated by repeated sampling from the learned latent initial dis-tribution. Specifically, for r = 1 , . . . , R ,
+
+Z(r) ∼ q(Z), S(r) = fΘ
+
+
+
+Z(r)
+
+. (33) The empirical source mean and standard deviation are then computed as 
+
+bμS = 1
+
+R
+
+> R
+
+X
+
+> r=1
+
+S(r), (34) and 
+
+bσS =
+
+"
+
+1
+
+R − 1
+
+> R
+
+X
+
+> r=1
+
+
+
+S(r) − bμS
+
+⊙2
+
+#1/2
+
+. (35) The final reconstructed observation is obtained from the source mean through 
+
+bY = gϕ( bμS) , (36) followed by inverse normalization if required. To further illustrate how the above components are integrated, the overall architecture is shown in Figure 1. Each latent dimension is treated as one source branch. For the k-th branch, a trainable Gaussian initial variable z(k) is first introduced and regularized toward a standard normal reference. It is then mapped through a source-wise reverse diffusion process to generate the recovered source trajectory s(k). A source-specific GP prior is imposed on this trajectory to enforce temporal structure. After all branches are generated, the recovered source matrix S is passed through the mixing map gϕ to reconstruct the observed mixtures. In this way, source-wise initialization, diffusion generation, structured prior regularization, and mixture reconstruction are optimized jointly in one end-to-end framework. 
+
+# 3 Experimental Study 
+
+3.1 Experimental setting 
+
+To evaluate the proposed StrADiff framework, three artificial source signals with different temporal struc-tures were used throughout the experiments. These three sources were designed to exhibit clearly different source-wise dynamics, so that the ability of the proposed source-wise adaptive diffusion mechanism and source-specific GP priors to separate heterogeneous temporal patterns could be examined more directly. Both linear and nonlinear mixing scenarios were considered. In the nonlinear case, the nonlinear mixing construction followed the same general experimental setting used in Wei and Sun (2026). 8Yuan-Hao Wei 
+
+Algorithm 1: Training procedure of the structured adaptive latent source-wise diffusion model. 
+
+Input: Normalized observations eY ∈ RT ×m, number of sources n, diffusion length L, weights λprior , λ diff , λ KL ,learning rate η.
+
+Output: Estimated source mean bμS, source uncertainty bσS, trained parameters {Θ, ϕ, {ℓk }nk=1 , {μ(k), σ(k)}nk=1 }. 
+
+> 1
+
+Initialize {μ(k), σ(k)}nk=1 , {ϵθk }nk=1 , {ℓk }nk=1 , and ϕ 
+
+> 2
+
+for e = 1 to E do  
+
+> 3
+
+Sample z(k) = μ(k) + σ(k) ⊙ ϵ(k), with ϵ(k) ∼ N (0, I), for k = 1 , . . . , n  
+
+> 4
+
+for k = 1 to n do  
+
+> 5
+
+Set x(k) 
+
+> L
+
+← z(k) 
+
+> 6
+
+for τ = L, L − 1, . . . , 1 do  
+
+> 7
+
+Compute bx(k)0,τ =
+
+x(k) 
+
+> τ
+
+− √1 − ¯ατ ϵθk
+
+
+
+x(k) 
+
+> τ
+
+, τ /L 
+
+
+
+√¯ατ + ε 
+
+> 8
+
+Update x(k)  
+
+> τ−1
+
+= √¯ατ −1 bx(k)0,τ + √1 − ¯ατ −1 ϵθk
+
+
+
+x(k) 
+
+> τ
+
+, τ /L 
+
+ 
+
+> 9
+
+end  
+
+> 10
+
+Set s(k) ← x(k)0 
+
+> 11
+
+end  
+
+> 12
+
+Form S = [ s(1) , . . . , s(n)] and bY = gϕ(S) 
+
+> 13
+
+Compute Lrec = 12νy
+
+∥ eY − bY∥2 
+
+> F
+> 14
+
+Compute Lprior = 12
+
+Pnk=1 
+
+h
+
+T log(2 π) + log |K(k)| + s(k)⊤K(k)−1s(k)
+
+i 
+
+> 15
+
+Sample diffusion step τ and noises {η(k)}nk=1 , then set x(k) 
+
+> τ
+
+= √¯ατ s(k) + √1 − ¯ατ η(k) 
+
+> 16
+
+Compute Ldiff = Pnk=1 
+
+1
+
+T ϵθk
+
+
+
+x(k) 
+
+> τ
+
+, τ /L 
+
+
+
+− η(k) 22 
+
+> 17
+
+Compute LKL = 12
+
+Pnk=1 
+
+PTt=1 
+
+h
+
+(μ(k) 
+
+> t
+
+)2 + ( σ(k) 
+
+> t
+
+)2 − 1 − log( σ(k) 
+
+> t
+
+)2
+
+i 
+
+> 18
+
+Form L = Lrec + λprior Lprior + λdiff Ldiff + λKL LKL  
+
+> 19
+
+Update {Θ, ϕ, ℓ 1, . . . , ℓ n, μ(1) , . . . , μ(n), σ(1) , . . . , σ(n)} ← OptimizerStep( ∇L ) 
+
+> 20
+
+if the chosen mixing map is linear then  
+
+> 21
+
+Normalize the columns of the mixing matrix  
+
+> 22
+
+end  
+
+> 23
+
+end  
+
+> 24
+
+Draw R Monte Carlo samples from q(Z), compute S(r) = fΘ(Z(r)), and estimate bμS and bσS using (34)–(35) 
+
+Unless otherwise stated, the number of sources was set to three, the reverse diffusion length was set to L = 20, and the model was trained end-to-end for 10,000 epochs. For each source branch, the recovered source uncertainty was estimated by Monte Carlo sampling from the learned diffusion-start distribution followed by reverse diffusion. The reported source trajectories therefore correspond to Monte Carlo estimated means, while the shaded bands indicate the associated 95% confidence intervals. 
+
+3.2 Linear mixing results 
+
+Figure 2 shows the final source recovery results in the linear mixing experiment. After permutation matching and sign correction, all three recovered sources are highly consistent with the corresponding true signals. The matched correlations are very close to one, indicating that the proposed framework can successfully recover the latent sources in the linear case. It is also worth noting that the estimated uncertainty bands are visually very narrow. This is because the Monte Carlo standard deviations at convergence are already very small, so the resulting 95% confidence intervals are difficult to observe at the plotting scale. In other words, the final recovered sources are not only accurate but also highly concentrated. The training behavior for the same linear experiment is shown in Figure 3. The total loss, recon-struction term, GP term, diffusion term, and KL term all converge stably during optimization. The reconstruction MSE rapidly decreases to a very small level and remains low for the rest of training, in-9StrADiff: A Structured Source-Wise Adaptive Diffusion Framework for Linear and Nonlinear Blind Source Separation 
+
+Figure 1: Overall architecture of the proposed StrADiff Framework. dicating that the recovered sources and learned mixing map jointly explain the observations well. The correlation curves also rise quickly and remain close to one, showing that source separation emerges early and is then gradually refined during training. The lower panels of Figure 3 present the learned GP length-scales for the three source branches. Since the original time index 1:1:1000 was normalized to [0 , 1] before GP modeling, two versions are shown: the normalized length-scale and the rescaled length-scale in the original time unit. This presentation makes the learned temporal scales easier to interpret. The three source branches converge to different length-scales, which is consistent with the fact that the three artificial sources possess different temporal structures. 
+
+3.3 Source-wise diffusion path analysis 
+
+To further examine how the proposed reverse diffusion behaves inside each source branch, Figures 4–6 visualize the diffusion trajectories at different training stages. In all three figures, each row corresponds to one source branch, and the columns show representative states along the reverse path, from the diffusion start state xL to the final recovered state x0.Figure 4 shows the diffusion paths at the beginning of training. Since the reverse process has not yet learned the source structure, the trajectories at this stage still resemble Gaussian initial states. This is consistent with the intended construction of the model: the reverse diffusion starts from a source-wise Gaussian latent variable and only gradually learns how to map that initial random state toward a structured source trajectory. Figure 5 shows the corresponding diffusion paths around epoch 3000. By this stage, the reverse trajectories have already become much more structured and visibly closer to the target source shapes. At 10 Yuan-Hao Wei 
+
+Figure 2: Linear mixing experiment: final matched source recovery results. 
+
+Figure 3: Linear mixing experiment: convergence of the main loss terms, reconstruction MSE, source-wise correlations, and learned GP length-scales. the same time, the Monte Carlo uncertainty has become very small, indicating that the learned reverse diffusion has already concentrated strongly around the recovered source trajectories. This suggests that the model does not merely memorize a final deterministic signal, but learns a stable source-wise generative path from xL to x0.Figure 6 presents the diffusion paths at the final epoch. Compared with the initial stage, the reverse process now produces source trajectories that are highly structured from the beginning of the reverse path and remain stable across the sampled steps. The final state x0 matches the recovered sources well. Together, Figures 4–6 illustrate the core mechanism of the proposed framework: each latent dimension is treated as a separate source branch, each branch owns its own adaptive reverse diffusion process, and the 11 StrADiff: A Structured Source-Wise Adaptive Diffusion Framework for Linear and Nonlinear Blind Source Separation 
+
+Figure 4: Reverse diffusion paths at the beginning of training. 
+
+Figure 5: Reverse diffusion paths at an intermediate stage of training (epoch 3000). diffusion trajectories progressively organize themselves into distinct source-specific signal patterns during training. 
+
+3.4 Nonlinear mixing results 
+
+Figure 7 shows the final recovered sources in the nonlinear mixing experiment. Compared with the linear case in Figure 2, the nonlinear results remain satisfactory but are visibly less accurate. The recovered trajectories still follow the true source shapes well overall, but the matched correlations are lower than those in the linear experiment, and small local deviations can be observed more clearly in some segments. 
+
+3.5 Discussion 
+
+Overall, the experiments support three main observations. First, in the linear setting, the proposed StrADiff framework achieves very strong separation performance, with highly accurate recovered sources, near-perfect correlations, and very small posterior uncertainty. Second, the learned GP length-scales differ across source branches, which is consistent with the use of heterogeneous temporal source priors and supports the source-wise modeling philosophy of the framework. Third, the diffusion-path visualizations provide direct evidence that the reverse diffusion mechanism is not merely an auxiliary loss term, but an 12 Yuan-Hao Wei 
+
+Figure 6: Reverse diffusion paths at the final epoch. 
+
+Figure 7: Nonlinear mixing experiment: final matched source recovery results. active part of the source-generation process: as training proceeds, each source branch evolves from an approximately Gaussian initial state toward a structured and stable recovered source trajectory. In the nonlinear case, performance degrades moderately, but the framework still preserves meaningful source recovery ability. 
+
+# 4 Conclusion 
+
+This paper presented StrADiff, a structured source-wise adaptive diffusion framework for linear and nonlinear blind source separation. The method treats each latent dimension as a source component and assigns to it an individual reverse diffusion branch, rather than relying on a single shared latent prior. 13 StrADiff: A Structured Source-Wise Adaptive Diffusion Framework for Linear and Nonlinear Blind Source Separation 
+
+In the present implementation, each source branch is further regularized by its own adaptive Gaussian process prior, so that source estimation, source-wise latent regularization, diffusion learning, and mixture reconstruction are optimized jointly in one end-to-end unsupervised framework. The experiments results indicate that the proposed framework provides a feasible structured diffusion-based route to blind source separation, while also suggesting potential relevance beyond BSS to inter-pretable latent-variable modeling and source-wise disentanglement. Although Gaussian process priors were used here to encode temporal structure, the overall framework is not restricted to GP priors and can in principle be extended to other structured source priors. Several directions remain for future work. One important extension is to investigate more challenging nonlinear mixing settings and higher-dimensional source configurations, where the interaction between source-wise diffusion learning and nonlinear reconstruction may become more complex. Another is to replace the current GP prior with other adaptive structured priors, so that different kinds of temporal or statistical dependencies can be incorporated within the same general framework. It is also of inter-est to study whether the present source-wise diffusion formulation can be connected more explicitly to identifiable nonlinear latent-variable learning under additional structural assumptions. Finally, extending the framework to real-world multichannel data and to broader inverse problems may further clarify its practical potential as a general source-wise structured generative model. 14 Yuan-Hao Wei 
+
+# References 
+
+Burgess, C. P., Higgins, I., Pal, A., Matthey, L., Watters, N., Desjardins, G., and Lerchner, A. (2018). Understanding disentangling in β-vae. arXiv preprint arXiv:1804.03599 .Chung, H., Kim, J., McCann, M. T., Klasky, M. L., and Ye, J. C. (2023). Diffusion posterior sampling for general noisy inverse problems. In International Conference on Learning Representations .H¨ alv¨ a, H. and Hyv¨ arinen, A. (2020). Hidden markov nonlinear ICA: Unsupervised learning from non-stationary time series. In Proceedings of the 36th Conference on Uncertainty in Artificial Intelligence ,volume 124 of Proceedings of Machine Learning Research , pages 939–948. PMLR. Ho, J., Jain, A., and Abbeel, P. (2020). Denoising diffusion probabilistic models. In Advances in Neural Information Processing Systems , volume 33, pages 6840–6851. Hudson, D. A., Zoran, D., Malinowski, M., Lampinen, A. K., Jaegle, A., McClelland, J. L., Matthey, L., Hill, F., and Lerchner, A. (2024). Soda: Bottleneck diffusion models for representation learning. In 
+
+Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , pages 23115– 23127. Hyv¨ arinen, A., Khemakhem, I., and Morioka, H. (2023). Nonlinear independent component analysis for principled disentanglement in unsupervised deep learning. Patterns , 4(10):100844. Hyv¨ arinen, A. and Morioka, H. (2017). Nonlinear ICA of temporally dependent stationary sources. In 
+
+Proceedings of the 20th International Conference on Artificial Intelligence and Statistics , volume 54 of 
+
+Proceedings of Machine Learning Research , pages 460–469. PMLR. Hyv¨ arinen, A., Sasaki, H., and Turner, R. E. (2019). Nonlinear ICA using auxiliary variables and general-ized contrastive learning. In Proceedings of the 22nd International Conference on Artificial Intelligence and Statistics , volume 89 of Proceedings of Machine Learning Research , pages 859–868. PMLR. Jayaram, V. and Thickstun, J. (2020). Source separation with deep generative priors. In Proceedings of the 37th International Conference on Machine Learning , volume 119 of Proceedings of Machine Learning Research , pages 4724–4735. PMLR. Jayashankar, T., Lee, G. C. F., Lancho, A., Weiss, A., Polyanskiy, Y., and Wornell, G. W. (2023). Score-based source separation with applications to digital communication signals. Jun, Y., Park, J., Choo, K., Choi, T. E., and Hwang, S. J. (2025). Disentangling disentangled represen-tations: Towards improved latent units via diffusion models. In Proceedings of the Winter Conference on Applications of Computer Vision , pages 3559–3569. Khemakhem, I., Kingma, D. P., Monti, R. P., and Hyv¨ arinen, A. (2020). Variational autoencoders and nonlinear ICA: A unifying framework. In Proceedings of the 23rd International Conference on Artificial Intelligence and Statistics , volume 108 of Proceedings of Machine Learning Research , pages 2207–2217. PMLR. Kivva, B., Rajendran, G., Ravikumar, P., and Aragam, B. (2022). Identifiability of deep generative models without auxiliary information. In Advances in Neural Information Processing Systems , volume 35, pages 15687–15701. Preechakul, K., Chatthee, N., Wizadwongsa, S., and Suwajanakorn, S. (2022). Diffusion autoencoders: Toward a meaningful and decodable representation. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , pages 10619–10629. 15 StrADiff: A Structured Source-Wise Adaptive Diffusion Framework for Linear and Nonlinear Blind Source Separation 
+
+Rombach, R., Blattmann, A., Lorenz, D., Esser, P., and Ommer, B. (2022). High-resolution image synthesis with latent diffusion models. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , pages 10684–10695. Scheibler, R., Hershey, J. R., Doucet, A., and Li, H. (2025). Source separation by flow matching. Song, J., Vahdat, A., Mardani, M., Kautz, J., and Ermon, S. (2022). Solving inverse problems in medical imaging with score-based generative models. In International Conference on Learning Representations .Song, Y., Sohl-Dickstein, J., Kingma, D. P., Kumar, A., Ermon, S., and Poole, B. (2021). Score-based generative modeling through stochastic differential equations. In International Conference on Learning Representations .Wagner-Carena, S., Akhmetzhanova, A., and Erickson, S. (2025). A data-driven prism: Multi-view source separation with diffusion model priors. NeurIPS 2025 poster, OpenReview. Wang, L., Mirza, M. J., Gong, Y., Gong, Y., Zhang, J., Tracey, B. H., Placek, K., Vilela, M., and Glass, J. R. (2025). Can diffusion models disentangle? a theoretical perspective. NeurIPS 2025 poster, OpenReview. Wei, Y. et al. (2024). Innovative blind source separation techniques combining gaussian process algorithms and variational autoencoders with applications in structural health monitoring. Wei, Y.-H. and Sun, Y.-J. (2026). Pdgmm-vae: A variational autoencoder with adaptive per-dimension gaussian mixture model priors for nonlinear ica. arXiv preprint arXiv:2603.23547 .Xiang, W., Yang, H., Huang, D., and Wang, Y. (2023). Denoising diffusion autoencoders are unified self-supervised learners. In Proceedings of the IEEE/CVF International Conference on Computer Vision ,pages 15802–15812. Xu, Z., Fan, X., Wang, Z.-Q., Jiang, X., and Roy Choudhury, R. (2025). Arraydps: Unsupervised blind speech separation with a diffusion prior. In Proceedings of the 42nd International Conference on Machine Learning , volume 267 of Proceedings of Machine Learning Research , pages 69160–69188. PMLR. Yang, T., Lan, C., Lu, Y., and Zheng, N. (2024). Diffusion model with cross attention as an inductive bias for disentanglement. In Advances in Neural Information Processing Systems , volume 37, pages 82465–82492. Yang, T., Wang, Y., Lu, Y., and Zheng, N. (2023). Disdiff: Unsupervised disentanglement of diffusion probabilistic models. NeurIPS 2023 poster, OpenReview. 16

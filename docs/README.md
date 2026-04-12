@@ -6,29 +6,26 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-04-11
-- 运行时间：2026-04-11 19:17:42 UTC
+- 最新运行日期：2026-04-12
+- 运行时间：2026-04-12 19:58:50 UTC
 - 运行状态：成功
-- 本次总论文数：2
+- 本次总论文数：1
 - 精读区：0
-- 速读区：2
+- 速读区：1
 
 ### 今日简报（AI）
-探索期权定价与视频生成双领域，速读两篇前沿研究。  
-值得关注的是更复杂的金融模型框架和扩散式视频字幕生成的非自回归创新。  
-建议进一步跟进扩散模型在多模态生成中的趋势，挖掘跨领域融合机会。
-- 详情：[/202604/11/README](/202604/11/README)
+今天速读了论文《StrADiff》，探索结构化自适应扩散在盲源分离中的应用。  
+该框架能同时处理线性与非线性混合问题，展示更灵活的分离能力。  
+建议下一步关注其在真实信号场景中的实验表现与可扩展性。
+- 详情：[/202604/12/README](/202604/12/README)
 
 ### 精读区论文标签
 - 本次无精读推荐。
 
 ### 速读区论文标签
-1. [Beyond Black-Scholes: A Computational Framework for Option Pricing Using Heston, GARCH, and Jump Diffusion Models](/202604/11/2604.06068v1-beyond-black-scholes-a-computational-framework-for-option-pricing-using-heston-garch-and-jump-diffusion-models)  
+1. [StrADiff: A Structured Source-Wise Adaptive Diffusion Framework for Linear and Nonlinear Blind Source Separation](/202604/12/2604.04973v1-stradiff-a-structured-source-wise-adaptive-diffusion-framework-for-linear-and-nonlinear-blind-source-separation)  
    标签：评分：7.0/10、query:diffts
-   evidence：用于金融时间序列（期权定价）的跳跃扩散模型
-2. [DiffVC: A Non-autoregressive Framework Based on Diffusion Model for Video Captioning](/202604/11/2604.08084v1-diffvc-a-non-autoregressive-framework-based-on-diffusion-model-for-video-captioning)  
-   标签：评分：6.0/10、query:diffts
-   evidence：用于视频字幕序列生成的条件扩散模型
+   evidence：用于源分离的自适应扩散框架
 
 
 <div class="dpr-home-promo-card">
