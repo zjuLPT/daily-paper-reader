@@ -1,0 +1,70 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.09039v1/fig-001.webp",
+      "caption": "Fig. 12: Performance of the CDiT trained with different number of pilot patterns. The models are tested under the conditions of P = 16.",
+      "page": 11,
+      "index": 1,
+      "width": 415,
+      "height": 614
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09039v1/fig-002.webp",
+      "caption": "TABLE III: PERFORMANCE ACROSS DIFFERENT MODEL SIZES, EVALUATED BY NMSE AND ρ.",
+      "page": 10,
+      "index": 2,
+      "width": 1076,
+      "height": 297
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09039v1/fig-003.webp",
+      "caption": "Fig. 9: NMSE versus the number of inference steps S of DDPM with ’linspace’ time step spacing under different noise levels.",
+      "page": 10,
+      "index": 3,
+      "width": 1068,
+      "height": 250
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09039v1/fig-004.webp",
+      "caption": "Fig. 10: NMSE versus the number of inference steps S of DDIM and that of DDPM under different noise levels.",
+      "page": 10,
+      "index": 4,
+      "width": 1065,
+      "height": 249
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09039v1/fig-005.webp",
+      "caption": "TABLE I: PARAMETER SETTINGS FOR SIONNA DATASETS",
+      "page": 8,
+      "index": 5,
+      "width": 529,
+      "height": 325
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09039v1/fig-006.webp",
+      "caption": "TABLE II: PARAMETER SETTINGS FOR TRAINING",
+      "page": 8,
+      "index": 6,
+      "width": 529,
+      "height": 486
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09039v1/fig-007.webp",
+      "caption": "TABLE IV: ABLATION STUDY ON CDIT. ALL OF THE MODELS ARE TRAINED FOR 900 EPOCHS.",
+      "page": 12,
+      "index": 7,
+      "width": 529,
+      "height": 427
+    },
+    {
+      "url": "assets/figures/arxiv/2604.09039v1/fig-008.webp",
+      "caption": "Fig. 6: Cumulative probability distribution of errors (NMSE) between the estimated channel and the ground truth with SNR = 15 dB and P = 16.",
+      "page": 9,
+      "index": 8,
+      "width": 505,
+      "height": 415
+    }
+  ]
+}

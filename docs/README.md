@@ -6,26 +6,37 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-04-12
-- 运行时间：2026-04-12 19:58:50 UTC
+- 最新运行日期：2026-04-13
+- 运行时间：2026-04-13 20:01:42 UTC
 - 运行状态：成功
-- 本次总论文数：1
-- 精读区：0
-- 速读区：1
+- 本次总论文数：5
+- 精读区：3
+- 速读区：2
 
 ### 今日简报（AI）
-今天速读了论文《StrADiff》，探索结构化自适应扩散在盲源分离中的应用。  
-该框架能同时处理线性与非线性混合问题，展示更灵活的分离能力。  
-建议下一步关注其在真实信号场景中的实验表现与可扩展性。
-- 详情：[/202604/12/README](/202604/12/README)
+探索高精度 PDE 驱动的扩散模型与流匹配生成方法。  
+长时动态预测中的不确定性过滤与偏差约束训练带来显著稳定性提升。  
+建议关注 PDE 与生成模型融合的应用前景，以及轻量化一步生成的新动向。
+- 详情：[/202604/13/README](/202604/13/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [PDE-regularized Dynamics-informed Diffusion with Uncertainty-aware Filtering for Long-Horizon Dynamics](/202604/13/2604.09058v1-pde-regularized-dynamics-informed-diffusion-with-uncertainty-aware-filtering-for-long-horizon-dynamics)  
+   标签：评分：10.0/10、query:diffts
+   evidence：用于时空预测的动力学知情扩散框架
+2. [Bias-Constrained Diffusion Schedules for PDE Emulations: Reconstruction Error Minimization and Efficient Unrolled Training](/202604/13/2604.08357v2-bias-constrained-diffusion-schedules-for-pde-emulations-reconstruction-error-minimization-and-efficient-unrolled-training)  
+   标签：评分：8.0/10、query:diffts
+   evidence：用于时空动态和PDE仿真的条件扩散模型
+3. [Diffusion Inpainting MIMO-OFDM Channels with Limited Noisy Observations](/202604/13/2604.09039v1-diffusion-inpainting-mimo-ofdm-channels-with-limited-noisy-observations)  
+   标签：评分：8.0/10、query:diffts
+   evidence：用于信道修复的条件扩散框架
 
 ### 速读区论文标签
-1. [StrADiff: A Structured Source-Wise Adaptive Diffusion Framework for Linear and Nonlinear Blind Source Separation](/202604/12/2604.04973v1-stradiff-a-structured-source-wise-adaptive-diffusion-framework-for-linear-and-nonlinear-blind-source-separation)  
-   标签：评分：7.0/10、query:diffts
-   evidence：用于源分离的自适应扩散框架
+1. [Lipschitz regularity in Flow Matching and Diffusion Models: sharp sampling rates and functional inequalities](/202604/13/2604.06065v1-lipschitz-regularity-in-flow-matching-and-diffusion-models-sharp-sampling-rates-and-functional-inequalities)  
+   标签：评分：6.0/10、query:diffts
+   evidence：扩散模型中的Lipschitz正则性与采样率
+2. [ODE-free Neural Flow Matching for One-Step Generative Modeling](/202604/13/2604.06413v1-ode-free-neural-flow-matching-for-one-step-generative-modeling)  
+   标签：评分：6.0/10、query:diffts
+   evidence：与扩散和流匹配相关的生成框架
 
 
 <div class="dpr-home-promo-card">
