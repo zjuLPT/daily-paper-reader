@@ -1,0 +1,767 @@
+Title: Signal-Aware Conditional Diffusion Surrogates for Transonic Wing Pressure Prediction
+
+URL Source: https://arxiv.org/pdf/2604.11263v1
+
+Published Time: Tue, 14 Apr 2026 02:35:54 GMT
+
+Number of Pages: 18
+
+Markdown Content:
+# Signal-Aware Conditional Diffusion Surrogates for Transonic Wing Pressure Prediction 
+
+Víctor Francés-Belda 
+
+Theoretical and Computational Aerodynamics Group Flight Physics Department. Subdirectorate General for Aeronautical Systems Spanish National Institute for Aerospace Technology (INTA) Department of Aerospace Engineering Universidad Carlos III de Madrid Madrid, Spain 
+
+vfrabel@inta.es 
+
+Carlos Sanmiguel Vila 
+
+Aerial Platforms Department Subdirectorate General for Aeronautical Systems Spanish National Institute for Aerospace Technology (INTA) Department of Aerospace Engineering Universidad Carlos III de Madrid Madrid, Spain 
+
+csanvil@inta.es 
+
+Rodrigo Castellanos 
+
+Department of Aerospace Engineering Universidad Carlos III de Madrid Madrid, Spain 
+
+rcastell@ing.uc3m.es 
+
+# Abstract 
+
+Accurate and efficient surrogate models for aerodynamic surface pressure fields are essential for accelerating aircraft design and analysis, yet deterministic regressors trained with pointwise losses often smooth sharp nonlinear features. This work presents a conditional denoising diffusion probabilistic model for predicting surface pressure distributions on the NASA Common Research Model wing under varying conditions of Mach number, angle of attack, and four control surface deflections. The framework operates on unstructured surface data through a principal component representation used as a non-truncated, reversible linear reparameterization of the pressure field, enabling a fully connected architecture. A signal-aware training objective is derived by propagating a reconstruction loss through the diffusion process, yielding a timestep-dependent weighting that improves fidelity in regions with strong pressure gradients. The stochastic sampling process is analyzed through repeated conditional generations, and two diagnostic metrics are introduced, the Local Reliability Index and Global Reliability Index, to relate sampling-induced spread to reconstruction error. Relative to the considered deterministic baselines, the proposed formulation reduces mean absolute error and improves the reconstruction of suction peaks, shock structures, and control surface discontinuities. The sampling-induced spread exhibits strong correspondence with surrogate error, supporting its interpretation as a qualitative reliability indicator rather than calibrated uncertainty quantification. 
+
+> arXiv:2604.11263v1 [physics.flu-dyn] 13 Apr 2026
+
+Signal-Aware Conditional Diffusion Surrogates for Transonic Wing Pressure Prediction 
+
+# Nomenclature 
+
+𝑏 = design space dimension 
+
+C = design matrix 
+
+𝐶 𝑝 = pressure coefficient vector 
+
+c = conditioning vector (flight condition sextuplet) 
+
+𝑐 = chord, m 
+
+D = database’s matrix 
+
+𝑑 = number of dataset’s samples 
+
+F = PCA projection operator 
+
+F −1 = inverse PCA projection operator 
+
+G = layer projection operator 
+
+G−1 = inverse layer projection operator 
+
+ℎ = number of mesh points 
+
+𝑘 = embedding dimension 
+
+𝑙 = number of testing flight conditions M = Mach number 
+
+𝑚 = number of retained PCA components 
+
+N = Gaussian distribution 
+
+𝑁 = ensemble size 
+
+𝑛 = number of flight conditions 
+
+𝑟 = feature-space dimensionality 
+
+T = time matrix 
+
+𝑇 = total number of timesteps 
+
+𝑡 = diffusion timestep 
+
+X = dataset of pressure fields 
+
+x = physical 𝐶 𝑝 sample 
+
+x∗ = predicted 𝐶 𝑝 sample 
+
+Z = latent data matrix 
+
+z = latent representation of xz∗ = latent representation of x∗
+
+z0 = clean, uncorrupted signal 
+
+z𝑡 = noisy signal at timestep 𝑡 𝛼 = angle of attack, deg 
+
+𝛽 𝑡 = variance schedule parameter at timestep 𝑡 𝛾 𝑡 = complementary variance schedule parameter at timestep 𝑡 , 𝛾 𝑡 = 1 − 𝛽 𝑡 
+
+𝛾 𝑡 = cumulative product of 𝛾 𝑡 , 𝛾 𝑡 = Î𝑡 𝑖 =1 𝛾 𝑖 
+
+𝛿 𝑖 = deflection angle of 𝑖 -th surface, deg 
+
+𝜺 = Gaussian noise 
+
+𝜺 𝜃 = noise predicted by the model 
+
+𝜂 = span percentage from wing’s root 
+
+𝜃 = parameters of a neural network 
+
+𝝁 𝜃 = ensemble’s mean pressure field 
+
+𝝈 𝜃 = ensemble’s standard deviation 
+
+𝜌 = Pearson coefficient 
+
+𝜔 = fraction of sorted mesh points based on model’s deviation 2Signal-Aware Conditional Diffusion Surrogates for Transonic Wing Pressure Prediction 
+
+# 1 Introduction 
+
+Computational Fluid Dynamics (CFD) simulations, to-gether with wind tunnel campaigns and flight testing, con-stitute the main sources of high-quality aerodynamic data for design optimization, manufacturing, and performance analysis in the aerospace industry He et al. (2017); An-hichem et al. (2022). Although experimental approaches generally provide the highest fidelity, their widespread use is limited by cost, operational complexity, and the effort required for data acquisition and processing Malik and Bushnell (2012). CFD offers a more flexible and cost-effective alternative, but high-fidelity simulations remain computationally demanding, particularly for complex flow topologies. To alleviate the cost of generating aerodynamic databases, Machine Learning (ML) techniques have been increasingly adopted as surrogate models, enabling rapid predictions from pre-computed datasets without repeatedly solving the governing equations Yondo et al. (2019); Du et al. (2021, 2022). A central difficulty in aerodynamic surrogate modeling is that the quantities of interest are often high-dimensional fields containing sharp nonlinear features. Modern deter-ministic surrogates span a wide spectrum of representations and architectures, including graph Neural Networks (NNs) for aircraft surface pressure prediction Hines and Beke-meyer (2023), mesh-based neural fields (implicit neural representations) Catalani et al. (2024, 2026), and neural operator frameworks designed to learn solution operators to accelerate parametric and shape-dependent simulations Shukla et al. (2024); Hu et al. (2025). While these ap-proaches can be highly accurate, they are typically deployed as point-estimate predictors and frequently optimized with pointwise reconstruction losses such as Mean Squared Error (MSE). As a consequence, the learned mapping is statistically driven toward conditional-average predictions. In aerodynamics, this behavior becomes especially prob-lematic in transonic regimes: if the surrogate exhibits spatial ambiguity in the shock position, the MSE-optimal prediction tends to smear the pressure jump into a smooth ramp rather than preserving a sharp discontinuity. This degradation is not merely a visual artifact: a smeared shock prediction directly corrupts the integrated wave drag and pitching moment, quantities that are central to transonic aircraft design and performance assessment. To address these limitations, generative modeling frame-works have recently attracted growing attention in fluid mechanics. Early efforts employed Generative Adversarial Networks (GANs), either directly or in combination with Autoencoders (AEs), for the synthesis of aerodynamic flow fields and pressure distributions Nandal et al. (2023); Wang et al. (2023). However, the instability and mode-collapse issues commonly associated with GANs have motivated the exploration of diffusion-based generative models. In particular, diffusion probabilistic models Sohl-Dickstein et al. (2015); Ho et al. (2020); Nichol and Dhariwal (2021); Song et al. (2020) provide a robust likelihood-free training strategy and can represent richer conditional distributions than deterministic regressors Nichol and Dhariwal (2021); Saharia et al. (2021). This representational advantage has been recognized across a growing body of work in fluid mechanics and aerodynamics. In aerodynamics, Denoising Diffusion Probabilistic Mod-els (DDPMs) have been investigated for uncertainty-aware airfoil-flow prediction Liu and Thuerey (2024), while dif-fusion transformers have been proposed for Reynolds-averaged airfoil simulations Wang et al. (2025); Ogbuagu et al. (2026), and transformer-guided diffusion models have been employed for flow-field reconstruction and super-resolution Liu et al. (2025). Diffusion formulations have also been explored beyond direct field prediction, for ex-ample, through latent-space samplers for aerodynamic shape generation and optimization Wei et al. (2024). More broadly in fluid mechanics, latent diffusion with neural field embeddings has been employed for stochastic spatiotempo-ral turbulence generation in three-dimensional domains Du et al. (2024), while graph-based and point-wise diffusion for-mulations have extended these models to irregular meshes, strong geometric variability, and large-scale physical sys-tems Lino et al. (2025); Kim et al. (2025). Together, these studies show that diffusion models are evolving from image-oriented generative tools into a flexible surrogate family for fluid mechanics applications. This evolution spans structured and unstructured discretizations, deterministic and stochastic prediction settings, and both physical-field reconstruction and design-oriented generation. While ac-celerated deterministic samplers can reduce computational cost Song et al. (2020), the stochastic sampling process re-mains an intrinsic aspect of diffusion models and provides access to ensemble statistics. Within this context, the present work investigates a comple-mentary perspective: a conditional DDPM-based regres-sion surrogate for predicting high-fidelity aerodynamic sur-face pressure distributions on the three-dimensional wing of a transport aircraft configuration in transonic conditions. The proposed framework operates in a Principal Compo-nent Analysis (PCA)-based modal space, where PCA is used as a full, non-truncated, reversible linear reparameter-ization of the pressure field rather than as a reduced-order model. This enables a fully-connected denoising network acting on modal coefficients, thereby accommodating un-structured surface data without requiring a structured-grid representation. In addition, this work examines the impli-cations of the standard diffusion noise-matching objective for aerodynamic pressure prediction in regions with strong gradients, and derives a signal-aware reformulation with a timestep-dependent weighting designed to improve fidelity in such regions. Beyond prediction accuracy, this study analyzes the stochas-tic response of the diffusion model under repeated sampling. Unlike approaches that interpret diffusion-sampling vari-ability as calibrated predictive uncertainty Liu and Thuerey (2024); Ogbuagu et al. (2026); Xu et al. (2025), the present work does not pursue quantitative uncertainty quantifica-tion. Instead, the variability induced by the generative 3Signal-Aware Conditional Diffusion Surrogates for Transonic Wing Pressure Prediction process is examined as a qualitative sensitivity and re-liability indicator. To this end, two diagnostic metrics are introduced: the Local Reliability Index (LRI), which measures local correspondence between predictive spread and reconstruction error, and the Global Reliability Index (GRI), which provides the analogous relation at the global-condition level. The objective is therefore not to claim calibrated uncertainty estimates, but to assess whether the intrinsic stochasticity of the diffusion model can identify regions and operating conditions associated with larger surrogate errors. The remainder of this article is organized as follows: sec-tion 2 introduces the foundational concepts of DDPMs. Section 3 presents the CFD database and test case. Sec-tion 4 describes the surrogate framework, including the architecture of the model, the conditioning process, and the proposed signal-aware objective. The results of this methodology are outlined in section 5, involving a com-parative analysis against several baselines and a sensitivity analysis. Finally, section 6 highlights the findings of the work. 
+
+# 2 Theoretical background 
+
+DDPMs Ho et al. (2020) are a class of latent variable models inspired by non-equilibrium thermodynamics Sohl-Dickstein et al. (2015), originally developed for image generation Ho et al. (2020); Nichol and Dhariwal (2021); Saharia et al. (2021), and subsequently extended to fluid-mechanics and aerodynamic applications Du et al. (2024); Wei et al. (2024). The essential idea of these models is to progressively corrupt a signal into pure Gaussian noise through an iterative forward diffusion process, and then learn a reverse diffusion process that restores structure from the corrupted state, yielding a highly flexible and tractable generative model of the data. While deterministic samplers can accelerate inference Song et al. (2020), the standard Markovian DDPM sampling strategy is retained in this work to maximize prediction fidelity and preserve the stochasticity required for variance quantification. The forward diffusion process slowly adds Gaussian noise to the original signal over 𝑇 timesteps, following a Markov chain Kuntz (2020). The amount of noise injected at a given timestep 𝑡 ∈ [ 1, 2, . . . , 𝑇 ] is controlled by a diffusion parameter 𝛽 𝑡 , commonly referred to as the variance sched-ule. In general, the data distribution z at 𝑡 , given the data distribution at 𝑡 − 1, can be expressed as 
+
+z𝑡 =√︁ 1 − 𝛽 𝑡 z𝑡 −1 +√︁ 𝛽 𝑡 𝜺 , 𝜺 ∼ N ( 0, I), (1) where 𝜺 is sampled from a multivariate standard Gaussian distribution of mean 0 and covariance I. Here, z0 denotes the uncorrupted sample, whereas z𝑇 represents the end of the forward process, where the signal is completely destroyed. Note that 𝛽 𝑡 may vary with 𝑡 depending on the selected noise schedule Guo et al. (2025). As 𝑡 approaches 
+
+𝑇 , z𝑡 converges to a Gaussian noise distribution. However, 
+
+z𝑡 can also be sampled directly from z0 in closed form, without iterating through the intermediate steps: 
+
+z𝑡 =√︁ 𝛾 𝑡 z0 +√︁ 1 − 𝛾 𝑡 𝜺 , (2) with 
+
+𝛾 𝑡 = 1 − 𝛽 𝑡 ,𝛾 𝑡 =
+
+> 𝑡
+
+Ö
+
+> 𝑖 =1
+
+𝛾 𝑖 .
+
+Note that the parameter 𝛾 is generally referred to as 𝛼 in the diffusive literature. In the present work, the notation is changed to avoid confusion with the angle of attack, which is denoted by 𝛼 .The reverse diffusion process is likewise defined in a Markovian manner. While the forward process progres-sively corrupts the clean signal z0, the reverse process aims to restore it. Specifically, the objective is to sample from 𝑞 (z𝑡 −1 | z𝑡 ), which denotes the distribution of the cleaner signal z𝑡 −1 conditioned on the noisy observation z𝑡 .Under the Gaussian forward noising process, this reverse conditional can be written as 
+
+𝑞 (z𝑡 −1 | z𝑡 ) = N ( z𝑡 −1; 𝝁 , 𝚺 ), (3) where 𝝁 and 𝚺 denote the mean vector and covariance matrix of the distribution. However, computing the exact values of 𝝁 and 𝚺 requires marginalizing over the entire data distribution 𝑞 (z0), which is intractable. In simple terms, perfectly reversing the noising process would require complete knowledge of the probability density of every possible uncorrupted signal, which is unavailable. Because 
+
+𝑞 cannot be computed exactly, it is approximated by a parametrized distribution 𝑝 𝜃 defined through a NN, such that 
+
+𝑝 𝜃 (z𝑡 −1 | z𝑡 ) = N ( z𝑡 −1; 𝝁 𝜃 (z𝑡 , 𝑡 ), 𝚺 𝜃 (z𝑡 , 𝑡 )) . (4) To fully specify 𝑝 𝜃 , the NN must define its mean 𝝁 𝜃 and covariance 𝚺 𝜃 . In the standard, simplified DDPM formu-lation, the covariance is fixed from the forward process parameters as 
+
+𝚺 𝜃 (z𝑡 , 𝑡 ) = 𝛽 𝑡 I, (5) thereby reducing the learning task to the prediction of 
+
+𝝁 𝜃 . This leads to the following parameterization Ho et al. (2020): 
+
+𝝁 𝜃 (z𝑡 , 𝑡 ) = 1
+
+√𝛾 𝑡 
+
+z𝑡 − 𝛽 𝑡 √︁ 
+
+1 − 𝛾 𝑡 
+
+𝜺 𝜃 (z𝑡 , 𝑡 )
+
+!
+
+, (6) where 𝜺 𝜃 is the function approximator used to predict the added noise 𝜺 from z𝑡 . Consequently, z𝑡 −1 can be sampled from 𝑝 𝜃 as 
+
+z𝑡 −1 = 1
+
+√𝛾 𝑡 
+
+z𝑡 − 𝛽 𝑡 √︁ 
+
+1 − 𝛾 𝑡 
+
+𝜺 𝜃 (z𝑡 , 𝑡 )
+
+!
+
++√︁ 𝛽 𝑡 s, (7) with s ∼ N ( 0, I) if 𝑡 > 1, and s = 0 otherwise, so that the final denoised signal is not re-corrupted. 4Signal-Aware Conditional Diffusion Surrogates for Transonic Wing Pressure Prediction Therefore, once 𝚺 𝜃 is fixed and 𝝁 𝜃 is parameterized through 
+
+𝜺 𝜃 , the learning problem reduces to predicting the noise added to z𝑡 in order to reconstruct z𝑡 −1. In practice, this predictor is often implemented with a U-Net-type architec-ture Ronneberger et al. (2021). Under this formulation, the standard training objective minimizes the MSE between the actual and predicted noise Ho et al. (2020), namely 
+
+L( 𝜃 ) = Ez0 ,𝜺 ,𝑡 
+
+∥𝜺 − 𝜺 𝜃 (z𝑡 , 𝑡 )∥ 22
+
+ . (8) 
+
+2.1 Training and sampling algorithms 
+
+The training procedure follows the forward diffusion pro-cess explained above. A set of input samples is provided to the denoising network, and each sample is corrupted at a randomly selected timestep according to Equation 2. The network is then trained to predict the noise that has been added to each corrupted sample. Once training is completed, the function 𝜺 𝜽 (z𝑡 , 𝑡 ) is fully defined. The sampling procedure starts from pure Gaussian noise. The reverse diffusion process is then applied iteratively, following Equation 7, so as to progressively recover a new uncorrupted sample. At each timestep, the trained predictor 
+
+𝜺 𝜽 (z𝑡 , 𝑡 ) is used to estimate the noise component associated with the current corrupted signal. 
+
+2.2 Conditioning the diffusion process 
+
+The standard DDPM framework described above mod-els the marginal distribution of the data 𝑞 (z0), allowing the generation of samples that, while not present in the dataset, are consistent with it. In many practical appli-cations, however, it is desirable to control the generation process according to a specific set of attributes or labels, for example, a specific flight condition Zhan et al. (2024). This leads to conditional diffusion models, which aim to represent the conditional distribution 𝑞 (z0 | c), where c
+
+denotes the conditioning information (e.g., class labels, text embeddings, or physical parameters). In this setting, the reverse diffusion process is modified so that it depends on c at each timestep, namely 
+
+𝑝 𝜃 (z𝑡 −1 | z𝑡 , c) = N ( z𝑡 −1; 𝝁 𝜃 (z𝑡 , 𝑡, c), 𝛽 𝑡 I), (9) where the difference with Equation 4 is the explicit de-pendence on c. As described above, 𝝁 𝜃 is parameterized following Equation 6, but the noise predictor 𝜺 𝜃 now also depends on c, 𝜺 𝜃 = 𝜺 𝜃 (z𝑡 , 𝑡, c), and the corresponding conditional training objective becomes 
+
+L𝑐 (𝜃 ) = Ez0 ,𝜺 ,𝑡 , c
+
+∥𝜺 − 𝜺 𝜃 (z𝑡 , 𝑡, c)∥ 22
+
+ . (10) Once trained, 𝜺 𝜃 can be used to sample from 𝑞 (z0 | c) Zhan et al. (2024). In practice, conditioning is implemented by injecting the information contained in c into the NN, similarly to how the timestep 𝑡 is encoded. Several strategies can be employed for this purpose, including attention mechanisms, addition, and concatenation Vaswani et al. (2017). 
+
+# 3 Database 
+
+The test case considered in this work comprises a set of CFD simulations of the NASA-Common Research Model (CRM) aircraft, a geometry characterized by a contemporary su-percritical transonic wing and fuselage representative of a wide-body commercial transport aircraft. Further geomet-ric specifications are detailed in Vassberg et al. (2008). The database, originally derived by Sabater et al. (2022) and already employed in other studies (e.g. Hines and Bekemeyer, 2023; Catalani et al., 2026), contains Pres-sure Coefficient ( 𝐶 𝑝 ) distributions obtained by solving the Reynolds-Averaged Navier-Stokes (RANS) equations cou-pled with the Spalart-Allmaras turbulence model Allmaras et al. (2012) using the DLR TAU solver Kroll et al. (2014). The database includes variations in Mach number 𝑀 ∈[0.502 , 0.897 ] and Angle of Attack 𝛼 ∈ [− 2.47 ◦, 4.91 ◦],together with control surface deflections: Inboard Aileron Deflection Angle 𝛿 1 ∈ [− 19 .9◦, 19 .4◦], Outboard Aileron Deflection Angle 𝛿 2 ∈ [− 19 .95 ◦, 9.76 ◦], Elevator Deflec-tion Angle 𝛿 3 ∈ [− 9.98 ◦, 9.83 ◦], and Horizontal Tailplane Deflection Angle 𝛿 4 ∈ [− 1.98 ◦, 1.93 ◦], resulting in 𝑏 = 6
+
+governing parameters. A total of 𝑛 = 149 parameter combinations were com-puted. Following the methodology proposed in Sabater et al. (2022), the dataset is partitioned such that 70% is allocated for model training (merging the original training and validation sets), while the remaining 30% is reserved for testing . The Mach number ( M)-Angle of Attack ( 𝛼 )envelope for both sets is illustrated in Figure 1a. The remaining parameter combinations are omitted for clarity but can be found in Sabater et al. (2022). Three flight conditions are selected from the test set to visualize the predictions over the wing, covering both low-transonic and high-transonic flow regimes. These flight conditions, whose parameter combinations can be found in Table 2, are referred to as FC 1, FC 2, and FC 3, and are identified by circles within the M-𝛼 envelope in Figure 1a. Because the wing represents the most critical region for 
+
+𝐶 𝑝 prediction compared to other aircraft elements, only the wing surface mesh is retained for model training, as shown in Figure 1b. This restriction enables the model to prioritize the capture of high-gradient features, such as the leading edge suction peak and shock waves, which are particularly challenging to resolve due to their strong nonlinearity. This discretization results in a point cloud of 
+
+ℎ = 139 ,374 mesh points forming an unstructured surface representation. Consequently, the data matrix is defined as D ∈ R𝑛 ×ℎ, where each row corresponds to a single 𝐶 𝑝 
+
+sample associated with a specific flight condition defined by the sextuplet ( M, 𝛼 , Inboard Aileron Deflection Angle (𝛿 1), Outboard Aileron Deflection Angle ( 𝛿 2), Elevator Deflection Angle ( 𝛿 3), Horizontal Tailplane Deflection Angle ( 𝛿 4)). Thus, 𝐶 𝑝 𝑖 ∈ Rℎ, with 𝑖 = 1, 2, . . . , 𝑛 . In the following, 𝐶 𝑝 𝑖 samples and their associated sextuplet information vectors are denoted by the symbols x ∈ Rℎ,and c ∈ R𝑏 .5Signal-Aware Conditional Diffusion Surrogates for Transonic Wing Pressure Prediction Table 2: Sextuplet vector of the selected visualization test cases. All angles are expressed in degrees. 
+
+Flight condition M 𝜶 𝜹 1 𝜹 2 𝜹 3 𝜹 4
+
+FC 1 0.689 4.100 4.000 −0.510 −2.220 −1.100 
+
+FC 2 0.802 4.010 12 .100 −12 .750 8.200 −1.460 
+
+FC 3 0.852 −2.280 −4.300 −17 .550 −4.370 −0.220 −2 0 2 4     
+
+> α[deg]
+> 0.50.60.70.80.9
+> M
+> (a) (b) -0.53 0.00 0.53
+> Cp
+> Train Test FC 1, FC 2, FC 3
+
+Figure 1: (a) Flight envelope for the NASA-CRM con-figuration in the M-𝛼 plane. (b) Representative 𝐶 𝑝 
+
+distribution over the upper surface of the wing, corre-sponding to the flight condition vector ( M, 𝛼 , 𝛿 1,𝛿 2, 𝛿 3,
+
+𝛿 4)= (0.6, 2.5◦, −8.6◦, −8.0◦, −6.36 ◦, −1.38 ◦).
+
+# 4 Methodology 
+
+The proposed surrogate framework follows a three-stage procedure to predict 𝐶 𝑝 distributions over the wing surface. First, PCA is used as a pre-processing stage that reduces the surface pressure in a compact modal space. Second, a conditional DDPM is trained on the resulting modal coefficients, learning to generate valid latent vectors from Gaussian noise. Finally, an inverse PCA transformation maps the generated coefficients back to the physical domain. Each stage is detailed below. 
+
+4.1 Data representation and dimensionality reduction 
+
+To render diffusion-based modeling tractable for high-fidelity aerodynamic data, the surface pressure fields are first represented in a modal coordinate system using PCA. This pre-processing step projects the high-dimensional wing pressure distributions onto an orthogonal basis, which improves training stability and significantly reduces compu-tational cost Tran et al. (2024); Francés-Belda et al. (2024). Consider a dataset X = [x1, . . . , x𝑑 ]⊤ ∈ R𝑑 ×ℎ, where 𝑑 
+
+denotes the number of samples (either training, testing, or an arbitrary number), and ℎ is the number of mesh points on the wing surface. For each physical sample x𝑖 ∈ Rℎ,the modal representation is denoted by z𝑖 = F ( x𝑖 ), where 
+
+z𝑖 ∈ R𝑚 and 𝑚 is the number of retained components. In this work, PCA is not used as a heavily truncated compres-sion technique, but as a full, non-truncated, reversible linear reparameterization of the dataset representation. Retaining all components ensures that no information is discarded prior to the generative process, so that any reduction in reconstruction fidelity is attributable solely to the diffusion model rather than to modal truncation. The mapping be-tween physical space and modal space is therefore exactly reversible for the dataset representation employed in this work. Since the maximum rank of the dataset is bounded by the number of training samples, 𝑚 = 105 components are retained, corresponding to the size of the training set. This transformation reduces the representation from the full surface grid ( ℎ points) to the intrinsic dimensionality supported by the dataset without loss of information within that representation. Consequently, the generative diffusion process is conducted entirely within this compact latent space, producing the latent matrix Z ∈ R𝑑 ×𝑚 . The physical pressure distributions are subsequently recovered through the inverse transformation x𝑖 = F −1 (z𝑖 ).This modal-space formulation is adopted as a practical representation strategy for diffusion-based surrogate mod-eling on unstructured aerodynamic data. By operating on modal coefficients rather than rasterized fields, it avoids the interpolation and topology distortions that may arise when irregular surface data are mapped onto structured grids. Furthermore, compared to graph-based diffusion for-mulations, it provides a significantly more computationally tractable architecture that is well-suited for limited-data settings. Ultimately, this linear coordinate transforma-6Signal-Aware Conditional Diffusion Surrogates for Transonic Wing Pressure Prediction tion allows a standard fully-connected diffusion model to learn the underlying physics without relying on complex, geometry-specific network topologies 
+
+4.2 Network architecture 
+
+The network architecture employed in this study is based on the U-Net, originally proposed by Ronneberger et al. (2021) for biomedical image segmentation. While the standard U-Net relies on convolutional NNs with spatial max-pooling ,
+
+stride , and same convolutions to extract hierarchical fea-tures from structured grids, the proposed generative process operates entirely on modal coefficients, making conven-tional spatial convolutions inapplicable. While graph-based architectures have been successfully applied to the same un-structured mesh Hines and Bekemeyer (2023), their higher computational burden would compound the already signifi-cant cost of the iterative diffusion sampling process Li et al. (2025). Therefore, to balance generative capacity with computational tractability, the contracting and expanding paths are constructed entirely with fully-connected layers, leveraging conventional Multi-Layer Perceptrons (MLPs) to process the modal coefficients. 
+
+4.2.1 Feature projection and backbone 
+
+The training and inference processes are illustrated in Fig-ure 2. The input latent vector z𝑖 is noised at a random noise level 𝑡 , and then processed by a learnable linear projection layer G : R𝑚 → R𝑟 that maps it to a fixed-dimensionality feature space of dimension 𝑟 , which facilitates consistent processing by the network. The backbone comprises three hierarchical stages: 
+
+• Encoder (compression path): progressively re-duces the width of the feature vectors, compress-ing the input into a compact contextual represen-tation. It is formed by down-sampling blocks. 
+
+• Bottleneck: processes the data in its most com-pressed state, capturing global dependencies. It is formed by a middle block. 
+
+• Decoder (reconstruction path): restores the fea-ture dimensionality, concatenating processed fea-tures with stored states from the encoder through skip connections to recover fine-grained details lost during compression. It is formed by up-sampling blocks. Internally, the three classes of blocks are built from smaller modules with specific roles. These include residual blocks, composed of fully-connected layers, Layer Normaliza-tion Ba et al. (2016), and ELU activations. In addition, self-attention blocks are employed to implement the self-attention mechanism Vaswani et al. (2017), enabling the modeling of complex interdependencies among the PCA coefficients. The U-Net output then undergoes an inverse projection G−1 to yield the predicted noise 𝜺 𝜃 ∈ R𝑚 .During inference, as illustrated in Figure 2b, the model leverages the reverse diffusion process to generate new Table 3: Hyperparameters and architectural specifications of the proposed DDPM framework. 
+
+Architecture 
+
+Activation ELU Projection size ( 𝑟 ) 1024 Network depth 5Feature width sequence 512-256-128-64-32 
+
+Diffusion parameters 
+
+Diffusion steps ( 𝑇 ) 1000 Noise schedule Linear 
+
+𝛽 start 1 × 10 −4
+
+𝛽 end 2 × 10 −2
+
+Training configuration 
+
+Optimizer Adam Weight decay 1.2 × 10 −4
+
+LR schedule OneCycle LR start 1 × 10 −4
+
+LR end 1 × 10 −6
+
+No. of parameters 32,279,433 samples from pure Gaussian noise. The resulting vector 
+
+z∗, where the superscript ∗ denotes a model prediction, is then mapped back to the physical domain through F −1 to recover the pressure distribution x∗.Table 3 summarizes the architectural specifications and training hyperparameters. A linear noise schedule was selected following the variance progression proposed by Ho et al. (2020), as it provided the most stable behavior in preliminary experiments relative to cosine-based schedules and wider variance ranges Nichol and Dhariwal (2021); Guo et al. (2025). Finally, training stability was further supported through weight decay Kingma and Ba (2014) and scheduled Learning Rate (LR) Smith and Topin (2017). 
+
+4.2.2 Conditioning embeddings 
+
+The denoising network must infer the noise component not only from the corrupted latent state, but also from the context in which that state is observed, as outlined in subsection 2.2. In particular, the reverse process depends on two complementary sources of conditioning information: the diffusion timestep 𝑡 , which specifies the current noise level, and the flight condition vector c, which specifies the aerodynamic operating point associated with the target pressure distribution. To inject both sources of information into the backbone in a compatible form with its internal feature space, two embedding strategies are employed. On the one hand, the time embedding encodes the tem-poral state of the diffusion process through a sinusoidal embedding Vaswani et al. (2017), which maps each discrete 7Signal-Aware Conditional Diffusion Surrogates for Transonic Wing Pressure Prediction 
+
+(a) (b) 
+
+PCA pre-processing 
+
+Forward diffusion Embeddings Raw fields: X ∈ R𝑑 ×ℎ
+
+Latent vectors: Z ∈ R𝑑 ×𝑚 
+
+G G−1
+
+Gaussian noise Time matrix: T ∈ R1×𝑑 
+
+Design matrix: C ∈ R𝑑 ×𝑏 
+
+F
+
+𝜺 𝜃 
+
+𝑧 𝑖 1
+
+𝑧 𝑖 2
+
+Time sequence Design condition c
+
+𝑧 𝑖 1
+
+𝑧 𝑖 2
+
+F −1
+
+U-Net 
+
+G G−1
+
+U-Net Embeddings 
+
+Reverse diffusion 
+
+x∗
+
+x𝑖 
+
+z𝑖 
+
+z∗
+
+Figure 2: (a) Training process of the surrogate. (b) Conditional sample generation from Gaussian noise. timestep 𝑡 into a high-dimensional vector of 𝑘 frequencies, allowing the network to identify the corresponding noise level. The time embedding is computed from the time ma-trix T ∈ R1×𝑑 . In this work, the time embedding dimension is set to 𝑘 = 128 .On the other hand, the label embedding provides a repre-sentation of the flight conditions, given by the sextuplet c.The sextuplets are gathered in the design matrix C ∈ R𝑑 ×𝑏 .The same embedding technique used for the time informa-tion is applied to each of the six design parameters, although the dimensionality is allocated hierarchically: 𝑘 = 64 for the primary drivers ( M, 𝛼 ), and 𝑘 = 32 for the control surfaces ( 𝛿 1, 𝛿 2, 𝛿 3, 𝛿 4). Each embedding is passed through a learnable projec-tion, improving the integration of temporal and physical information with the signal features propagated through the network. These embeddings are then injected into all down-sampling, middle, and up-sampling blocks. Ul-timately, each input sample of principal components is associated with a 256-dimensional label embedding vec-tor and a 128-dimensional time embedding vector, which jointly condition the diffusion process. 
+
+4.3 Signal-aware training objective 
+
+As reviewed in section 2, the standard conditional DDPM formulation minimizes the discrepancy between the actual noise 𝜺 and the predicted noise 𝜺 𝜃 through Equation 10. While this objective has proven effective in image genera-tion, it treats all timesteps and all spatial regions equally, which is ill-suited to aerodynamic pressure data where sharp gradient features such as shock waves occupy a small fraction of the domain but carry disproportionate physical importance. In particular, the standard noise-matching formulation was observed to produce high-frequency arti-8Signal-Aware Conditional Diffusion Surrogates for Transonic Wing Pressure Prediction facts, especially in regions characterized by strong pressure gradients such as shock waves, thereby degrading the gen-eralization capability of the model. To place greater emphasis on the reconstruction of the underlying physical signal, a signal-aware objective is introduced by measuring the discrepancy in signal space after applying the forward noising relation. Specifically, instead of directly penalizing the error between 𝜺 and 𝜺 𝜃 ,the following objective is proposed: 
+
+L′ 
+
+> 𝑐
+
+(𝜃 ) = Ez0 ,𝜺 ,𝑡 , c
+
+∥z𝑡 (𝜺 ) − z𝑡 (𝜺 𝜃 )∥ 22
+
+ , (11) where z𝑡 (𝜺 ) denotes the noisy signal obtained at timestep 𝑡 
+
+using the actual noise, and z𝑡 (𝜺 𝜃 ) denotes the correspond-ing noisy signal obtained when the noise predicted by the U-Net is used instead. In this way, the optimization is formulated in terms of the discrepancy induced on the cor-rupted signal, rather than solely in terms of the raw noise mismatch. Thus, this formulation ensures that the model captures the essential topological and physical properties of the pressure distributions, rather than merely fitting the statistical properties of the noise. Because Equation 2 is used to generate z𝑡 in both cases, and the timestep 𝑡 and clean sample z0 are common for both expressions, the proposed objective can be simplified as 
+
+L′ 
+
+> 𝑐
+
+(𝜃 ) = Ez0 ,𝜺 ,𝑡 , c
+
+h
+
+∥√︁ (1 − 𝛾 𝑡 ) · [ 𝜺 − 𝜺 𝜃 (z𝑡 , 𝑡, c)] ∥ 22
+
+i
+
+.
+
+(12) The proposed formulation is therefore equivalent to a timestep-dependent weighted variant of the standard loss in Equation 10, where the weighting factor √︁ 1 − 𝛾 𝑡 modulates the contribution of each timestep according to its influence on the corrupted signal. This factor increases monoton-ically with t, assigning greater emphasis to the heavily noised timesteps where large-scale signal structure must be recovered. In the final diffusion steps, 𝑡 → 𝑇 , where the signal is heavily degraded, the weighting term approaches unity, encouraging the network to better recover the large-scale structure of the noised pressure field. Conversely, as the process approaches the clean signal, 𝑡 → 0, the weighting term decreases, reducing the relative influence of the final denoising steps. In practice, this redistribution of emphasis was found to mitigate high-frequency artifacts and to produce smoother and more physically consistent pressure distributions. 
+
+# 5 Results 
+
+The predictive performance of the proposed surrogate framework is evaluated in this section. To ensure a ro-bust comparative analysis, the assessment benchmarks the proposed method against three alternative architectures. To maintain consistency and ensure a fair comparison, all evaluated models employ the same PCA pre-processing stage, thereby operating within an identical modal subspace. Consequently, the “PCA+” prefix is omitted from the model nomenclature for brevity. The evaluated architectures are categorized as follows: 
+
+• External baselines: two established architectures serve as reference points. The first, denoted as 
+
+MLP , consists of a standard MLP that serves as a direct regression benchmark, mapping the input flight-condition sextuplet directly to the principal components of the pressure field. The second baseline, referred to as AE+GPR , adopts an AE-based methodology. This approach incor-porates a Gaussian Process Regression (GPR) to model the mapping between flight parameters and the latent space, a strategy whose efficacy has been demonstrated in recent aerodynamic studies Francés-Belda et al. (2024); Solera-Rico et al. (2024); Tran et al. (2024). 
+
+• Internal baseline and proposed method: to isolate the specific impact of the proposed training objec-tive (see subsection 4.3), the standard formulation of the diffusion model is included as an internal baseline. This variant is referred to as DDPM-N ,whereas the proposed model, which follows the signal-aware formulation, is denoted as DDPM-S .The comparison is scoped to isolate the value of the pro-posed fully-connected diffusion formulation and, in par-ticular, the effect of the signal-aware training objective. Architectures operating outside the same PCA-space rep-resentation, such as graph-based, operator-learning, or neural-field approaches, are therefore not included, as their comparison would conflate the contribution of the representation with that of the generative framework. While the DDPM-N variant mirrors the architecture of the proposed DDPM-S , the architectural depth and complexity of the external baselines are specifically constrained to account for the limited training data available ( 𝑚 = 105 ). Both the MLP and the AE+GPR frameworks are con-structed using shallow, fully-connected layers to reduce susceptibility to memorization in this sparse-data regime, thereby providing a stable and conservative benchmark. As identified in studies of limited-sample learning, overly complex architectures are highly susceptible to overfitting when the number of trainable parameters exceeds the in-formation content of the training samples Hawkins (2003); Ying (2019). The analysis is structured as follows: first, a comparative assessment is performed across all four surrogate models. Second, a focused characterization of the DDPM-S is conducted, comprising a Convex Hull (CH) integrity check with respect to the design parameters, and a sensitivity analysis involving the variance of the model. 
+
+5.1 Error distribution 
+
+A quantitative assessment of the surrogate frameworks is conducted using the Mean Absolute Error (MAE) metric, which evaluates the deviation between the ground-truth 𝐶 𝑝 
+
+9Signal-Aware Conditional Diffusion Surrogates for Transonic Wing Pressure Prediction 0.000    
+
+> 0.030
+> 0.060
+> 0.090
+> 0.120
+> 0.150
+> MAE
+> Training dataset
+> 0.031
+> 0.004
+> 0.028
+> FC 1
+> FC 2
+> FC 3
+> Mean MAE
+> DDPM-N DDPM-S MLP AE+GPR
+> 0.000
+> 0.030
+> 0.060
+> 0.090
+> 0.120
+> 0.150
+> MAE
+> Testing dataset
+> 0.043
+> 0.017
+> 0.033
+> 1
+
+Figure 3: MAE distribution between actual and predicted 
+
+𝐶 𝑝 fields for the different models and database sets. Visu-alization test cases are denoted by symbols. Dashed lines represent the global mean MAE for each model. Note that the distribution tails are truncated at the sample extrema (minimum and maximum observed errors). distributions and model predictions across both training and testing datasets. Figure 3 illustrates the comparative error distributions, with specific emphasis on the selected visualization test cases FC 1, FC 2, and FC 3 (see Table 2). Across both training and testing datasets, the proposed 
+
+DDPM-S achieves the lowest reconstruction errors among all evaluated architectures. Most notably, the standard 
+
+DDPM-N is substantially outperformed by DDPM-S , this result suggests that the standard noise-prediction objective is less effective at capturing the physical dependencies encoded within the modal coefficients. The degradation of DDPM-N is particularly severe for FC 3, the highest-complexity flight condition, where the model fails to re-produce the dominant pressure topology as discussed in subsection 5.2. Regarding the external baselines, both exhibit competitive performance, but DDPM-S attains superior global accuracy. This advantage is quantified through the mean value of the error distribution, as the proposed model yields a mean MAE approximately 48% lower than the MLP and 60% lower than the AE+GPR architecture. This trend is also consistent across the three highlighted flight conditions, for which DDPM-S exhibits the lowest relative error. Fur-thermore, the error distribution of the proposed model is structurally more favorable, being characterized by atten-uated upper tails, which indicates fewer extreme outliers, and by a higher concentration of probability density within the low-error regime. 
+
+5.2 Pressure field visualization 
+
+The predicted pressure distributions are examined for the three visualization test cases, retaining MLP as the sole external baseline given its superior performance over 
+
+AE+GPR , while including both DDPM-S and DDPM-N to assess the effect of the signal-aware objective introduced in subsection 4.3. The chordwise pressure distributions are shown in Figure 4 for three normalized spanwise positions denoted by 𝜂 , where 𝜂 = 0 identifies the wing root and 
+
+𝜂 = 1 the tip. The lower wing surface, characterized by smoother pressure gradients, is generally well resolved by both DDPM-S 
+
+and MLP , although control surface deflections introduce local discontinuities at specific spanwise locations, such as 
+
+𝜂 = 0.9 for conditions FC 2 and FC 3.The upper surface provides a more discriminating com-parison because it contains the strongest nonlinear flow features. In general, DDPM-S shows improved fidelity in the reconstruction of these structures, particularly at the 
+
+𝜂 = 0.6 spanwise station across all three flight conditions. This behavior is especially evident in the leading edge suc-tion peak, for which the MLP baseline tends to over-smooth the pressure gradient and under-predict the peak magni-tude relative to the ground truth, the DDPM-S preserves the sharper profile. Similar differences are visible in the shock-related pressure jumps and plateau regions, where the proposed model more closely follows the reference distributions, particularly in FC 2 and FC 3.In contrast, the DDPM-N architecture fails to robustly recon-struct the global pressure topology in the most demanding cases. Although it yields reasonable approximations for the lower surface in some conditions and spanwise stations, such as 𝜂 = 0.3 and 0.6 for FC 1 and FC 2, its behavior de-teriorates markedly as the flow complexity increases. For instance, in FC 1 at 𝜂 = 0.9, the DDPM-N exhibits a strong bias and overestimates the suction peak. More critically, in the high-complexity case of FC 3, the model is unable to reproduce the dominant upper surface trends at the 𝜂 = 0.3
+
+and 0.9. This behavior is consistent with the beneficial effect of the signal-aware weighting in Equation 12, which redistributes the training emphasis toward timesteps that more strongly affect the reconstructed signal. These qualitative observations are further supported by the upper surface error contours depicted in Figure 5. To main-tain a focused comparison between the most competitive models, the DDPM-N is omitted from this visualization. For both architectures, the largest deviations are concen-trated in regions with strong pressure gradients, particularly near shock waves and control surface hinge lines. This is most evident for FC 2 and FC 3, where the discontinu-ity at the inboard aileron boundary is clearly noticeable. However, the DDPM-S exhibits systematically lower error levels in these critical regions, while also reducing the background error over the rest of the upper surface. Overall, the visual evidence indicates that DDPM-S more faithfully reconstructs the dominant nonlinear structures 10 Signal-Aware Conditional Diffusion Surrogates for Transonic Wing Pressure Prediction −2                   
+
+> −101
+> Cp
+> FC 1FC 2
+> Ground truth DDPM-N DDPM-S MLP
+> η = 0 .3
+> FC 3
+> −2
+> −101
+> Cp
+> η = 0 .6
+> 0.00.20.40.60.81.0
+> x/c
+> −2
+> −101
+> Cp
+> 0.00.20.40.60.81.0
+> x/c
+> 0.00.20.40.60.81.0
+> x/c η = 0 .9
+
+Figure 4: Chordwise pressure distributions for actual and surrogate 𝐶 𝑝 fields across span percentages 𝜂 = 0.3, 0.6, 0.9.The position over the airfoil is normalized with the chord 𝑐 .of the pressure field than the compared baselines, while maintaining a consistent improvement in field-level fidelity across the selected test conditions. 
+
+5.3 Conditioning-space error distribution 
+
+To examine how the surrogate error distributes across the multi-dimensional design space, the influence of the condi-tioning sextuplet ( M, 𝛼 , 𝛿 1, 𝛿 2, 𝛿 3, 𝛿 4) is analyzed. Because direct visualization of the full six-dimensional space is not possible, the analysis is decomposed into bi-variate projec-tions, focusing on the M-𝛼 , 𝛿 1-𝛿 2, and 𝛿 3-𝛿 4 sub-spaces. For each projection, the CHs of the training and testing sets are delineated to visualize the domain boundaries. Superimposed on these projections are the three selected visualization test cases, together with the three testing sam-ples yielding the highest and lowest reconstruction errors. Given the limited number of available flight conditions, this analysis is intended as a qualitative visualization of the error topology in conditioning space rather than as a formal density-based generalization study. The spatial distribution of these samples, shown in Figure 6, reveals that the macroscopic complexity of the pressure field, and hence the surrogate error, is governed primarily by 
+
+M and 𝛼 . The cases with the highest reconstruction errors (marked in red) cluster along the maximum Mach number boundary of the M-𝛼 envelope, a region associated with transonic conditions in which shock waves and incipient separation become more prominent. The location of the visualization test cases is consistent with this trend, since FC 3, previously identified as a highly complex prediction case, lies directly on this upper M-𝛼 boundary. Conversely, the samples with the lowest errors (marked in green), as well as the other visualization cases, are located in the interior or near the lower boundary of the domain, corresponding to more benign aerodynamic conditions. In contrast, this strong spatial organization is not observed in the control surface projections. In the 𝛿 1-𝛿 2 plane, both high- and low-error samples are distributed without a clear pattern over the admissible range of deflections. The same behavior is even more evident in the 𝛿 3-𝛿 4 plane, where extreme error cases appear scattered along the CH perime-ter. These observations suggest that, although wing control surfaces induce localized flow modifications, they play a secondary role relative to the global flight conditions in determining the overall reconstruction difficulty, while empennage controls have only a limited impact on the wing pressure field. This behavior is also consistent with the architectural embedding strategy established in sub-section 4.2: a larger embedding dimension was assigned to M and 𝛼 , allowing the model to place greater repre-11 Signal-Aware Conditional Diffusion Surrogates for Transonic Wing Pressure Prediction DDPM-S   
+
+> FC 1FC 2FC 3
+> -0.10 0.00 0.10
+> Cp − ˆCp
+> -0.10 0.00 0.10
+> Cp − ˆCp
+> -0.10 0.00 0.10
+> Cp − ˆCp
+> MLP
+
+Figure 5: Error distribution over the upper surface of the wing for DDPM-S (top row), and MLP (bottom row) models. sentational emphasis on the primary aerodynamic drivers without over-weighting secondary inputs. 
+
+5.4 Sensitivity analysis 
+
+The probabilistic formulation of the DDPM is the primary driver behind the model’s superior generalization capabili-ties, and its intrinsic stochasticity provides an additional degree of information that deterministic surrogates cannot offer. This approach inherently introduces stochasticity into the inference process, implying that a fixed conditioning input vector does not yield a deterministic output, but rather one realization of the learned conditional generative pro-cess, 𝑝 𝜃 . While alternative sampling schemes Song et al. (2020) are often employed to reduce stochastic variability and accelerate generation, exploiting this intrinsic variabil-ity is a central objective of present study. Accordingly, this subsection characterizes the sampling-induced spread of the model predictions in order to assess the stability of the generated solutions, and to investigate whether this spread provides useful qualitative information about regions and conditions associated with larger surrogate errors. 
+
+5.4.1 Statistical convergence of 𝑝 𝜃 
+
+Establishing a practical inference strategy first requires determining the ensemble size 𝑁 needed to characterize the stochastic behavior of the DDPM on deterministic pressure fields. While the previous analyses in this work relied on a single sample from 𝑝 𝜃 (that is, 𝑁 = 1), the study of sampling-induced variability requires the evaluation of larger ensembles. To this end, a pool of 𝑁 max = 1000 
+
+independent samples is generated for each of the 𝑙 = 44 
+
+testing flight conditions. For any evaluated ensemble size 𝑁 ∈ { 1, 2, . . . , 1000 }, a random subset of 𝑁 predictions is sampled from this pool. Let x∗ 
+
+> 𝑘,𝑖
+
+∈ Rℎ denote the 𝑘 -th sampled prediction for the 
+
+𝑖 -th flight condition, where 𝑘 = 1, . . . , 𝑁 , and 𝑖 = 1, . . . , 𝑙 .First, the element-wise ensemble mean 𝝁 ( 𝑁 ) 
+
+> 𝜃 ,𝑖
+
+∈ Rℎ and standard deviation 𝝈 ( 𝑁 ) 
+
+> 𝜃 ,𝑖
+
+∈ Rℎ are computed across the 𝑁 
+
+samples for each specific flight condition: 
+
+𝝁 ( 𝑁 ) 
+
+> 𝜃 ,𝑖
+
+= 1
+
+𝑁 
+
+> 𝑁
+
+∑︁ 
+
+> 𝑘 =1
+
+x∗ 
+
+> 𝑘,𝑖
+
+, (13) 
+
+𝝈 ( 𝑁 ) 
+
+> 𝜃 ,𝑖
+
+=
+
+vut 1
+
+𝑁 
+
+> 𝑁
+
+∑︁ 
+
+> 𝑘 =1
+
+
+
+x∗ 
+
+> 𝑘,𝑖
+
+− 𝝁 ( 𝑁 )
+
+> 𝜃 ,𝑖
+
+2
+
+. (14) Next, these aggregated fields are collapsed over the ℎ spatial grid points to obtain scalar metrics per flight condition. The error is quantified by the Root Mean Squared Error (RMSE) between the ensemble mean and the ground-truth pressure field x𝑖 , while the predictive spread is quantified by the spatial average of the standard deviation field. Let 𝑗 
+
+denote the spatial index of the mesh points: RMSE ( 𝑁 ) 
+
+> 𝑖
+
+=
+
+vut 1
+
+ℎ
+
+> ℎ
+
+∑︁ 
+
+> 𝑗 =1
+
+
+
+𝑥 𝑖, 𝑗 − 𝜇 ( 𝑁 )
+
+> 𝜃 ,𝑖, 𝑗
+
+2
+
+, (15) 
+
+𝑠 ( 𝑁 ) 
+
+> 𝑖
+
+= 1
+
+ℎ
+
+> ℎ
+
+∑︁ 
+
+> 𝑗 =1
+
+𝜎 ( 𝑁 ) 
+
+> 𝜃 ,𝑖, 𝑗
+
+. (16) Finally, to yield the ultimate scalar values representing the entire test set for a given ensemble size 𝑁 , the metrics are averaged across all 𝑙 flight conditions: RMSE ( 𝑁 ) = 1
+
+𝑙 
+
+> 𝑙
+
+∑︁ 
+
+> 𝑖 =1
+
+RMSE ( 𝑁 ) 
+
+> 𝑖
+
+, (17) 
+
+𝜎 ( 𝑁 ) = 1
+
+𝑙 
+
+> 𝑙
+
+∑︁ 
+
+> 𝑖 =1
+
+𝑠 ( 𝑁 ) 
+
+> 𝑖
+
+. (18) By repeating this procedure across multiple values of 𝑁 ,a coupled relationship between the number of generative 12 Signal-Aware Conditional Diffusion Surrogates for Transonic Wing Pressure Prediction −2 0 2 4           
+
+> α[deg]
+> 0.50.60.70.80.9
+> M
+> Max. error Min. error FC 1, FC 2, FC 3
+> Training CH Testing CH
+> −20 −10 010 20
+> δ1[deg]
+> −20
+> −10 010
+> δ2 [deg]
+> −10 −50510
+> δ3[deg]
+> −2
+> −1012
+> δ4 [deg]
+
+Figure 6: Visualization test cases together with the three maximum- and minimum-error flight conditions for the 
+
+DDPM-S within the training and testing CH spaces. samples and the aggregated model performance is estab-lished. Figure 7 illustrates the evolution of both metrics as a func-tion of 𝑁 . The error evolution (top panel) reaches a plateau of approximately RMSE ( 𝑁 ) ≈ 0.0324 for 𝑁 ≥ 50 , cor-responding to an accuracy improvement of roughly 3% relative to the single-sample baseline. This interpretation is consistent with the convergence of 𝜎 ( 𝑁 ) (bottom panel), which stabilizes at approximately 0.005 for 𝑁 ≥ 50 . The low magnitude and rapid stabilization of both quantities in-dicate that the deterministic structure of the pressure fields is largely preserved, despite the intrinsic stochasticity of the DDPM. Together, these results indicate that single-sample 0.03225     
+
+> 0.03250
+> 0.03275
+> 0.03300
+> 0.03325
+> 0.03350
+> RMSE (N )
+> 10 010 110 210 3
+> Number of samples, N
+> 0.000
+> 0.001
+> 0.002
+> 0.003
+> 0.004
+> 0.005
+> σ(N )
+
+Figure 7: Convergence of the model’s statistics as a function of ensemble size 𝑁 . Bar symbol denotes mean values across the 𝑙 flight conditions. inference is a reasonable practical choice for point predic-tion, while ensembles of 𝑁 ≥ 50 samples are sufficient for reliable characterization of the sampling-induced spread. The bounded spread observed in Figure 7 is consistent with the role of the proposed signal-aware training objective, which prioritizes the reconstruction of the underlying physi-cal signal over the standard noise-matching loss. In practice, this behavior indicates that the modified formulation retains the beneficial stochasticity of the diffusion process while limiting the dispersion of the generated solutions around the deterministic aerodynamic trends learned from the data. In that sense, the sampling variability remains sufficiently structured to support the subsequent sensitivity analysis, without dominating the reconstructed pressure fields. 
+
+5.4.2 Spatial deviation 
+
+For each of the three visualization test cases, 𝝁 𝜃 ∈ Rℎ and 
+
+𝝈 𝜃 ∈ Rℎ are computed from the 𝑁 max = 1000 generated samples and plotted over the wing, providing a spatial view of the model’s sampling-induced variability. Figure 8 compares the ground truth field x, the ensemble mean 𝝁 𝜃 ,and the standard deviation contours 𝝈 𝜃 . For the three con-sidered conditions, the ensemble mean remains very close to the reference field, indicating that the dominant deter-ministic structure of the pressure distribution is preserved after averaging over the stochastic samples. The standard deviation maps 𝝈 𝜃 provide further insight into how the model’s sampling spread is distributed over the wing. This spread is not spatially uniform, but in-13 Signal-Aware Conditional Diffusion Surrogates for Transonic Wing Pressure Prediction x  
+
+> FC 1FC 2FC 3
+> -0.86 0.00 0.86
+> Cp
+> μθσθ
+> 0.001 0.025 0.049
+> σCp
+
+Figure 8: Spatial deviation of the model. The rows display the actual fields ( x) along with the ensemble means ( 𝝁 𝜃 ) and standard deviations ( 𝝈 𝜃 ) computed from 𝑁 = 1000 independent samples for each flight condition. stead concentrates in regions characterized by strong flow gradients and geometric discontinuities: 
+
+• Control surfaces: in all cases, elevated spread is observed along the hinge lines of the inboard and outboard ailerons. This indicates a greater sensitivity of the generated solutions in resolving the sharp pressure jumps associated with control surface deflections. 
+
+• Leading edge: the suction peak region exhibits noticeable spread. Given the extreme nonlinearity of the pressure gradient near the leading edge, the model shows higher sensitivity in reconstructing the exact peak magnitude. 
+
+• Shock waves: within the transonic regime, the spread forms high-intensity bands aligned with the shock fronts. Since the location and strength of a shock are highly sensitive to marginal changes in the input operating conditions, these regions naturally emerge as the dominant contributors to the spatial variability of the generated fields. Consequently, the spatial distribution of 𝝈 𝜃 can be inter-preted as a qualitative map of modeling sensitivity. Regions associated with stronger flow complexity, such as shock structures, suction peaks, and hinge-line discontinuities, are also the regions where the generative process exhibits the largest spread. In this sense, the spatial deviation does not provide a calibrated uncertainty estimate, but it does offer useful reliability information for identifying where larger surrogate errors are more likely to occur and where high-fidelity validation may be most informative. 
+
+5.4.3 Deviation-Error alignment 
+
+Given that the predicted standard deviation tends to ac-cumulate in aerodynamic regions characterized by strong nonlinearities, a deeper investigation into its spatial organi-zation is conducted. Specifically, the localized alignment between the predicted standard deviation, 𝝈 𝜃 , and the absolute prediction error, e ∈ Rℎ = | 𝝁 𝜃 − x|, is analyzed. For a given flight condition, let the set of ℎ spatial mesh points be sorted in ascending order of their standard devi-ation values. Let 𝑆 𝜔 be a subset containing the fraction 
+
+𝜔 ∈ ( 0, 1] of these sorted mesh points, that is, the fraction of the associated wing with the lowest predicted spread. The dependence of e on 𝝈 𝜃 is quantified through the LRI, defined as the MAE computed exclusively over the subset 
+
+𝑆 𝜔 :LRI (𝜔 ) = 1
+
+|𝑆 𝜔 |∑︁ 𝑖 ∈𝑆 𝜔 
+
+e𝑠 𝑖 , (19) where e𝑠 represents the error vector permuted to match the ascending order of 𝝈 𝜃 , and |𝑆 𝜔 | = ⌊𝜔 · ℎ⌋ is the cardinality of the subset. Conceptually, the LRI can be interpreted as a dynamic MAE evaluated over an expanding set of spatial points ranked by their predicted spread. As 𝜔 increases, regions with larger standard deviation are progressively incorporated into the error calculation. Consequently, evaluating the LRI at the global limit ( 𝜔 = 1) exactly recovers the standard, full-field MAE for the considered flight condition. This formulation provides a diagnostic curve to assess the consistency between the model spread and the actual reconstruction error. Ideally, the LRI should exhibit a 14 Signal-Aware Conditional Diffusion Surrogates for Transonic Wing Pressure Prediction monotonic increase with respect to 𝜔 . Such behavior indicates that the model correctly assigns high confidence to accurate regions: the subset of points with the lowest spread, i.e. low 𝜔 , corresponds to the lowest residuals. As the evaluation set 𝑆 𝜔 expands to include points with higher predicted spread, the average error is expected to increase. Conversely, a flat or inverted curve would indicate that the model spread is only weakly related to the actual residual error. Figure 9a presents the 𝜔 -LRI profiles for the 𝑙 testing con-ditions. To facilitate the comparison, the LRI is normalized to the unit interval [0, 1] for each flight condition, denoted herein as dLRI . In general, a consistent monotonic increase is observed across the dataset, confirming that regions of higher standard deviation also tend to exhibit higher high reconstruction error. In addition, the 𝑙 curves are sorted and colored according to the scalar metric 
+
+I =
+
+∫ 10
+
+LRI (𝜔 )𝑑𝜔, (20) which represents the area under the non-normalized curve. While the LRI provides a spatially resolved view of the deviation-error relationship for each individual flight con-dition, the integral quantity I offers a global measure, effectively defining a compact scalar descriptor of the cu-mulative error distribution relative to the ranking induced by 𝝈 𝜃 . Notably, the magnitude of I exhibits a positive correlation with the main flight condition variables, par-ticularly Mach number, as highlighted in the figure. This trend is consistent with the increasing difficulty of accu-rately resolving pressure fields as compressibility effects become more pronounced, thereby underscoring the height-ened modeling complexity associated with high-transonic conditions. The profile of the LRI curves further elucidates the relation-ship between flow physics and surrogate sensitivity. For low-transonic regimes, most spatial mesh points exhibit both low spread and low reconstruction error, and the LRI therefore increase gradually as 𝜔 approaches unity. In contrast, high-transonic regimes contain a larger propor-tion of points with elevated errors, primarily due to the presence of strong shock waves and localized compress-ibility effects. In these cases, the LRI profile remains low for the high-confidence regions (small 𝜔 ) and steepens more abruptly as the high-spread regions are incorporated into the calculation. This divergence in the LRI curve shapes indicates that the sampling-induced spread is not uniformly distributed, but instead concentrates around the most challenging aerodynamic features. Additionally, the global relationship between e and 𝝈 𝜃 is examined in Figure 9b, through the GRI, a metric defined as the spatial mean of the element-wise standard deviation for each flight condition: GRI = 1
+
+ℎ
+
+> ℎ
+
+∑︁ 
+
+> 𝑗
+
+𝜎 𝜃 , 𝑗 . (21) 0.2 0.4 0.6 0.8 1.00.877 0.864 0.827 0.739 0.547 0.597 0.677 0.552 0.00.20.40.60.81.0̂            
+
+> LRI Mi
+> ω
+> 0.00 0.01 0.02 0.03 0.04 0.05 0.06 0.07
+> MAE
+> 0.005 0.010 0.015
+> GRI
+> ρ=0.889
+> (a) (b) 0.06 0.13 0.20 0.44 2.68
+> I
+
+Figure 9: (a) LRI curves as a function of 𝜔 and the Mach number associated with the flight condition. (b) GRI-MAE-
+
+I relationship. The GRI therefore aggregates local spread information into a single scalar that can be evaluated at inference time without access to the ground truth. As illustrated in Fig-ure 9b, this scalar exhibits a strong linear correlation with the reconstruction MAE across the test set, with a Pear-son coefficient of 𝜌 = 0.889 , indicating that the diffusion spread is a reliable qualitative indicator of prediction diffi-culty at the condition level. This dependence indicates that flight conditions with larger global sampling spread also tend to exhibit larger reconstruction errors in the present dataset. Furthermore, the data points are colored according to the integral metric I (see Equation 20), revealing a consistent trend: flight conditions with larger cumulative deviation-error misalignment (high I) correspondingly ex-hibit elevated global spread (high GRI) and reconstruction error. To verify that this self-awareness is a characteristic property of the diffusion process, rather than a trivial byproduct of model ensembling, a comparative experiment was con-ducted using the MLP baseline. An ensemble of 200 independently initialized MLP models was used to gener-ate a comparable spread metric. This approach yielded a markedly lower correlation coefficient of 𝜌 = 0.547 
+
+for the GRI-MAE relationship. The disparity suggests 15 Signal-Aware Conditional Diffusion Surrogates for Transonic Wing Pressure Prediction that, whereas MLP spread mainly reflects variability in-duced by weight initialization, the DDPM spread encodes deeper physical information regarding the data distribu-tion. This confirms that the generative framework not only produces superior predictions but also offers significantly more meaningful insights into predictive spread. Ultimately, these results demonstrate that the proposed 
+
+DDPM-S transcends the limitations of traditional black-box 
+
+surrogates by providing a built-in, statistically grounded self-assessment mechanism. By leveraging its intrinsic stochasticity, the model offers a self-aware prediction capa-bility to qualitatively assess where larger surrogate errors are more likely to occur. In this sense, the diffusion-sampling spread does not constitute calibrated uncertainty quantification. Still, it does act as a built-in sensitivity diagnostic that can help identify difficult spatial regions and challenging operating conditions in practical inference scenarios. 
+
+# 6 Conclusion 
+
+This work has presented a conditional DDPM surrogate for predicting three-dimensional aerodynamic surface pres-sure distributions over the NASA-CRM wing in transonic conditions, demonstrating that diffusion-based generative models can deliver competitive field accuracy while pro-viding built-in qualitative reliability information that deter-ministic surrogates cannot offer. The proposed DDPM-S 
+
+architecture is conditioned on a six-dimensional flight en-velope comprising Mach number, angle of attack, and four control surface deflections, and operates entirely within a PCA-based modal space that serves as a lossless reparame-terization of the unstructured surface mesh. By treating PCA as a full, lossless reparameterization rather than a truncated reduced-order model, the frame-work accommodates the unstructured surface mesh through fully-connected layers, avoiding the complexity of graph-based operators while preserving the complete information content of the training data. The training process incor-porates a signal-aware, timestep-weighted objective. By propagating a reconstruction loss through the diffusion process, the DDPM-S formulation explicitly prioritizes the physical integrity of the underlying pressure signal over a simple noise-matching schedule. This advancement allowed the model to outperform established deterministic baselines, achieving a 48% reduction in MAE compared to a standard MLP and a 60% reduction compared to an AE+GPR architecture. Crucially, this accuracy gain is concentrated in the physically most relevant regions: suc-tion peaks, shock fronts, and control surface hinge lines, precisely the features whose degradation in determinis-tic surrogates directly corrupts integrated aerodynamic quantities such as wave drag and pitching moment. The intrinsic stochasticity of the DDPM was also exploited to provide a built-in assessment of prediction reliability. Beyond the statistical convergence of the ensemble quan-tities ( 𝑁 ≥ 50 ), the sensitivity analysis showed that the sampling-induced spread remains spatially organized and concentrated in the most demanding aerodynamic regions, such as suction peaks, hinge-line discontinuities, and shock fronts. At the global level, the strong correlation observed between the GRI and the reconstruction error (MAE), with 
+
+𝜌 = 0.889 , indicates that operating conditions with larger spread also tend to be associated with larger surrogate er-rors in the present dataset. At the local level, the proposed LRI curves show that regions with lower spread generally correspond to lower residuals, while high-spread regions are progressively associated with larger errors. Overall, this sensitivity analysis supports the interpretation of diffusion-sampling spread as a useful qualitative reliability diagnostic rather than as calibrated uncertainty quantification. Taken together, these contributions build upon and extend diffusion-based surrogate studies in aerodynamics. While previous work demonstrated that DDPM sampling variance provides qualitative variability maps for two-dimensional airfoil flows on structured grids Liu and Thuerey (2024); Ogbuagu et al. (2026), the present framework advances this paradigm in three directions: (i) the surrogate oper-ates on a three-dimensional, unstructured surface mesh of ℎ = 139 ,374 points, conditioned on a six-dimensional design space that includes control surface deflections; (ii) it introduces a signal-aware training objective that im-proves reconstruction fidelity in sharp-gradient regions and yields a bounded, low-variance generative process (mean 
+
+𝜎 ( 𝑁 ) ≈ 0.005 ) that permits meaningful quantification of the residual stochastic spread; and (iii) it formalizes the spread–error relationship through the LRI and GRI, which provide spatially resolved and global diagnostic measures of model sensitivity. These elements indicate that con-ditional diffusion surrogates are scalable to industrially relevant three-dimensional configurations and that their intrinsic stochasticity can serve as a practical reliability assessment tool. This study is intentionally scoped to assess the value of a diffusion-based surrogate formulation for deterministic aerodynamic field prediction under limited-data conditions. The analysis is restricted to a single transonic CRM wing geometry, surface pressure as the target quantity, and a com-pact dataset of high-fidelity RANS simulations. In addition, the benchmark is not intended to exhaust the full landscape of modern surrogate architectures for unstructured aero-dynamic data, such as graph-based, operator-learning, or neural-field approaches. Within these boundaries, the present results indicate that conditional diffusion surro-gates are a competitive and self-aware alternative for three-dimensional aerodynamic pressure prediction. Future work will explore the extension of this framework to full aircraft configurations, alternative target quantities such as skin friction, and the integration of the reliability diagnostics introduced here into active learning loops for adaptive CFD database enrichment. 16 Signal-Aware Conditional Diffusion Surrogates for Transonic Wing Pressure Prediction 
+
+# Acknowledgments 
+
+This work has been supported by the TIFON project, ref. PLEC2023-010251/MCIN/AEI/ 10.13039/501100011033, funded by the Spanish State Research Agency. 
+
+# References 
+
+L. He, Y. Zhou, W. Qian, Q. Wang, Aerodynamic data fusion with a multi-fidelity surrogate modeling method, in: Proceedings of the 7th European Conference for Aeronautics and Space Sciences, Milano, Italy, 2017. doi: 10.13009/EUCASS2017-108 .M. Anhichem, S. Timme, J. Castagna, A. Peace, M. Maina, Multifidelity data fusion applied to aircraft wing pressure distribution, in: AIAA AVIATION 2022 Forum, Amer-ican Institute of Aeronautics and Astronautics, 2022. doi: 10.2514/6.2022-3526 .M. R. Malik, D. M. Bushnell, Role of Computational Fluid Dynamics and Wind Tunnels in Aeronautics R and D, Technical Report NASA/TP–2012–217602, National Aeronautics and Space Administration, 2012. R. Yondo, K. Bobrowski, E. Andrés, E. Valero, A re-view of surrogate modeling techniques for aerodynamic analysis and optimization: current limitations and fu-ture challenges in industry, Advances in evolution-ary and deterministic methods for design, optimization and control in engineering and sciences (2019) 19–33. doi: 10.1016/j.paerosci.2017.11.003 .X. Du, P. He, J. R. Martins, Rapid airfoil design optimiza-tion via neural networks-based parameterization and sur-rogate modeling, Aerospace Science and Technology 113 (2021) 106701. doi: 10.1016/j.ast.2021.106701 .Q. Du, T. Liu, L. Yang, L. Li, D. Zhang, Y. Xie, Airfoil design and surrogate modeling for performance predic-tion based on deep learning method, Physics of Fluids 34 (2022). doi: 10.1063/5.0075784 .D. Hines, P. Bekemeyer, Graph neural networks for the prediction of aircraft surface pressure dis-tributions, Aerospace Science and Technology 137 (2023) 108268. doi: https://doi.org/10.1016/j. ast.2023.108268 .G. Catalani, S. Agarwal, X. Bertrand, F. Tost, M. Bauer-heim, J. Morlier, Neural fields for rapid aircraft aerody-namics simulations, Scientific Reports 14 (2024) 25496. doi: 10.1038/s41598-024-76983-w .G. Catalani, J. Fesquet, X. Bertrand, F. Tost, M. Bauerheim, J. Morlier, Towards scalable surrogate models based on neural fields for large scale aerodynamic simulations, Computers & Fluids 306 (2026) 106929. doi: https: //doi.org/10.1016/j.compfluid.2025.106929 .K. Shukla, V. Oommen, A. Peyvan, M. Penwarden, N. Plewacki, L. Bravo, A. Ghoshal, R. M. Kirby, G. E. Karniadakis, Deep neural operators as accurate sur-rogates for shape optimization, Engineering Appli-cations of Artificial Intelligence 129 (2024) 107615. doi: 10.1016/j.engappai.2023.107615 .X. Hu, Q. Ma, P. Zhao, X. Wang, Physics-aware neural operator for high-fidelity fluid dynamics modeling with geometric and spectral priors, Physics of Fluids 37 (2025) 115111. doi: 10.1063/5.0299765 .T. Nandal, V. Fulara, R. K. Singh, A synergistic frame-work leveraging autoencoders and generative adversarial networks for the synthesis of computational fluid dy-namics results in aerofoil aerodynamics, arXiv preprint arXiv:2305.18386 (2023). doi: 10.48550/arXiv:2305. 18386 .Y. Wang, L. Deng, Y. Wan, Z. Yang, W. Yang, C. Chen, D. Zhao, F. Wang, Y. Guo, An intelligent method for predicting the pressure coefficient curve of airfoil-based conditional generative adversarial networks, IEEE Transactions on Neural Networks and Learning Systems 34 (2023). doi: 10.1109/TNNLS.2021.3111911 .J. Sohl-Dickstein, E. A. Weiss, N. Maheswaranathan, S. Ganguli, Deep unsupervised learning using nonequilibrium thermodynamics, arXiv preprint arXiv:1503.03585 (2015). doi: 10.48550/arXiv.1503. 03585 .J. Ho, A. Jain, P. Abbeel, Denoising diffusion probabilistic models, arXiv preprint arXiv:2006.11239 (2020). doi: 10. 48550/arXiv.2006.11239 .A. Nichol, P. Dhariwal, Improved denoising diffusion probabilistic models, arXiv preprint arXiv:2102.09672 (2021). doi: 10.48550/arXiv.2102.09672 .Y. Song, J. Sohl-Dickstein, D. P. Kingma, A. Kumar, S. Ermon, B. Poole, Score-based generative modeling through stochastic differential equations, arXiv preprint arXiv:2011.13456 (2020). A. Nichol, P. Dhariwal, Diffusion models beat gans on im-age synthesis, arXiv preprint arXiv.2105.05233 (2021). doi: 10.48550/arXiv.2105.05233 .C. Saharia, J. Ho, W. Chan, T. Salimans, D. J. Fleet, M. Norouzi, Image super-resolution via iterative re-finement, arXiv preprint arXiv:2104.07636 (2021). doi: 10.48550/arXiv.2104.07636 .Q. Liu, N. Thuerey, Uncertainty-aware surrogate models for airfoil flow simulations with denoising diffusion probabilistic models, AIAA Journal 62 (2024) 2912– 2933. doi: 10.2514/1.J063440 .C. Wang, H. Xiang, H. Jiang, B. Li, Y. Peng, Z. Fan, M. Zhang, J. Li, AeroDiT: Diffusion transformers for Reynolds-Averaged Navier–Stokes simulations of airfoil flows, Physics of Fluids 37 (2025) 124120. doi: 10. 1063/5.0256147 .K. Ogbuagu, S. Maleki, G. Bruni, S. Krishnababu, Foildiff: A hybrid diffusion transformer model for airfoil flow field prediction, Aerospace Science and Technology 172 (2026) 111677. doi: https://doi.org/10.1016/ j.ast.2026.111677 .17 Signal-Aware Conditional Diffusion Surrogates for Transonic Wing Pressure Prediction Y. Liu, et al., A general framework for airfoil flow field reconstruction based on transformer-guided diffusion models, Chinese Journal of Aeronautics (2025). doi: 10. 1016/j.cja.2025.06.003 , in press. Z. Wei, E. R. Dufour, C. Pelletier, P. Fua, M. Bauerheim, Diffairfoil: An efficient novel airfoil sampler based on latent space diffusion model for aerodynamic shape optimization, in: AIAA AVIATION FORUM AND ASCEND 2024, American Institute of Aeronautics and Astronautics, 2024. doi: 10.2514/6.2024-3755 .P. Du, M. H. Parikh, X. Fan, X.-Y. Liu, J.-X. Wang, Condi-tional neural field latent diffusion model for generating spatiotemporal turbulence, Nature Communications 15 (2024). doi: 10.1038/s41467-024-54712-1 .M. Lino, T. Pfaff, N. Thuerey, Learning distributions of complex fluid simulations with diffusion graph networks, arXiv preprint arXiv.2504.02843 (2025). doi: 10.48550/arXiv.2504.02843 .J. Kim, S. Yang, N. Kang, Point-wise diffusion models for physical systems with shape variations: Application to spatio-temporal and large-scale system, arXiv preprint arXiv:2508.01230 (2025). doi: 10.48550/arXiv.2508. 01230 .J. Song, C. Meng, S. Ermon, Denoising diffusion implicit models, arXiv preprint arXiv:2010.02502 (2020). doi: 10. 48550/arXiv:2010.02502 .Q. Xu, J. L. Bamber, N. Thuerey, N. Boers, P. Bates, G. Camps-Valls, Y. Shi, X. X. Zhu, Physically consis-tent and uncertainty-aware learning of spatiotemporal dynamics, arXiv preprint arXiv:2508.01230 (2025). doi: 10.48550/arXiv:2508.01230 .J. Kuntz, Markov chains revisited, 2020. doi: 10.48550/ arxiv.2001.02183 .Z. Guo, J. Lang, S. Huang, Y. Gao, X. Ding, Acomprehensive review on noise control of diffusion model, arXiv preprint arXiv:2502.04669 (2025). doi: 10. 48550/arXiv.2502.04669 .O. Ronneberger, P. Fischer, T. Brox, U-net: Con-volutional networks for biomedical image segmenta-tion, arXiv preprint arXiv:1505.04597 (2021). doi: 10. 48550/arXiv.1505.04597 .Z. Zhan, D. Chen, J.-P. Mei, Z. Zhao, J. Chen, C. Chen, S. Lyu, C. Wang, Conditional image synthesis with dif-fusion models: A survey, 2024. doi: 10.48550/arXiv. 2409.19365 .A. Vaswani, N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A. N. Gomez, L. Kaiser, I. Polosukhin, Attention is all you need, arXiv preprint arXiv:1706.03762 (2017). doi: 10.48550/arXiv:1706.03762 .J. C. Vassberg, M. A. Dehaan, S. M. Rivers, R. A. Wahls, Development of a common research model for applied cfd validation studies, in: 26th AIAA Applied Aerody-namics Conference, American Institute of Aeronautics and Astronautics, 2008. doi: 10.2514/6.2008-6919 .C. Sabater, P. Stürmer, P. Bekemeyer, Fast predictions of aircraft aerodynamics using deep-learning techniques, AIAA Journal 60 (2022) 5249–5261. doi: 10.2514/1. J061234 .S. Allmaras, F. Johnson, P. Spalart, Modifications and clar-ifications for the implementation of the spalart-allmaras turbulence model, Seventh International Conference on Computational Fluid Dynamics (ICCFD7) (2012) 1–11. N. Kroll, S. Langer, A. Schwöppe, The DLR Flow Solver TAU - Status and Recent Algorithmic Developments, American Institute of Aeronautics and Astronautics, 2014. doi: 10.2514/6.2014-0080 .J. Tran, K. Fukami, K. Inada, D. Umehara, Y. Ono, K. Ogawa, K. Taira, Aerodynamics-guided machine learning for design optimization of electric vehicles, Communications Engineering 3 (2024). doi: 10.1038/ s44172-024-00322-0 .V. Francés-Belda, A. Solera-Rico, J. Nieto-Centenero, E. Andrés, C. Sanmiguel Vila, R. Castellanos, Toward aerodynamic surrogate modeling based on 𝛽 -variational autoencoders, Physics of Fluids 36 (2024). doi: 10. 1063/5.0232644 .X. Li, Y. Peng, H. Zheng, Research and analysis of vae, gan, and diffusion generation models, Science and Tech-nology of Engineering, Chemistry and Environmental Protection 1 (2025). doi: 10.61173/mr4pwd16 .J. L. Ba, J. R. Kiros, G. E. Hinton, Layer normal-ization, arXiv preprint arXiv:1607.06450 (2016). doi: 10.48550/arXiv.1607.06450 .D. Kingma, J. Ba, Adam: A method for stochastic opti-mization, International Conference on Learning Repre-sentations (2014). doi: 10.48550/ARXIV.1412.6980 .L. N. Smith, N. Topin, Super-convergence: Very fast training of neural networks using large learn-ing rates, arXiv preprint arXiv:1708.07120 (2017). doi: 10.48550/arXiv.1708.07120 .A. Solera-Rico, C. Sanmiguel Vila, M. Gómez-López, Y. Wang, A. Almashjary, S. Dawson, R. Vinuesa, 𝛽 -variational autoencoders and transformers for reduced-order modelling of fluid flows, Nature Communications 15 (2024) 1361. D. M. Hawkins, The problem of overfitting, Journal of Chemical Information and Computer Sciences 44 (2003) 1–12. doi: 10.1021/ci0342472 .X. Ying, An overview of overfitting and its solutions, Journal of Physics: Conference Series 1168 (2019) 022022. doi: 10.1088/1742-6596/1168/2/022022 .18

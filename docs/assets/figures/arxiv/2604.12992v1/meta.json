@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.12992v1/fig-001.webp",
+      "caption": "TABLE 1 Performance of CDM versus alternative methods (%)",
+      "page": 10,
+      "index": 1,
+      "width": 827,
+      "height": 327
+    },
+    {
+      "url": "assets/figures/arxiv/2604.12992v1/fig-002.webp",
+      "caption": "FIG 2. RMSE (%) for the 2.5th and 97.5th percentiles of the predicted distribution. CDM (Causal Diffusion Model), CRN (Counterfactual Recurrent Network), CT (Causal Transformer), GNet, and RMSN (Recurrent Marginal Structural Network) are compared. CDM performs competitively with the baselines at low and moderate confounding levels, but outperforms most of the baselines at higher confounding levels.",
+      "page": 10,
+      "index": 2,
+      "width": 844,
+      "height": 423
+    },
+    {
+      "url": "assets/figures/arxiv/2604.12992v1/fig-003.webp",
+      "caption": "FIG 1. Root Mean Squared Error (RMSE, %) and 1-Wasserstein distance (%) vs. confounding level γ.",
+      "page": 9,
+      "index": 3,
+      "width": 844,
+      "height": 423
+    }
+  ]
+}

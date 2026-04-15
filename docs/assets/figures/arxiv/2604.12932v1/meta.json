@@ -1,0 +1,54 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.12932v1/fig-001.webp",
+      "caption": "Figure 1: Comparison between direct numerical simulation (DNS) and diffusion model (DM) generated particle pairs. Top: time evolution of the velocity magnitude |V(t)| for the two particles forming a pair, shown for DNS (left) and DM (right). Bottom: corresponding threedimensional trajectories of the two particles (red and blue curves), initialized at separation r(0). The instantaneous inter-particle distance at a fixed time t during the evolution is denoted as r(t).",
+      "page": 2,
+      "index": 1,
+      "width": 898,
+      "height": 516
+    },
+    {
+      "url": "assets/figures/arxiv/2604.12932v1/fig-002.webp",
+      "caption": "Figure 3: Probability density function of pair separation P (rn, t), compensated by r2 n, plotted as a function of r 2/3",
+      "page": 7,
+      "index": 2,
+      "width": 937,
+      "height": 515
+    },
+    {
+      "url": "assets/figures/arxiv/2604.12932v1/fig-003.webp",
+      "caption": "Figure 2: Schematic representation of the diffusion model generative framework. Top: forward diffusion process q(Vn | Vn−1), progressively corrupting the clean data sample V0 ∼ q(V) into Gaussian noise VN ∼ N (0, I) through a sequence of Markovian steps indicated by the black arrows. The backward (generative) process pθ(Vn−1 | Vn), inidicated by the gray arrows, starts from pure noise, and inverts the forward transformation by predicting with a trained neural network the mean µθ(Vn, n) of the transition kernel, while the variance β̃nI is prescribed by the knowledge of the forward process. Middle row: illustration of intermediate noisy velocity signals during the forward and backward evolution. Bottom row: corresponding reconstruction of particle trajectories, showing the progressive emergence of coherent multiscale structures as the denoising process proceeds from VN to V0.",
+      "page": 3,
+      "index": 3,
+      "width": 941,
+      "height": 316
+    },
+    {
+      "url": "assets/figures/arxiv/2604.12932v1/fig-004.webp",
+      "caption": "Figure 4: Pair separation statistics as a function of time t in units of τη. Left: mean-square separation ⟨r2(t)⟩, showing inertial-range scaling. The Richardson’s t3 prediction is reported for reference. Right: fourth-order moment ⟨r4(t)⟩. Right (inset): Flatness of the pair separation statistics, ⟨r4(t)⟩/⟨r2(t)⟩2. In all panels, DM (solid orange lines with full circles) is compared against DNS (dashed black lines).",
+      "page": 8,
+      "index": 4,
+      "width": 939,
+      "height": 412
+    },
+    {
+      "url": "assets/figures/arxiv/2604.12932v1/fig-005.webp",
+      "caption": "Figure 5: Moments of the two particles velocity difference at the time lag τ . Left: secondorder moment ⟨(δv(τ))2⟩. Right: fourth-order moment ⟨(δv(τ))4⟩. Right (inset): Flatness ⟨(δv(τ))4⟩/⟨(δv(τ))2⟩2. In all panels, DM (solid orange lines with full circles) is compared against DNS (dashed black lines).",
+      "page": 9,
+      "index": 5,
+      "width": 939,
+      "height": 414
+    },
+    {
+      "url": "assets/figures/arxiv/2604.12932v1/fig-006.webp",
+      "caption": "Figure 6: Single-particle Lagrangian velocity increment statistics as a function of time lag τ . Left: second-order structure function ⟨(δτ v)2⟩. Right: fourth-order structure function ⟨(δτ v)4⟩. Right (inset): flatness ⟨(δτ v)4⟩/⟨(δτ v)2⟩2. In all panels, DM (solid orange lines with full circles) is compared against DNS (dashed black lines).",
+      "page": 9,
+      "index": 6,
+      "width": 936,
+      "height": 397
+    }
+  ]
+}

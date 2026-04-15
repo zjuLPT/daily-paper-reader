@@ -1,0 +1,69 @@
+{
+  "label": "2026-04-15",
+  "date": "2026-04-15",
+  "generated_at": "2026-04-15T20:03:10",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202604/15/2604.12992v1-causal-diffusion-models-for-counterfactual-outcome-distributions-in-longitudinal-data",
+      "section": "deep",
+      "title_en": "Causal Diffusion Models for Counterfactual Outcome Distributions in Longitudinal Data",
+      "authors": "Farbod Alinezhad, Jianfei Cao, Gary J. Young, Brady Post",
+      "date": "2026-04-14",
+      "pdf": "https://arxiv.org/pdf/2604.12992v1",
+      "score": "10.0",
+      "evidence": "用于纵向数据的因果扩散模型",
+      "tldr": "本文提出因果扩散模型（CDM），利用去噪扩散概率模型与关系自注意结构来生成纵向数据中序列干预下的反事实结果分布，无需显式混杂调整，并在模拟实验中显著提升分布与点估计精度。",
+      "tags": "query:diffts",
+      "abstract_en": "Predicting counterfactual outcomes in longitudinal data, where sequential treatment decisions heavily depend on evolving patient states, is critical yet notoriously challenging due to complex time-dependent confounding and inadequate uncertainty quantification in existing methods. We introduce the Causal Diffusion Model (CDM), the first denoising diffusion probabilistic approach explicitly designed to generate full probabilistic distributions of counterfactual outcomes under sequential interventions. CDM employs a novel residual denoising architecture with relational self-attention, capturing intricate temporal dependencies and multimodal outcome trajectories without requiring explicit adjustments (e.g., inverse-probability weighting or adversarial balancing) for confounding. In rigorous evaluation on a pharmacokinetic-pharmacodynamic tumor-growth simulator widely adopted in prior work, CDM consistently outperforms state-of-the-art longitudinal causal inference methods, achieving a 15-30% relative improvement in distributional accuracy (1-Wasserstein distance) while maintaining competitive or superior point-estimate accuracy (RMSE) under high-confounding regimes. By unifying uncertainty quantification and robust counterfactual prediction in complex, sequentially confounded settings, without tailored deconfounding, CDM offers a flexible, high-impact tool for decision support in medicine, policy evaluation, and other longitudinal domains.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/15/2604.12932v1-turbulent-pair-dispersion-with-stochastic-generative-diffusion-models",
+      "section": "deep",
+      "title_en": "Turbulent pair dispersion with Stochastic Generative Diffusion Models",
+      "authors": "Andrei Pantea, Luca Biferale, Michele Buzzicotti, Guillaume Charpiat, Sergio Chibbaro, Tianyi Li",
+      "date": "2026-04-14",
+      "pdf": "https://arxiv.org/pdf/2604.12932v1",
+      "score": "8.0",
+      "evidence": "用于合成拉格朗日轨迹的扩散模型",
+      "tldr": "本文提出一种基于扩散模型的随机生成方法，用于联合生成湍流中两条拉格朗日速度轨迹，从而实现粒子对扩散的全数据驱动表征。研究发现该方法能准确重现粒子分离动态及单粒子统计性质，对理解和模拟多尺度湍流具有重要意义。",
+      "tags": "query:diffts",
+      "abstract_en": "Recent advances in data-driven modeling have shown that diffusion models can successfully generate synthetic Lagrangian trajectories in turbulent flows. Building on this progress, we extend the method to the joint generation of pairs of Lagrangian velocity trajectories, enabling a fully data-driven representation of turbulent pair dispersion, a long-standing fundamental problem with broad relevance in fluid dynamics. We demonstrate that diffusion models accurately reproduce the evolution of particle-pair separation, including deviations from Richardson's classical scaling law, while simultaneously preserving all key single-particle statistical properties reported in previous studies. These findings underscore the potential of diffusion-based generative models to emulate high-dimensional, multi-scale turbulent dynamics, further establishing them as a powerful tool for scientific modeling and for future geophysical and astrophysical applications.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/15/2604.11263v1-signal-aware-conditional-diffusion-surrogates-for-transonic-wing-pressure-prediction",
+      "section": "quick",
+      "title_en": "Signal-Aware Conditional Diffusion Surrogates for Transonic Wing Pressure Prediction",
+      "authors": "Víctor Francés-Belda, Carlos Sanmiguel Vila, Rodrigo Castellanos",
+      "date": "2026-04-13",
+      "pdf": "https://arxiv.org/pdf/2604.11263v1",
+      "score": "6.0",
+      "evidence": "用于表面压力预测的条件去噪扩散模型",
+      "tldr": "该研究针对跨声速机翼的表面压力预测问题，提出一种基于主成分重参数化的信号感知条件扩散模型，通过时间步加权的训练目标有效提升强梯度区域的重建精度，并在NASA标准机翼数据上优于基线模型。",
+      "tags": "query:diffts",
+      "abstract_en": "Accurate and efficient surrogate models for aerodynamic surface pressure fields are essential for accelerating aircraft design and analysis, yet deterministic regressors trained with pointwise losses often smooth sharp nonlinear features. This work presents a conditional denoising diffusion probabilistic model for predicting surface pressure distributions on the NASA Common Research Model wing under varying conditions of Mach number, angle of attack, and four control surface deflections. The framework operates on unstructured surface data through a principal component representation used as a non-truncated, reversible linear reparameterization of the pressure field, enabling a fully connected architecture. A signal-aware training objective is derived by propagating a reconstruction loss through the diffusion process, yielding a timestep-dependent weighting that improves fidelity in regions with strong pressure gradients. The stochastic sampling process is analyzed through repeated conditional generations, and two diagnostic metrics are introduced, the Local Reliability Index and Global Reliability Index, to relate sampling-induced spread to reconstruction error. Relative to the considered deterministic baselines, the proposed formulation reduces mean absolute error and improves the reconstruction of suction peaks, shock structures, and control surface discontinuities. The sampling-induced spread exhibits strong correspondence with surrogate error, supporting its interpretation as a qualitative reliability indicator rather than calibrated uncertainty quantification.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/15/2604.11275v1-sheaf-diffusion-with-adaptive-local-structure-for-spatio-temporal-forecasting",
+      "section": "quick",
+      "title_en": "Sheaf Diffusion with Adaptive Local Structure for Spatio-Temporal Forecasting",
+      "authors": "Abeer Mostafa, Raneen Younis, Zahra Ahmadi",
+      "date": "2026-04-13",
+      "pdf": "https://arxiv.org/pdf/2604.11275v1",
+      "score": "6.0",
+      "evidence": "使用层扩散进行时空预测",
+      "tldr": "本文提出用于时空预测的ST-Sheaf GNN方法，通过引入基于sheaf理论的拓扑表示，将图结构嵌入矢量空间并学习自适应局部约束映射，从而更好地捕捉动态局部结构并缓解深层图神经网络的过平滑问题。实验显示，该方法在多个领域的数据集上均优于现有模型。",
+      "tags": "query:diffts",
+      "abstract_en": "Spatio-temporal systems often exhibit highly heterogeneous and non-intuitive responses to localized disruptions, limiting the effectiveness of conventional message passing approaches in modeling higher-order interactions under local heterogeneity. This paper reformulates spatio-temporal forecasting as the problem of learning information flow over locally structured spaces, rather than propagating globally aligned node representations. We introduce a spatio-temporal sheaf diffusion graph neural network (ST-Sheaf GNN) that embeds graph topology into sheaf-theoretic vector spaces connected by learned linear restriction maps. Unlike prior work that relies on static or globally shared transformations, our model learns dynamic restriction maps that evolve over time and adapt to local spatio-temporal patterns to enable substantially more expressive interactions. By explicitly modeling latent local structure, the proposed framework efficiently mitigates the oversmoothing phenomenon in deep GNN architectures. We evaluate our framework on a diverse set of real-world spatio-temporal forecasting benchmarks spanning multiple domains. Experimental results demonstrate state-of-the-art performance, highlighting the effectiveness of sheaf-theoretic topological representations as a powerful foundation for spatio-temporal graph learning. The code is available at: https://anonymous.4open.science/r/ST-SheafGNN-6523/.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

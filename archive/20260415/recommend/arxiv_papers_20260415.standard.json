@@ -1,0 +1,170 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-15T20:01:26.540387+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [
+    {
+      "id": "2604.12992v1",
+      "source": "arxiv",
+      "title": "Causal Diffusion Models for Counterfactual Outcome Distributions in Longitudinal Data",
+      "abstract": "Predicting counterfactual outcomes in longitudinal data, where sequential treatment decisions heavily depend on evolving patient states, is critical yet notoriously challenging due to complex time-dependent confounding and inadequate uncertainty quantification in existing methods. We introduce the Causal Diffusion Model (CDM), the first denoising diffusion probabilistic approach explicitly designed to generate full probabilistic distributions of counterfactual outcomes under sequential interventions. CDM employs a novel residual denoising architecture with relational self-attention, capturing intricate temporal dependencies and multimodal outcome trajectories without requiring explicit adjustments (e.g., inverse-probability weighting or adversarial balancing) for confounding. In rigorous evaluation on a pharmacokinetic-pharmacodynamic tumor-growth simulator widely adopted in prior work, CDM consistently outperforms state-of-the-art longitudinal causal inference methods, achieving a 15-30% relative improvement in distributional accuracy (1-Wasserstein distance) while maintaining competitive or superior point-estimate accuracy (RMSE) under high-confounding regimes. By unifying uncertainty quantification and robust counterfactual prediction in complex, sequentially confounded settings, without tailored deconfounding, CDM offers a flexible, high-impact tool for decision support in medicine, policy evaluation, and other longitudinal domains.",
+      "authors": [
+        "Farbod Alinezhad",
+        "Jianfei Cao",
+        "Gary J. Young",
+        "Brady Post"
+      ],
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.LG",
+        "econ.EM"
+      ],
+      "published": "2026-04-14T17:25:53+00:00",
+      "link": "https://arxiv.org/pdf/2604.12992v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "Causal Diffusion Model for longitudinal data",
+      "llm_evidence_cn": "用于纵向数据的因果扩散模型",
+      "llm_evidence": "用于纵向数据的因果扩散模型",
+      "canonical_evidence": "用于纵向数据的因果扩散模型",
+      "llm_tldr_en": "First denoising diffusion approach for counterfactual outcome distributions in longitudinal time series.",
+      "llm_tldr_cn": "首个用于纵向时间序列中反事实结果分布的去噪扩散方法。",
+      "llm_tldr": "首个用于纵向时间序列中反事实结果分布的去噪扩散方法。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "denoising diffusion probabilistic models applied to time series",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.12932v1",
+      "source": "arxiv",
+      "title": "Turbulent pair dispersion with Stochastic Generative Diffusion Models",
+      "abstract": "Recent advances in data-driven modeling have shown that diffusion models can successfully generate synthetic Lagrangian trajectories in turbulent flows. Building on this progress, we extend the method to the joint generation of pairs of Lagrangian velocity trajectories, enabling a fully data-driven representation of turbulent pair dispersion, a long-standing fundamental problem with broad relevance in fluid dynamics. We demonstrate that diffusion models accurately reproduce the evolution of particle-pair separation, including deviations from Richardson's classical scaling law, while simultaneously preserving all key single-particle statistical properties reported in previous studies. These findings underscore the potential of diffusion-based generative models to emulate high-dimensional, multi-scale turbulent dynamics, further establishing them as a powerful tool for scientific modeling and for future geophysical and astrophysical applications.",
+      "authors": [
+        "Andrei Pantea",
+        "Luca Biferale",
+        "Michele Buzzicotti",
+        "Guillaume Charpiat",
+        "Sergio Chibbaro",
+        "Tianyi Li"
+      ],
+      "primary_category": "physics.flu-dyn",
+      "categories": [
+        "physics.flu-dyn"
+      ],
+      "published": "2026-04-14T16:20:42+00:00",
+      "link": "https://arxiv.org/pdf/2604.12932v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "diffusion models for synthetic Lagrangian trajectories",
+      "llm_evidence_cn": "用于合成拉格朗日轨迹的扩散模型",
+      "llm_evidence": "用于合成拉格朗日轨迹的扩散模型",
+      "canonical_evidence": "用于合成拉格朗日轨迹的扩散模型",
+      "llm_tldr_en": "Applies diffusion models to generate turbulent velocity trajectories as time-dependent data.",
+      "llm_tldr_cn": "应用扩散模型生成湍流速度轨迹作为时间相关数据。",
+      "llm_tldr": "应用扩散模型生成湍流速度轨迹作为时间相关数据。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "sequence modeling with diffusion processes for time-dependent data",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2604.11263v1",
+      "source": "arxiv",
+      "title": "Signal-Aware Conditional Diffusion Surrogates for Transonic Wing Pressure Prediction",
+      "abstract": "Accurate and efficient surrogate models for aerodynamic surface pressure fields are essential for accelerating aircraft design and analysis, yet deterministic regressors trained with pointwise losses often smooth sharp nonlinear features. This work presents a conditional denoising diffusion probabilistic model for predicting surface pressure distributions on the NASA Common Research Model wing under varying conditions of Mach number, angle of attack, and four control surface deflections. The framework operates on unstructured surface data through a principal component representation used as a non-truncated, reversible linear reparameterization of the pressure field, enabling a fully connected architecture. A signal-aware training objective is derived by propagating a reconstruction loss through the diffusion process, yielding a timestep-dependent weighting that improves fidelity in regions with strong pressure gradients. The stochastic sampling process is analyzed through repeated conditional generations, and two diagnostic metrics are introduced, the Local Reliability Index and Global Reliability Index, to relate sampling-induced spread to reconstruction error. Relative to the considered deterministic baselines, the proposed formulation reduces mean absolute error and improves the reconstruction of suction peaks, shock structures, and control surface discontinuities. The sampling-induced spread exhibits strong correspondence with surrogate error, supporting its interpretation as a qualitative reliability indicator rather than calibrated uncertainty quantification.",
+      "authors": [
+        "Víctor Francés-Belda",
+        "Carlos Sanmiguel Vila",
+        "Rodrigo Castellanos"
+      ],
+      "primary_category": "physics.flu-dyn",
+      "categories": [
+        "physics.flu-dyn",
+        "cs.LG"
+      ],
+      "published": "2026-04-13T10:18:07+00:00",
+      "link": "https://arxiv.org/pdf/2604.11263v1",
+      "tags": [
+        "keyword:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "conditional denoising diffusion for surface pressure prediction",
+      "llm_evidence_cn": "用于表面压力预测的条件去噪扩散模型",
+      "llm_evidence": "用于表面压力预测的条件去噪扩散模型",
+      "canonical_evidence": "用于表面压力预测的条件去噪扩散模型",
+      "llm_tldr_en": "Applies conditional diffusion models to predict aerodynamic surface pressure distributions.",
+      "llm_tldr_cn": "应用条件扩散模型来预测空气动力学表面压力分布。",
+      "llm_tldr": "应用条件扩散模型来预测空气动力学表面压力分布。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "conditional diffusion frameworks for time series generation",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.11275v1",
+      "source": "arxiv",
+      "title": "Sheaf Diffusion with Adaptive Local Structure for Spatio-Temporal Forecasting",
+      "abstract": "Spatio-temporal systems often exhibit highly heterogeneous and non-intuitive responses to localized disruptions, limiting the effectiveness of conventional message passing approaches in modeling higher-order interactions under local heterogeneity. This paper reformulates spatio-temporal forecasting as the problem of learning information flow over locally structured spaces, rather than propagating globally aligned node representations. We introduce a spatio-temporal sheaf diffusion graph neural network (ST-Sheaf GNN) that embeds graph topology into sheaf-theoretic vector spaces connected by learned linear restriction maps. Unlike prior work that relies on static or globally shared transformations, our model learns dynamic restriction maps that evolve over time and adapt to local spatio-temporal patterns to enable substantially more expressive interactions. By explicitly modeling latent local structure, the proposed framework efficiently mitigates the oversmoothing phenomenon in deep GNN architectures. We evaluate our framework on a diverse set of real-world spatio-temporal forecasting benchmarks spanning multiple domains. Experimental results demonstrate state-of-the-art performance, highlighting the effectiveness of sheaf-theoretic topological representations as a powerful foundation for spatio-temporal graph learning. The code is available at: https://anonymous.4open.science/r/ST-SheafGNN-6523/.",
+      "authors": [
+        "Abeer Mostafa",
+        "Raneen Younis",
+        "Zahra Ahmadi"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-04-13T10:32:20+00:00",
+      "link": "https://arxiv.org/pdf/2604.11275v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "spatio-temporal forecasting using sheaf diffusion",
+      "llm_evidence_cn": "使用层扩散进行时空预测",
+      "llm_evidence": "使用层扩散进行时空预测",
+      "canonical_evidence": "使用层扩散进行时空预测",
+      "llm_tldr_en": "Develops a spatio-temporal sheaf diffusion graph neural network for forecasting information flow.",
+      "llm_tldr_cn": "开发了一种用于预测信息流的时空层扩散图神经网络。",
+      "llm_tldr": "开发了一种用于预测信息流的时空层扩散图神经网络。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
