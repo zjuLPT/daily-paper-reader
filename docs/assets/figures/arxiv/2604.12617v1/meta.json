@@ -1,0 +1,62 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.12617v1/fig-001.webp",
+      "caption": "Figure 5: Training visualization on poster data. SOAR learns layout structure, typographic placement, and visual hierarchy with high fidelity.",
+      "page": 11,
+      "index": 1,
+      "width": 886,
+      "height": 1249
+    },
+    {
+      "url": "assets/figures/arxiv/2604.12617v1/fig-002.webp",
+      "caption": "Figure 1: Conceptual comparison of post-training regimes from a trajectory perspective. Left: SFT trains only on ground-truth denoising states. Once an inference rollout exits the narrow corridor of well-optimized states, subsequent steps sharpen the wrong structure. Middle: RL separates good and bad final outcomes with a terminal reward, but the sparse signal arrives after the erroneous rollout has already formed. Right: SOAR performs a one-step rollout to generate off-trajectory states and supervises the model to correct back toward the clean target, acting before semantic errors fully materialize.",
+      "page": 2,
+      "index": 2,
+      "width": 874,
+      "height": 198
+    },
+    {
+      "url": "assets/figures/arxiv/2604.12617v1/fig-003.webp",
+      "caption": "Table 2: Main quantitative comparison at 512×512 (cfg=4.5). Rule-based metrics are evaluated on the Flow-GRPO test sets; model-based metrics are evaluated on OOD DrawBench. †Official checkpoint. ‡At 1024×1024. Bold: best overall; underline: second best.",
+      "page": 7,
+      "index": 3,
+      "width": 871,
+      "height": 267
+    },
+    {
+      "url": "assets/figures/arxiv/2604.12617v1/fig-004.webp",
+      "caption": "Figure 4: Training visualization on the high-aesthetic subset, covering portraits, landscapes, and anime styles. SOAR rapidly acquires coherent composition and structural fidelity as training progresses.",
+      "page": 10,
+      "index": 4,
+      "width": 886,
+      "height": 956
+    },
+    {
+      "url": "assets/figures/arxiv/2604.12617v1/fig-005.webp",
+      "caption": "Figure 3: Reward-specific training dynamics at 512×512. (a) OOD DrawBench Aesthetic score after training on the 3,725-pair High-Aesthetic subset (≥ 6.8). (b) OOD DrawBench ClipScore after training on the 6,857-pair High-ClipScore subset. All methods start from the same SD3.5-M pretrained checkpoint (step 0). SOAR achieves the highest final values in both settings with monotonic improvement.",
+      "page": 8,
+      "index": 5,
+      "width": 879,
+      "height": 339
+    },
+    {
+      "url": "assets/figures/arxiv/2604.12617v1/fig-006.webp",
+      "caption": "Figure 2: Noise-level analysis illustrating the ideal trajectory, the biased rollout, and the local correction direction. The off-trajectory state is constructed by one ODE step with the current model and then re-noised to auxiliary levels.",
+      "page": 4,
+      "index": 6,
+      "width": 713,
+      "height": 450
+    },
+    {
+      "url": "assets/figures/arxiv/2604.12617v1/fig-007.webp",
+      "caption": "Figure 6: Training visualization on WebUI data. SOAR accurately captures interface elements, shadow effects, and fine-grained stylistic details.",
+      "page": 12,
+      "index": 7,
+      "width": 886,
+      "height": 702
+    }
+  ]
+}

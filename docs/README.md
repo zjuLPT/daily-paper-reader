@@ -6,34 +6,34 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-04-15
-- 运行时间：2026-04-15 20:03:05 UTC
+- 最新运行日期：2026-04-16
+- 运行时间：2026-04-16 19:55:32 UTC
 - 运行状态：成功
 - 本次总论文数：4
 - 精读区：2
 - 速读区：2
 
 ### 今日简报（AI）
-今天聚焦多领域扩散模型，从因果推断到湍流粒子扩散再到航空与时空预测。  
-因果扩散与湍流生成模型表现突出，揭示复杂动态过程的高精度模拟潜力。  
-建议读者优先了解因果推断类扩散模型的应用，再关注在工程与气象场景中的扩散预测。
-- 详情：[/202604/15/README](/202604/15/README)
+今日聚焦扩散模型的生成学习与对齐优化，共研读 4 篇前沿论文。  
+重点发现：机器人动力学的生成式元学习与首个 AI-MIP 专用潜空间扩散模型均展现高潜力。  
+建议下步关注扩散模型在多领域泛化与自校正机制的应用突破。
+- 详情：[/202604/16/README](/202604/16/README)
 
 ### 精读区论文标签
-1. [Causal Diffusion Models for Counterfactual Outcome Distributions in Longitudinal Data](/202604/15/2604.12992v1-causal-diffusion-models-for-counterfactual-outcome-distributions-in-longitudinal-data)  
-   标签：评分：10.0/10、query:diffts
-   evidence：用于纵向数据的因果扩散模型
-2. [Turbulent pair dispersion with Stochastic Generative Diffusion Models](/202604/15/2604.12932v1-turbulent-pair-dispersion-with-stochastic-generative-diffusion-models)  
-   标签：评分：8.0/10、query:diffts
-   evidence：用于合成拉格朗日轨迹的扩散模型
+1. [Diffusion Sequence Models for Generative In-Context Meta-Learning of Robot Dynamics](/202604/16/2604.13366v1-diffusion-sequence-models-for-generative-in-context-meta-learning-of-robot-dynamics)  
+   标签：评分：9.0/10、query:diffts
+   evidence：用于机器人动力学预测的扩散序列模型
+2. [Monthly Diffusion v0.9: A Latent Diffusion Model for the First AI-MIP](/202604/16/2604.13481v1-monthly-diffusion-v09-a-latent-diffusion-model-for-the-first-ai-mip)  
+   标签：评分：9.0/10、query:diffts
+   evidence：用于月度气候时间序列演化的潜扩散模型
 
 ### 速读区论文标签
-1. [Signal-Aware Conditional Diffusion Surrogates for Transonic Wing Pressure Prediction](/202604/15/2604.11263v1-signal-aware-conditional-diffusion-surrogates-for-transonic-wing-pressure-prediction)  
+1. [SOAR: Self-Correction for Optimal Alignment and Refinement in Diffusion Models](/202604/16/2604.12617v1-soar-self-correction-for-optimal-alignment-and-refinement-in-diffusion-models)  
    标签：评分：6.0/10、query:diffts
-   evidence：用于表面压力预测的条件去噪扩散模型
-2. [Sheaf Diffusion with Adaptive Local Structure for Spatio-Temporal Forecasting](/202604/15/2604.11275v1-sheaf-diffusion-with-adaptive-local-structure-for-spatio-temporal-forecasting)  
+   evidence：通用扩散模型优化与曝光偏差
+2. [Universality of Gaussian-Mixture Reverse Kernels in Conditional Diffusion](/202604/16/2604.13470v1-universality-of-gaussian-mixture-reverse-kernels-in-conditional-diffusion)  
    标签：评分：6.0/10、query:diffts
-   evidence：使用层扩散进行时空预测
+   evidence：条件扩散模型的逼近理论
 
 
 <div class="dpr-home-promo-card">

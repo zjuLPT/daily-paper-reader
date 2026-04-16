@@ -1,0 +1,110 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.13481v1/fig-001.webp",
+      "caption": "Figure 4: Schematic of an S2-convolution layer. A spectral operator is applied to the internal feature tensor after a spherical harmonic transform, after which the result is inverted onto a new spatial grid.",
+      "page": 6,
+      "index": 1,
+      "width": 796,
+      "height": 254
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13481v1/fig-002.webp",
+      "caption": "Figure 5: Schematic of a tensor-product spectral operator. The shapes of the input tensor and operator parameters are denoted below the corresponding objects, and the dimensionality of the intermediate results is displayed above each operation. Here B is the minibatch dimension, Cin corresponds to the input channels, L and M to the input zonal and meridional wave modes respectively, R to the operator rank, and Cout to the output channels. ⊙ corresponds to matrix multiplication (inner product) and ⊗ to the tensor product (outer product).",
+      "page": 6,
+      "index": 2,
+      "width": 770,
+      "height": 194
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13481v1/fig-003.webp",
+      "caption": "Figure 8: Annual-mean climatology of the MDv0.9 historical ensemble mean, differences between ERA5 and MDv0.9 historical ensemble mean, and differences between MDv0.9 historical +2K and MDv0.9 historical ensemble means.",
+      "page": 11,
+      "index": 3,
+      "width": 829,
+      "height": 565
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13481v1/fig-004.webp",
+      "caption": "Table 1: Variables used for MDv0.9.",
+      "page": 2,
+      "index": 4,
+      "width": 875,
+      "height": 459
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13481v1/fig-005.webp",
+      "caption": "Table 2: State (initial and prognostic) xt, conditioning ct, and latent representation.",
+      "page": 2,
+      "index": 5,
+      "width": 827,
+      "height": 363
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13481v1/fig-006.webp",
+      "caption": "Figure 6: Schematic of the encoder. In Fig. 1, the resampling block in the conditioning pathway is placed outside of the encoder for visual clarity. The residual pathways are omitted from the S2-convolution layers located inside the SpatialConditionalRMSNorm blocks. The decoder uses this same architecture, but with inverted dimensions where appropriate. The predictor uses the same architecture, but with no static fields, and an additional input for DDPM-style noise input.",
+      "page": 7,
+      "index": 6,
+      "width": 705,
+      "height": 244
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13481v1/fig-007.webp",
+      "caption": "Figure 7: Cosine-latitude-weighted annual-mean skin temperature from each of the four sea-surface temperature forced ensemble experiments.",
+      "page": 10,
+      "index": 7,
+      "width": 829,
+      "height": 339
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13481v1/fig-008.webp",
+      "caption": "Figure 1: Schematic of MDv0.9. Data are denoted by circles, neural networks are denoted by polygons, and subordinate operations are denoted by round-cornered rectangles. Arrows entering laterally indicate data streams used as direct inputs to the indicated operation, and arrows entering from below indicate data streams used as conditioning tensors.",
+      "page": 3,
+      "index": 8,
+      "width": 705,
+      "height": 200
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13481v1/fig-009.webp",
+      "caption": "Figure 10: Regression onto the leading EOF of Z500 over 0–90°N for ERA5 and the climatologyforced MDv0.9 run.",
+      "page": 13,
+      "index": 9,
+      "width": 826,
+      "height": 294
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13481v1/fig-010.webp",
+      "caption": "Table 4: Architecture summary for MDv0.9 at 1.5◦ resolution: latent diffusion predictor and conditioning pathway.",
+      "page": 8,
+      "index": 10,
+      "width": 827,
+      "height": 367
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13481v1/fig-011.webp",
+      "caption": "Figure 9: ERA5 vs MDv0.9-historical regression on forced Niño-3.4",
+      "page": 12,
+      "index": 11,
+      "width": 829,
+      "height": 975
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13481v1/fig-012.webp",
+      "caption": "Figure 2: Schematic of spatial conditioning RMS normalization layer.",
+      "page": 5,
+      "index": 12,
+      "width": 777,
+      "height": 234
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13481v1/fig-013.webp",
+      "caption": "Figure 3: Schematic of seasonality embedding.",
+      "page": 5,
+      "index": 13,
+      "width": 747,
+      "height": 226
+    }
+  ]
+}

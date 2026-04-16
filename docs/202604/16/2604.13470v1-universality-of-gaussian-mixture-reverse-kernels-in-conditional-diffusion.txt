@@ -1,0 +1,3581 @@
+Title: Universality of Gaussian-Mixture Reverse Kernels in Conditional Diffusion
+
+URL Source: https://arxiv.org/pdf/2604.13470v1
+
+Published Time: Thu, 16 Apr 2026 00:29:42 GMT
+
+Number of Pages: 29
+
+Markdown Content:
+# Universality of Gaussian-Mixture Reverse Kernels in Conditional Diffusion 
+
+Nafiz Ishtiaque ∗1,2 , Syed Arefinul Haque 3, Kazi Ashraful Alam 4, and Fatima Jahara 5
+
+> 1
+
+Center for Mathematics and Interdisciplinary Sciences, Fudan University, Shanghai 200433, China 
+
+> 2
+
+Shanghai Institute for Mathematics and Interdisciplinary Sciences (SIMIS), Shanghai 200433, China 
+
+> 3
+
+Northeastern University, Boston, MA 02115, USA 
+
+> 4
+
+Infectious Diseases Division, icddr,b, Dhaka 1212, Bangladesh 
+
+> 5
+
+Rutgers University, New Brunswick, NJ 08901, USA 
+
+Abstract 
+
+We prove that conditional diffusion models whose reverse kernels are finite Gaussian mixtures with ReLU-network logits can approximate suitably regular target distributions arbitrarily well in context-averaged conditional KL divergence, up to an irreducible terminal mismatch that typically vanishes with increasing diffusion horizon. A path-space decomposition reduces the output error to this mismatch plus per-step reverse-kernel errors; assuming each reverse kernel factors through a finite-dimensional feature map, each step becomes a static conditional density approximation problem, solved by composing Norets’ Gaussian-mixture theory with quantitative ReLU bounds. Under exact terminal matching the resulting neural reverse-kernel class is dense in conditional KL. 
+
+# Contents 
+
+1 Introduction 22 Conditional prediction and diffusion kernels 3
+
+2.1 Prediction as kernel approximation . . . . . . . . . . . . . . . . . . . . . . . . 32.2 Forward and backward diffusion paths . . . . . . . . . . . . . . . . . . . . . . 32.3 True reverse kernels and path-space KL . . . . . . . . . . . . . . . . . . . . . 4
+
+3 Gaussian-mixture reverse kernels with neural parameterization 5
+
+3.1 Stepwise feature engineering . . . . . . . . . . . . . . . . . . . . . . . . . . . . 53.2 Regularity assumptions on forward densities . . . . . . . . . . . . . . . . . . . 53.3 Stepwise model hierarchy: infeasible and neural reverse kernels . . . . . . . . 63.4 Explicit error rates . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 7
+
+4 Main universality theorem and consequences 95 Conclusion 10 A Technical proofs 11 
+
+A.1 Proof of Proposition 3.5 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11 A.2 Proof of Proposition 4.1 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12 A.3 Proof of Corollary 4.4 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14 
+
+> ∗
+
+nafiz@simis.cn 
+
+1
+
+> arXiv:2604.13470v1 [cs.LG] 15 Apr 2026
+
+B Example: Gaussian Target under Ornstein–Uhlenbeck Noising 14 
+
+B.1 Setup and closed-form quantities . . . . . . . . . . . . . . . . . . . . . . . . . 15 B.2 Assumption verification . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16 B.3 Partition, cell probabilities, and the infeasible-mixture bound . . . . . . . . . 19 B.4 Neural approximation and final bound . . . . . . . . . . . . . . . . . . . . . . 22 B.5 Summary . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 27 
+
+# 1 Introduction 
+
+A universality theorem asks whether an architecture is expressive enough, in principle, to approximate the objects it is meant to learn. In classical approximation theory, universal-approximation results for neural networks played exactly this role, while later refinements quantified the dependence on depth, width, and smoothness [1–4]. This paper asks the analogous question for a class of conditional diffusion models .Diffusion methods now form a central paradigm in generative modeling [5–14]. Yet in standard DDPM-style discretizations each reverse step is typically a single Gaussian with learned mean and sometimes learned variance [6, 9]. Recent work argues that this ansatz can be too restrictive, especially in few-step regimes, and proposes richer reverse transitions based on Gaussian mixtures or related soft-mixture denoisers [15–17]. Our aim is to give a population-level expressivity theorem for that idea. The target is a conditional law c 7 → π⋆(· | c), i.e. a Markov kernel from a context space C
+
+to X = RD , with error measured by 
+
+EKL (π) := EC∼PC [KL( π⋆(· | C) ∥ π(· | C))] . (1.1) Thus the paper concerns approximation of conditional distributions, or equivalently Markov kernels, rather than approximation of a single unconditional density or score field. Our answer is affirmative for discrete-time conditional diffusions whose reverse kernels are finite Gaussian mixtures with fixed Gaussian components and feature-dependent logits realized by ReLU networks. The proof reduces the output conditional-KL to a terminal mismatch 
+
+plus a sum of per-step reverse-kernel errors . Under a feature-sufficiency assumption, each step factors through feature space into a static conditional density approximation problem. At each reverse step we then use a two-level hierarchy: first approximate the true feature-space reverse density by a Gaussian mixture whose weights are target dependent and a priori unknowable (referred to as “infeasible” for that reason), then approximate the resulting logits by ReLU networks. This yields the error decomposition terminal mismatch + ∑Tt=1 (infeasible mixture error t + neural logit error t) .
+
+The mixture error is controlled through Norets’ conditional Gaussian-mixture theory [18], and the logit error through the ReLU approximation bounds of [4]. Under a smooth-logit assumption, the resulting bounds are fully explicit. The main conclusions are: (i) a quantitative approximation result up to terminal mismatch (Proposition 4.1); (ii) under exact terminal matching, a universality theorem showing mean-KL denseness of the neural predictor class (Thm. 4.2); and (iii) high-probability and almost-everywhere consequences (Corollary 4.4). 
+
+Scope of the result. The theorem proved here is an expressivity result for a class of conditional diffusion architectures. It does not address statistical estimation, optimization, or score approximation. Its role is to isolate representation error at the level of reverse-kernel parameterization, in the same spirit as classical universal-approximation theorems for feedforward networks [1, 2]. The analysis relies on a feature-sufficiency assumption requiring each true reverse kernel to depend on its inputs only through a known finite-dimensional feature map; this is a modeling hypothesis, not derived from the forward process. The resulting rates are correspondingly structural rather than practically sharp, since in the present fully general ambient-space setting they inherit a substantial response-side curse of dimensionality. 2Relation to prior work. The paper sits at the intersection of three literatures. First, it is adjacent to the theory of score-based diffusion, which studies approximation and estimation of score fields, including recovery guarantees, minimax rates, low-dimensional adaptation, and conditional score estimation [14, 19–26]. Our theorem concerns not the score class but the reverse-kernel class itself in discrete time. Second, it complements recent empirical and algorithmic work advocating richer-than-Gaussian reverse transitions [15–17] by supplying a population-level expressivity theorem. Third, the construction draws on the older literature on conditional density estimation and mixtures of experts: adaptive mixtures of local experts, mixture density networks, and hierarchical mixtures of experts provided early neural mecha-nisms for modeling conditional output laws [27–29]; approximation-theoretic results appeared already in work of Jiang and Tanner [30], and Norets later established strong Kullback–Leibler (KL) approximation theorems for smooth mixtures of regressions [18]. Our stepwise reverse model is a diffusion-era version of that viewpoint. In short, the paper imports the representation-theoretic viewpoint of universal approxima-tion into conditional diffusion, replaces the usual score-centric perspective by a kernel-class perspective, and shows that a natural neural Gaussian-mixture reverse architecture is universal in conditional KL once the terminal mismatch is isolated. 
+
+Organization. §2 formulates conditional prediction as kernel approximation and proves the path-space KL decomposition. §3 develops the stepwise Gaussian-mixture and neural approximation theory, including the general explicit bounds and the sharper C1-branch rates. §4 states the main universality theorem and its consequences. §5 concludes. §A contains some technical proofs. §B exemplifies the general formalism by approximating a conditional Gaussian kernel with Ornstein-Uhlenbeck noising, with explicit parameters and error rates. 
+
+# 2 Conditional prediction and diffusion kernels 
+
+## 2.1 Prediction as kernel approximation 
+
+For measurable spaces (A, ΣA) and (B, ΣB), write ∆( A) and Ker (A → B ) for the sets of probability measures on A and Markov kernels K : A → ∆( B) respectively. 
+
+Definition 2.1 (Probabilistic prediction problem) . Let (C, ΣC ) and (X , ΣX ) be standard Borel spaces, and let P ∈ ∆( C × X ) with marginal PC on C. By disintegration there exists a true conditional π⋆ ∈ Ker (C → X ) with P(d c, dx) = PC (d c) π⋆(d x | c). The prediction problem is to approximate π⋆, PC -a.e., in KL divergence. We take X = RD with Lebesgue measure Leb , assume π⋆(· | c) ≪ Leb for PC -a.e. c
+
+(writing the density as π⋆(x | c)), and measure error by 
+
+EKL (π) := EC∼PC [KL( π⋆(· | C) ∥ π(· | C))] . (2.1) 
+
+## 2.2 Forward and backward diffusion paths 
+
+Fix diffusion horizon T ∈ N and forward kernels qt ∈ Ker (X → X ), t = 0 , . . . , T − 1, with strictly positive densities qt(xt+1 | xt).
+
+Definition 2.2 (Forward path kernel) . Define qπ⋆
+
+∈ Ker (C → X T +1 ) by 
+
+qπ⋆
+
+(d x0: T | c) := π⋆(d x0 | c) 
+
+> T−1
+
+∏
+
+> t=0
+
+qt(d xt+1 | xt), (2.2) with density qπ⋆
+
+(x0: T | c) = π⋆(x0 | c) 
+
+> T−1
+
+∏
+
+> t=0
+
+qt(xt+1 | xt). (2.3) 3Write qπ⋆ 
+
+> t
+
+(· | c) for the Xt-marginal of qπ⋆
+
+(· | c). Fix a reference law ν ∈ ∆( X ) with density ν(x); this is the initialization of the reverse chain. In practice ν is chosen so that 
+
+qπ⋆ 
+
+> T
+
+(· | c) ≈ ν for large T ; we track the mismatch explicitly. 
+
+Definition 2.3 (Backward path kernel and induced predictor) . A reverse model is a family 
+
+pt ∈ Ker (C × X → X ), t = 1 , . . . , T , with positive densities pt(xt−1 | c, x t). It induces a path kernel 
+
+pν (d x0: T | c) := ν(d xT )
+
+> T
+
+∏
+
+> t=1
+
+pt(d xt−1 | c, x t), (2.4) with output (induced predictor) πp,ν (· | c) := ( x0: T 7 → x0)∗ pν (· | c).
+
+## 2.3 True reverse kernels and path-space KL 
+
+Definition 2.4 (Forward induced joint measures) . Let Q(d c, dx0: T ) := PC (d c) qπ⋆
+
+(d x0: T | c).For t ∈ { 1, . . . , T }, let Qt be the marginal of (C, X t−1, X t) under Q:
+
+Qt := (( c, x 0: T ) 7 → (c, x t−1, x t)) ∗Q, (2.5) with further marginalization (Qt)C,X t := (( c, x t−1, x t) 7 → (c, x t)) ∗Qt.
+
+Definition 2.5 (True reverse kernel) . By disintegration of Qt over (Qt)C,X t , there exists 
+
+r⋆t ∈ Ker (C × X → X ) with 
+
+Qt(d c, dxt−1, dxt) = ( Qt)C,X t (d c, dxt) r⋆t (d xt−1 | c, x t), (2.6) where r⋆t (· | c, x t) ≪ Leb for (Qt)C,X t -a.e. (c, x t).
+
+Lemma 2.6 (True reverse) . The forward and reverse factorizations of the law of (Xt−1, X t)
+
+coincide for PC -a.e. c:
+
+qπ⋆
+
+> t−1
+
+(d xt−1 | c) qt−1(d xt | xt−1) = qπ⋆ 
+
+> t
+
+(d xt | c) r⋆t (d xt−1 | c, x t). (2.7) 
+
+Proof. Marginalizing Q to (C, X t−1, X t) via the Markov property of the forward chain gives 
+
+Qt(d c, dxt−1, dxt) = PC (d c) qπ⋆
+
+> t−1
+
+(d xt−1 | c) qt−1(d xt | xt−1). Integrating out xt−1 yields 
+
+(Qt)C,X t (d c, dxt) = PC (d c) qπ⋆ 
+
+> t
+
+(d xt | c). Comparing with (2.6) gives (2.7). 
+
+Definition 2.7 (Terminal mismatch and path error) .
+
+Eterm (c) := KL( qπ⋆ 
+
+> T
+
+(· | c) ∥ ν), UKL (p, ν ) := EC∼PC [KL( qπ⋆
+
+(· | C) ∥ pν (· | C))] . (2.8) 
+
+Lemma 2.8 (Path-space KL decomposition) . For PC -a.e. c,
+
+KL( qπ⋆
+
+(· | c) ∥ pν (· | c)) = Eterm (c) + 
+
+> T
+
+∑
+
+> t=1
+
+EXt∼qπ⋆t (·| c)[KL( r⋆t (· | c, X t) ∥ pt(· | c, X t))] . (2.9) 
+
+Moreover, by data processing, KL( π⋆(· | c) ∥ πp,ν (· | c)) ≤ KL( qπ⋆
+
+(· | c) ∥ pν (· | c)) , so 
+
+EKL (πp,ν ) ≤ EC∼PC [Eterm (C)] + 
+
+> T
+
+∑
+
+> t=1
+
+E(C,X t)∼(Qt)C,X t [KL( r⋆t (· | C, X t) ∥ pt(· | C, X t))] . (2.10) 
+
+Proof. By iterating Lemma 2.6 from t = T down to t = 1 , qπ⋆
+
+(d x0: T | c) = qπ⋆ 
+
+> T
+
+(d xT |
+
+c) ∏Tt=1 r⋆t (d xt−1 | c, x t). Taking the log-ratio with pν (d x0: T | c) = ν(d xT ) ∏ 
+
+> t
+
+pt(d xt−1 | c, x t)
+
+and integrating under qπ⋆
+
+gives (2.9) . The marginal bound follows by data processing for the projection x0: T 7 → x0; averaging over C gives (2.10). 
+
+Remark 2.9 (Role of the diffusion horizon) . Increasing T typically drives qπ⋆ 
+
+> T
+
+(· | c) closer to 
+
+ν, shrinking EC∼PC [Eterm (C)] , but also adds more stepwise error terms. Thus T controls a tradeoff between terminal matching and reverse-chain length. 43 Gaussian-mixture reverse kernels with neural parame-terization 
+
+## 3.1 Stepwise feature engineering 
+
+Assume that at step t the input (C, X t) is encoded by a measurable map ϕt : C × X → Rdt ,
+
+Zt := ϕt(C, X t). Projections and composition with ϕt induce pushforward measures from Qt:
+
+(c, x t−1, x t) (xt−1, ϕ t(c, x t)) 
+
+(c, x t) ϕt(c, x t), 
+
+> π1
+> π3π2
+> π4
+
+induces 
+
+Qt Ft
+
+(Qt)C,X t (Ft)Zt 
+
+> π1
+> ∗
+> π3
+> ∗π2
+> ∗
+> π4
+> ∗
+
+, (3.1) where Ft is the induced joint law of (Xt−1, Z t) and (Ft)Zt the induced feature space measure. 
+
+Assumption 3.1 (Properties of the feature map) . For each t ∈ { 1, . . . , T } there exist a compact set Kt ⊂ Rdt and a measurable ρ⋆t : RD × Kt → [0 , ∞) such that: (i) Compact feature support. (Ft)Zt (Kt) = 1 .(ii) Disintegration. Ft(d y, dz) = ρ⋆t (y | z) Leb(d y) ( Ft)Zt (d z).(iii) Feature sufficiency. For (Qt)C,X t -a.e. (c, x t), r⋆t (y | c, x t) = ρ⋆t (y | ϕt(c, x t)) for 
+
+Leb -a.e. y.
+
+Remark 3.2 . Condition (iii) is the essential modeling hypothesis: the true reverse kernel depends on (c, x t) only through z = ϕt(c, x t). Condition (ii) is a consequence of (iii) plus absolute continuity of r⋆t , but is stated for clarity. Condition (i) restricts the effective feature domain to a compact set, enabling uniform approximation of the logits. This is motivated by the intuition that in practical problems features should not be represented by truly unbounded parameters. This condition can be relaxed by allowing the support to decay and keeping track of tail error, as we demonstrate in example with Gaussian feature support in §B (see §B.2.3 and (B.116)). We assume strict compactness in formal proofs for simplicity. 
+
+Lemma 3.3 (Per-step error factors through features) . Let ˜pt ∈ Ker (Rdt → X ) have density 
+
+˜pt(y | z), and define dKL ,t ( ˜pt) := EZt∼(Ft)Zt [ KL (ρ⋆t (· | Zt) ∥ ˜pt(· | Zt))] . If the induced reverse kernel is pt(y | c, x t) := ˜ pt(y | ϕt(c, x t)) , then 
+
+dKL ,t (˜ pt) = E(C,X t)∼(Qt)C,X t [KL( r⋆t (· | C, X t) ∥ pt(· | C, X t))] . (3.2) 
+
+Proof. By (iii), the KL integrand depends on (c, x t) only through ϕt(c, x t); pushing Qt forward to Ft via (3.1) converts the right-hand side of (3.2) into dKL ,t (˜ pt).
+
+## 3.2 Regularity assumptions on forward densities 
+
+The approximation theorem [18, Corollary 2.1] is formulated in terms of regularity of the target densities (reverse densities in our case). In the present prediction setting, however, it is more natural to impose assumptions on the forward objects: the target conditional π⋆ and the noising kernels qt. These are the quantities that define the problem, whereas the reverse kernels are derived from them. We therefore assume regularity on the forward process and transfer it to the reverse densities through the bridge identity of Lemma 2.6. 
+
+Assumption 3.4 (Regularity of forward densities) . For s ∈ { 0, · · · , T − 1}
+
+(i) Strict positivity. π⋆(x0 | c) > 0 for PC -a.e. c and all x0; qs(xs+1 | xs) > 0 for all 
+
+s, x s, x s+1 .5(ii) Continuity and local integrable dominance. x0 7 → π⋆(x0 | c) is continuous for 
+
+PC -a.e. c; u 7 → qs(u | v) is continuous for every v; and for every compact K ⊂ X ,
+
+sup u∈K qs(u | v) ≤ gs,c,K (v) for some gs,c,K ∈ L1(qπ⋆ 
+
+> s
+
+(· | c)) .(iii) Finite second moments. ∫
+
+> C
+
+∫ 
+
+> RD
+
+∥y∥2 qπ⋆ 
+
+> s
+
+(d y | c) PC (d c) < ∞.(iv) Integrable local log-variation bounds. There exist hypercubes Cs(x) ∋ x of side-length rs > 0 and functions as−1 : X → [0 , ∞), bs : X × X → [0 , ∞) such that: for 
+
+PC -a.e. c, and for a.e. xs, log qπ⋆ 
+
+> s
+
+(xs | c)inf y∈Cs(xs) qπ⋆ 
+
+> s
+
+(y | c) ≤ as−1(xs); (3.3) for a.e. (xs, x s+1 ), log qs(xs+1 | xs)inf y∈Cs(xs) qs(xs+1 | y) ≤ bs(xs, x s+1 ); (3.4) and E(C,X s,X s+1 )∼Qs+1 [as−1(Xs) + bs(Xs, X s+1 )] < ∞.
+
+Proposition 3.5 (Step-t target satisfies the M0 conditions of Norets [18, Assumption 2.1]) .
+
+Write ft(y | z) := ρ⋆t (y | z). Under Assumptions 3.1(ii)(iii) and 3.4: (i) y 7 → ft(y | z) is strictly positive and continuous for (Ft)Zt -a.e. z;(ii) ∫ ∥y∥2 Ft(d y, dz) < ∞;(iii) ∫ log ft(y|z)inf u∈Ct−1(y) ft(u|z) Ft(d y, dz) < ∞.
+
+This is proved in Appendix A.1. This proposition is what allows us to invoke Norets’ theory at step t, and hence to treat the infeasible Gaussian-mixture class M0 as a valid first approximation to the true reverse density. The proposition along with Assumption 3.4 are checked explicitly for the example in §B (see §B.2.1). 
+
+## 3.3 Stepwise model hierarchy: infeasible and neural reverse kernels 
+
+We set up the approximation hierarchy ft ⇝ ˜pM0,m t 
+
+> t
+
+⇝ ˜pNN  
+
+> t,ϑ t
+
+, where the first arrow is the Norets’ infeasible Gaussian-mixture approximation with target dependent mixing coefficients [18, §2] and the second replaces the exact coefficients by ReLU outputs. 
+
+Definition 3.6 (Step-t partition data and cell probabilities) . For each mt ≥ 1, let {Amt 
+
+> t,j
+
+}mt
+
+> j=0
+
+partition RD : cells Amt 
+
+> t, 1
+
+, . . . , A mt 
+
+> t,m t
+
+are adjacent hypercubes of side-length ht,m t → 0 with centers μmt 
+
+> t,j
+
+; Amt 
+
+> t, 0
+
+:= RD \ ⋃mt 
+
+> j=1
+
+Amt 
+
+> t,j
+
+is the remainder. There exist δt,m t → 0 such that the hypercube Cδt,m t (y) of side-length δt,m t and centered at y eventually misses Amt 
+
+> t, 0
+
+for every y.Scales σt,m t , σ t, 0 > 0 satisfy 
+
+σt,m t
+
+δt,m t
+
+→ 0, δD−1 
+
+> t,m t
+
+ht,m t
+
+σDt,m t
+
+→ 0, (rt−1/2) D
+
+(2 πσ 2
+
+> t, 0
+
+)D/ 2 ≤ 2−(D+1) . (3.5) Define cell probabilities: Gmt 
+
+> t,j
+
+(z) := ∫
+
+> Amtt,j
+
+ρ⋆t (y | z) d y.
+
+Baseline-softmax family. For logits u = ( u1, . . . , u mt ) : Kt → Rmt , define 
+
+αt,j [u]( z) := exp( uj (z)) 1 + ∑ 
+
+> k
+
+exp( uk(z)) (j ≥ 1) , αt, 0[u]( z) := 11 + ∑ 
+
+> k
+
+exp( uk(z)) . (3.6) The corresponding Gaussian-mixture density is 
+
+˜pt[u]( y | z) := 
+
+> mt
+
+∑
+
+> j=1
+
+αt,j [u]( z) φ(y; μmt 
+
+> t,j
+
+, σ 2 
+
+> t,m t
+
+ID ) + αt, 0[u]( z) φ(y; 0 , σ 2
+
+> t, 0
+
+ID ), (3.7) with induced kernel pt[u](d y | c, x t) := ˜ pt[u](d y | ϕt(c, x t)) .6Exact log-odds. Define Λmt 
+
+> t,j
+
+(z) := log (Gmt 
+
+> t,j
+
+(z)/G mt 
+
+> t, 0
+
+(z)) for j = 1 , . . . , m t, so that Gmt 
+
+> t,j
+
+=
+
+αt,j [Λ mt 
+
+> t
+
+] by (3.6). We now introduce the two model classes that form the approximation hierarchy at step 
+
+t: the infeasible exact-logit Gaussian mixture M0, and its neural realization obtained by replacing the exact logits with a ReLU network. 
+
+Definition 3.7 (Infeasible cell mixture ( M0) at step t). ˜pM0,m t 
+
+> t
+
+(y | z) := ˜pt[Λ mt 
+
+> t
+
+]( y | z), with induced kernel pM0,m t 
+
+> t
+
+:= pt[Λ mt 
+
+> t
+
+].
+
+Definition 3.8 (Neural reverse model at step t). Let aϑt 
+
+> t
+
+: Rdt → Rmt be a ReLU network. Then ˜pNN  
+
+> t,ϑ t
+
+(y | z) := ˜ pt[aϑt 
+
+> t
+
+]( y | z), with induced kernel pNN  
+
+> t,ϑ t
+
+:= pt[aϑt 
+
+> t
+
+].
+
+## 3.4 Explicit error rates 
+
+We now turn to quantitative error control for the two step-t models introduced above. The first ingredient is a stability estimate showing that small uniform perturbations of the logits produce only a controlled increase in the stepwise KL error. 
+
+Lemma 3.9 (Baseline-softmax stability) . For two logit vectors u, v : Kt → Rmt , if max j sup z∈Kt |uj (z)−
+
+vj (z)| ≤ η, then 
+
+e−2η ˜pt[v] ≤ ˜pt[u] ≤ e2η ˜pt[v] (3.8) 
+
+pointwise, and 
+
+dKL ,t (˜ pt[u]) ≤ dKL ,t (˜ pt[v]) + 2 η. (3.9) 
+
+Proof. With Zu := 1 + ∑mt 
+
+> k=1
+
+euk and Zv := 1 + ∑mt 
+
+> k=1
+
+evk , the uniform bound gives e−η Zv ≤
+
+Zu ≤ eη Zv . For j ≥ 1, αt,j [u]/α t,j [v] = euj −vj Zv /Z u ∈ [e−2η , e 2η ]; for j = 0 , αt, 0[u]/α t, 0[v] = 
+
+Zv /Z u ∈ [e−η , e η ]. Summing αt,j [u] and αt,j [v] against the common Gaussian components (as in (3.7) ) yields the density sandwich (3.8) which implies log (ft/˜pt[u]) = log (ft/˜pt[v]) + log(˜ pt[v]/˜pt[u]) ≤ log( ft/˜pt[v]) + 2 η. Now integrating against Ft we obtain (3.9). 
+
+Infeasible model bound. Define the δ-boundary event Bt,m t (δ) := {(z, y ) : Cδ (y) ∩ Amt
+
+> t, 0
+
+̸ =
+
+∅} , the local-oscillation operator 
+
+Dr ft(y | z) := 
+
+{log ft(y|z)inf u∈Cr (y) ft(u|z) , general , 
+
+> r√D
+> 2
+
+sup u∈Cr (y) ∥∇ u log ft(u | z)∥, ft(· | z) ∈ C1, (3.10) and 
+
+Lt(δ) := ∫ Dδ ft(y | z) d Ft(d y, dz), Tt,m t (δ) := ∫  
+
+> Bt,m t(δ)
+
+Drt−1 ft(y | z) d Ft(d y, dz),Ut,m t (δ) := ∫ 
+
+> Bt,m t(δ)
+
+( ∥y∥2
+
+> 2σ2
+> t, 0
+
+− log (rt−1/2) D
+
+> (2 πσ 2
+> t, 0)D/ 2
+
+)
+
+dFt(d y, dz).
+
+(3.11) The explicit M0 bound is 
+
+BNor  
+
+> t,m t
+
+:= Lt(δt,m t )+ Tt,m t (δt,m t )+ Ut,m t (δt,m t )+ 6D3/2δD−1 
+
+> t,m t
+
+ht,m t
+
+(2 π)D/ 2σDt,m t
+
++2 e−(δt,m t /σ t,m t )2/8. (3.12) 
+
+Proposition 3.10 (Explicit M0 bound) . Under Assumptions 3.1(ii)(iii) and 3.4, for all large mt, dKL ,t (˜ pM0,m t 
+
+> t
+
+) ≤ BNor  
+
+> t,m t
+
+. The bound converges to zero as m → ∞ .Proof. Proposition 3.5 verifies [18, Assumption 2.1]. Then the bound and its limit are given by [18, Corollary 2.1(i, ii)]. 
+
+Corollary 3.11 (Power rate under the C1 branch) . If additionally ft(· | z) ∈ C1, there exist θt > 2 with ∫ |yi|θt dFt < ∞ for i ∈ { 1, · · · , D }, and it ∈ { 1, . . . , D } for which ∫ |yit |θt−2 sup u∈Crt−1 (y) ∥∇ u log ft∥ dFt < ∞, then for every ξt > 0 there exists CNor  
+
+> t
+
+< ∞
+
+with 
+
+dKL ,t (˜ pM0,m t 
+
+> t
+
+) ≤ CNor  
+
+> t
+
+m−βt 
+
+> t
+
+, βt := D−1/
+
+(
+
+2 + 1
+
+θt − 2 + ξt
+
+)
+
+. (3.13) 7Proof. This is [18, Corollary 2.1(iii)]. 
+
+Remark 3.12 (Ambient versus intrinsic target dimension) . The rate βt = O(1 /D ) reflects the curse of dimensionality on the response side of the Norets-type mixture approximation: the bounds are controlled by the ambient dimension of Xt−1 ∈ RD , not by the feature dimension 
+
+dt. In many applications, however, the reverse law of Xt−1 given (C, X t) may effectively vary along far fewer than D directions. If at step t the true reverse kernel admits a suitably controlled factorization through a latent space of dimension dt ≪ D, one would expect dt
+
+to replace D in the response-side bounds. Establishing such a reduction requires additional geometric or probabilistic structure beyond our assumptions, and will not hold in general. In more restricted cases, it is an interesting open problem to reliably detect such low-dimensional structure, especially in view of recent manifold-adaptive analyses on the score-based side [23, 26]. We work throughout with ambient-dimensional rates, noting that they may be greatly pessimistic when the reverse dynamics is effectively low-dimensional. 
+
+Neural approximation of log-odds. Fix a closed cube Qt ⊃ Kt and let Ψt : [0 , 1] dt → Qt
+
+be affine. 
+
+Assumption 3.13 (Smooth log-odds) . For every mt, j , the log-odds Λmt 
+
+> t,j
+
+extend to Cst on a neighborhood of Qt, and Λmax  
+
+> t,m t
+
+:= max j ∥Λmt 
+
+> t,j
+
+◦ Ψt∥Cst ([0 ,1] dt ) < ∞.
+
+Remark 3.14 . A sufficient condition is that ∂αz ρ⋆t (y | z) exist for any multi-index α with 
+
+|α| ≤ st, be jointly continuous, and admit an integrable envelope for differentiation under the integral defining the cell probabilities in (3.6) . For Gaussian forward kernels these conditions are typically straightforward, e.g., in the Gaussian example of Section B (see (B.92)). 
+
+Proposition 3.15 (ReLU approximation of log-odds) . Under Assumption 3.13, for any 
+
+Nt, Lt ≥ 1 there exists a ReLU network aϑt 
+
+> t
+
+: Rdt → Rmt with width Wt ≤ mt 17 sdt+1  
+
+> t
+
+3dt dt(Nt+2) log 2(8 Nt), depth Lt ≤ 18 s2 
+
+> t
+
+(Lt + 2) log 2(4 Lt) + 2 dt, and uniform error 
+
+ηNN  
+
+> t
+
+:= max  
+
+> j
+
+sup 
+
+> z∈Kt
+
+∣∣∣aϑt 
+
+> t,j
+
+(z) − Λmt 
+
+> t,j
+
+(z)
+
+∣∣∣ ≤ 85( st + 1) dt 8st Λmax  
+
+> t,m t
+
+N −2st/d t 
+
+> t
+
+L −2st/d t 
+
+> t
+
+. (3.14) 
+
+Proof. Apply [4, Theorem 1.1] to each Λmt 
+
+> t,j
+
+◦ Ψt ∈ Cst ([0 , 1] dt ), compose with Ψ−1 
+
+> t
+
+, take the max over j, and stack in parallel to get the factor of mt in the upper bound of Wt.
+
+Proposition 3.16 (Explicit stepwise neural rate) . Under the hypotheses of Propositions 3.10 and 3.15, 
+
+dKL ,t (˜ pNN  
+
+> t,ϑ t
+
+) ≤ BNor  
+
+> t,m t
+
++ 170( st + 1) dt 8st Λmax  
+
+> t,m t
+
+N −2st/d t 
+
+> t
+
+L −2st/d t 
+
+> t
+
+. (3.15) 
+
+If, in addition, the hypotheses of Corollary 3.11 hold, then 
+
+dKL ,t (˜ pNN  
+
+> t,ϑ t
+
+) ≤ CNor  
+
+> t
+
+m−βt 
+
+> t
+
++ 170( st + 1) dt 8st Λmax  
+
+> t,m t
+
+N −2st/d t 
+
+> t
+
+L −2st/d t 
+
+> t
+
+. (3.16) 
+
+Proof. Apply Lemma 3.9 with v = Λ mt 
+
+> t
+
+and u = aϑt 
+
+> t
+
+to obtain: dKL ,t ( ˜pNN  
+
+> t,ϑ t
+
+) ≤ dKL ,t ( ˜pM0,m t 
+
+> t
+
+) + 2ηNN  
+
+> t
+
+. Substituting the M0 bound from Proposition 3.10 together with (3.14) gives (3.15) . If the hypotheses of Corollary 3.11 also hold, then substituting its bound in place of Proposi-tion 3.10 gives (3.16). We now sum along the reverse chain. 
+
+Theorem 3.17 (Total diffusion error up to terminal mismatch) . Let pNN := {pNN  
+
+> t,ϑ t
+
+}Tt=1 be a neural reverse model, and let πpNN ,ν denote its induced predictor. If the hypotheses of Proposition 3.16 hold for each t, then 
+
+EKL (πpNN ,ν ) ≤ E[Eterm (C)] + 
+
+> T
+
+∑
+
+> t=1
+
+(
+
+BNor  
+
+> t,m t
+
++ 170( st + 1) dt 8st Λmax  
+
+> t,m t
+
+N −2st/d t 
+
+> t
+
+L −2st/d t
+
+> t
+
+)
+
+. (3.17) 8If, in addition, the hypotheses of Corollary 3.11 hold for each t, then 
+
+EKL (πpNN ,ν ) ≤ E[Eterm (C)] + 
+
+> T
+
+∑
+
+> t=1
+
+(
+
+CNor  
+
+> t
+
+m−βt 
+
+> t
+
++ 170( st + 1) dt 8st Λmax  
+
+> t,m t
+
+N −2st/d t 
+
+> t
+
+L −2st/d t
+
+> t
+
+)
+
+.
+
+(3.18) 
+
+Proof. Lemma 2.8 and Lemma 3.3 give EKL (πpNN ,ν ) ≤ E[Eterm (C)] + ∑Tt=1 dKL ,t ( ˜pNN  
+
+> t,ϑ t
+
+). Sum-ming the bounds from Proposition 3.16 proves (3.17) and (3.18). 
+
+Remark 3.18 (Fully explicit bounds and the role of log-odds complexity) . All terms in (3.17) and (3.18) are explicit. The only error not removable by increasing the mixture resolution and network size is the terminal mismatch E[Eterm (C)] ; in particular, exact universality requires 
+
+qπ⋆ 
+
+> T
+
+(· | c) = ν for PC -a.e. c.The log-odds complexity Λmax  
+
+> t,m t
+
+may grow with the partition resolution mt. If Λmax  
+
+> t,m t
+
+=
+
+O(mγt ) for some γ ≥ 0, then the network sizes can be chosen so that the neural term is 
+
+O(m−1 
+
+> t
+
+), and the overall rate is governed by the Norets term: qualitatively by BNor  
+
+> t,m t
+
+→ 0
+
+in the general branch, and explicitly by CNor  
+
+> t
+
+m−βt 
+
+> t
+
+under the C1-branch hypotheses. This mechanism is instantiated in the Gaussian–OU example of Section B (see (B.97)). The general bound (3.17) is sufficient for qualitative approximation and universality. The stronger C1-branch hypotheses are used only to obtain the explicit algebraic-rate refinement (3.18). 
+
+# 4 Main universality theorem and consequences 
+
+Define the family of neural reverse models of horizon T
+
+PNN  
+
+> T
+
+(ν) := {πpNN ,ν : pNN = {pNN  
+
+> t,ϑ t
+
+}Tt=1 is a neural reverse model of horizon T } . (4.1) We first record the quantitative approximation statement up to terminal mismatch. A separate zero-mismatch universality statement will then follow by imposing exact terminal matching. 
+
+Proposition 4.1 (Quantitative approximation up to terminal mismatch) . Fix T ≥ 1.(i) General case. Assume that, for every t ∈ { 1, . . . , T }, Assumptions 3.1, 3.4, and 3.13 hold at step t. Then for every ε > 0 there exists a neural reverse model pNN = {pNN  
+
+> t,ϑ t
+
+}Tt=1 
+
+such that 
+
+EKL 
+
+(πpNN ,ν 
+
+) ≤ E[Eterm (C)] + ε, in particular, inf  
+
+> π∈PNN
+> T(ν)
+
+EKL (π) ≤ E[Eterm (C)] .
+
+(4.2) 
+
+(ii) Explicit rate under the C1 branch. Assume, in addition to these assumptions, that for each t ∈ { 1, . . . , T }:
+
+• a closed cube Qt ⊂ Rdt with Kt ⊂ Qt and an integer st ≥ 1 are fixed; 
+
+• the C1-branch hypotheses of Corollary 3.11 hold at step t (with exponent θt > 2,coordinate it, and parameter ξt > 0). Let βt := D−1/
+
+(
+
+2 + 1 
+
+> θt−2
+
++ ξt
+
+)
+
+, and let CNor  
+
+> t
+
+< ∞ be the constant given by Corol-lary 3.11. Then there exist an integer n0 ≥ 1 and a sequence of neural reverse models 
+
+pNN ,n = {pNN 
+
+> t,ϑ (n)
+> t
+
+}Tt=1 , such that, for every n ≥ n0,
+
+EKL 
+
+(πpNN ,n ,ν 
+
+) ≤ E[Eterm (C)] + 
+
+> T
+
+∑
+
+> t=1
+
+CNor  
+
+> t
+
+n−βt + 12n ; (4.3) 
+
+in particular, lim sup 
+
+> n→∞
+
+EKL 
+
+(πpNN ,n ,ν 
+
+) ≤ E[Eterm (C)] . (4.4) 9This is proved in Appendix A.2. The bound (4.3) is instantiated explicitly in example in (B.114). The preceding proposition is the main quantitative approximation result, stated explicitly up to the terminal mismatch term E[Eterm (C)] . The C1-branch gives an additional explicit algebraic-rate construction. The basic universality statement below uses only the general branch, together with the stronger assumption of exact terminal matching, which removes the terminal mismatch entirely. For the role of the diffusion horizon in the terminal mismatch error, see Remark 2.9. 
+
+Theorem 4.2 (Conditional-KL denseness under exact terminal matching) . Assume the hypotheses of Proposition 4.1(i). If qπ⋆ 
+
+> T
+
+(· | c) = ν for PC -a.e. c, then there exists a sequence of neural reverse models pNN ,n = {pNN 
+
+> t,ϑ (n)
+> t
+
+}Tt=1 such that 
+
+lim  
+
+> n→∞
+
+EKL 
+
+(πpNN ,n ,ν 
+
+) → 0. (4.5) 
+
+Equivalently, the model class PNN  
+
+> T
+
+(ν) is dense at the target conditional π⋆ in conditional KL. In particular, 
+
+inf  
+
+> π∈PNN
+> T(ν)
+
+EKL (π) = 0 . (4.6) 
+
+Proof. Under the exact terminal matching hypothesis one has Eterm (c) = KL (qπ⋆ 
+
+> T
+
+(· | c) ∥ ν) = 0 
+
+for PC -a.e. c, and hence E[Eterm (C)] = 0 . Therefore Proposition 4.1(i) implies that for every 
+
+n ≥ 1 there exists a neural reverse model pNN ,n such that EKL 
+
+(πpNN ,n ,ν 
+
+) ≤ 1 
+
+> n
+
+. This proves (4.5). The infimum statement (4.6) follows immediately. 
+
+Remark 4.3 (Explicit rates and finite-horizon obstruction) . When the C1-branch hypotheses of Proposition 4.1(ii) hold and exact terminal matching is in force, the denseness in Theorem 4.2 is witnessed by models converging at the rate ∑Tt=1 CNor  
+
+> t
+
+n−βt + 12n from (4.3) . Without exact terminal matching the bound plateaus at the irreducible factor E[Eterm (C)] ; for the Gaussian–OU example of Section B this floor decays exponentially in T but is strictly positive at every finite horizon (see (B.16)). 
+
+Corollary 4.4 (High-probability and almost-everywhere consequences) . Assume the hypothe-ses of Theorem 4.2. (i) For every η, δ > 0, there exists a neural reverse model pNN such that 
+
+PC
+
+({ c ∈ C : KL (π⋆(· | c) ∥ πpNN ,ν (· | c)) > η }) ≤ δ. (4.7) 
+
+(ii) There exists a subsequence of the models from Theorem 4.2, still denoted {pNN ,k }k≥1,such that 
+
+KL (π⋆(· | c) ∥ πpNN ,k ,ν (· | c)) → 0 for PC -a.e. c. (4.8) This is proved in Appendix A.3. 
+
+# 5 Conclusion 
+
+We proved that discrete-time conditional diffusion models with finite Gaussian-mixture reverse kernels and ReLU-network logits are universal in conditional KL divergence, up to an explicitly isolated terminal mismatch. The proof composes the Gaussian-mixture theory of [18] with the ReLU bounds of [4] via a path-space decomposition and feature-space factorization; Section B instantiates the full bound with computable constants for a Gaussian target with OU forward process. The result provides a basic expressivity guarantee for the Gaussian-mixture reverse architecture advocated in [15–17], but does not address optimization, statistical estimation, feature learning, or score approximation. 10 Several directions remain open. On the approximation-theoretic side, the stepwise rates inherit a response-side curse of dimensionality; sharpening these rates — or replacing the ambient target dimension by a suitable intrinsic one — is an interesting open problem, since even at D = 1 the general theory yields a rate of at most n−1/2 (Remark B.3). On the modeling side, it would be natural to relax the fixed-component mixture template and to develop analogous results for continuous-time and score-based formulations [8]. On the statistical side, an important next step is to combine the expressivity theory with estimation and generalization guarantees, separating approximation, optimization, and sampling error in a unified theory of conditional diffusion models. 
+
+# Acknowledgement 
+
+The work of NI was supported by the Research Start-up Fund of the Shanghai Institute for Mathematics and Interdisciplinary Sciences (SIMIS). 
+
+# A Technical proofs 
+
+## A.1 Proof of Proposition 3.5 
+
+We use three ingredients: Lemma 2.6, which gives the density of the true reverse kernel; the feature-sufficiency hypothesis Assumption 3.1(iii), which lets us write this density as a function of z = ϕt(c, x t); and the pushforward identity Ft = (( c, x t−1, x t) 7 → (xt−1, ϕ t(c, x t))) ∗Qt from (3.1) , which converts integrals against Qt into integrals against Ft. Since Proposition 3.5 makes only (Ft)Zt -a.e. and Ft-integrability claims, we fix an arbitrary measurable version of ft(y | z) = ρ⋆t (y | z) on RD × Rdt , still denoted ft, agreeing with ρ⋆t on the (Ft)Zt -full set where the latter is defined. 
+
+Bridge identity on feature space. Combining Lemma 2.6 and Assumption 3.1(iii), we obtain: for (Qt)C,X t -a.e. (c, x t) and Leb-a.e. y,
+
+ft (y | ϕt(c, x t)) = qt−1(xt | y) qπ⋆
+
+> t−1
+
+(y | c)
+
+qπ⋆ 
+
+> t
+
+(xt | c) . (A.1) We shall refer to (A.1) as the bridge identity on feature space . The right-hand side is a concrete expression in terms of the forward densities. 
+
+Continuity and strict positivity of forward marginals. We first record, by induction on s ∈ { 0, . . . , T }, that for PC -a.e. c the forward marginal density u 7 → qπ⋆ 
+
+> s
+
+(u | c) is continuous and strictly positive on X . The base case s = 0 is exactly Assumption 3.4(i)–(ii) applied to 
+
+π⋆. For the inductive step, write 
+
+qπ⋆ 
+
+> s
+
+(u | c) = 
+
+∫
+
+> X
+
+qs−1(u | v) qπ⋆
+
+> s−1
+
+(d v | c). (A.2) Continuity in u follows from dominated convergence using Assumption 3.4(ii). Strict positivity follows from the positivity of qs−1(u | v) and qπ⋆
+
+> s−1
+
+(v | c).We now verify each of the three target-side conditions. 
+
+Item (i): Positivity and continuity in y. Consider the right-hand side of (A.1) . For fixed (c, x t) in the full-measure set where (A.1) holds, the denominator qπ⋆ 
+
+> t
+
+(xt | c) is a strictly positive constant in y, while the numerator is a product of the functions y 7 → qt−1(xt | y) and 
+
+y 7 → qπ⋆
+
+> t−1
+
+(y | c), both of which are continuous and strictly positive by the induction above and Assumption 3.4(i)–(ii). Hence, for (Qt)C,X t -a.e. (c, x t), the function y 7 → ft(y | ϕt(c, x t)) 
+
+11 agrees Lebesgue-a.e. with a continuous, strictly positive function of y. If ϕt is many-to-one, the right-hand side of (A.1) may a priori depend on the representative (c, x t) with ϕt(c, x t) = z.For (Ft)Zt -a.e. z, any two such representatives for which (A.1) holds yield functions that agree with ft(· | z) for Leb -a.e. y; by continuity in y, they therefore coincide everywhere. Since (Ft)Zt is the image of (Qt)C,X t under (c, x t) 7 → ϕt(c, x t), the set of feature values 
+
+z for which such a “good” (c, x t) exists has full (Ft)Zt -measure. Because ft(· | z) is defined 
+
+(Ft)Zt -a.e. and agrees Leb -a.e. with a continuous function, we may redefine ft(· | z) on the Lebesgue-null discrepancy set to obtain a version that is everywhere continuous and strictly positive for (Ft)Zt -a.e. z.
+
+Item (ii): Finite second moment. By definition of Ft (3.1) and Qt (Def. 2.4), 
+
+∫
+
+∥y∥2 Ft(d y, dz) = 
+
+∫ 
+
+> C× RD×RD
+
+∥y∥2 Qt(d c, dy, dxt) = 
+
+∫
+
+> C× RD
+
+∥y∥2 qπ⋆
+
+> t−1
+
+(d y | c) PC (d c), (A.3) which is finite by Assumption 3.4(iii). 
+
+Item (iii): Integrable local log-variation. Fix t ≥ 1. We work on Qt and transfer to Ft
+
+at the end. 
+
+Pointwise bound. From (A.1), for (Qt)C,X t -a.e. (c, x t) and every y ∈ RD ,
+
+log ft(y | ϕt(c, x t)) inf u∈Ct−1(y) ft(u | ϕt(c, x t)) ≤ log qt−1(xt | y)inf u∈Ct−1(y) qt−1(xt | u) + log qπ⋆
+
+> t−1
+
+(y | c)inf u∈Ct−1(y) qπ⋆
+
+> t−1
+
+(u | c) .
+
+(A.4) The inequality inf( AB ) ≥ (inf A)(inf B) for nonnegative functions is used to split the ratio. The first term on the right is bounded by bt−1(y, x t) by (3.4) and the second term by 
+
+at−2(y) by (3.3) with s = t − 1. So the combined bound is: for (Qt)C,X t -a.e. (c, x t) and every 
+
+y,
+
+log ft(y | ϕt(c, x t)) inf u∈Ct−1(y) ft(u | ϕt(c, x t)) ≤ bt−1(y, x t) + at−2(y). (A.5) 
+
+Integration and transfer to Ft. Let 
+
+h(y, z ) := log ft(y | z)inf u∈Ct−1(y) ft(u | z) . (A.6) Since h depends on (c, x t) only through z = ϕt(c, x t), the pushforward identity Ft =(( c, x t−1, x t) 7 → (xt−1, ϕ t(c, x t))) ∗Qt gives 
+
+∫
+
+h(y, z ) Ft(d y, dz) = 
+
+∫ 
+
+> C× RD×RD
+
+h (xt−1, ϕ t(c, x t)) Qt(d c, dxt−1, dxt). (A.7) By (A.5), the integrand on the right satisfies 
+
+h (xt−1, ϕ t(c, x t)) ≤ bt−1(xt−1, x t) + at−2(xt−1) (A.8) for Qt-a.e. (c, x t−1, x t). Hence the right-hand side of (A.7) is bounded by 
+
+E(C,X t−1,X t)∼Qt [bt−1(Xt−1, X t) + at−2(Xt−1)] , (A.9) which is finite by Assumption 3.4(iv). This proves item (iii). 
+
+## A.2 Proof of Proposition 4.1 
+
+Proof of (i). Fix ε > 0. For each t ∈ { 1, . . . , T }, by Proposition 3.10 we have dKL ,t ( ˜pM0,m t 
+
+> t
+
+) ≤
+
+BNor  
+
+> t,m t
+
+for all sufficiently large mt. Each constituent term in the bound BNor  
+
+> t,m t
+
+(3.12) vanishes as mt → ∞ under the standing assumptions: Lt(δt,m t ) → 0 by continuity of ft(· | z) and 12 dominated convergence; Tt,m t (δt,m t ) → 0 and Ut,m t (δt,m t ) → 0 because the boundary event 
+
+Bt,m t (δt,m t ) shrinks to a null set under Ft; the fourth term tends to zero by (3.5) ; and the fifth by σt,m t /δ t,m t → 0. Hence 
+
+dKL ,t (˜ pM0,m t 
+
+> t
+
+) → 0 as mt → ∞ . (A.10) Choose mt large enough that 
+
+dKL ,t (˜ pM0,m t 
+
+> t
+
+) < ε
+
+2T . (A.11) For this fixed mt, the log-odds complexity Λmax  
+
+> t,m t
+
+is finite by Assumption 3.13, so Proposi-tion 3.15 provides a ReLU network aϑt 
+
+> t
+
+with logit error ηNN  
+
+> t
+
+that can be made arbitrarily small. Choose this network so that 
+
+ηNN  
+
+> t
+
+< ε
+
+4T . (A.12) By Lemma 3.9, 
+
+dKL ,t (˜ pNN  
+
+> t,ϑ t
+
+) ≤ dKL ,t (˜ pM0,m t 
+
+> t
+
+) + 2 ηNN  
+
+> t
+
+< ε
+
+2T + ε
+
+2T = εT . (A.13) Summing over t = 1 , . . . , T and applying Lemma 2.8 and Lemma 3.3 gives 
+
+EKL 
+
+(πpNN ,ν 
+
+) ≤ E[Eterm (C)] + 
+
+> T
+
+∑
+
+> t=1
+
+dKL ,t (˜ pNN  
+
+> t,ϑ t
+
+) < E[Eterm (C)] + ε. (A.14) Since ε > 0 was arbitrary, (4.2) follows. 
+
+Proof of (ii). Fix t ∈ { 1, . . . , T }. By Corollary 3.11, there exists an integer n0,t ≥ 1 such that 
+
+dKL ,t 
+
+(
+
+˜pM0,m t
+
+)
+
+≤ CNor  
+
+> t
+
+m−βt ∀m ≥ n0,t . (A.15) Let n0 := max 1≤t≤T n0,t . Now fix n ≥ n0, and set 
+
+mt := n for every t = 1 , . . . , T. (A.16) For this fixed n and fixed t, the log-odds complexity Λmax  
+
+> t,n
+
+defined in Assumption 3.13 is finite by Assumption 3.13. By Proposition 3.15, for any integers Nt, Lt ≥ 1 there exists a ReLU network aϑt 
+
+> t
+
+with logit error 
+
+ηNN  
+
+> t
+
+≤ 85 ( st + 1) dt 8st Λmax  
+
+> t,n
+
+N −2st/d t 
+
+> t
+
+L −2st/d t 
+
+> t
+
+. (A.17) Since Λmax  
+
+> t,n
+
+< ∞ and the right-hand side tends to zero as Nt, Lt → ∞ , we may choose integers 
+
+N (n) 
+
+> t
+
+, L (n) 
+
+> t
+
+≥ 1 and a corresponding ReLU network aϑ(n) 
+
+> t
+> t
+
+such that 
+
+ηNN  
+
+> t
+
+= max  
+
+> 1≤j≤n
+
+sup 
+
+> z∈Kt
+
+∣∣∣∣aϑ(n) 
+
+> t
+> t,j
+
+(z) − Λnt,j (z)
+
+∣∣∣∣ ≤ 14T n . (A.18) Let pNN 
+
+> t,ϑ (n)
+> t
+
+be the resulting step-t neural reverse kernel, and define pNN ,n =
+
+{
+
+pNN 
+
+> t,ϑ (n)
+> t
+
+}Tt=1 
+
+.Applying Corollary 3.11 and Lemma 3.9 at each step, we get 
+
+dKL ,t 
+
+(
+
+˜pNN 
+
+> t,ϑ (n)
+> t
+
+)
+
+≤ CNor  
+
+> t
+
+n−βt + 2 ηNN  
+
+> t
+
+∀t = 1 , . . . , T. (A.19) 13 Therefore, by Lemma 2.8, 
+
+EKL 
+
+(πpNN ,n ,ν 
+
+) ≤ E[Eterm (C)] + 
+
+> T
+
+∑
+
+> t=1
+
+dKL ,t 
+
+(
+
+˜pNN 
+
+> t,ϑ (n)
+> t
+
+)
+
+≤ E[Eterm (C)] + 
+
+> T
+
+∑
+
+> t=1
+
+(CNor  
+
+> t
+
+n−βt + 2 ηNN 
+
+> t
+
+)
+
+≤ E[Eterm (C)] + 
+
+> T
+
+∑
+
+> t=1
+
+(
+
+CNor  
+
+> t
+
+n−βt + 12T n 
+
+)
+
+(using (A.18)) 
+
+= E[Eterm (C)] + 
+
+> T
+
+∑
+
+> t=1
+
+CNor  
+
+> t
+
+n−βt + 12n . (A.20) This proves (4.3). Taking lim sup n→∞ gives (4.4). 
+
+## A.3 Proof of Corollary 4.4 
+
+For each neural reverse model pNN , define the contextwise output-KL function 
+
+KpNN (c) := KL (π⋆(· | c) ∥ πpNN ,ν (· | c)) , c ∈ C . (A.21) Then, EC∼PC
+
+[KpNN (C)] = EKL 
+
+(πpNN ,ν 
+
+) . (A.22) 
+
+Proof of (i). Fix η, δ > 0. By Theorem 4.2, there exists a neural reverse model pNN such that 
+
+EKL 
+
+(πpNN ,ν 
+
+) ≤ ηδ. (A.23) By Markov’s inequality, 
+
+PC
+
+(KpNN (C) > η ) ≤ E[KpNN (C)] 
+
+η ≤ δ. (A.24) 
+
+Proof of (ii). By Theorem 4.2, there exists a sequence of neural reverse models {pNN ,n }n≥1
+
+such that EKL 
+
+(πpNN ,n ,ν 
+
+) → 0. Hence we may choose a subsequence {pNN ,n k }k≥1 such that 
+
+EKL 
+
+(πpNN ,n k ,ν 
+
+) = E[KpNN ,n k (C)] ≤ 2−2k ∀k ≥ 1. (A.25) Markov’s inequality therefore gives 
+
+PC
+
+(KpNN ,n k (C) > 2−k) ≤ 2−k. (A.26) Since ∑∞ 
+
+> k=1
+
+2−k < ∞, the Borel–Cantelli lemma implies that, for PC -a.e. c, the event 
+
+KpNN ,n k (c) > 2−k occurs only finitely often. Equivalently, for PC -a.e. c, KpNN ,n k (c) → 0.Renaming the subsequence proves the claim. 
+
+# B Example: Gaussian Target under Ornstein–Uhlenbeck Noising 
+
+This section constructs a fully explicit one-dimensional example in which every quantity appearing in the C1-branch bound (Proposition 4.1(ii)) can be evaluated with concrete leading coefficients. The example is deliberately simple: the target conditional is Gaussian, the forward process is Ornstein–Uhlenbeck (OU), and the response and feature dimensions are both equal to one. Despite its simplicity, this example is rich enough to illustrate all the principal components of the approximation theory developed in the main text. At the same time, it exhibits a practically relevant situation in which the feature distribution has decaying non-compact support, thereby showing how the technical issues set aside in the main exposition may be treated in practice. 14 B.1 Setup and closed-form quantities 
+
+B.1.1 Problem data 
+
+Let C = X = R (so D = 1 ), and let the context have the uniform distribution 
+
+C ∼ Unif[ −M, M ] (B.1) for a fixed M > 0. The true conditional target is Gaussian with c-dependent mean and unit variance: 
+
+π⋆(x0 | c) = φ(x0; c, 1) , (B.2) where φ( · ; μ, σ 2) denotes the N (μ, σ 2) density throughout. Fix a contraction parameter ρ ∈ (0 , 1) and write 
+
+σ2 := 1 − ρ2 (B.3) for the OU noise variance. The forward kernels are time-homogeneous OU steps: 
+
+qt(xt+1 | xt) = φ(xt+1 ; ρ x t, σ 2), t = 0 , . . . , T − 1. (B.4) Intuitively, each forward step contracts the signal by a factor of ρ and adds independent Gaussian noise of variance σ2. The reference (terminal) law is 
+
+ν = N (0 , 1) , (B.5) which is the stationary distribution of the OU chain. 
+
+Remark B.1 (Choice of unit initial variance) . Taking π⋆(· | c) = N (c, 1) ensures Vt := Var (Xt | C = c) ≡ 1 for all t, which makes the reverse-kernel variance constant across steps and considerably simplifies the algebra. For general initial variance v2 > 0 one has 
+
+Vt = 1 + ρ2t(v2 − 1) ; all formulas below carry through with ˜Vt = σ2Vt−1/V t and t-dependent coefficients. The only effect on the final bound is an additional variance-mismatch contribution  
+
+> 14
+
+ρ4T (v2 − 1) 2 + O(ρ6T ) in the terminal mismatch. 
+
+B.1.2 Forward marginals 
+
+We claim that for every t ∈ { 0, . . . , T },
+
+Xt | C = c ∼ N (ρtc, 1) . (B.6) This follows by induction. The base case t = 0 is just the definition of π⋆. For the inductive step, suppose Xt | C = c ∼ N (ρtc, 1) . Since Xt+1 = ρX t + σε with ε ∼ N (0 , 1) independent of Xt, we get 
+
+Xt+1 | C = c ∼ N (ρ · ρtc, ρ 2 · 1 + σ2) = N (ρt+1 c, 1) , (B.7) using ρ2 + σ2 = 1 .In particular, the forward marginals are all unit-variance Gaussians whose means decay geometrically toward zero. At the terminal time T , the marginal qπ⋆ 
+
+> T
+
+(· | c) = N (ρT c, 1) is close to — but not exactly equal to — the reference ν = N (0 , 1) .
+
+B.1.3 Reverse kernels and the sufficient feature 
+
+We now compute the true reverse kernel r⋆t (y | c, x t). By the bridge identity (Lemma 2.6), this density is proportional in y to the product 
+
+qt−1(xt | y)qπ⋆
+
+> t−1
+
+(y | c) = φ(xt; ρy, σ 2)φ(y; ρt−1c, 1) . (B.8) 15 Both factors are Gaussian in y. Completing the square (equivalently, applying the standard product-of-Gaussians formula) gives 
+
+r⋆t (y | c, x t) = φ(y; ρ x t + σ2ρt−1c
+
+︸ ︷︷ ︸ 
+
+> =: ϕt(c,x t)
+
+, σ 2), t = 1 , . . . , T. (B.9) Here is the key structural observation: the reverse kernel depends on the pair (c, x t) only through the single scalar combination 
+
+z = ϕt(c, x t) := ρ x t + σ2ρt−1c. (B.10) This is the sufficient feature , and its dimension is 
+
+dt = 1 . (B.11) The reverse density, viewed as a function of the feature, is simply a Gaussian with mean z
+
+and variance σ2:
+
+ft(y | z) := ρ⋆t (y | z) = φ(y; z, σ 2). (B.12) Thus Assumption 3.1(iii) (feature sufficiency) holds exactly, without any modification of the feature map. The joint law Ft of (Y, Z ) := ( Xt−1, Z t) (Definition 2.4 and (3.1) ) is obtained by marginal-izing over C. Conditionally on C = c, the pair is jointly Gaussian: 
+
+(YZ
+
+) ∣ ∣∣∣ C = c ∼ N 
+
+(( ρt−1cρt−1c
+
+)
+
+,
+
+( 1 ρ2
+
+ρ2 ρ2
+
+)) 
+
+, (B.13) so Y | Z = z ∼ N (z, σ 2) and Y − Z | C = c ∼ N (0 , σ 2). In particular, 
+
+E|Y − Z| = σ√2/π, E[( Y − Z)2] = σ2, E[Y 2] = 13 ρ2( t−1) M 2 + 1 . (B.14) 
+
+B.1.4 Terminal mismatch 
+
+Since qπ⋆ 
+
+> T
+
+(· | c) = N (ρT c, 1) and ν = N (0 , 1) , the KL divergence between two Gaussians with equal variance gives 
+
+Eterm (c) = KL (N (ρT c, 1) ∥ N (0 , 1) ) = (ρT c)2
+
+2 = 12 ρ2T c2. (B.15) Averaging over C ∼ Unif[ −M, M ], using E[C2] = M 2/3:
+
+E[Eterm (C)] = ρ2T M 2
+
+6 . (B.16) This is exponentially small in T with rate ρ2T .Exact terminal matching qπ⋆ 
+
+> T
+
+(· | c) = ν for PC -a.e. c would require ρT c = 0 for all 
+
+c ∈ [−M, M ], which is impossible for M > 0 and finite T . Hence the terminal mismatch (B.16) is genuine and irreducible at finite horizon T ; it vanishes only asymptotically. 
+
+## B.2 Assumption verification 
+
+B.2.1 Regularity of forward densities (Assumption 3.4) 
+
+We verify all four parts of Assumption 3.4. Throughout, we set rs := 1 and take the hypercubes to be the intervals Cs(x) := [ x − 12 , x + 12 ] for every s = 0 , . . . , T − 1.
+
+(i) Strict positivity. The target density π⋆(x0 | c) = φ(x0; c, 1) is strictly positive for all 
+
+x0 ∈ R and all c. The forward transition density qs(xs+1 | xs) = φ(xs+1 ; ρx s, σ 2) is strictly positive for all s, x s, x s+1 .16 (ii) Continuity and local integrable dominance. All densities involved are Gaussian, hence C∞ in all arguments. For any compact K ⊂ R, sup u∈K qs(u | v) ≤ (2 πσ 2)−1/2, which is a finite constant independent of v and hence trivially integrable against any probability measure. 
+
+(iii) Finite second moments. By (B.6) , Xt | C = c ∼ N (ρtc, 1) , so E[X2 
+
+> t
+
+] = ρ2tE[C2]+1 = 
+
+ρ2tM 2/3 + 1 < ∞ for every t = 0 , . . . , T − 1.
+
+(iv) Integrable local log-variation bounds. This is the most involved verification. We need to produce the bounding functions as−1 and bs and check their integrability. 
+
+Marginal oscillation bound (3.3) . Recall that the forward marginal at time s is qπ⋆ 
+
+> s
+
+(xs |
+
+c) = φ(xs; ρsc, 1) . Since the Gaussian density φ( · ; μ, 1) is log-concave and radially decreasing around its mean μ, the infimum over an interval Cs(xs) = [ xs − 12 , x s + 12 ] is attained at the endpoint farthest from μ = ρsc. Therefore 
+
+log qπ⋆ 
+
+> s
+
+(xs | c)inf y∈Cs(xs) qπ⋆ 
+
+> s
+
+(y | c) = (|xs − ρsc| + 12 )2 − (xs − ρsc)2
+
+2 = |xs − ρsc| + 14
+
+2 . (B.17) Since |ρsc| ≤ ρsM for c ∈ [−M, M ], this is bounded by 
+
+as−1(xs) := |xs| + ρsM + 14
+
+2 , (B.18) which depends only on xs (not on c). 
+
+Conditioning-variable oscillation bound (3.4) . The forward transition is qs(xs+1 | xs) = 
+
+φ(xs+1 ; ρx s, σ 2). By the same farthest-point argument (now the infimum is over xs varying in Cs(xs), with the Gaussian centered at ρ−1(xs+1 − · )): 
+
+log qs(xs+1 | xs)inf y∈Cs(xs) qs(xs+1 | y) = ρ |xs+1 − ρ x s| + ρ2
+
+> 4
+
+2σ2 . (B.19) We set 
+
+bs(xs, x s+1 ) := ρ |xs+1 − ρ x s| + ρ2
+
+> 4
+
+2σ2 . (B.20) 
+
+Integrability under Qs+1 . Under Qs+1 (d c, dxs, dxs+1 ) = Unif [−M, M ](d c)N (ρsc, 1)(d xs)
+
+N (ρx s, σ 2)(d xs+1 ), the random variable Xs has finite first moment (since E|Xs| ≤ (E[X2 
+
+> s
+
+]) 1/2 =(ρ2sM 2/3 + 1) 1/2), and Xs+1 − ρX s is conditionally N (0 , σ 2) given Xs, so E|Xs+1 − ρX s| =
+
+σ√2/π . Therefore 
+
+EQs+1 [as−1(Xs)] = E|Xs| + ρsM + 14
+
+2 < ∞, (B.21) 
+
+EQs+1 [bs(Xs, X s+1 )] = ρ E|Xs+1 − ρX s| + ρ2
+
+> 4
+
+2σ2 = ρ
+
+2σ
+
+√ 2
+
+π + ρ2
+
+8σ2 < ∞. (B.22) 
+
+B.2.2 Norets M0 conditions (Proposition 3.5) 
+
+All parts of Assumptions 3.1 and 3.4 are satisfied except 3.1(i) which incurs additional tail contribution. We show by direct computation that Proposition 3.5 still holds. 
+
+Item (i): Positivity and continuity. The function y 7 → φ(y; z, σ 2) is C∞ and strictly positive for every z ∈ R.
+
+Item (ii): Finite second moment. The relevant integral is (from (B.14) ) ∫ |y|2 Ft(d y, dz) = 
+
+E[X2
+
+> t−1
+
+] = ρ2( t−1) M 2/3 + 1 < ∞.
+
+Item (iii): Integrable local log-variation. With rt−1 = 1 , the log-variation of ft(y |
+
+z) = φ(y; z, σ 2) over C1(y) = [ y − 12 , y + 12 ] is computed as follows. Since log ft(y | z) = 
+
+17 − 12 log (2 πσ 2) − (y − z)2/(2 σ2), the infimum over u ∈ C1(y) is attained at the point farthest from z, giving 
+
+log ft(y | z)inf u∈C1(y) ft(u | z) = (|y − z| + 12 )2 − (y − z)2
+
+2σ2 = |y − z| + 14
+
+2σ2 . (B.23) Integrating this against Ft (using (B.14)) we get 
+
+∫ |y − z| + 14
+
+2σ2 Ft(d y, dz) = E|Y − Z|
+
+2σ2 + 18σ2 = 12σ
+
+√ 2
+
+π + 18σ2 < ∞. (B.24) 
+
+B.2.3 Feature law and growing compact windows 
+
+Recall from (B.10) that the sufficient feature is Zt = ϕt(C, X t) = ρ X t + σ2ρt−1C. Since 
+
+Xt | C = c ∼ N (ρtc, 1) by (B.6), the conditional law of Zt is again Gaussian: 
+
+Zt | C = c ∼ N (ρt−1c, ρ 2). (B.25) Indeed, E[Zt | C = c] = ρ E[Xt | C = c] + σ2ρt−1c = ρt+1 c + σ2ρt−1c = ρt−1c, using 
+
+ρ2 + σ2 = 1 , and Var( Zt | C = c) = ρ2 Var( Xt | C = c) = ρ2.Thus the unconditional law of Zt is a bounded location-mixture of Gaussians, hence not compactly supported. Rather than altering the feature map, we work on growing compact windows and keep track of the tail error explicitly. For each n ≥ 1, define 
+
+Kt,n := [ −Rn, R n], Rn := 14 n1/7. (B.26) In what follows we shall use the basic Gaussian tail estimate a few times with certain parameter relations. 
+
+Remark B.2 (Gaussian tail estimate) . Let W ∼ N (μ, s 2) with |μ| ≤ m. Then for every r ≥ m,
+
+P(|W | > r ) ≤ 2 ¯Φ
+
+( r − ms
+
+)
+
+. (B.27) Indeed, 
+
+P(|W | > r ) = ¯Φ
+
+( r − μs
+
+)
+
++ ¯Φ
+
+( r + μs
+
+)
+
+, (B.28) and since |μ| ≤ m and ¯Φ is decreasing, ¯Φ( r−μs
+
+) + ¯Φ( r+μs
+
+) ≤ ¯Φ( r−ms
+
+) + ¯Φ( r−ms
+
+). If moreover 
+
+r ≥ 2m, then r − m ≥ r/ 2, so using ¯Φ( x) ≤ e−x2/2 for x ≥ 0,
+
+P(|W | > r ) ≤ 2 exp 
+
+(
+
+− (r − m)2
+
+2s2
+
+)
+
+≤ 2 exp 
+
+(
+
+− r2
+
+8s2
+
+)
+
+. (B.29) Apply (B.29) with 
+
+W = Zt | C = c, s = ρ, m = ρt−1M, r = Rn. (B.30) Set 
+
+nt, ∗ := max {6, ⌈(8 ρt−1M )7⌉} . (B.31) Then for n ≥ nt, ∗ we have Rn = 14 n1/7 ≥ 2ρt−1M , hence 
+
+P(Zt /∈ Kt,n | C = c) ≤ 2 exp 
+
+(
+
+− R2
+
+> n
+
+8ρ2
+
+)
+
+= 2 exp 
+
+(
+
+− n2/7
+
+128 ρ2
+
+)
+
+. (B.32) The bound is uniform in c ∈ [−M, M ], so averaging over C yields 
+
+P(Zt /∈ Kt,n ) ≤ Ctail  
+
+> t
+
+e−ctail  
+
+> tn2/7
+
+, Ctail  
+
+> t
+
+:= 2 , ctail  
+
+> t
+
+:= 1128 ρ2 , n ≥ nt, ∗. (B.33) This is super-algebraically small in n.18 B.3 Partition, cell probabilities, and the infeasible-mixture bound 
+
+B.3.1 Partition and scale parameters 
+
+We now specify the response-space partition and the scale parameters appearing in the Norets bound (3.12). 
+
+Choice of rate exponent. We fix 
+
+β := 27 , (B.34) which is the exponent given by Corollary 3.11 when θt = 4 and ξt = 1 :
+
+β = 12 + 1 
+
+> θt−2
+
++ ξt
+
+= 12 + 12 + 1 = 27 . (B.35) See Remark B.3 for the non-optimality of this choice. 
+
+Partition resolution and bandwidths. For each n ≥ 1, set mt := n at every step 
+
+t = 1 , . . . , T , and define 
+
+hn := n−6/7, δn := n−2/7, σn := n−4/7, Ln := 12 n h n = 12 n1/7. (B.36) Here hn is the cell width, σn is the interior Gaussian scale, δn is the oscillation scale from (3.12), and Ln is the half-width of the fine partition region. 
+
+Response-space partition. The interval [−Ln, L n) is divided into n cells 
+
+A(n) 
+
+> t,j
+
+:= [ −Ln + ( j − 1) hn, −Ln + jh n), j = 1 , . . . , n, (B.37) with centers 
+
+μ(n) 
+
+> t,j
+
+:= −Ln +
+
+(
+
+j − 12
+
+)
+
+hn. (B.38) The remainder cell is 
+
+A(n) 
+
+> t, 0
+
+:= R \ [−Ln, L n). (B.39) 
+
+Tail-component parameters. We take rt−1 = 1 , as in §B.2.2, and 
+
+σt, 0 := 
+
+√ 2
+
+π . (B.40) With this choice, the third condition in (3.5) holds with equality. 
+
+Verification of (3.5) . Since D = 1 , the three conditions in (3.5) read: (i) σn/δ n = n−4/7/n −2/7 = n−2/7 → 0.(ii) Since D = 1 , we have δD−1 
+
+> n
+
+= 1 , so the second condition is hn/σ n = n−6/7/n −4/7 =
+
+n−2/7 → 0.(iii) (rt−1/2) D /(2 πσ 2
+
+> t, 0
+
+)D/ 2 = 1/2
+
+√2π·2/π = 1/22 = 14 = 2 −(D+1) .Also, the boundary condition in (3.5) is eventually satisfied because Ln = 12 n1/7 → ∞ , so every fixed δn-cube is eventually contained in the fine region. 19 B.3.2 Cell probabilities and log-odds 
+
+Write 
+
+aj,n := −Ln + ( j − 1) hn, bj,n := −Ln + jh n (B.41) for the endpoints of A(n) 
+
+> t,j
+
+. Since the reverse-step density is ft(y | z) = φ(y; z, σ 2) by (B.12) ,the cell probabilities are 
+
+G(n) 
+
+> t,j
+
+(z) := 
+
+∫
+
+> A(n)
+> t,j
+
+ft(y | z) d y = Φ 
+
+( bj,n − zσ
+
+)
+
+− Φ
+
+( aj,n − zσ
+
+)
+
+, j = 1 , . . . , n, (B.42) 
+
+G(n) 
+
+> t, 0
+
+(z) := 
+
+∫
+
+> A(n)
+> t, 0
+
+ft(y | z) d y = Φ 
+
+( −Ln − zσ
+
+)
+
++ 1 − Φ
+
+( Ln − zσ
+
+)
+
+. (B.43) The exact step-t log-odds are therefore 
+
+Λnt,j (z) := log G(n) 
+
+> t,j
+
+(z) − log G(n) 
+
+> t, 0
+
+(z), j = 1 , . . . , n. (B.44) Since ft(· | z) > 0 everywhere, every G(n) 
+
+> t,j
+
+(z) is strictly positive, and because Φ is C∞, the functions Λnt,j are C∞ on Kt,n . Thus Assumption 3.13 holds with st arbitrarily large; we will only need the case st = 1 .
+
+B.3.3 Term-by-term computation of BNor 
+
+> t,n
+
+We now evaluate each term in (3.12) for D = 1 .
+
+Term 1: the local oscillation integral Lt(δn). Using the C1-branch of the local oscillation operator (3.10) and ft(y | z) = φ(y; z, σ 2) from (B.12) , ∂u log ft(u | z) = − u−zσ2 , so for 
+
+Cδn (y) = [ y − δn/2, y + δn/2] ,
+
+Dδn ft(y | z) = δn
+
+2 sup  
+
+> u∈Cδn (y)
+
+∣∣∂u log ft(u | z)∣∣ ≤ δn
+
+2σ2
+
+(
+
+|y − z| + δn
+
+2
+
+)
+
+. (B.45) Integrating against the joint law Ft from (B.13) , and using E|Y − Z| = σ√2/π from (B.14) ,we obtain 
+
+Lt(δn) ≤ δn
+
+2σ2 E|Y − Z| + δ2
+
+> n
+
+4σ2 = 12σ
+
+√ 2
+
+π n−2/7 + 14σ2 n−4/7. (B.46) 
+
+Term 2: the boundary oscillation integral Tt,n (δn). By definition, the δn-boundary of the remainder cell A(n) 
+
+> t, 0
+
+consists of those y for which Cδn (y) meets R \ [−Ln, L n). Equivalently, 
+
+Bt,n (δn) = 
+
+{
+
+(z, y ) : Cδn (y) ∩ A(n)
+
+> t, 0
+
+̸ = ∅
+
+}
+
+= {| y| > L n − δn/2}. (B.47) Set 
+
+an := Ln − δn/2 = 12 n1/7 − 12 n−2/7. (B.48) Let Y = Xt−1. Since Y | C = c ∼ N (ρt−1c, 1) , the template (B.29) applies with 
+
+W = Y | C = c, s = 1 , m = ρt−1M, r = an. (B.49) For n ≥ nt, ∗ we have an = 12 n1/7 − 12 n−2/7 ≥ 14 n1/7 ≥ 2ρt−1M , so 
+
+pt,n := P(|Y | > a n) ≤ 2 exp 
+
+(
+
+− a2
+
+> n
+
+8
+
+)
+
+≤ 2 exp 
+
+(
+
+− n2/7
+
+128 
+
+)
+
+, n ≥ nt, ∗. (B.50) 20 Again from (3.10), now with rt−1 = 1 ,
+
+D1ft(y | z) = 12 sup     
+
+> u∈[y−12,y +12]
+
+∣∣∂u log ft(u | z)∣∣ ≤ |y − z| + 12
+
+2σ2 . (B.51) Hence 
+
+Tt,n (δn) ≤ 12σ2
+
+∫
+
+> Bt,n (δn)
+
+(
+
+|y − z| + 12
+
+)
+
+dFt. (B.52) Using Cauchy–Schwarz and E[( Y − Z)2] = σ2 from (B.14), 
+
+∫
+
+|y − z| 1Bt,n (δn) dFt ≤ (E[( Y − Z)2])1/2 p1/2 
+
+> t,n
+
+= σ p 1/2 
+
+> t,n
+
+. (B.53) Also pt,n ≤ p1/2 
+
+> t,n
+
+because pt,n ≤ 1. Therefore, for n ≥ nt, ∗,
+
+Tt,n (δn) ≤ σ + 12
+
+2σ2 p1/2 
+
+> t,n
+
+≤ C(T ) 
+
+> t
+
+e−c(T ) 
+
+> tn2/7
+
+, with C(T ) 
+
+> t
+
+:= σ + 12
+
+√2 σ2 , c(T ) 
+
+> t
+
+:= 1256 . (B.54) 
+
+Term 3: the tail-component integral Ut,n (δn). For D = 1 , rt−1 = 1 , and σt, 0 = √2/π ,the second term in Ut,n from (3.11) is − log (rt−1/2) D 
+
+> (2 πσ 2
+> t, 0)D/ 2
+
+= − log 1/2
+
+√2π·2/π = log 4 . Thus 
+
+Ut,n (δn) = π
+
+4
+
+∫
+
+> Bt,n (δn)
+
+y2 dFt + (log 4) pt,n . (B.55) Since Bt,n (δn) depends only on Y = Xt−1,
+
+∫
+
+> Bt,n (δn)
+
+y2 dFt = E[Y 2 1{| Y |>a n}
+
+] ≤ (E[Y 4])1/2 p1/2 
+
+> t,n
+
+(B.56) by Cauchy–Schwarz. Now Y | C = c ∼ N (ρt−1c, 1) , so 
+
+E[Y 4 | C = c] = ( ρt−1c)4 + 6( ρt−1c)2 + 3 ≤ (ρt−1M )4 + 6( ρt−1M )2 + 3 . (B.57) Hence (E[Y 4])1/2 ≤ √(ρt−1M )4 + 6( ρt−1M )2 + 3 . (B.58) Using the already established bound (B.50), 
+
+p1/2 
+
+> t,n
+
+≤ √2 e−n2/7/256 , pt,n ≤ p1/2 
+
+> t,n
+
+, n ≥ nt, ∗, (B.59) and therefore 
+
+Ut,n (δn) ≤ C(U ) 
+
+> t
+
+e−c(U ) 
+
+> tn2/7
+
+, n ≥ nt, ∗, (B.60) where 
+
+C(U ) 
+
+> t
+
+:= √2
+
+( π
+
+4
+
+√(ρt−1M )4 + 6( ρt−1M )2 + 3 + log 4 
+
+)
+
+, c(U ) 
+
+> t
+
+:= 1256 . (B.61) 
+
+Term 4: the Riemann-sum error. With D = 1 , the fourth term in (3.12) becomes 
+
+6D3/2δD−1 
+
+> n
+
+hn
+
+(2 π)D/ 2σDn
+
+= 6hn
+
+√2π σ n
+
+= 6
+
+√2π n−2/7. (B.62) 
+
+Term 5: the Gaussian tail term. Again with δn, σ n from (B.36), 
+
+2 exp 
+
+(
+
+− (δn/σ n)2
+
+8
+
+)
+
+= 2 exp 
+
+(
+
+− n4/7
+
+8
+
+)
+
+. (B.63) This decays faster than e−cn 2/7
+
+; in particular, 
+
+2e−n4/7/8 ≤ 2e−n2/7/256 , n ≥ 1. (B.64) 21 B.3.4 Assembled Norets bound and rate 
+
+Combining (B.46), (B.54), (B.60), (B.62), and (B.63), we obtain 
+
+BNor  
+
+> t,n
+
+≤
+
+(
+
+12σ
+
+√ 2
+
+π + 6
+
+√2π
+
+)︸ ︷︷ ︸ 
+
+> =: κ1(σ)
+
+n−2/7 + 14σ2 n−4/7 + C♯t e−c♯t n2/7
+
+, (B.65) for all n ≥ nt, ∗, where one may take 
+
+C♯t := σ + 12
+
+√2 σ2 + √2
+
+( π
+
+4
+
+√(ρt−1M )4 + 6( ρt−1M )2 + 3 + log 4 
+
+)
+
++ 2 , c♯t := 1256 . (B.66) The leading algebraic coefficient 
+
+κ1(σ) = 12σ
+
+√ 2
+
+π + 6
+
+√2π (B.67) is decreasing in σ = √1 − ρ2. In the boundary case ρ → 0 (so σ → 1), κ1(1) = 12
+
+√ 2 
+
+> π
+
++ 6√2π ≈
+
+2.79 . Thus the dominant contribution to BNor  
+
+> t,n
+
+is still the algebraic term κ1(σ)n−2/7; all remaining terms are strictly smaller as n → ∞ . By Proposition 3.10, (B.65) bounds the step-t
+
+KL error for the infeasible model, more specifically, for n ≥ nt, ∗ we find 
+
+dKL ,t 
+
+(
+
+˜pM0,n t
+
+)
+
+≤ CNor  
+
+> t
+
+n−2/7, (B.68) where CNor  
+
+> t
+
+can be any constant satisfying: 
+
+κ1(σ) + 14σ2 n−2/7 
+
+> t, ∗
+
++ sup 
+
+> n≥nt, ∗
+
+C♯t e−c♯t n2/7
+
+n2/7 ≤ CNor  
+
+> t
+
+. (B.69) Comparing (B.68) with (3.13) we see the decay rate of the per-step error of this toy model to be βt = β = 2 /7.
+
+Remark B.3 (Optimality of the rate exponent) . The choice θt = 4 , ξt = 1 , hence β = 2 /7, is convenient but not optimal. Since the joint law Ft in (B.13) is a bounded location-mixture of Gaussians, all of its polynomial moments are finite. Thus θt may be taken arbitrarily large. With θt = q and ξt → 0, Corollary 3.11 gives 
+
+βt = 12 + 1 
+
+> q−2
+
++ ξt
+
+−→ 12 as q → ∞ , ξ t → 0. (B.70) However, the constant in Corollary 3.11 depends on the q-th moment of Ft, and that constant deteriorates as q → ∞ . So the limit βt → 12 should be understood as an asymptotic optimization of the exponent, not as a uniform bound with fixed constants. 
+
+## B.4 Neural approximation and final bound 
+
+B.4.1 Log-odds complexity 
+
+To verify Assumption 3.13 in this example, we use the growing compact window Kt,n =[−Rn, R n] from (B.26) and the affine parametrization 
+
+Ψt,n : [0 , 1] → Kt,n , Ψt,n (u) := Rn(2 u − 1) . (B.71) Recall also that the scales hn, L n are given by (B.36) , the step-t reverse density by (B.12) ,the cell probabilities by (B.42)–(B.43), and the exact log-odds by (B.44). We set 
+
+Λmax  
+
+> t,n
+
+:= max  
+
+> 1≤j≤n
+
+∥Λnt,j ◦ Ψt,n ∥C1([0 ,1]) . (B.72) 22 Pointwise bound on the log-odds. Fix z ∈ Kt,n , i.e. |z| ≤ Rn. For any interior cell A(n)
+
+> t,j
+
+from the partition in §B.3, 
+
+G(n) 
+
+> t,j
+
+(z) = 
+
+∫
+
+> A(n)
+> t,j
+
+ft(y | z) d y ≤ hn sup 
+
+> y∈R
+
+ft(y | z) = hn
+
+σ√2π , (B.73) because ft( · | z) = φ( · ; z, σ 2) by (B.12). On the other hand, 
+
+G(n) 
+
+> t,j
+
+(z) ≥ hn inf 
+
+> y∈A(n)
+> t,j
+
+ft(y | z) ≥ hn
+
+σ√2π exp 
+
+(
+
+− (Ln + Rn + hn)2
+
+2σ2
+
+)
+
+, (B.74) since A(n) 
+
+> t,j
+
+⊂ [−Ln, L n) and hence |y − z| ≤ Ln + Rn + hn on A(n) 
+
+> t,j
+
+× Kt,n . Therefore 
+
+− log G(n) 
+
+> t,j
+
+(z) ≤ (Ln + Rn + hn)2
+
+2σ2 − log hn + C. (B.75) For the tail cell A(n) 
+
+> t, 0
+
+, (B.43) gives 
+
+G(n) 
+
+> t, 0
+
+(z) = Φ 
+
+( −Ln − zσ
+
+)
+
++ 1 − Φ
+
+( Ln − zσ
+
+)
+
+= ¯Φ
+
+( Ln + zσ
+
+)
+
++ ¯Φ
+
+( Ln − zσ
+
+)
+
+. (B.76) As a function of z, the right-hand side is even, and for z ≥ 0 its derivative is 
+
+1
+
+σ
+
+[
+
+φ
+
+( Ln − zσ ; 0 , 1
+
+)
+
+− φ
+
+( Ln + zσ ; 0 , 1
+
+)] 
+
+≥ 0. (B.77) Hence G(n) 
+
+> t, 0
+
+(z) is minimized at z = 0 , so for all |z| ≤ Rn,
+
+G(n) 
+
+> t, 0
+
+(z) ≥ 2 ¯Φ
+
+( Ln
+
+σ
+
+)
+
+. (B.78) Using the lower Mills bound ¯Φ( x) ≥ x 
+
+> 1+ x2
+
+φ(x; 0 , 1) for x > 0, we obtain 
+
+− log G(n) 
+
+> t, 0
+
+(z) ≤ L2
+
+> n
+
+2σ2 + C log(1 + Ln) + C. (B.79) Since 
+
+Λnt,j (z) = log G(n) 
+
+> t,j
+
+(z) − log G(n) 
+
+> t, 0
+
+(z), (B.80) we have 
+
+|Λnt,j (z)| ≤ − log G(n) 
+
+> t,j
+
+(z) − log G(n) 
+
+> t, 0
+
+(z). (B.81) Using (B.36) and (B.26), namely hn = n−6/7, Ln = 12 n1/7, and Rn = 14 n1/7, this yields 
+
+sup 
+
+> |z|≤ Rn
+
+max  
+
+> 1≤j≤n
+
+|Λnt,j (z)| ≤ Ct, 1n2/7 + Ct, 2 log n ≤ Ct, 3n2/7. (B.82) 
+
+Derivative bound. For j = 1 , . . . , n , differentiating under the integral sign in (B.42) is justified because ft(· | z) is Gaussian (B.12). Since ∂z ft(y | z) = y−zσ2 ft(y | z), we get 
+
+∂z G(n) 
+
+> t,j
+
+(z) = 1
+
+σ2
+
+∫
+
+> A(n)
+> t,j
+
+(y − z)ft(y | z) d y, (B.83) hence 
+
+∂z log G(n) 
+
+> t,j
+
+(z) = 1
+
+σ2
+
+∫
+
+> A(n)
+> t,j
+
+(y − z)ft(y | z) d y
+
+∫
+
+> A(n)
+> t,j
+
+ft(y | z) d y . (B.84) 23 Since |y − z| ≤ Ln + Rn + hn on A(n) 
+
+> t,j
+
+× Kt,n ,
+
+sup 
+
+> |z|≤ Rn
+
+max 
+
+> 1≤j≤n
+
+∣∣∣∂z log G(n) 
+
+> t,j
+
+(z)
+
+∣∣∣ ≤ Ln + Rn + hn
+
+σ2 . (B.85) For the tail cell, differentiating (B.43) gives 
+
+∂z G(n) 
+
+> t, 0
+
+(z) = 1
+
+σ
+
+[
+
+φ
+
+( Ln − zσ ; 0 , 1
+
+)
+
+− φ
+
+( Ln + zσ ; 0 , 1
+
+)] 
+
+. (B.86) By symmetry it suffices to consider z ∈ [0 , R n]. Then 
+
+0 ≤ ∂z G(n) 
+
+> t, 0
+
+(z) ≤ 1
+
+σ φ
+
+( Ln − zσ ; 0 , 1
+
+)
+
+, G(n) 
+
+> t, 0
+
+(z) ≥ ¯Φ
+
+( Ln − zσ
+
+)
+
+. (B.87) Therefore 
+
+0 ≤ ∂z log G(n) 
+
+> t, 0
+
+(z) ≤ 1
+
+σφ(( Ln − z)/σ ; 0 , 1) ¯Φ(( Ln − z)/σ ) . (B.88) Using the upper Mills bound φ(x; 0 , 1) / ¯Φ (x) ≤ x + x−1 for x > 0, together with Ln − z ≥
+
+Ln − Rn = 14 n1/7, we obtain 
+
+sup 
+
+> |z|≤ Rn
+
+∣∣∣∂z log G(n) 
+
+> t, 0
+
+(z)
+
+∣∣∣ ≤ Ct, 4(1 + Ln) ≤ Ct, 5n1/7. (B.89) Combining the interior and tail estimates, 
+
+sup 
+
+> |z|≤ Rn
+
+max  
+
+> 1≤j≤n
+
+|∂z Λnt,j (z)| ≤ Ct, 6n1/7. (B.90) Since Ψ′
+
+> t,n
+
+(u) = 2 Rn,
+
+∥Λnt,j ◦ Ψt,n ∥C1([0 ,1]) ≤ sup 
+
+> |z|≤ Rn
+
+|Λnt,j (z)| + 2 Rn sup 
+
+> |z|≤ Rn
+
+|∂z Λnt,j (z)|, (B.91) and therefore (B.82), (B.89), and Rn = 14 n1/7 imply 
+
+Λmax  
+
+> t,n
+
+≤ CΛ 
+
+> t
+
+n2/7. (B.92) 
+
+B.4.2 Neural logit approximation 
+
+Apply Proposition 3.15 with dt = st = 1 to the one-dimensional functions Λnt,j ◦ Ψt,n . This gives a ReLU network ¯aϑ(n) 
+
+> t
+> t
+
+: R → Rn such that 
+
+max  
+
+> 1≤j≤n
+
+sup 
+
+> u∈[0 ,1]
+
+∣∣∣∣¯aϑ(n) 
+
+> t
+> t,j
+
+(u) − (Λnt,j ◦ Ψt,n 
+
+)(u)
+
+∣∣∣∣ ≤ 1360 Λ max  
+
+> t,n
+
+N −2 
+
+> t
+
+L −2 
+
+> t
+
+. (B.93) Now compose with the affine inverse 
+
+Ψ−1
+
+> t,n
+
+(z) = z/R n + 1 2 , z ∈ Kt,n , (B.94) and define 
+
+aϑ(n) 
+
+> t
+> t
+
+(z) := ¯ aϑ(n)
+
+> t
+> t
+
+(Ψ−1
+
+> t,n
+
+(z)). (B.95) Then 
+
+ηNN  
+
+> t
+
+:= max  
+
+> 1≤j≤n
+
+sup 
+
+> z∈Kt,n
+
+∣∣∣∣aϑ(n) 
+
+> t
+> t,j
+
+(z) − Λnt,j (z)
+
+∣∣∣∣ ≤ 1360 Λ max  
+
+> t,n
+
+N −2 
+
+> t
+
+L −2 
+
+> t
+
+. (B.96) 24 Using (B.92), it is enough to choose 
+
+N (n) 
+
+> t
+
+= L (n) 
+
+> t
+
+:= 
+
+⌈
+
+(5440 T C Λ 
+
+> t
+
+)1/4 n9/28 ⌉
+
+(B.97) to ensure 
+
+ηNN  
+
+> t
+
+≤ 14T n . (B.98) Because the feature Zt = ϕt(C, X t) from (B.10) is not compactly supported, we clip it to the window Kt,n in (B.26): 
+
+Πn(z) := max {− Rn, min {z, R n}} . (B.99) The map Πn is piecewise affine, hence can be implemented exactly by a small ReLU subnetwork and absorbed into the first layer. Using the baseline softmax weights αt,j [·] from (3.6) and the Gaussian-mixture template (3.7), we define 
+
+˜pNN 
+
+> t,ϑ (n)
+> t
+
+(y | z) := 
+
+> n
+
+∑
+
+> j=1
+
+αt,j 
+
+[aϑ(n)
+
+> t
+> t
+
+](Π n(z)) φ(y; μ(n) 
+
+> t,j
+
+, σ 2
+
+> n
+
+) + αt, 0
+
+[aϑ(n)
+
+> t
+> t
+
+](Π n(z)) φ(y; 0 , σ 2
+
+> t, 0
+
+),
+
+(B.100) and the induced step-t reverse kernel by 
+
+pNN 
+
+> t,ϑ (n)
+> t
+
+(d y | c, x t) := ˜ pNN 
+
+> t,ϑ (n)
+> t
+
+(d y | ϕt(c, x t)) . (B.101) On the event {| Zt| ≤ Rn}, clipping is inactive, so Πn(Zt) = Zt ∈ Kt,n . By Lemma 3.9, 
+
+KL 
+
+(
+
+ft(· | z)
+
+∥∥∥ ˜pNN 
+
+> t,ϑ (n)
+> t
+
+(· | z)
+
+)
+
+≤ KL 
+
+(
+
+ft(· | z)
+
+∥∥∥ ˜pM0,n t (· | z)
+
+)
+
++ 2 ηNN  
+
+> t
+
+(B.102) for every z ∈ Kt,n . Integrating over {| z| ≤ Rn}, using the infeasible-mixture bound (B.68) and ηNN  
+
+> t
+
+≤ 1/(4 T n ), we get 
+
+∫
+
+> |z|≤ Rn
+
+KL 
+
+(
+
+ft(· | z)
+
+∥∥∥ ˜pNN 
+
+> t,ϑ (n)
+> t
+
+(· | z)
+
+)
+
+(Ft)Z (d z) ≤ CNor  
+
+> t
+
+n−2/7 + 12T n . (B.103) 
+
+B.4.3 Tail contribution and assembled bound 
+
+It remains to control the contribution of {| Zt| > R n}. For such z, let u := Π n(z) ∈ {− Rn, R n}.Since |aϑ(n) 
+
+> t
+> t,j
+
+(u) − Λnt,j (u)| ≤ ηNN  
+
+> t
+
+for all j,
+
+1 + 
+
+> n
+
+∑
+
+> j=1
+
+eaϑ(n)  
+
+> tt,j (u)
+
+≤ eηNN 
+
+> t
+
+1 + 
+
+> n
+
+∑
+
+> j=1
+
+eΛnt,j (u)
+
+ . (B.104) Hence, using G(n) 
+
+> t, 0
+
+= αt, 0[Λ nt ],
+
+αt, 0
+
+[aϑ(n)
+
+> t
+> t
+
+](u) = 11 + ∑nj=1 eaϑ(n) 
+
+> tt,j (u)
+
+≥ e−ηNN  
+
+> t
+
+G(n) 
+
+> t, 0
+
+(u) ≥ e−ηNN  
+
+> t
+
+¯Φ
+
+( Ln − Rn
+
+σ
+
+)
+
+. (B.105) Therefore, by (B.100), 
+
+˜pNN 
+
+> t,ϑ (n)
+> t
+
+(y | z) ≥ e−ηNN  
+
+> t
+
+¯Φ
+
+( Ln − Rn
+
+σ
+
+)
+
+φ(y; 0 , σ 2
+
+> t, 0
+
+). (B.106) Now ft(· | z) = N (z, σ 2) by (B.12) . If q(y) ≥ βr (y) pointwise, then KL (p∥q) ≤ KL (p∥r) −
+
+log β. Applying this with 
+
+p = N (z, σ 2), q = ˜ pNN 
+
+> t,ϑ (n)
+> t
+
+(· | z), r = N (0 , σ 2
+
+> t, 0
+
+), (B.107) 25 we obtain, for |z| > R n,
+
+KL 
+
+(
+
+ft(· | z)
+
+∥∥∥ ˜pNN 
+
+> t,ϑ (n)
+> t
+
+(· | z)
+
+)
+
+≤ KL (N (z, σ 2) ∥∥ N (0 , σ 2
+
+> t, 0
+
+)) + ηNN  
+
+> t
+
+− log ¯Φ
+
+( Ln − Rn
+
+σ
+
+)
+
+.
+
+(B.108) The Gaussian KL formula gives a bound of the form Ct(1 + z2), while the same lower-Mills estimate used earlier yields − log ¯Φ(( Ln − Rn)/σ ) ≤ C′
+
+> t
+
+n2/7. Hence 
+
+KL 
+
+(
+
+ft(· | z)
+
+∥∥∥ ˜pNN 
+
+> t,ϑ (n)
+> t
+
+(· | z)
+
+)
+
+≤ Ct, 7
+
+(1 + z2 + n2/7), |z| > R n. (B.109) Integrating (B.109) over {| z| > R n} gives 
+
+∫
+
+> |z|>R n
+
+KL 
+
+(
+
+ft(· | z)
+
+∥∥∥ ˜pNN 
+
+> t,ϑ (n)
+> t
+
+(· | z)
+
+)
+
+(Ft)Z (d z)
+
+≤ Ct, 7
+
+[
+
+(1 + n2/7)P(|Zt| > R n) + 
+
+∫
+
+> |z|>R n
+
+z2 (Ft)Z (d z)
+
+]
+
+.
+
+(B.110) The first term is already controlled by the feature-tail bound (B.33) . For the second term, use exactly the same Cauchy–Schwarz step as in the earlier Gaussian tail estimates: 
+
+∫
+
+> |z|>R n
+
+z2 (Ft)Z (d z) ≤ (E[Z4 
+
+> t
+
+])1/2P(|Zt| > R n)1/2. (B.111) Since Zt | C = c ∼ N (ρt−1c, ρ 2) from (B.10) and (B.6) , its fourth moment is uniformly bounded: 
+
+E[Z4 
+
+> t
+
+] ≤ (ρt−1M )4 + 6 ρ2(ρt−1M )2 + 3 ρ4 =: M (Z) 
+
+> t, 4
+
+. (B.112) Combining this with (B.33) , and absorbing the prefactor 1 + n2/7 into the exponential after decreasing the rate constant if necessary, we obtain constants ˜Ctail  
+
+> t
+
+, ˜ctail  
+
+> t
+
+> 0 such that 
+
+∫
+
+> |z|>R n
+
+KL 
+
+(
+
+ft(· | z)
+
+∥∥∥ ˜pNN 
+
+> t,ϑ (n)
+> t
+
+(· | z)
+
+)
+
+(Ft)Z (d z) ≤ ˜Ctail  
+
+> t
+
+e−˜ctail  
+
+> tn2/7
+
+. (B.113) Combining this with the terminal mismatch (B.16) , the on-window estimate (B.103) , and summing over t = 1 , . . . , T , we obtain 
+
+EKL 
+
+(πpNN ,n ,ν 
+
+) ≤ ρ2T M 2
+
+6 +
+
+> T
+
+∑
+
+> t=1
+
+CNor  
+
+> t
+
+n−2/7 + 12n +
+
+> T
+
+∑
+
+> t=1
+
+˜Ctail  
+
+> t
+
+e−˜ctail  
+
+> tn2/7
+
+. (B.114) It is useful to compare this concrete estimate with the abstract finite-resolution bound (3.18) .The latter has the form 
+
+EKL (πpNN ,ν ) ≤ E[Eterm (C)] + 
+
+> T
+
+∑
+
+> t=1
+
+(
+
+CNor  
+
+> t
+
+m−βt 
+
+> t
+
++ 170( st + 1) dt 8st Λmax  
+
+> t,m t
+
+N −2st/d t 
+
+> t
+
+L −2st/d t
+
+> t
+
+)
+
+,
+
+(B.115) where the three ingredients are, respectively: terminal mismatch, stepwise Gaussian-mixture approximation error, and stepwise neural logit approximation error. In the present Gaussian–OU example, these three abstract terms become completely explicit. First, the terminal mismatch is exactly E[Eterm (C)] = ρ2T M 2/6 by (B.16) . Second, we take the same mixture resolution mt = n at every step, and with the choice θt = 4 , ξt = 1 from (B.34) , Corollary 3.11 gives βt = 2 /7, so the abstract mixture term reduces to ∑Tt=1 CNor  
+
+> t
+
+n−2/7.Third, here dt = st = 1 , and the log-odds complexity satisfies Λmax  
+
+> t,n
+
+= O(n2/7) by (B.92) ;choosing the network widths and depths as in (B.97) makes the abstract neural term of order 
+
+1/(T n ) at each step, which sums to the total contribution 1/(2 n).26 Thus (B.114) is precisely the specialization of (3.18) to this example, except for one additional term: T∑
+
+> t=1
+
+˜Ctail  
+
+> t
+
+e−˜ctail  
+
+> tn2/7
+
+. (B.116) This extra remainder is not a new approximation mechanism; it is the explicit price of replacing the global compact-feature hypothesis by the growing windows Kt,n from (B.26) .On each window Kt,n , the example fits the abstract framework exactly, and the only residual error comes from the Gaussian mass of Zt outside that window. In particular, among the 
+
+n-dependent terms, the dominant one is still the algebraic Gaussian-mixture error n−2/7; the neural correction 1/(2 n) and the window-tail remainder are both strictly smaller as n → ∞ .
+
+## B.5 Summary 
+
+B.5.1 Rate structure 
+
+For fixed diffusion horizon T , the final estimate (B.114) decomposes into four contributions: 
+
+Error source Total contribution Behavior 
+
+Terminal mismatch ρ2T M 2/6 independent of n; exponentially small in 
+
+T
+
+Gaussian-mixture error ∑Tt=1 CNor  
+
+> t
+
+n−2/7 algebraic; dominant n-dependent term Neural logit error 1/(2 n) smaller than n−2/7
+
+Window-tail remainder ∑Tt=1 ˜Ctail  
+
+> t
+
+e−˜ctail  
+
+> tn2/7
+
+faster than any negative power of n
+
+Hence, for fixed T and large n, the dominant n-dependent term is 
+
+> T
+
+∑
+
+> t=1
+
+CNor  
+
+> t
+
+n−2/7 ≤ T C Nor n−2/7, C Nor := max  
+
+> 1≤t≤T
+
+CNor  
+
+> t
+
+. (B.117) The only part of the bound that does not vanish as n → ∞ is the terminal mismatch ρ2T M 2/6;it is controlled separately by increasing the diffusion horizon T .
+
+B.5.2 Assumption verification 
+
+The following table summarizes how the abstract hypotheses are realized in this example. 
+
+Assumption Status Notes 
+
+3.1(i) ✓∗ ∗Not globally compact. We work on the growing windows Kt,n 
+
+in (B.26) and carry the resulting explicit window-tail remainder in (B.114). 3.1(ii) ✓ The conditional feature law is ft(y | z) = φ(y; z, σ 2); see (B.12) .3.1(iii) ✓ r⋆t depends on (c, x t) only through 
+
+z = ϕt(c, x t) = ρx t + σ2ρt−1c; see (B.10). 3.4(i) ✓ Gaussian densities are strictly positive everywhere. 3.4(ii) ✓ All relevant densities are C∞.3.4(iii) ✓ In fact all polynomial moments are finite. 3.4(iv) ✓ Verified in §B.2.1; one may take as−1(xs) = |xs|+ρsM +1 /42 and 
+
+bs(xs, x s+1 ) = ρ|xs+1 −ρx s|+ρ2/42σ2 .3.13 ✓ On each Kt,n , the exact log-odds are smooth; here we use 
+
+st = 1 and prove Λmax  
+
+> t,n
+
+= O(n2/7); see (B.92). Cor. 3.11 ✓ With θt = 4 , ξt = 1 , one gets βt = 2 /7; see (B.34). See also Remark B.3 for the limiting improvement βt → 1/2.27 References 
+
+> 1
+
+G. Cybenko, “Approximation by superpositions of a sigmoidal function”, Math. Control Signals Syst. 2, 303–314 (1989) 10.1007/BF02551274 .
+
+> 2
+
+K. Hornik, M. Stinchcombe, and H. White, “Multilayer feedforward networks are universal approximators”, Neural Networks 2, 359–366 (1989) https://doi.org/10.1016/0893-6080(89)90020-8 .
+
+> 3
+
+D. Yarotsky, “Error bounds for approximations with deep relu networks”, Neural networks 
+
+94 , 103–114 (2017), arXiv: 1610.01145 [cs.LG] .
+
+> 4
+
+J. Lu, Z. Shen, H. Yang, and S. Zhang, “Deep network approximation for smooth functions”, SIAM Journal on Mathematical Analysis 53 , 5465–5506 (2021) 10.1137/20m134695x .
+
+> 5
+
+J. Sohl-Dickstein, E. A. Weiss, N. Maheswaranathan, and S. Ganguli, “Deep unsupervised learning using nonequilibrium thermodynamics”, in Proceedings of the 32nd international conference on machine learning, ICML 2015, lille, france, 6-11 july 2015, edited by F. R. Bach and D. M. Blei, JMLR Workshop and Conference Proceedings (2015), pp. 2256–2265. 
+
+> 6
+
+J. Ho, A. Jain, and P. Abbeel, “Denoising diffusion probabilistic models”, in Advances in neural information processing systems 33: annual conference on neural information processing systems 2020, neurips 2020, december 6-12, 2020, virtual, edited by H. Larochelle, M. Ranzato, R. Hadsell, M. Balcan, and H. Lin (2020). 
+
+> 7
+
+J. Song, C. Meng, and S. Ermon, “Denoising diffusion implicit models”, in 9th international conference on learning representations, ICLR 2021, virtual event, austria, may 3-7, 2021 (2021). 
+
+> 8
+
+Y. Song, J. Sohl-Dickstein, D. P. Kingma, A. Kumar, S. Ermon, and B. Poole, “Score-based generative modeling through stochastic differential equations”, in 9th international conference on learning representations, ICLR 2021, virtual event, austria, may 3-7, 2021 (2021). 
+
+> 9
+
+A. Q. Nichol and P. Dhariwal, “Improved denoising diffusion probabilistic models”, in Proceedings of the 38th international conference on machine learning, ICML 2021, 18-24 july 2021, virtual event, Vol. 139, edited by M. Meila and T. Zhang, Proceedings of Machine Learning Research (2021), pp. 8162–8171. 
+
+> 10
+
+P. Dhariwal and A. Q. Nichol, “Diffusion models beat gans on image synthesis”, in Advances in neural information processing systems 34: annual conference on neural information processing systems 2021, neurips 2021, december 6-14, 2021, virtual, edited by M. Ranzato, A. Beygelzimer, Y. N. Dauphin, P. Liang, and J. W. Vaughan (2021), pp. 8780–8794. 
+
+> 11
+
+J. Ho and T. Salimans, “Classifier-free diffusion guidance”, CoRR abs/2207.12598 (2022) 
+
+10.48550/ARXIV.2207.12598 , arXiv: 2207.12598 .
+
+> 12
+
+R. Rombach, A. Blattmann, D. Lorenz, P. Esser, and B. Ommer, “High-resolution image synthesis with latent diffusion models”, in IEEE/CVF conference on computer vision and pattern recognition, CVPR 2022, new orleans, la, usa, june 18-24, 2022 (2022), pp. 10674– 10685, 10.1109/CVPR52688.2022.01042 .
+
+> 13
+
+C. Saharia, W. Chan, S. Saxena, L. Li, J. Whang, E. L. Denton, K. Ghasemipour, R. Gontijo Lopes, B. Karagol Ayan, T. Salimans, et al., “Photorealistic text-to-image diffusion models with deep language understanding”, Advances in neural information processing systems 35 , 36479–36494 (2022), arXiv: 2205.11487 [cs.CV] .
+
+> 14
+
+M. Chen, S. Mei, J. Fan, and M. Wang, “An overview of diffusion models: applications, guided generation, statistical rates and optimization”, CoRR abs/2404.07771 (2024) 
+
+10.48550/ARXIV.2404.07771 , arXiv: 2404.07771 .
+
+> 15
+
+Y. Li, B. van Breugel, and M. van der Schaar, “Soft mixture denoising: beyond the expressive bottleneck of diffusion models”, in The twelfth international conference on learning representations, ICLR 2024, vienna, austria, may 7-11, 2024 (2024). 28 16 H. Guo, C. Lu, F. Bao, T. Pang, S. Yan, C. Du, and C. Li, “Gaussian mixture solvers for diffusion models”, Advances in Neural Information Processing Systems 36 , 25598–25626 (2023), arXiv: 2311.00941 [cs.LG] .
+
+> 17
+
+P. Gabbur, Improved ddim sampling with moment matching gaussian mixtures , 2025, arXiv: 2311.04938 [cs.CV] .
+
+> 18
+
+A. Norets, “Approximation of conditional densities by smooth mixtures of regressions”, The Annals of Statistics 38 (2010) 10.1214/09-aos765 .
+
+> 19
+
+A. Hyvärinen, “Estimation of non-normalized statistical models by score matching”, J. Mach. Learn. Res. 6, 695–709 (2005). 
+
+> 20
+
+P. Vincent, “A connection between score matching and denoising autoencoders”, Neural Computation 23 , 1661–1674 (2011) 10.1162/NECO_a_00142 .
+
+> 21
+
+Y. Song and S. Ermon, “Generative modeling by estimating gradients of the data distribu-tion”, in Advances in neural information processing systems 32: annual conference on neural information processing systems 2019, neurips 2019, december 8-14, 2019, vancouver, bc, canada, edited by H. M. Wallach, H. Larochelle, A. Beygelzimer, F. d’Alché-Buc, E. B. Fox, and R. Garnett (2019), pp. 11895–11907. 
+
+> 22
+
+H. Chen, H. Lee, and J. Lu, “Improved analysis of score-based generative modeling: user-friendly bounds under minimal smoothness assumptions”, in International conference on machine learning (2022), arXiv: 2211.01916 [cs.LG] .
+
+> 23
+
+M. Chen, K. Huang, T. Zhao, and M. Wang, “Score approximation, estimation and distri-bution recovery of diffusion models on low-dimensional data”, in International conference on machine learning, ICML 2023, 23-29 july 2023, honolulu, hawaii, USA, Vol. 202, edited by A. Krause, E. Brunskill, K. Cho, B. Engelhardt, S. Sabato, and J. Scarlett, Proceedings of Machine Learning Research (2023), pp. 4672–4712. 
+
+> 24
+
+K. Oko, S. Akiyama, and T. Suzuki, “Diffusion models are minimax optimal distribution estimators”, in International conference on machine learning (PMLR, 2023), pp. 26517– 26582, arXiv: 2303.01861 [stat.ML] .
+
+> 25
+
+H. Fu, Z. Yang, M. Wang, and M. Chen, “Unveil conditional diffusion models with classifier-free guidance: A sharp statistical theory”, CoRR abs/2403.11968 (2024) 10.48550/ARXIV. 2403.11968 , arXiv: 2403.11968 .
+
+> 26
+
+R. Tang, L. Lin, and Y. Yang, “Conditional diffusion models are minimax-optimal and manifold-adaptive for conditional distribution estimation”, in The thirteenth international conference on learning representations, ICLR 2025, singapore, april 24-28, 2025 (2025). 
+
+> 27
+
+R. A. Jacobs, M. I. Jordan, S. J. Nowlan, and G. E. Hinton, “Adaptive mixtures of local experts”, Neural Computation 3, 79–87 (1991). 
+
+> 28
+
+C. M. Bishop, “Mixture density networks”, NCRG (1994). 
+
+> 29
+
+M. Jordan and R. Jacobs, “Hierarchical mixtures of experts and the em algorithm”, in Proceedings of 1993 international conference on neural networks (ijcnn-93-nagoya, japan), Vol. 2 (1993), 1339–1344 vol.2, 10.1109/IJCNN.1993.716791 .
+
+> 30
+
+W. Jiang and M. A. Tanner, “Hierarchical mixtures-of-experts for exponential family regression models: approximation and maximum likelihood estimation”, The Annals of Statistics 27 , 987–1011 (1999) 10.1214/aos/1018031265 .29
