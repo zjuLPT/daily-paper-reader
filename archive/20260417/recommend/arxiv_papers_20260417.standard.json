@@ -1,0 +1,233 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-17T20:14:53.028766+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 4,
+    "quick_skim_target": 11,
+    "quick_selected": 4
+  },
+  "deep_dive": [
+    {
+      "id": "2604.13366v1",
+      "source": "arxiv",
+      "title": "Diffusion Sequence Models for Generative In-Context Meta-Learning of Robot Dynamics",
+      "abstract": "Accurate modeling of robot dynamics is essential for model-based control, yet remains challenging under distributional shifts and real-time constraints. In this work, we formulate system identification as an in-context meta-learning problem and compare deterministic and generative sequence models for forward dynamics prediction. We take a Transformer-based meta-model, as a strong deterministic baseline, and introduce to this setting two complementary diffusion-based approaches: (i) inpainting diffusion (Diffuser), which learns the joint input-observation distribution, and (ii) conditioned diffusion models (CNN and Transformer), which generate future observations conditioned on control inputs. Through large-scale randomized simulations, we analyze performance across in-distribution and out-of-distribution regimes, as well as computational trade-offs relevant for control. We show that diffusion models significantly improve robustness under distribution shift, with inpainting diffusion achieving the best performance in our experiments. Finally, we demonstrate that warm-started sampling enables diffusion models to operate within real-time constraints, making them viable for control applications. These results highlight generative meta-models as a promising direction for robust system identification in robotics.",
+      "authors": [
+        "Angelo Moroncelli",
+        "Matteo Rufolo",
+        "Gunes Cagin Aydin",
+        "Asad Ali Shahid",
+        "Loris Roveda"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.RO",
+        "eess.SY"
+      ],
+      "published": "2026-04-15T00:21:49+00:00",
+      "link": "https://arxiv.org/pdf/2604.13366v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Diffusion-based approaches for forward dynamics prediction in robot sequences",
+      "llm_evidence_cn": "基于扩散的方法用于机器人序列的前向动力学预测",
+      "llm_evidence": "基于扩散的方法用于机器人序列的前向动力学预测",
+      "canonical_evidence": "基于扩散的方法用于机器人序列的前向动力学预测",
+      "llm_tldr_en": "Introduces diffusion-based sequence models for generative in-context meta-learning of robot dynamics.",
+      "llm_tldr_cn": "引入基于扩散的序列模型，用于机器人动力学的生成式上下文元学习。",
+      "llm_tldr": "引入基于扩散的序列模型，用于机器人动力学的生成式上下文元学习。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "methods using diffusion models for time series forecasting",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2604.10544v1",
+      "source": "arxiv",
+      "title": "WaveMoE: A Wavelet-Enhanced Mixture-of-Experts Foundation Model for Time Series Forecasting",
+      "abstract": "Time series foundation models (TSFMs) have recently achieved remarkable success in universal forecasting by leveraging large-scale pretraining on diverse time series data. Complementing this progress, incorporating frequency-domain information yields promising performance in enhancing the modeling of complex temporal patterns, such as periodicity and localized high-frequency dynamics, which are prevalent in real-world time series. To advance this direction, we propose a new perspective that integrates explicit frequency-domain representations into scalable foundation models, and introduce WaveMoE, a wavelet-enhanced mixture-of-experts foundation model for time series forecasting. WaveMoE adopts a dual-path architecture that jointly processes time series tokens and wavelet tokens aligned along a unified temporal axis, and coordinates them through a shared expert routing mechanism that enables consistent expert specialization while efficiently scaling model capacity. Preliminary experimental results on 16 diverse benchmark datasets indicate that WaveMoE has the potential to further improve forecasting performance by incorporating wavelet-domain corpora.",
+      "authors": [
+        "Shunyu Wu",
+        "Jiawei Huang",
+        "Weibin Feng",
+        "Boxin Li",
+        "Xiao Zhang",
+        "Erli Meng",
+        "Dan Li",
+        "Jian Lou",
+        "See-Kiong Ng"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-04-12T09:17:19+00:00",
+      "link": "https://arxiv.org/pdf/2604.10544v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Time series foundation model for forecasting",
+      "llm_evidence_cn": "用于预测的时间序列基础模型",
+      "llm_evidence": "用于预测的时间序列基础模型",
+      "canonical_evidence": "用于预测的时间序列基础模型",
+      "llm_tldr_en": "Proposes WaveMoE, a wavelet-enhanced mixture-of-experts foundation model for time series forecasting.",
+      "llm_tldr_cn": "提出WaveMoE，一种用于时间序列预测的小波增强混合专家基础模型。",
+      "llm_tldr": "提出WaveMoE，一种用于时间序列预测的小波增强混合专家基础模型。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.10567v1",
+      "source": "arxiv",
+      "title": "Early Decisions Matter: Proximity Bias and Initial Trajectory Shaping in Non-Autoregressive Diffusion Language Models",
+      "abstract": "Diffusion-based language models (dLLMs) have emerged as a promising alternative to autoregressive language models, offering the potential for parallel token generation and bidirectional context modeling. However, harnessing this flexibility for fully non-autoregressive decoding remains an open question, particularly for reasoning and planning tasks. In this work, we investigate non-autoregressive decoding in dLLMs by systematically analyzing its inference dynamics along the temporal axis. Specifically, we uncover an inherent failure mode in confidence-based non-autoregressive generation stemming from a strong proximity bias-the tendency for the denoising order to concentrate on spatially adjacent tokens. This local dependency leads to spatial error propagation, rendering the entire trajectory critically contingent on the initial unmasking position. Leveraging this insight, we present a minimal-intervention approach that guides early token selection, employing a lightweight planner and end-of-sequence temperature annealing. We thoroughly evaluate our method on various reasoning and planning tasks and observe substantial overall improvement over existing heuristic baselines without significant computational overhead.",
+      "authors": [
+        "Jiyeon Kim",
+        "Sungik Choi",
+        "Yongrae Jo",
+        "Moontae Lee",
+        "Minjoon Seo"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-04-12T10:26:41+00:00",
+      "link": "https://arxiv.org/pdf/2604.10567v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion models for non-autoregressive sequence generation",
+      "llm_evidence_cn": "用于非自回归序列生成的扩散模型",
+      "llm_evidence": "用于非自回归序列生成的扩散模型",
+      "canonical_evidence": "用于非自回归序列生成的扩散模型",
+      "llm_tldr_en": "Analyzes inference dynamics and proximity bias in diffusion-based non-autoregressive sequence modeling.",
+      "llm_tldr_cn": "分析了扩散语言模型在非自回归序列生成中的推理动力学及邻近偏差问题。",
+      "llm_tldr": "分析了扩散语言模型在非自回归序列生成中的推理动力学及邻近偏差问题。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "sequence modeling with diffusion processes for time-dependent data",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.11035v1",
+      "source": "arxiv",
+      "title": "Introspective Diffusion Language Models",
+      "abstract": "Diffusion language models promise parallel generation, yet still lag behind autoregressive (AR) models in quality. We stem this gap to a failure of introspective consistency: AR models agree with their own generations, while DLMs often do not. We define the introspective acceptance rate, which measures whether a model accepts its previously generated tokens. This reveals why AR training has a structural advantage: causal masking and logit shifting implicitly enforce introspective consistency. Motivated by this observation, we introduce Introspective Diffusion Language Model (I-DLM), a paradigm that retains diffusion-style parallel decoding while inheriting the introspective consistency of AR training. I-DLM uses a novel introspective strided decoding (ISD) algorithm, which enables the model to verify previously generated tokens while advancing new ones in the same forward pass. From a systems standpoint, we build I-DLM inference engine on AR-inherited optimizations and further customize it with a stationary-batch scheduler. To the best of our knowledge, I-DLM is the first DLM to match the quality of its same-scale AR counterpart while outperforming prior DLMs in both model quality and practical serving efficiency across 15 benchmarks. It reaches 69.6 on AIME-24 and 45.7 on LiveCodeBench-v6, exceeding LLaDA-2.1-mini (16B) by more than 26 and 15 points, respectively. Beyond quality, I-DLM is designed for the growing demand of large-concurrency serving, delivering about 3x higher throughput than prior state-of-the-art DLMs.",
+      "authors": [
+        "Yifan Yu",
+        "Yuqing Jian",
+        "Junxiong Wang",
+        "Zhongzhu Zhou",
+        "Donglin Zhuang",
+        "Xinyu Fang",
+        "Sri Yanamandra",
+        "Xiaoxia Wu",
+        "Qingyang Wu",
+        "Shuaiwen Leon Song",
+        "Tri Dao",
+        "Ben Athiwaratkun",
+        "James Zou",
+        "Fan Lai",
+        "Chenfeng Xu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-04-13T06:01:01+00:00",
+      "link": "https://arxiv.org/pdf/2604.11035v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion language models for sequence modeling",
+      "llm_evidence_cn": "用于序列建模的扩散语言模型",
+      "llm_evidence": "用于序列建模的扩散语言模型",
+      "canonical_evidence": "用于序列建模的扩散语言模型",
+      "llm_tldr_en": "Introduces I-DLM to improve consistency in diffusion-based parallel sequence generation.",
+      "llm_tldr_cn": "引入I-DLM范式，通过内省一致性提升扩散语言模型的并行序列生成质量。",
+      "llm_tldr": "引入I-DLM范式，通过内省一致性提升扩散语言模型的并行序列生成质量。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "sequence modeling with diffusion processes for time-dependent data",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.12617v1",
+      "source": "arxiv",
+      "title": "SOAR: Self-Correction for Optimal Alignment and Refinement in Diffusion Models",
+      "abstract": "The post-training pipeline for diffusion models currently has two stages: supervised fine-tuning (SFT) on curated data and reinforcement learning (RL) with reward models. A fundamental gap separates them. SFT optimizes the denoiser only on ground-truth states sampled from the forward noising process; once inference deviates from these ideal states, subsequent denoising relies on out-of-distribution generalization rather than learned correction, exhibiting the same exposure bias that afflicts autoregressive models, but accumulated along the denoising trajectory instead of the token sequence. RL can in principle address this mismatch, yet its terminal reward signal is sparse, suffers from credit-assignment difficulty, and risks reward hacking. We propose SOAR (Self-Correction for Optimal Alignment and Refinement), a bias-correction post-training method that fills this gap. Starting from a real sample, SOAR performs a single stop-gradient rollout with the current model, re-noises the resulting off-trajectory state, and supervises the model to steer back toward the original clean target. The method is on-policy, reward-free, and provides dense per-timestep supervision with no credit-assignment problem. On SD3.5-Medium, SOAR improves GenEval from 0.70 to 0.78 and OCR from 0.64 to 0.67 over SFT, while simultaneously raising all model-based preference scores. In controlled reward-specific experiments, SOAR surpasses Flow-GRPO in final metric value on both aesthetic and text-image alignment tasks, despite having no access to a reward model. Since SOAR's base loss subsumes the standard SFT objective, it can directly replace SFT as a stronger first post-training stage after pretraining, while remaining fully compatible with subsequent RL alignment.",
+      "authors": [
+        "You Qin",
+        "Linqing Wang",
+        "Hao Fei",
+        "Roger Zimmermann",
+        "Liefeng Bo",
+        "Qinglin Lu",
+        "Chunyu Wang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-04-14T11:45:15+00:00",
+      "link": "https://arxiv.org/pdf/2604.12617v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion model training and exposure bias correction",
+      "llm_evidence_cn": "扩散模型训练与曝光偏差修正",
+      "llm_evidence": "扩散模型训练与曝光偏差修正",
+      "canonical_evidence": "扩散模型训练与曝光偏差修正",
+      "llm_tldr_en": "Proposes SOAR to align diffusion models and reduce exposure bias during the denoising process.",
+      "llm_tldr_cn": "提出SOAR框架，通过自我修正对齐扩散模型，减少去噪过程中的曝光偏差。",
+      "llm_tldr": "提出SOAR框架，通过自我修正对齐扩散模型，减少去噪过程中的曝光偏差。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "research papers on diffusion models applied to time series tasks",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

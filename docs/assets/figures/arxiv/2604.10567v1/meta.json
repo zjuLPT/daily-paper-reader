@@ -1,0 +1,190 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.10567v1/fig-001.webp",
+      "caption": "Figure 6. Unmasked token position index and average ratio of predicting EOS token across diffusion timesteps (x-axis) when evaluating with T = 32, L = 256.",
+      "page": 15,
+      "index": 1,
+      "width": 471,
+      "height": 308
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10567v1/fig-002.webp",
+      "caption": "Figure 7. Unmasked token position index and average ratio of predicting EOS token across diffusion timesteps (x-axis) with Semi-AR decoding.",
+      "page": 15,
+      "index": 2,
+      "width": 471,
+      "height": 308
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10567v1/fig-003.webp",
+      "caption": "Figure 1. (a) Confidence-based sampling in non-autoregressive decoding suffers from premature constriction of the generation window due to proximity bias, where neighboring tokens accumulate confidence sequentially. This leads to spatial error propagation, making early unmasking decisions decisive for the entire trajectory. (b) We introduce a lightweight planner and EOS temperature annealing to strategically guide initial position selections toward the target trajectory",
+      "page": 2,
+      "index": 3,
+      "width": 986,
+      "height": 255
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10567v1/fig-004.webp",
+      "caption": "Table 1. Accuracy of basic sampling methods and our strategy on GSM8K (GSM), MATH, Countdown (CTD), and Sudoku (SDK) under a constrained compute budget (T = 32). All results are obtained under the non-autoregressive decoding regime. T.S. indicates randomness in Token Selection, while P.S. denotes randomness in Position Selection. T represents Temperature sampling, L denotes Learned position selection, E means EOS token logit annealing, and U indicates Uniform sampling.The highest score within each column is marked in bold, and the second best is underlined. Both includes Planner and EOS temperature annealing.",
+      "page": 7,
+      "index": 4,
+      "width": 512,
+      "height": 276
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10567v1/fig-005.webp",
+      "caption": "Figure 2. Performance in confidence-based non-autoregressive decoding across different diffusion timesteps(T ) when the generation length(L) is fixed at 256.",
+      "page": 3,
+      "index": 5,
+      "width": 474,
+      "height": 306
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10567v1/fig-006.webp",
+      "caption": "Figure 3. Unmasked token position index and average ratio of predicting EOS token across diffusion timesteps (x-axis) when evaluating on GSM8K testset with T = 128, L = 256. Since two tokens are unmasked simultaneously at each step, we plot both positions, distinguishing between the earlier(front) and later(back) tokens in the sequence. Token position index and ratio of EOS is averaged over all test instances.",
+      "page": 3,
+      "index": 6,
+      "width": 471,
+      "height": 307
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10567v1/fig-007.webp",
+      "caption": "Table 4. Comparison of Pass@k accuracy between uniform Position Selection (P.S.) injected solely at the first step and continuous token-level Temperature Sampling (T.S.).",
+      "page": 18,
+      "index": 7,
+      "width": 506,
+      "height": 327
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10567v1/fig-008.webp",
+      "caption": "Figure 18. Accuracy of LLaDA 7B Instruct on MATH for randomness introduced via Position Sampling and Temperature Sampling, categorized into Correct Paths, Incorrect Paths, and their union. Error bars represent 95% bootstrapped confidence intervals.",
+      "page": 18,
+      "index": 8,
+      "width": 474,
+      "height": 306
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10567v1/fig-009.webp",
+      "caption": "Table 2. Accuracy of baselines and our method on GSM8K, MATH, Countdown, and Sudoku under higher timestep budget(T = 64, 128). The highest score within each column is marked in bold, and the second best is underlined. Both includes Planner and EOS temperature.",
+      "page": 8,
+      "index": 9,
+      "width": 492,
+      "height": 244
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10567v1/fig-010.webp",
+      "caption": "Figure 4. Pass@k accuracy on GSM8K with a fixed budget of T = 32 across different k(x-axis). The impact of uniform sampling in Position Selection injected at different decoding steps is compared with token-level Temperature Sampling. The solid red line represents randomness applied only at the initial step, while dashed red lines indicate delayed randomness introduced at intermediate steps. The dashed black line denotes the deterministic confidence-based baseline.",
+      "page": 4,
+      "index": 10,
+      "width": 474,
+      "height": 305
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10567v1/fig-011.webp",
+      "caption": "Figure 15. Unmasked token position index and average ratio of predicting EOS token across diffusion timesteps (x-axis) when evaluating LLaDA 8B Instruct on MATH with T = 128, L = 256.",
+      "page": 17,
+      "index": 11,
+      "width": 471,
+      "height": 307
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10567v1/fig-012.webp",
+      "caption": "Figure 14. Accuracy of Dream 7B Instruct for randomness introduced via Position Sampling and Temperature Sampling, categorized into Correct Paths, Incorrect Paths, and their union. Error bars represent 95% bootstrapped confidence intervals.",
+      "page": 17,
+      "index": 12,
+      "width": 474,
+      "height": 306
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10567v1/fig-013.webp",
+      "caption": "Figure 13. Pass@k accuracy of Dream 7B Instruct on GSM8K with a fixed budget of T = 32 across different k(x-axis). The impact of uniform sampling in Position Selection injected at different decoding steps is compared with token-level Temperature Sampling.",
+      "page": 17,
+      "index": 13,
+      "width": 469,
+      "height": 305
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10567v1/fig-014.webp",
+      "caption": "Figure 16. Unmasked token position index and average ratio of predicting EOS token across diffusion timesteps (x-axis) when evaluating LLaDA 8B Instruct on Countdown with T = 128, L = 256.",
+      "page": 17,
+      "index": 14,
+      "width": 471,
+      "height": 307
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10567v1/fig-015.webp",
+      "caption": "Figure 17. Unmasked token position index and average ratio of predicting EOS token across diffusion timesteps (x-axis) when evaluating LLaDA 8B Instruct on Sudoku with T = 128, L = 256.",
+      "page": 17,
+      "index": 15,
+      "width": 471,
+      "height": 307
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10567v1/fig-016.webp",
+      "caption": "Table 6. Accuracy of basic sampling methods with and without our learned planner on GSM8K, MATH, Countdown, and Sudoku under a constrained compute budget (T = 32). All results are obtained under the non-autoregressive decoding regime. The highest score within each column is marked in bold, and the second best is underlined. +Ours indicates the integration of our learned planner and EOS temperature.",
+      "page": 20,
+      "index": 16,
+      "width": 500,
+      "height": 265
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10567v1/fig-017.webp",
+      "caption": "Figure 19. Performance on each task across different numbers of candidates P .",
+      "page": 20,
+      "index": 17,
+      "width": 474,
+      "height": 306
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10567v1/fig-018.webp",
+      "caption": "Figure 5. Accuracy for randomness introduced via Position Sampling and Temperature Sampling, categorized into Correct Paths, Incorrect Paths, and their union. Error bars represent 95% bootstrapped confidence intervals.",
+      "page": 5,
+      "index": 18,
+      "width": 474,
+      "height": 306
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10567v1/fig-019.webp",
+      "caption": "Figure 8. Top 1 probability predicted at each diffusion timestep(xaxis) for each token position(y-axis) in Non-Autoregressive decoding under lenient budget(T = 128).",
+      "page": 16,
+      "index": 19,
+      "width": 472,
+      "height": 312
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10567v1/fig-020.webp",
+      "caption": "Figure 12. Unmasked token position index and average ratio of predicting EOS token across diffusion timesteps (x-axis) when evaluating Dream 7B Instruct on GSM8K testset with T = 32, L = 256.",
+      "page": 16,
+      "index": 20,
+      "width": 471,
+      "height": 307
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10567v1/fig-021.webp",
+      "caption": "Figure 11. Unmasked token position index and average ratio of predicting EOS token across diffusion timesteps (x-axis) when evaluating Dream 7B Instruct on GSM8K testset with T = 128, L = 256.",
+      "page": 16,
+      "index": 21,
+      "width": 471,
+      "height": 307
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10567v1/fig-022.webp",
+      "caption": "Figure 9. Top 1 probability predicted at each diffusion timestep(xaxis) for each token position(y-axis) in Non-Autoregressive decoding under tight budget(T = 32).",
+      "page": 16,
+      "index": 22,
+      "width": 472,
+      "height": 312
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10567v1/fig-023.webp",
+      "caption": "Figure 10. Top 1 probability predicted at each diffusion timestep(xaxis) for each token position(y-axis) in Semi-Autoregressive decoding under lenient budget(T = 128).",
+      "page": 16,
+      "index": 23,
+      "width": 472,
+      "height": 312
+    }
+  ]
+}
