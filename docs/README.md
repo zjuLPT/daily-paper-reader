@@ -6,37 +6,34 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-04-17
-- 运行时间：2026-04-17 20:16:21 UTC
+- 最新运行日期：2026-04-18
+- 运行时间：2026-04-18 19:42:39 UTC
 - 运行状态：成功
-- 本次总论文数：5
+- 本次总论文数：4
 - 精读区：1
-- 速读区：4
+- 速读区：3
 
 ### 今日简报（AI）
-今日聚焦生成式机器人动力学学习与扩散语言模型前沿进展。  
-重点推荐阅读《Diffusion Sequence Models for Generative In-Context Meta-Learning of Robot Dynamics》，展示了扩散序列模型在机器人动力学泛化上的潜力。  
-建议关注扩散模型在物理与语言领域的跨模态应用趋势，入门者可从基础扩散机制理解起。
-- 详情：[/202604/17/README](/202604/17/README)
+今日聚焦人与时间的智能生成与评测：4 篇前沿论文全面速览。  
+最亮点是人类行为轨迹合成的两阶段扩散框架 SynHAT，兼具细粒度逼真与生成效率。  
+建议下步关注扩散模型在时序与医学数据中的可解释性与应用场景拓展。
+- 详情：[/202604/18/README](/202604/18/README)
 
 ### 精读区论文标签
-1. [Diffusion Sequence Models for Generative In-Context Meta-Learning of Robot Dynamics](/202604/17/2604.13366v1-diffusion-sequence-models-for-generative-in-context-meta-learning-of-robot-dynamics)  
+1. [SynHAT: A Two-stage Coarse-to-Fine Diffusion Framework for Synthesizing Human Activity Traces](/202604/18/2604.14705v1-synhat-a-two-stage-coarse-to-fine-diffusion-framework-for-synthesizing-human-activity-traces)  
    标签：评分：9.0/10、query:diffts
-   evidence：基于扩散的方法用于机器人序列的前向动力学预测
+   evidence：用于合成人类活动轨迹的扩散框架
 
 ### 速读区论文标签
-1. [WaveMoE: A Wavelet-Enhanced Mixture-of-Experts Foundation Model for Time Series Forecasting](/202604/17/2604.10544v1-wavemoe-a-wavelet-enhanced-mixture-of-experts-foundation-model-for-time-series-forecasting)  
+1. [TempusBench: An Evaluation Framework for Time-Series Forecasting](/202604/18/2604.11529v2-tempusbench-an-evaluation-framework-for-time-series-forecasting)  
    标签：评分：7.0/10、query:diffts
-   evidence：用于预测的时间序列基础模型
-2. [Early Decisions Matter: Proximity Bias and Initial Trajectory Shaping in Non-Autoregressive Diffusion Language Models](/202604/17/2604.10567v1-early-decisions-matter-proximity-bias-and-initial-trajectory-shaping-in-non-autoregressive-diffusion-language-models)  
+   evidence：时间序列基础模型的评估框架
+2. [ADP-DiT: Text-Guided Diffusion Transformer for Brain Image Generation in Alzheimer's Disease Progression](/202604/18/2604.13495v1-adp-dit-text-guided-diffusion-transformer-for-brain-image-generation-in-alzheimers-disease-progression)  
+   标签：评分：7.0/10、query:diffts
+   evidence：用于纵向随时间变化的脑图像生成的扩散模型
+3. [TimeSeriesExamAgent: Creating Time Series Reasoning Benchmarks at Scale](/202604/18/2604.10291v1-timeseriesexamagent-creating-time-series-reasoning-benchmarks-at-scale)  
    标签：评分：6.0/10、query:diffts
-   evidence：用于非自回归序列生成的扩散模型
-3. [Introspective Diffusion Language Models](/202604/17/2604.11035v1-introspective-diffusion-language-models)  
-   标签：评分：6.0/10、query:diffts
-   evidence：用于序列建模的扩散语言模型
-4. [SOAR: Self-Correction for Optimal Alignment and Refinement in Diffusion Models](/202604/17/2604.12617v1-soar-self-correction-for-optimal-alignment-and-refinement-in-diffusion-models)  
-   标签：评分：6.0/10、query:diffts
-   evidence：扩散模型训练与曝光偏差修正
+   evidence：时间序列建模任务的推理基准
 
 
 <div class="dpr-home-promo-card">

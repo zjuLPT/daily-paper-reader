@@ -1,0 +1,179 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-18T19:41:18.692621+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 3,
+    "quick_skim_target": 11,
+    "quick_selected": 3
+  },
+  "deep_dive": [
+    {
+      "id": "2604.14705v1",
+      "source": "arxiv",
+      "title": "SynHAT: A Two-stage Coarse-to-Fine Diffusion Framework for Synthesizing Human Activity Traces",
+      "abstract": "Human activity traces (HATs) are critical for many applications, including human mobility modeling and point-of-interest (POI) recommendation. However, growing privacy concerns have severely limited access to authentic large-scale HAT datasets. Recent advances in generative AI provide new opportunities to synthesize realistic and privacy-preserving HATs for such applications. Yet two major challenges remain: (i) HATs are highly irregular and dynamic, with long and varying time intervals, making it difficult to capture their complex spatio-temporal dependencies and underlying distributions; and (ii) generative models are often computationally expensive, making long-term, fine-grained HAT synthesis inefficient. To address these challenges, we propose SynHAT, a computationally efficient coarse-to-fine HAT synthesis framework built on a novel spatio-temporal denoising diffusion model. In Stage 1, we develop Coarse-HADiff, which models the overall spatio-temporal dependencies of coarse-grained latent spatio-temporal traces. It incorporates a novel Latent Spatio-Temporal U-Net with dual Drift-Jitter branches to jointly model smooth spatial transitions and temporal variations during denoising. In Stage 2, we introduce a three-step pipeline consisting of Behavior Pattern Extraction, Fine-HADiff, which shares the same architecture as Coarse-HADiff, and Semantic Alignment to generate fine-grained latent spatio-temporal traces from the Stage 1 outputs. We extensively evaluate SynHAT in terms of data fidelity, utility, privacy, robustness, and scalability. Experiments on real-world HAT datasets from four cities across three countries show that SynHAT substantially outperforms state-of-the-art baselines, achieving 52% and 33% improvements on spatial and temporal metrics, respectively.",
+      "authors": [
+        "Rongchao Xu",
+        "Lin Jiang",
+        "Dahai Yu",
+        "Ximiao Li",
+        "Guang Wang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-04-16T07:12:16+00:00",
+      "link": "https://arxiv.org/pdf/2604.14705v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "diffusion framework for synthesizing human activity traces",
+      "llm_evidence_cn": "用于合成人类活动轨迹的扩散框架",
+      "llm_evidence": "用于合成人类活动轨迹的扩散框架",
+      "canonical_evidence": "用于合成人类活动轨迹的扩散框架",
+      "llm_tldr_en": "A two-stage diffusion framework for synthesizing realistic and privacy-preserving human activity traces.",
+      "llm_tldr_cn": "一种用于合成真实且保护隐私的人类活动轨迹的两阶段扩散框架。",
+      "llm_tldr": "一种用于合成真实且保护隐私的人类活动轨迹的两阶段扩散框架。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "conditional diffusion frameworks for time series generation",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2604.11529v2",
+      "source": "arxiv",
+      "title": "TempusBench: An Evaluation Framework for Time-Series Forecasting",
+      "abstract": "Foundation models have transformed natural language processing and computer vision, and a rapidly growing literature on time-series foundation models (TSFMs) seeks to replicate this success in forecasting. While recent open-source models demonstrate the promise of TSFMs, the field lacks a comprehensive and community-accepted model evaluation framework. We see at least four major issues impeding progress on the development of such a framework. First, existing evaluation frameworks comprise benchmark forecasting tasks derived from often outdated datasets (e.g., M3), many of which lack clear metadata and overlap with the corpora used to pre-train TSFMs. Second, these frameworks evaluate models along a narrowly defined set of benchmark forecasting tasks, such as forecast horizon length or domain, but overlook core statistical properties such as non-stationarity and seasonality. Third, domain-specific models (e.g., XGBoost) are often compared unfairly, as existing frameworks do not enforce a systematic and consistent hyperparameter tuning convention for all models. Fourth, visualization tools for interpreting comparative performance are lacking. To address these issues, we introduce TempusBench, an open-source evaluation framework for TSFMs. TempusBench consists of 1) new datasets which are not included in existing TSFM pretraining corpora, 2) a set of novel benchmark tasks that go beyond existing ones, 3) a model evaluation pipeline with a standardized hyperparameter tuning protocol, and 4) a tensorboard-based visualization interface. We provide access to our code on GitHub: https://github.com/Smlcrm/TempusBench and maintain a live leaderboard at https://benchmark.smlcrm.com/.",
+      "authors": [
+        "Denizalp Goktas",
+        "Gerardo Riaño-Briceño",
+        "Alif Abdullah",
+        "Aryan Nair",
+        "Chenkai Shen",
+        "Beatriz de Lucio",
+        "Alexandra Magnusson",
+        "Farhan Mashrur",
+        "Ahmed Abdulla",
+        "Shawrna Sen",
+        "Mahitha Thippireddy",
+        "Gregory Schwartz",
+        "Amy Greenwald"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-04-13T14:29:34+00:00",
+      "link": "https://arxiv.org/pdf/2604.11529v2",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Evaluation framework for time-series foundation models",
+      "llm_evidence_cn": "时间序列基础模型的评估框架",
+      "llm_evidence": "时间序列基础模型的评估框架",
+      "canonical_evidence": "时间序列基础模型的评估框架",
+      "llm_tldr_en": "TempusBench provides a comprehensive evaluation framework for time-series foundation models and forecasting tasks.",
+      "llm_tldr_cn": "TempusBench 为时间序列基础模型和预测任务提供了一个全面的评估框架。",
+      "llm_tldr": "TempusBench 为时间序列基础模型和预测任务提供了一个全面的评估框架。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.10291v1",
+      "source": "arxiv",
+      "title": "TimeSeriesExamAgent: Creating Time Series Reasoning Benchmarks at Scale",
+      "abstract": "Large Language Models (LLMs) have shown promising performance in time series modeling tasks, but do they truly understand time series data? While multiple benchmarks have been proposed to answer this fundamental question, most are manually curated and focus on narrow domains or specific skill sets. To address this limitation, we propose scalable methods for creating comprehensive time series reasoning benchmarks that combine the flexibility of templates with the creativity of LLM agents. We first develop TimeSeriesExam, a multiple-choice benchmark using synthetic time series to evaluate LLMs across five core reasoning categories: pattern recognitionnoise understandingsimilarity analysisanomaly detection, and causality. Then, with TimeSeriesExamAgent, we scale our approach by automatically generating benchmarks from real-world datasets spanning healthcare, finance and weather domains. Through multi-dimensional quality evaluation, we demonstrate that our automatically generated benchmarks achieve diversity comparable to manually curated alternatives. However, our experiments reveal that LLM performance remains limited in both abstract time series reasoning and domain-specific applications, highlighting ongoing challenges in enabling effective time series understanding in these models. TimeSeriesExamAgent is available at https://github.com/magwiazda/TimeSeriesExamAgent.",
+      "authors": [
+        "Malgorzata Gwiazda",
+        "Yifu Cai",
+        "Mononito Goswami",
+        "Arjun Choudhry",
+        "Artur Dubrawski"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-04-11T17:15:26+00:00",
+      "link": "https://arxiv.org/pdf/2604.10291v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Reasoning benchmarks for time series modeling tasks",
+      "llm_evidence_cn": "时间序列建模任务的推理基准",
+      "llm_evidence": "时间序列建模任务的推理基准",
+      "canonical_evidence": "时间序列建模任务的推理基准",
+      "llm_tldr_en": "Creates scalable reasoning benchmarks to evaluate LLM performance on various time series tasks.",
+      "llm_tldr_cn": "创建可扩展的推理基准，以评估大语言模型在各种时间序列任务上的表现。",
+      "llm_tldr": "创建可扩展的推理基准，以评估大语言模型在各种时间序列任务上的表现。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.13495v1",
+      "source": "arxiv",
+      "title": "ADP-DiT: Text-Guided Diffusion Transformer for Brain Image Generation in Alzheimer's Disease Progression",
+      "abstract": "Alzheimer's disease (AD) progresses heterogeneously across individuals, motivating subject-specific synthesis of follow-up magnetic resonance imaging (MRI) to support progression assessment. While Diffusion Transformers (DiT), an emerging transformer-based diffusion model, offer a scalable backbone for image synthesis, longitudinal AD MRI generation with clinically interpretable control over follow-up time and participant metadata remains underexplored. We present ADP-DiT, an interval-aware, clinically text-conditioned diffusion transformer for longitudinal AD MRI synthesis. ADP-DiT encodes follow-up interval together with multi-domain demographic, diagnostic (CN/MCI/AD), and neuropsychological information as a natural-language prompt, enabling time-specific control beyond coarse diagnostic stages. To inject this conditioning effectively, we use dual text encoders-OpenCLIP for vision-language alignment and T5 for richer clinical-language understanding. Their embeddings are fused into DiT through cross-attention for fine-grained guidance and adaptive layer normalization for global modulation. We further enhance anatomical fidelity by applying rotary positional embeddings to image tokens and performing diffusion in a pre-trained SDXL-VAE latent space to enable efficient high-resolution reconstruction. On 3,321 longitudinal 3T T1-weighted scans from 712 participants (259,038 image slices), ADP-DiT achieves SSIM 0.8739 and PSNR 29.32 dB, improving over a DiT baseline by +0.1087 SSIM and +6.08 dB PSNR while capturing progression-related changes such as ventricular enlargement and shrinking hippocampus. These results suggest that integrating comprehensive, subject-specific clinical conditions with architectures can improve longitudinal AD MRI synthesis.",
+      "authors": [
+        "Juneyong Lee",
+        "Geonwoo Baek",
+        "Ikbeom Jang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-15T05:30:14+00:00",
+      "link": "https://arxiv.org/pdf/2604.13495v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "diffusion for longitudinal time-dependent brain image generation",
+      "llm_evidence_cn": "用于纵向随时间变化的脑图像生成的扩散模型",
+      "llm_evidence": "用于纵向随时间变化的脑图像生成的扩散模型",
+      "canonical_evidence": "用于纵向随时间变化的脑图像生成的扩散模型",
+      "llm_tldr_en": "A text-guided diffusion transformer for generating longitudinal brain images in disease progression.",
+      "llm_tldr_cn": "一种文本引导的扩散 Transformer，用于生成疾病进展中的纵向脑图像。",
+      "llm_tldr": "一种文本引导的扩散 Transformer，用于生成疾病进展中的纵向脑图像。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "sequence modeling with diffusion processes for time-dependent data",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

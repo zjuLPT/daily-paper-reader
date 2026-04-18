@@ -1,0 +1,62 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.13495v1/fig-001.webp",
+      "caption": "Fig. 2. Visual comparison of ADP-DiT against benchmark models. The absolute error maps highlight the voxel-wise progression predicted by each model relative to the ground truth, demonstrating the superior accuracy of ADP-DiT.",
+      "page": 11,
+      "index": 1,
+      "width": 725,
+      "height": 323
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13495v1/fig-002.webp",
+      "caption": "Table 4: Benchmark results comparing ADP-DiT with state-of-the-art methods across specific time intervals. Bold indicates the best performance among the compared methods, and underline indicates the second best. Here, Δ𝑡 denotes the time elapsed (in months) between the baseline input and the target follow-up scan.",
+      "page": 10,
+      "index": 2,
+      "width": 725,
+      "height": 758
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13495v1/fig-003.webp",
+      "caption": "Table 1: Demographic, cognitive, and clinical characteristics of participants by AD progression group.",
+      "page": 3,
+      "index": 3,
+      "width": 725,
+      "height": 510
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13495v1/fig-004.webp",
+      "caption": "Fig. 3. Results of ADP-DiT for AD progression. The absolute error map visualizes voxel-wise discrepancies between the generated output and the ground truth.",
+      "page": 12,
+      "index": 4,
+      "width": 652,
+      "height": 821
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13495v1/fig-005.webp",
+      "caption": "Table 3: Performance of ADP-DiT across progression groups.",
+      "page": 9,
+      "index": 5,
+      "width": 725,
+      "height": 195
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13495v1/fig-006.webp",
+      "caption": "Table 2: Quantitative comparison of ADP-DiT against state-of-the-art models. Bold indicates the best performance among generative models, and underline indicates the second best. Models below the dashed line are sorted by SSIM.",
+      "page": 9,
+      "index": 6,
+      "width": 725,
+      "height": 281
+    },
+    {
+      "url": "assets/figures/arxiv/2604.13495v1/fig-007.webp",
+      "caption": "Fig. 1. The overview of the proposed ADP-DiT framework. The model conditions on multiple text-encoders text embeddings and structured metadata to guide the denoising process in the latent space.",
+      "page": 5,
+      "index": 7,
+      "width": 725,
+      "height": 348
+    }
+  ]
+}

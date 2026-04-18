@@ -1,0 +1,94 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.11529v2/fig-001.webp",
+      "caption": "Table 5: Average win rates by metric for deterministic and probabilistic models across covariate forecasting tasks.",
+      "page": 6,
+      "index": 1,
+      "width": 827,
+      "height": 820
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11529v2/fig-002.webp",
+      "caption": "Table 12: The Co-evolution of Time-Series Challenges and Modeling Paradigms [25] [40] [28] [35] [38].",
+      "page": 39,
+      "index": 2,
+      "width": 871,
+      "height": 400
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11529v2/fig-003.webp",
+      "caption": "Table 1: Property comparisons of various forecasting benchmarks.",
+      "page": 3,
+      "index": 3,
+      "width": 852,
+      "height": 339
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11529v2/fig-004.webp",
+      "caption": "Table 8: Per-metric averaged skill scores across covariate task",
+      "page": 18,
+      "index": 4,
+      "width": 752,
+      "height": 714
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11529v2/fig-005.webp",
+      "caption": "Table 3: Average win rates by metric for deterministic and probabilistic models across univariate forecasting tasks.",
+      "page": 4,
+      "index": 5,
+      "width": 827,
+      "height": 917
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11529v2/fig-006.webp",
+      "caption": "Table 2: Taxonomy of all univariate, multivariate, and covariate tasks included in TempusBench.",
+      "page": 4,
+      "index": 6,
+      "width": 860,
+      "height": 264
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11529v2/fig-007.webp",
+      "caption": "Table 7: Per-metric averaged skill scores across multivariate task",
+      "page": 17,
+      "index": 7,
+      "width": 744,
+      "height": 709
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11529v2/fig-008.webp",
+      "caption": "Table 11: Summary of datasets used for benchmark tasks.",
+      "page": 32,
+      "index": 8,
+      "width": 782,
+      "height": 1210
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11529v2/fig-009.webp",
+      "caption": "Table 9: Summary of forecasters included in TempusBench.",
+      "page": 20,
+      "index": 9,
+      "width": 831,
+      "height": 401
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11529v2/fig-010.webp",
+      "caption": "Table 4: Average win rates by metric for deterministic vs. probabilistic models across multivariate forecasting tasks.",
+      "page": 5,
+      "index": 10,
+      "width": 827,
+      "height": 867
+    },
+    {
+      "url": "assets/figures/arxiv/2604.11529v2/fig-011.webp",
+      "caption": "Table 6: Per-metric averaged skill scores across univariate task",
+      "page": 16,
+      "index": 11,
+      "width": 744,
+      "height": 526
+    }
+  ]
+}
