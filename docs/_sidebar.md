@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-04-19 <!--dpr-date:20260419-->
+    * 速读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202604/19/2604.11529v1-tempusbench-an-evaluation-framework-for-time-series-forecasting" data-sidebar-item="{&quot;title&quot;: &quot;TempusBench: An Evaluation Framework for Time-Series Forecasting&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2604.11529v1-tempusbench-an-evaluation-framework-for-time-series-forecasting&quot;, &quot;score&quot;: &quot;6.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;diffts&quot;}], &quot;evidence&quot;: &quot;时间序列预测的评估框架&quot;}">TempusBench: An Evaluation Framework for Time-Series Forecasting</a>
   * 2026-04-18 <!--dpr-date:20260418-->
     * 精读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202604/18/2604.14705v1-synhat-a-two-stage-coarse-to-fine-diffusion-framework-for-synthesizing-human-activity-traces" data-sidebar-item="{&quot;title&quot;: &quot;SynHAT: A Two-stage Coarse-to-Fine Diffusion Framework for Synthesizing Human Activity Traces&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2604.14705v1-synhat-a-two-stage-coarse-to-fine-diffusion-framework-for-synthesizing-human-activity-traces&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;diffts&quot;}], &quot;evidence&quot;: &quot;用于合成人类活动轨迹的扩散框架&quot;}">SynHAT: A Two-stage Coarse-to-Fine Diffusion Framework for Synthesizing Human Activity Traces</a>
