@@ -1,0 +1,54 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.10958v1/fig-001.webp",
+      "caption": "Table 1: Out-of-sample MSE comparison between offline and online training under periodic and nonlinear dynamics. In Panel B, the mean difference is computed as online minus offline, so negative values indicate that the online learner achieves a lower average MSE.",
+      "page": 25,
+      "index": 1,
+      "width": 694,
+      "height": 378
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10958v1/fig-002.webp",
+      "caption": "Figure 5: Impact of L2 regularization parameter λ at fixed (N, β) = (80, 0.02). Average out-ofsample MSE (left) and approximation error relative to the large-width reference (right).",
+      "page": 30,
+      "index": 2,
+      "width": 882,
+      "height": 357
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10958v1/fig-003.webp",
+      "caption": "Figure 4: Impact of entropy coefficient β at fixed (N,λ) = (80, 0.1). Average out-of-sample MSE (left) and approximation error relative to the large-width reference (right).",
+      "page": 29,
+      "index": 3,
+      "width": 882,
+      "height": 354
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10958v1/fig-004.webp",
+      "caption": "Figure 3: Impact of network width N at fixed (λ, β) = (0.1, 0.02). Average out-of-sample MSE (left) and approximation error relative to the large-width reference (right).",
+      "page": 29,
+      "index": 4,
+      "width": 882,
+      "height": 357
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10958v1/fig-005.webp",
+      "caption": "Figure 2: Unregularized regret dynamics. The panel layout and parameter variations are identical to Figure 1.",
+      "page": 28,
+      "index": 5,
+      "width": 882,
+      "height": 660
+    },
+    {
+      "url": "assets/figures/arxiv/2604.10958v1/fig-006.webp",
+      "caption": "Figure 1: Regularized regret dynamics. Top panels: approximate instantaneous (left) and cumulative (right) regret across varying network widths N . Bottom panels: approximate cumulative regret across varying exploration noise β (left) and regularization penalty λ (right). Unmentioned parameters are held constant.",
+      "page": 27,
+      "index": 6,
+      "width": 882,
+      "height": 662
+    }
+  ]
+}

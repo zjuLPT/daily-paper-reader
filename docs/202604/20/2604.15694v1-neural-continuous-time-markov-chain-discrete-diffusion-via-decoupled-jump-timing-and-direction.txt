@@ -1,0 +1,2832 @@
+Title: Neural Continuous-Time Markov Chain: Discrete Diffusion via Decoupled Jump Timing and Direction
+
+URL Source: https://arxiv.org/pdf/2604.15694v1
+
+Published Time: Mon, 20 Apr 2026 00:27:52 GMT
+
+Number of Pages: 30
+
+Markdown Content:
+# Neural Continuous-Time Markov Chain: Discrete Diffusion via Decoupled Jump Timing and Direction 
+
+## Jingyuan Li 2,3,4∗ Xiaoyi Jiang 1,4∗ Fukang Wen 1,4 Wei Liu 3
+
+## Renqian Luo Yi Zhu 1,2,4 Zuoqiang Shi 1,2,4 Pipi Hu 2,4†
+
+> 1
+
+## Tsinghua University 2Beijing Institute of Mathematical Sciences and Applications 
+
+> 3
+
+## Wuhan University 4MathonAI Team April 20, 2026 
+
+Abstract 
+
+Discrete diffusion models based on continuous-time Markov chains (CTMCs) have shown strong performance on language and discrete data generation, yet existing approaches typically parameterize the reverse rate matrix as a single object—via concrete scores, clean-data predictions ( x0-parameterization), or denoising distributions—rather than aligning the parameterization with the intrinsic CTMC decomposition into jump timing and jump direction. Since a CTMC is fundamentally a Poisson process fully determined by these two quantities, decomposing along this structure is closer to first principles and naturally leads to our formulation. We propose Neural CTMC , which separately parameterizes the reverse process through an exit rate (when to jump) and a jump distribution (where to jump) using two dedicated network heads. We show that the evidence lower bound (ELBO) differs from a path-space KL divergence between the true and learned reverse processes by a θ-independent constant, so that the training objective is fully governed by the exit rate and jump distribution we parameterize. Moreover, this KL factorizes into a Poisson KL for timing and a categorical KL for direction. We further show that the tractable conditional surrogate preserves the gradients and minimizers of the corresponding marginal reverse-process objective under standard regularity assumptions. Our theoretical framework also covers masked and GIDD-style noise schedules. Empirically, while the uniform forward process has been explored in prior work, our model, to our best of the knowledge, is the first pure-uniform method to outperform mask-based methods on the OpenWebText dataset.To facilitate reproducibility, we release our pretrained weights at 
+
+https://huggingface.co/Jiangxy1117/Neural-CTMC .
+
+# 1 Introduction 
+
+Diffusion models have achieved remarkable success in continuous domains such as images [Sohl-Dickstein et al., 2015, Ho et al., 2020, Song et al., 2021b] and audio, establishing score-based generative modeling as a dominant paradigm. Extending this success to discrete data—language [Li et al., 2022, Gulrajani and Hashimoto, 2023], proteins [Alamdari et al., 2023, Avdeyev et al., 2023], and molecular graphs [Vignac et al., 2023]—is an active and challenging research direction, since the continuous score function and Langevin dynamics that underpin continuous diffusion have no direct discrete counterpart. Discrete diffusion models formulate the forward corruption and reverse generation as continuous-time Markov chains (CTMCs) on a finite state space S = {1, . . . , S }. D3PM [Austin et al., 2021] and Multinomial Diffusion [Hoogeboom et al., 2021] initiated this line by introducing discrete transition matrices in discrete time. Campbell et al. [2022] extended the framework to continuous time, deriving a variational bound from CTMC path measures. Subsequent work has explored different parameterizations of the reverse rate matrix 
+
+Rθt (i, j ): SEDD [Lou et al., 2024] learns a concrete score ratio qt(j)/q t(i) analogous to continuous score matching [Hyvärinen, 2005, Meng et al., 2022]; MDLM [Sahoo et al., 2024] simplifies training via clean-data 
+
+> ∗Equal contribution.
+> †hpp@bimsa.cn
+
+1
+
+> arXiv:2604.15694v1 [cs.LG] 17 Apr 2026
+
+prediction ( x0-parameterization) under a masked (absorbing) forward process; GIDD [von Rütte et al., 2025] extends the x0-parameterization to unify absorbing, uniform, and interpolating forward processes under a general framework; and concurrent efforts have explored discrete flow matching [Campbell et al., 2024, Gat et al., 2024] and simplified masked diffusion [Shi et al., 2024, Ou et al., 2025]. These methods have achieved increasingly strong results on language modeling benchmarks. Despite this progress, a fundamental structural property of CTMCs has not been directly reflected in the reverse-process parameterization. Any rate matrix admits a unique factorization 
+
+Rt(i, j ) = λt(i) · rt(j | i), λt(i) = P 
+
+> j̸=i
+
+Rt(i, j ), rt(j | i) = Rt(i, j )/λ t(i),
+
+where λt(i) is the exit rate governing when to jump and rt(· | i) is the jump distribution governing where to jump. This exit-rate/jump-distribution decomposition is precisely the basis of Gillespie’s algorithm [Gillespie, 1977, Anderson, 2007] for exact CTMC simulation: first draw a holding time from the exit rate, then choose the next state from the jump distribution. Despite being classical, this structure has not been reflected in the reverse-process parameterization of discrete diffusion models—existing methods still learn the reverse process through proxy quantities such as score ratios, clean-data predictions, or denoising distributions, which implicitly determine Rθt as a monolithic object. Inspired by the algorithmic decomposition in Gillespie’s algorithm, our starting point is that the training objective itself also decomposes along this timing/direction structure, suggesting a parameterization and training rule that make this separation explicit. Moreover, the two mainstream forward processes in discrete diffusion are masked (absorbing) and uniform. The masked forward process is dominant in current state-of-the-art methods [Sahoo et al., 2024, von Rütte et al., 2025], but once a token is absorbed into the mask state it cannot be revisited, preventing the model from correcting earlier decisions during generation [von Rütte et al., 2025]. The uniform forward process avoids this limitation by allowing transitions among all S states, yet it has received comparatively little attention and generally yields weaker results [e.g., Lou et al., 2024, Austin et al., 2021, von Rütte et al., 2025], among others. We propose Neural CTMC , which addresses both gaps. First, we separately parameterize the exit rate 
+
+λθt and the jump distribution rθt for the reverse process via two network heads. We show that the θ-dependent part of the ELBO is equivalent to a reverse-process KL divergence up to a θ-independent constant, and that this KL naturally decomposes as 
+
+KL Poi (ˆλ∥λθ ) + ˆλ · KL Cat (ˆ r∥rθ ),
+
+a Poisson KL for jump timing and a categorical KL for jump direction. This decomposition is not introduced ad hoc at the architecture level; rather, it is induced by the CTMC path-space objective itself, which suggests learning timing and direction with separate heads. Notably, when specialized to the masked (absorbing) forward process, our objective recovers the MDLM loss exactly, showing that the decomposed formulation strictly generalizes existing approaches. Second, equipped with this decomposed parameterization, Neural CTMC with a pure uniform forward process surpasses several state-of-the-art masked-based methods on the benchmarks we study. Contributions. 
+
+1. A reverse-process parameterization aligned with CTMC structure. We parameterize the reverse CTMC through separate exit-rate and jump-distribution heads, motivated by the intrinsic timing/direction factorization of CTMC dynamics (Sections 2 and 4.1). 2. A decomposition of the reverse-process objective. We derive the ELBO from CTMC path measures and show that its θ-dependent part differs from a reverse-process KL only by a constant. This KL decomposes into a Poisson KL for exit rates and a categorical KL for jump distributions, yielding separate timing and direction learning signals. We also show that the tractable conditional surrogate preserves the gradients and minimizers of the corresponding marginal reverse-process objective under standard regularity assumptions (Section 4.1). 3. Strong empirical performance with a pure uniform forward process. On TinyStories, Neural CTMC achieves generative perplexity ≤ 16 .36 , compared with ≤ 37 .60 for GIDD and ≤ 42 .66 for MDLM 2under our evaluation protocol. On OpenWebText, it achieves the best equal-budget generative perplexity among the methods we evaluate across 16 to 128 sampling steps and is, to the best of our knowledge, the first pure-uniform-forward-process method to outperform mask-based methods on this benchmark; it also remains competitive with SEDD despite using 2.6× fewer training tokens (Section 5). To the best of our knowledge, we release the first open-source checkpoints for a uniform-noise discrete diffusion model. 
+
+# 2 Background 
+
+## 2.1 Continuous-Time Markov Chains 
+
+Let S = {1, . . . , S } be a finite state space. A CTMC on S over [0 , T ] [Norris, 1997] is characterized by a rate matrix Rt with Rt(i, j ) ≥ 0 for i̸ = j and P
+
+> j
+
+Rt(i, j ) = 0 .
+
+Definition 2.1. For some start time s and end time t = s + ∆ ( t > s ) as ∆ → 0, we have 
+
+qt|s(j | i) = δi,j + Rt(i, j ) ∆ + o(∆) , (1) where Rt is called the forward transition rate. The Kolmogorov forward equation ddt qt = qtRt yields transition probabilities Pt|s [Campbell et al., 2022]. For the uniform-rate forward process with Rt(i, j ) = βt for i̸ = j, the cumulative transition probabilities take a closed form. 
+
+Definition 2.2. The cumulative transition probabilities of the uniform-rate CTMC are given by 
+
+qt|0(j | i) = Cat( j; Ptei), Pt = αtI + βtπ1⊤, (2) where αt + βt = 1 with α0 = 1 , α T = 0 , π is a fixed distribution (e.g., the uniform distribution π = 1 
+
+> S
+
+1, or a mask distribution π = e[M] where e[M] is the one-hot vector for the mask token), and 1 is the all-ones vector. As t → T , qt|0(· | i) → π for all i, so the prior distribution is pprior = π.
+
+Path measure. Càdlàg (right-continuous with left limits) paths provide a general framework for stochastic processes with jumps, encompassing Lévy processes, semimartingales, and others. A CTMC corresponds to piecewise constant càdlàg paths and is characterized by a path measure Qx0 . A trajectory W drawn from the CTMC can be fully described through its jump times T1, . . . , T n and its state values between jumps 
+
+W0, W 1, . . . , W n, where at jump time Tk the CTMC jumps from state Wk−1 to Wk.
+
+Definition 2.3. A path space measure Qx0 assigns probabilities to a drawn trajectory W from time 0 to T
+
+in the sense of 
+
+Qx0 (W ∈ dω) := P(W0 ∈ dω0, (T1, W T1 ) ∈ d( t1, ω 1), . . . , (Tn, W Tn ) ∈ d( tn, ω n), T n+1 ≥ T ) ,
+
+where dωk and dtk denote infinitesimal neighborhoods around the points ωk ∈ S and tk ∈ [0 , T ].Writing x0, x 1, . . . , x n for the state values and t1, . . . , t n for the jump times, with Xt = xk for t ∈ [tk, t k+1 )
+
+(where t0 := 0 and tn+1 := T ), the path measure density takes the following form. 
+
+Lemma 2.4. Let Qx0 denote the path measure induced by a CTMC with rate matrix Rt starting from initial state x0. For a path ω with jumps at times 0 ≤ t1 < · · · < t n < T and states x0 → x1 → · · · → xn:
+
+dQx0 (ω) = 
+
+> n
+
+Y
+
+> k=1
+
+Rtk (xk−1, x k)
+
+| {z }
+
+> jump rates
+
+· exp −
+
+Z T
+
+> 0
+
+λt(Xt) d t
+
+!| {z }
+
+> survival probability
+
+, (3) 
+
+where λt(i) := P 
+
+> j̸=i
+
+Rt(i, j ) is the total transition rate out of state i.
+
+The proof is given in Appendix C. 32.2 Discrete Diffusion and Existing Parameterizations 
+
+A CTMC-based discrete diffusion model consists of a forward process and a reverse (generative) process. The forward process corrupts data X0 ∼ pdata via a CTMC with rate matrix Rt, yielding conditionals 
+
+qt|0(x | x0) := P(Xt = x | X0 = x0) and marginals qt(x) := Ex0∼pdata [qt|0(x | x0)] , with qt → pprior as t → T .A key structural property of the rate matrix is the following decomposition. 
+
+Exit rate and jump distribution. Any rate matrix admits the unique decomposition Rt(i, j ) = λt(i)·rt(j |
+
+i), where 
+
+λt(i) := X 
+
+> j̸=i
+
+Rt(i, j ) (exit rate) , rt(j | i) := Rt(i, j )
+
+λt(i) (jump distribution) . (4) 
+
+λt(i) governs the holding time and rt(· | i) is a categorical distribution over jump destinations. This factorization separates when to jump from where to jump—a structural property of any CTMC. 
+
+Reverse process. The time-reversal of the forward process is a CTMC with rate matrix [Campbell et al., 2022]: 
+
+ˆRt(i, j ) = Rt(j, i ) qt(j)
+
+qt(i) , i̸ = j, (5) A neural network parameterizes a reverse CTMC with rate matrix Rθt (i, j ) starting from XT ∼ pprior , with the goal of minimizing an upper bound on the negative log-likelihood −Ex0∼pdata [log pθ (x0)] .
+
+Existing parameterizations. Prior work parameterizes Rθt through different proxy quantities, each implicitly determining the full rate matrix: 
+
+• Concrete score [Lou et al., 2024]: parameterize sθ (xt, t )y ≈ qt(y) 
+
+> qt(xt)
+
+, recover Rθt (i, j ) = Rt(j, i ) · sθ (i, t )j .Trained via score entropy. 
+
+• Denoising distribution (x0-param.) [Campbell et al., 2022]: predict pθ (x0 | xt), construct Rθt (i, j ) = 
+
+P
+
+> x0
+
+pθ (x0 | i) Rt(j, i ) qt|0(j|x0) 
+
+> qt|0(i|x0)
+
+.
+
+• Clean data prediction [Austin et al., 2021, Sahoo et al., 2024, von Rütte et al., 2025]: the model distribution pθ (zs | zt) = qt|s(zt | zs) qs(zs|xθ )  
+
+> qt(zt|xθ)
+
+, where xθ (zt, t ) is a neural network that predicts the clean data; subsumes the x0-parameterization as a special case. All three strategies determine Rθt (i, j ) without decomposing it into exit rate and jump distribution—which, as we show, correspond to independent learning objectives. 
+
+# 3 Related Work 
+
+Discrete diffusion models. D3PM [Austin et al., 2021] and Multinomial Diffusion [Hoogeboom et al., 2021] introduced discrete diffusion using transition matrices in discrete time. Campbell et al. [2022] extended this to continuous time via CTMCs, deriving the ELBO from path measure ratios. Subsequent work explored different parameterizations of the reverse rate matrix: SEDD [Lou et al., 2024] uses a concrete score analogous to continuous score matching [Song et al., 2021b, Meng et al., 2022], MDLM [Sahoo et al., 2024] simplifies masked diffusion with x0-prediction, and GIDD [von Rütte et al., 2025] unifies these under a general interpolating framework. Recent concurrent work has also explored discrete flow matching [Campbell et al., 2024, Gat et al., 2024], simplified masked objectives [Shi et al., 2024, Ou et al., 2025], guided generation in discrete spaces [Nisonoff et al., 2024], and improved sampling via informed correctors [Zhao et al., 2025]. None of these methods decompose Rθt into exit rate and jump distribution. 4Rate-matrix factorization. The decomposition of a CTMC rate matrix into exit rate and jump distribution is classical in the theory of Markov chains [Norris, 1997, Jacobsen, 2006], and the Poisson KL KL Poi (λ∥λ′)
+
+arises naturally between Poisson processes of different intensities. The τ -leaping algorithm for simulating chemical kinetics [Gillespie, 1977, Anderson, 2007] exploits a similar decomposition by separately sampling the number of reactions (Poisson) and reaction types (categorical), but this structural insight has not been transferred to generative modeling. Our Corollary 4.4 shows that the path-space KL decomposes into 
+
+KL Poi + KL Cat terms, connecting classical CTMC theory with modern discrete diffusion. 
+
+Variational bounds. The ELBO for continuous diffusion was established via SDE path measures and Girsanov’s theorem [Song et al., 2021a, Kingma et al., 2021]. The discrete analog replaces SDEs with CTMCs and Girsanov’s theorem with the Campbell–Mecke formula [Jacobsen, 2006]. Sun et al. [2023] derived a score-based continuous-time objective for discrete diffusion but did not decompose it into timing and direction components. Our derivation follows this program, obtaining an ELBO whose θ-dependent part is a reverse-process KL that naturally factorizes into a Poisson KL and a categorical KL. 
+
+# 4 Methodology 
+
+## 4.1 Theory 
+
+We retain the setup from Section 2: S = {1, . . . , S }, forward CTMC with rate matrix Rt corrupting 
+
+X0 ∼ pdata into XT ∼ pprior , with conditionals qt|0 and marginals qt. The true reverse CTMC has rate matrix 
+
+ˆRt(i, j ) = Rt(j, i ) qt(j) 
+
+> qt(i)
+
+. By the decomposition (4), its dynamics factor as: 
+
+ˆλt(i) = X 
+
+> j̸=i
+
+ˆRt(i, j ) (exit rate) , ˆrt(j | i) = ˆRt(i, j )ˆλt(i) (jump distribution) . (6) Rather than parameterizing a proxy for Rθt (i, j ) (Section 2.2), we directly parameterize both components via a neural network Φθ : S × [0 , T ] → R>0 × ∆S−11:
+
+Φθ (xt, t ) =  λθt (xt), r θt (· | xt), Rθt (i, j ) = λθt (i) · rθt (j | i) ( j̸ = i). (7) Crucially, the variational objective inherits this factorization, decomposing into two subproblems: predicting 
+
+when to jump and where to jump . We state the main results here and defer proofs to Appendix C. 
+
+Lemma 4.1. Let Qx0 be the forward path measure starting from x0, and Pθ the neural reverse path measure. For a path ω with jumps at times 0 < t 1 < · · · < t n < T and states x0 → x1 → · · · → xn:
+
+log dPθ
+
+dQx0
+
+(ω) = log pprior (xn)
+
+| {z }
+
+> prior
+
++
+
+> n
+
+X
+
+> k=1
+
+log Rθtk (xk, x k−1)
+
+Rtk (xk−1, x k)
+
+| {z }
+
+> jump ratio
+
++
+
+Z T
+
+> 0
+
+h
+
+λfwd  
+
+> t
+
+(Xt) − λθt (Xt)
+
+i
+
+dt
+
+| {z }
+
+> survival difference
+
+. (8) The proof follows from taking the ratio of the forward and reverse path densities; see Appendix C. Combining this ratio with importance sampling under Qx0 and Jensen’s inequality yields the following ELBO. 
+
+Theorem 4.2. For any x0 ∈ S :
+
+− log pθ (x0) ≤ − EqT |0 [log pprior (XT )] + 
+
+Z T
+
+> 0
+
+X
+
+> i∈S
+
+qt|0(i | x0) ℓt(i) d t, (9) 
+
+where ℓt(i) := P 
+
+> j̸=i
+
+h
+
+Rt(i, j ) log Rt(i,j )  
+
+> Rθt(j,i )
+
+− Rt(i, j ) + Rθt (i, j )
+
+i
+
+is the Bregman divergence generated by ϕ(x) = 
+
+x log x.         
+
+> 1∆S−1={p∈RS
+> ≥0:P
+> j
+> pj= 1 }denotes the (S−1) -dimensional probability simplex.
+
+5Averaging the single-sample bound over pdata eliminates the cross-direction asymmetry in Theorem 4.2 and identifies the θ-dependent part of the ELBO with a reverse-process KL up to a constant. 
+
+Theorem 4.3. 
+
+Edata (θ) := Ex0∼pdata 
+
+"
+
+−EqT |0 [log pprior (XT )] + 
+
+Z T
+
+> 0
+
+X
+
+> i∈S
+
+qt|0(i | x0) ℓt(i) d t
+
+#
+
+. (10) 
+
+Ex0∼pdata [− log pθ (x0)] ≤ E data (θ), (11) 
+
+and 
+
+Edata (θ) = KL( ˆQ∥Pθ ) + C, (12) 
+
+where C is independent of θ, ˆQ denotes the path measure of the true reverse CTMC with rate matrix ˆRt, Pθ
+
+denotes the path measure of the parameterized reverse CTMC with rate matrix Rθt , and 
+
+KL( ˆQ∥Pθ ) = 
+
+Z T
+
+> 0
+
+X
+
+> i∈S
+
+qt(i) X 
+
+> j̸=i
+
+"
+
+ˆRt(i, j ) log ˆRt(i, j )
+
+Rθt (i, j ) − ˆRt(i, j ) + Rθt (i, j )
+
+#
+
+dt. (13) Since both rates in (13) now refer to the same reverse direction, the objective admits a timing-direction decomposition. 
+
+Corollary 4.4. The reverse process KL decomposes as: 
+
+KL( ˆQ∥Pθ ) = 
+
+Z T
+
+> 0
+
+X
+
+> i∈S
+
+qt(i)
+
+KL Poi  ˆλt(i)∥λθt (i)| {z }
+
+> when to jump
+
++ˆλt(i) · KL Cat  ˆrt(· | i)∥rθt (· | i)| {z }
+
+> where to jump
+
+ dt, (14) 
+
+where KL Poi (λ∥λθ ) := λ log λλθ − λ + λθ is the Poisson KL and KL Cat ( ˆr∥rθ ) := P 
+
+> j̸=i
+
+ˆr(j | i) log ˆr(j|i)  
+
+> rθ(j|i)
+
+is the categorical KL. 
+
+The exit-rate head is trained by a Poisson KL and the jump-distribution head by a categorical KL weighted by ˆλt(i), separating whether to move from where to move next .
+
+Proposition 4.5. For fixed t and i, define 
+
+gt,i (λ, r ) := KL Poi  ˆλt(i)∥λ + ˆλt(i) KL Cat  ˆrt(· | i)∥r. (15) 
+
+If ˆλt(i) > 0, then gt,i (λ, r ) ≥ 0 with equality if and only if λ = ˆλt(i) and r = ˆrt(· | i). If ˆλt(i) = 0 , the unique minimizer in λ is λ = 0 and the choice of r is irrelevant. The training objective (14) can be estimated via Monte Carlo sampling. Using the cross-entropy identity KL Cat = CE − H:
+
+L(θ) = Et∼U (0 ,T ), x t∼qt
+
+h
+
+KL Poi  ˆλt(xt)∥λθt (xt) + ˆλt(xt) · CE  ˆrt(· | xt), r θt (· | xt)i
+
++ const , (16) 
+
+where CE ( ˆr, r θ ) := − P 
+
+> j̸=i
+
+ˆr(j | i) log rθ (j | i) is the cross-entropy, and the constant absorbs the entropy of ˆrt
+
+(independent of θ). 
+
+Since qt(x) = Ex0 [qt|0(x | x0)] is intractable, we replace marginal quantities by conditional counterparts via the expectation transformation (Lemma C.7 in Appendix C), yielding the conditional formulation. 
+
+Proposition 4.6. For a fixed data point x0 ∈ S , define the conditional reverse rates: 
+
+ˆλt|0(i | x0) := X 
+
+> j̸=i
+
+Rt(j, i ) qt|0(j | x0)
+
+qt|0(i | x0) , ˆrt|0(j | i, x 0) := Rt(j, i ) qt|0(j|x0)
+
+> qt|0(i|x0)
+
+ˆλt|0(i | x0) . (17) 
+
+Then the training loss (16) can be equivalently written as: 
+
+L(θ) = Et∼U (0 ,T ), x 0∼pdata 
+
+> xt∼qt|0(·| x0)
+
+h
+
+− X 
+
+> j̸=xt
+
+Rt(j, x t) qt|0(j | x0)
+
+qt|0(xt | x0) log  λθt (xt) rθt (j | xt)
+
+− ˆλt|0(xt | x0) + λθt (xt)
+
+i
+
++ const .
+
+(18) 6The proof is given in Appendix C. 
+
+Theorem 4.7. Define the conditional reverse rate given clean data x0:
+
+ˆRt(i, j | x0) := Rt(j, i ) qt|0(j | x0)
+
+qt|0(i | x0) , i̸ = j, (19) 
+
+and the Poisson KL density f (r, c ) := r log rc − r + c. The conditional KL training loss 
+
+LKL (θ) := 
+
+Z T
+
+> 0
+
+Ex0∼pdata , x t∼qt|0(·| x0)
+
+ X 
+
+> j̸=xt
+
+f
+
+ ˆRt(xt, j | x0), R θt (xt, j )
+
+ dt (20) 
+
+is a tractable upper bound on KL( ˆQ∥Pθ ):
+
+Epdata [− log pθ (x0)] ≤ L KL (θ) + Ctotal , (21) 
+
+where Ctotal is independent of θ. Moreover, LKL (θ) equals the loss in (18) up to a θ-independent constant. 
+
+Theorem 4.7 establishes a tractable objective value upper bound. The next proposition strengthens this by showing that, under standard regularity assumptions, the conditional surrogate differs from the marginal reverse-process KL only by a θ-independent gap. 
+
+Proposition 4.8. Assume: (i) forward quantities ( qt, qt|0, p(x0 | xt)) are independent of θ; (ii) Rθt (i, j ) > 0
+
+and differentiable in θ for all i̸ = j; and (iii) differentiation can be exchanged with expectation/integration. Then there exists a θ-independent constant Cgap ≥ 0 such that 
+
+LKL (θ) = KL( ˆQ∥Pθ ) + Cgap ,
+
+hence 
+
+∇θ LKL (θ) = ∇θ KL( ˆQ∥Pθ ).
+
+In particular, 
+
+arg min  
+
+> θ
+
+LKL (θ) = arg min  
+
+> θ
+
+KL( ˆQ∥Pθ ),
+
+and every stationary point of one objective is a stationary point of the other. 
+
+Further discussion of the upper-bound interpretation and the information-theoretic form of Cgap is deferred to Appendix C. 
+
+Corollary 4.9. Defining K(a) := a(log a − 1) , the losses (18) and (20) are both equivalent to: 
+
+Lcond (θ) = Et, x 0, i 
+
+h X  
+
+> j̸=i
+
+λθt (i)rθt (j | i) − X 
+
+> j̸=i
+
+Rt(j, i ) qt|0(j | x0)
+
+qt|0(i | x0) log λθt (i) rθt (j | i)
+
+Rt(j, i )+ X 
+
+> j̸=i
+
+Rt(j, i ) K
+
+ qt|0(j | x0)
+
+qt|0(i | x0)
+
+i
+
+.
+
+(22) 
+
+The first two terms form the per-pair Poisson KL density f
+
+ ˆRt(i, j | x0), R θt (i, j )
+
+
+
+≥ 0; the last term is 
+
+θ-independent and can be precomputed. This avoids large numerical cancellations between the −ˆλt|0 log λθt
+
+and +λθt terms in (18) when ˆλt|0 ≫ 1 near t ≈ T .
+
+Through the above derivations, we obtain two equivalent training losses: LKL (θ) (20) and Lcond (θ) (22) .Under the assumptions stated above, they differ only by a θ-independent constant and therefore induce the same first-order optimization problem. 7Corollary 4.10 (Equivalence to MDLM) . If the forward process is the masked (absorbing) process on 
+
+S = V ∪ { m} with rate Rt(i, j ) = − α′ 
+
+> t
+> 1−αt
+
+(e⊤ 
+
+> j
+
+em)1{i̸=m}, then for any valid noise schedule αt, the loss (22) 
+
+reduces to the MDLM cross-entropy loss: 
+
+Lcond (θ) = Et, x 0, x t
+
+ α′
+
+> t
+
+1 − αt
+
+x⊤ 
+
+> 0
+
+log xθ · 1{xt=m}
+
+
+
++ C, (23) 
+
+where C is independent of θ.
+
+The proof is given in Appendix C. This shows that MDLM is a special case of Neural CTMC’s objective restricted to the masked forward process; the uniform forward process used in our experiments is a strict generalization. In the masked case, rθt reduces to the xθ predictor in MDLM, while λθt (m) = − α′
+
+> t
+> 1−αt
+
+becomes a constant determined by the noise schedule. 
+
+## 4.2 Algorithm 
+
+We instantiate the above framework with the uniform-rate forward process from Definition 2.2, where 
+
+π = 1 
+
+> S
+
+1. We sample t ∼ U (ϵ, T ) with ϵ > 0 to avoid the high-variance regime near t → 0. The complete training procedure is given in Algorithm 1. 
+
+Algorithm 1 Neural CTMC Training  
+
+> 1:
+
+while not converged do  
+
+> 2:
+
+Sample x0 ∼ pdata , t ∼ U (ϵ, T ); form qt|0(· | x0) via (2)  
+
+> 3:
+
+Sample xt ∼ qt|0(· | x0) and form the conditional targets ˆRt(xt, j | x0) and ˆλt|0(xt | x0) 
+
+> 4:
+
+Compute  λθt (xt), r θt (· | xt) = Φ θ (xt, t ), evaluate LKL (θ) (20) or Lcond (θ) (22) , and update θ ←
+
+θ − η ∇θ L 
+
+> 5:
+
+end while 
+
+Given a trained model Φθ , we generate samples by discretizing the reverse CTMC over [0 , T ] with step size τ = T /N . We consider two sampling schemes. τ -Leaping [Gillespie, 1977] (Algorithm 2) first draws the number of jumps k from a Poisson distribution with rate λθt (xt) · τ , then sequentially samples k
+
+jump destinations from rθt . This naturally exploits the exit-rate/jump-direction decomposition and allows multiple jumps per step. Euler (Algorithm 3) constructs a one-step categorical transition by setting 
+
+pj = λθt (xt) · rθt (j | xt) · τ for j̸ = xt, requiring λθt (xt)τ ≤ 1 to remain a valid distribution. Pseudocode for both samplers is given in Appendix D. 
+
+# 5 Experiments 
+
+We evaluate Neural CTMC on discrete image and language generation tasks using both the Euler and 
+
+τ -leaping samplers. All models use the uniform forward process (Section 4.2) with αt = 1 − t and βt = t.Neural CTMC employs a DiT [Peebles and Xie, 2023], full hyperparameters are given in Appendix D. 
+
+Image Generation: We train Neural CTMC on binarized MNIST, flattened to sequences of length 784 over S = {0, 1, . . . , 255 }. Figure 2 shows 100 unconditional samples (10 per digit class) generated with 128 sampling steps at epoch 80. Both Euler and τ -leaping produce clearly recognizable digits with consistent stroke quality, confirming that the decoupled parameterization learns meaningful structure even on image data treated as a discrete sequence. 
+
+Language Modeling: We compare Neural CTMC against SEDD [Lou et al., 2024], MDLM [Sahoo et al., 2024], and GIDD [von Rütte et al., 2025] on TinyStories [Eldan and Li, 2023] and OpenWebText [Radford et al., 2019] (OWT). For GIDD we report results with punif ∈ { 0.0, 0.1, 0.2}, where punif = 0 .0 corresponds to a pure mask process and punif = 0 .1 is the best interpolation parameter. For evaluation, we draw 1024 unconditional samples from each model and score them with a pretrained Gemma-2 model to obtain generative 
+
+810 20 30 40 50  
+
+> Epoch
+> 20
+> 40
+> 60
+> 80
+> 100
+> 120
+> Perplexity (PPL)
+> GIDD
+> MDLM
+> Neural CTMC ( -leaping)
+> Neural CTMC (Euler)
+
+(a) TinyStories: PPL over training epochs (50 sampling steps). 16 32 64 128  
+
+> Number of Sampling Steps
+> 10 3
+> Perplexity (PPL)
+> MDLM
+> GIDD
+> Neural CTMC (Euler)
+> Neural CTMC ( -leaping)
+
+(b) OpenWebText: PPL vs. number of sampling steps (log scale). 
+
+Figure 1: Sample quality comparison. (a) On TinyStories, Neural CTMC (Euler and τ -leaping) converges to substantially lower perplexity than MDLM and GIDD under identical training conditions. (b) On OpenWebText, Neural CTMC performs best among the equal-budget baselines across the step counts we evaluate, and remains competitive with SEDD despite using 2.6× fewer training tokens. 
+
+perplexity (PPL). Since this estimate is based on a finite sample set, we report it as an upper-bound-style quantity using ≤ notation, following prior discrete diffusion reporting conventions. 
+
+TinyStories. We train all methods from their official source code under the same architecture and training budget. Figure 1(a) plots generative PPL against training epoch with 50 sampling steps. Both Neural CTMC samplers converge faster and reach substantially lower perplexity than the baselines. At epoch 50, Euler sampling attains ≤ 16 .36 PPL and τ -leaping ≤ 16 .38 , compared with ≤ 37 .60 for GIDD ( punif = 0 .0) and 
+
+≤ 42 .66 for MDLM. The gap widens after epoch 10, consistent with the decomposed objective providing a stronger training signal later in optimization. 
+
+OpenWebText. For OWT we use the official released checkpoints of SEDD, MDLM, and GIDD. Note that MDLM and GIDD are trained on 262B tokens (matching our budget), while SEDD uses 682B ( 2.6×
+
+more). Tokenization, maximum sequence length, and scoring pipeline are matched across all methods; we therefore view this as a best-effort comparison under a unified evaluation protocol. Table 1 and Figure 1(b) report PPL as a function of sampling steps. The Euler and τ -leaping samplers perform comparably across all step counts. Among the equal-budget methods (262B tokens), Neural CTMC outperforms MDLM and GIDD at every step count from 16 to 128, with the largest gain at 32 steps where 
+
+τ -leaping ( ≤ 258 .8) improves over MDLM ( ≤ 553 .7) by 2.1× and GIDD ( ≤ 398 .9) by 1.5×. Compared with SEDD, Neural CTMC is stronger at low step counts (16 and 32) but weaker at 128 steps ( ≤ 183 .6 vs. 
+
+≤ 127 .2), likely reflecting SEDD’s larger training budget. 
+
+# 6 Conclusion 
+
+We presented Neural CTMC, a discrete diffusion framework that parameterizes the reverse CTMC through separate exit-rate and jump-distribution heads, aligning the model with the intrinsic timing/direction structure of CTMC dynamics. We showed that the θ-dependent part of the ELBO differs from a reverse-process path-space KL only by a constant, that this KL factorizes into a Poisson KL for timing and a categorical KL for direction, and that the tractable conditional surrogate preserves the gradients and minimizers of the corresponding marginal objective under standard regularity assumptions. Empirically, this decomposition makes the pure uniform forward process competitive on the language modeling benchmarks we study. On TinyStories, Neural CTMC achieves generative perplexity ≤ 16 .36 ,9Table 1: Generative perplexity ( ↓) on OpenWebText for varying numbers of sampling steps. All methods use 262B training tokens except SEDD (682B). We report ≤ values because each estimate is computed from a finite set of generated samples under a common evaluation protocol. Bold : best overall per column; underline: best among equal-budget (262B) methods.                                                                          
+
+> Method Train Toks 16 32 64 128 SEDD (mask) [Lou et al., 2024] 682B ≤825 .5≤337 .9≤186.5 ≤127.2
+> MDLM [Sahoo et al., 2024] 262B ≤1432 .8≤553 .7≤301 .6≤210 .5
+> GIDD ( punif = 0 .0) [von Rütte et al., 2025] 262B ≤2773 .1≤993 .7≤529 .6≤414 .3
+> GIDD ( punif = 0 .1) [von Rütte et al., 2025] 262B ≤702 .0≤398 .9≤270 .8≤249 .8
+> GIDD ( punif = 0 .2) [von Rütte et al., 2025] 262B ≤770 .4≤430 .1≤344 .3≤293 .0
+> Neural CTMC – Euler (ours) 262B ≤578.3 ≤264 .5≤189 .7≤183 .6
+> Neural CTMC – τ-leaping (ours) 262B ≤584 .5≤258.8 ≤199 .9≤184 .8
+> Note: under the masked (absorbing) forward process, the SEDD and MDLM losses are essentially equivalent, differing mainly in parameterization.
+
+outperforming the baselines evaluated under the same protocol. On OpenWebText, it achieves the best equal-budget generative perplexity among the methods we evaluate across 16 to 128 sampling steps and is, to the best of our knowledge, the first pure-uniform-forward-process method to outperform mask-based methods on this benchmark; it also remains competitive with SEDD despite using 2.6× fewer training tokens. 
+
+# References 
+
+Sarah Alamdari, Nitya Thakkar, Rianne van den Berg, Alex X. Lu, Nicolo Fusi, Ava P. Amini, and Kevin K. Yang. Protein generation with evolutionary diffusion: Sequence is all you need. bioRxiv , 2023. doi: 10.1101/2023.09.11.556673. David F. Anderson. A modified next reaction method for simulating chemical systems with time dependent propensities and delays. The Journal of Chemical Physics , 127(21), 2007. Jacob Austin, Daniel D Johnson, Jonathan Ho, Daniel Tarlow, and Rianne van den Berg. Structured denoising diffusion models in discrete state-spaces. In Advances in Neural Information Processing Systems , volume 34, pages 17981–17993, 2021. Pavel Avdeyev, Chenlai Shi, Yuhao Tan, Kseniia Dudnyk, and Jian Zhou. Dirichlet diffusion score model for biological sequence generation. In International Conference on Machine Learning , 2023. Andrew Campbell, Joe Benton, Valentin de Bortoli, Tom Rainforth, George Deligiannidis, and Arnaud Doucet. A continuous time framework for discrete denoising models. In Advances in Neural Information Processing Systems , volume 35, 2022. Andrew Campbell, Jason Yim, Regina Barzilay, Tom Rainforth, and Tommi Jaakkola. Generative flows on discrete state-spaces: Enabling multimodal flows with applications to protein co-design. In Proceedings of the 41st International Conference on Machine Learning , volume 235 of Proceedings of Machine Learning Research , pages 5453–5512, 2024. URL https://proceedings.mlr.press/v235/campbell24a.html .Ronen Eldan and Yuanzhi Li. Tinystories: How small can language models be and still speak coherent english? arXiv preprint arXiv:2305.07759 , 2023. Itai Gat, Tal Remez, Neta Shaul, Felix Kreuk, Ricky T. Q. Chen, Gabriel Synnaeve, Yossi Adi, and Yaron Lipman. Discrete flow matching. In Advances in Neural Information Processing Systems , 2024. Daniel T. Gillespie. Exact stochastic simulation of coupled chemical reactions. The Journal of Physical Chemistry , 81(25):2340–2361, 1977. 10 Ishaan Gulrajani and Tatsunori B. Hashimoto. Likelihood-based diffusion language models. In Advances in Neural Information Processing Systems , volume 36, 2023. Jonathan Ho, Ajay Jain, and Pieter Abbeel. Denoising diffusion probabilistic models. In Advances in Neural Information Processing Systems , volume 33, pages 6840–6851, 2020. Emiel Hoogeboom, Didrik Nielsen, Priyank Jaini, Patrick Forré, and Max Welling. Argmax flows and multinomial diffusion. In Advances in Neural Information Processing Systems , volume 34, 2021. Aapo Hyvärinen. Estimation of non-normalized statistical models by score matching. Journal of Machine Learning Research , 6:695–709, 2005. Martin Jacobsen. Point Process Theory and Applications: Marked Point and Piecewise Deterministic Processes . Birkhäuser, 2006. Diederik P Kingma, Tim Salimans, Ben Poole, and Jonathan Ho. Variational diffusion models. In Advances in Neural Information Processing Systems , volume 34, pages 21696–21707, 2021. Xiang Lisa Li, John Thickstun, Ishaan Gulrajani, Percy Liang, and Tatsunori B. Hashimoto. Diffusion-LM improves controllable text generation. In Advances in Neural Information Processing Systems , volume 35, 2022. Aaron Lou, Chenlin Meng, and Stefano Ermon. Discrete diffusion modeling by estimating the ratios of the data distribution. In International Conference on Machine Learning , 2024. Chenlin Meng, Kristy Ke, Jiaming Zhang, Marco Jiralerspong, Percy Liang, and Stefano Ermon. Concrete score matching: Generalized score matching for discrete data. In Advances in Neural Information Processing Systems , volume 35, 2022. Hunter Nisonoff, Junhao Xiong, Stephan Allenspach, and Jennifer Listgarten. Unlocking guidance for discrete state-space diffusion and flow models. In Advances in Neural Information Processing Systems , volume 37, 2024. James R. Norris. Markov Chains . Cambridge University Press, 1997. Jingyang Ou, Shen Nie, Kaiwen Xue, Fengqi Zhu, Jiacheng Sun, Zhenguo Li, and Chongxuan Li. Your absorbing discrete diffusion secretly models the conditional distributions of clean data. In International Conference on Learning Representations , 2025. William Peebles and Saining Xie. Scalable diffusion models with transformers. In International Conference on Computer Vision , 2023. Alec Radford, Jeffrey Wu, Rewon Child, David Luan, Dario Amodei, and Ilya Sutskever. Language models are unsupervised multitask learners. OpenAI Blog , 2019. URL https://cdn.openai.com/ better-language-models/language_models_are_unsupervised_multitask_learners.pdf .Subham Sekhar Sahoo, Marianne Arriola, Yair Schiff, Aaron Gokaslan, Edgar Marroquin, Justin T Chiu, Alexander Rush, and Volodymyr Kuleshov. Simple and effective masked diffusion language models. In 
+
+Advances in Neural Information Processing Systems , volume 37, 2024. Jiaxin Shi, Kehang Han, Zhe Wang, Arnaud Doucet, and Michalis K. Titsias. Simplified and generalized masked diffusion for discrete data. In Advances in Neural Information Processing Systems , volume 37, 2024. Jascha Sohl-Dickstein, Eric Weiss, Niru Maheswaranathan, and Surya Ganguli. Deep unsupervised learning using nonequilibrium thermodynamics. In International Conference on Machine Learning , pages 2256–2265, 2015. Yang Song, Conor Durkan, Iain Murray, and Stefano Ermon. Maximum likelihood training of score-based diffusion models. In Advances in Neural Information Processing Systems , 2021a. 11 Yang Song, Jascha Sohl-Dickstein, Diederik P Kingma, Abhishek Kumar, Stefano Ermon, and Ben Poole. Score-based generative modeling through stochastic differential equations. In International Conference on Learning Representations , 2021b. Haoran Sun, Lijun Yu, Bo Dai, Dale Schuurmans, and Hanjun Dai. Score-based continuous-time discrete diffusion models. In Advances in Neural Information Processing Systems , volume 36, 2023. Clement Vignac, Igor Krawczuk, Antoine Siraudin, Bohan Wang, Volkan Cevher, and Pascal Frossard. DiGress: Discrete denoising diffusion for graph generation. In International Conference on Learning Representations , 2023. Dimitri von Rütte, Janis Fluri, Yuhui Ding, Antonio Orvieto, Bernhard Schölkopf, and Thomas Hofmann. Generalized interpolating discrete diffusion. In International Conference on Machine Learning , 2025. Yixiu Zhao, Jiaxin Shi, Feng Chen, Shaul Druckmann, Lester Mackey, and Scott Linderman. Informed correctors for discrete diffusion models. In Advances in Neural Information Processing Systems , 2025. 12 Appendix 
+
+# Contents 
+
+A Mathematical Preliminaries 13 
+
+A.1 Continuous-Time Markov Chains . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13 A.2 Point Process . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14 
+
+B Formal Problem Setup 14 
+
+B.1 Forward Process . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14 B.2 True Reverse Process . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14 B.3 Neural Reverse Process . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15 B.4 Training Objective . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15 
+
+C Proofs 15 D Additional Experimental Details 24 E Generated Samples 25 
+
+E.1 Image Generation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 26 E.2 TinyStories . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 26 E.3 OpenWebText . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 28 
+
+# A Mathematical Preliminaries 
+
+We collect here the full definitions of continuous-time Markov chains and point processes used throughout the paper. 
+
+## A.1 Continuous-Time Markov Chains 
+
+Definition A.1. Let S = {1, . . . , S } be a finite state space and T > 0 a time horizon. A continuous-time Markov chain (CTMC) on S over [0 , T ] is a stochastic process {Xt}t∈[0 ,T ] with the Markov property: 
+
+P(Xt+s = j | Xt = i, {Xu}u<t ) = P(Xt+s = j | Xt = i). (24) 
+
+Definition A.2. A CTMC is characterized by a rate matrix Rt : S × S → R satisfying: (i) Rt(i, j ) ≥ 0
+
+for all i̸ = j, and (ii) P
+
+> j∈S
+
+Rt(i, j ) = 0 for all i ∈ S . The off-diagonal entry Rt(i, j ) for i̸ = j represents the 
+
+transition rate from state i to state j at time t.
+
+Definition A.3. For state i ∈ S at time t:
+
+λt(i) := X 
+
+> j̸=i
+
+Rt(i, j ) (exit rate) , rt(j | i) := Rt(i, j )
+
+λt(i) for j̸ = i (jump distribution) . (25) The exit rate λt(i) controls the holding time in state i (exponentially distributed), and rt(· | i) is a probability distribution over the S − 1 possible jump destinations. 
+
+Theorem A.4. Let qt(i) := P(Xt = i) be the marginal distribution at time t. Then qt satisfies the master equation: 
+
+dqt(i)dt = X
+
+> j∈S
+
+qt(j)Rt(j, i ) = X 
+
+> j̸=i
+
+qt(j)Rt(j, i ) − qt(i)λt(i). (26) 13 Definition A.5. Given a CTMC with rate matrix Rt and marginal distribution qt(i) at time t, the time-reversed CTMC has rate matrix ˆRt given by: 
+
+ˆRt(i, j ) = Rt(j, i ) qt(j)
+
+qt(i) , i̸ = j. (27) 
+
+## A.2 Point Process 
+
+Definition A.6. A point process on [0 , T ] is a random collection of points (jump times) {t1, t 2, . . . } in [0 , T ].For a CTMC, the jump times form a point process whose intensity at time t is λt(Xt).
+
+Theorem A.7. Let Qx0 be the path measure of a CTMC starting from x0 with rate matrix Rt. For any measurable function f : [0 , T ] × S × S → R, the expected sum over all jumps satisfies: 
+
+EQx0
+
+" NX
+
+> k=1
+
+f (tk, X t−
+
+> k
+
+, X tk )
+
+#
+
+=
+
+Z T
+
+> 0
+
+X
+
+> i∈S
+
+qt|0(i | x0) X 
+
+> j̸=i
+
+Rt(i, j )f (t, i, j ) d t, (28) 
+
+where N is the (random) number of jumps, Xt−
+
+> k
+
+is the state immediately before jump k, Xtk is the state after jump k, and qt|0(i | x0) := PQx0 (Xt = i) is the marginal distribution. 
+
+# B Formal Problem Setup 
+
+We establish here the formal mathematical framework for CTMC-based discrete diffusion models, providing explicit definitions for the objects introduced informally in the main text. 
+
+## B.1 Forward Process 
+
+Definition B.1. The forward or noising process is a time-dependent CTMC on S with: 
+
+• Initial distribution : X0 ∼ pdata , the data distribution. 
+
+• Rate matrix : Rt : S × S → R.
+
+• Transition rate : Rt(i, j ) ≥ 0 for i̸ = j.
+
+• Exit rate : λfwd  
+
+> t
+
+(i) := P 
+
+> j̸=i
+
+Rt(i, j ).
+
+• Jump distribution : rt(j | i) := Rt(i,j )  
+
+> λfwd
+> t(i)
+
+for j̸ = i.
+
+Definition B.2. For the forward process: 
+
+qt|0(x | x0) := P(Xt = x | X0 = x0), (conditional distribution) 
+
+qt(x) := Ex0∼pdata [qt|0(x | x0)] , (marginal distribution) . (29) 
+
+## B.2 True Reverse Process 
+
+Definition B.3. The true reverse process is the time-reversal of the forward process, characterized by the rate matrix: 
+
+ˆRt(i, j ) = Rt(j, i ) qt(j)
+
+qt(i) , i̸ = j. (30) This is a CTMC evolving from time 0 to T with: 
+
+ˆλt(i) := X 
+
+> j̸=i
+
+ˆRt(i, j ) (true reverse exit rate) ,
+
+ˆrt(j | i) := ˆRt(i, j )ˆλt(i) (true reverse jump distribution) .
+
+(31) 14 B.3 Neural Reverse Process 
+
+Definition B.4. The neural reverse process or generative model is a parameterized CTMC with: 
+
+• Initial distribution : XT ∼ pprior (reference distribution). 
+
+• Rate matrix : Rθt (i, j ) parameterized by θ ∈ Θ.
+
+• Neural exit rate : λθt (i) := P 
+
+> j̸=i
+
+Rθt (i, j ).
+
+• Neural jump distribution : rθt (j | i) := Rθt (i,j )  
+
+> λθt(i)
+
+.
+
+Definition B.5. Typically, a neural network Φθ : S × [0 , T ] → R>0 × ∆S−1 outputs: 
+
+Φθ (xt, t ) = ( λθt (xt), r θt (· | xt)) , (32) where ∆S−1 is the (S − 1) -dimensional probability simplex (excluding self-transitions). 
+
+## B.4 Training Objective 
+
+Definition B.6. The goal is to maximize the expected log-likelihood over the data distribution: 
+
+max  
+
+> θ∈Θ
+
+Ex0∼pdata [log pθ (x0)] . (33) Equivalently, minimize the negative log-likelihood: 
+
+min  
+
+> θ∈Θ
+
+Ex0∼pdata [− log pθ (x0)] . (34) 
+
+Remark B.7 (Intractability) . Direct evaluation of pθ (x0) requires marginalizing over all possible paths in continuous time, which is computationally intractable. This motivates the ELBO approach developed in Appendix C. 
+
+# C Proofs 
+
+Lemma C.1. Let Qx0 denote the path measure induced by a CTMC with rate matrix Rt starting from initial state x0. For a path ω with jumps at times 0 ≤ t1 < · · · < t n < T and states x0 → x1 → · · · → xn:
+
+dQx0 (ω) = 
+
+" nY
+
+> k=1
+
+Rtk (xk−1, x k)
+
+#
+
+exp −
+
+Z T
+
+> 0
+
+λt(Xt) d t
+
+!
+
+. (35) 
+
+Proof. We decompose the path probability into a product of conditional distributions following the CTMC dynamics. A trajectory starting from x0 is fully described by jump times 0 ≤ t1 < · · · < t n < T and states x0 → x1 → · · · → xn, where at jump time tk the chain transitions from xk−1 to xk, and Xt = xk for 
+
+t ∈ [tk, t k+1 ) (with t0 := 0 and tn+1 := T ). 
+
+Step 1: Holding time distribution. When the CTMC is in state xk−1 starting from time tk−1,the waiting time until the next jump is governed by a time-inhomogeneous exponential distribution. The cumulative distribution function for the next jump time tk is: 
+
+P(Tk < t | Tk−1 = tk−1) = 1 − exp −
+
+Z ttk−1
+
+λs(xk−1) d s
+
+!
+
+. (36) Differentiating, the density of the k-th jump time is: 
+
+p(tk | Tk−1 = tk−1) = λtk (xk−1) exp −
+
+Z tk
+
+> tk−1
+
+λs(xk−1) d s
+
+!
+
+. (37) 15 Step 2: Jump destination distribution. Conditional on a jump occurring at time tk from state xk−1,the destination xk is chosen according to: 
+
+P(Xtk = xk | Xt−
+
+> k
+
+= xk−1) = rtk (xk | xk−1) = Rtk (xk−1, x k)
+
+λtk (xk−1) . (38) 
+
+Step 3: Combining the contributions. The joint contribution of the k-th jump (both timing and destination) is: 
+
+p(tk | Tk−1 = tk−1) · P(Xtk = xk | Xt−
+
+> k
+
+= xk−1)= λtk (xk−1) exp −
+
+Z tk
+
+> tk−1
+
+λs(xk−1) d s
+
+!
+
+· Rtk (xk−1, x k)
+
+λtk (xk−1)= Rtk (xk−1, x k) exp −
+
+Z tk
+
+> tk−1
+
+λs(xk−1) d s
+
+!
+
+.
+
+(39) The survival probability after the last jump (no further jump in [tn, T ]) is: 
+
+P(Tn+1 ≥ T | Tn = tn) = exp −
+
+Z Ttn
+
+λs(xn) d s
+
+!
+
+. (40) 
+
+Step 4: Full path density. Taking the product over all n jumps and the final survival term: 
+
+dQx0 (ω) = 
+
+> n
+
+Y
+
+> k=1
+
+Rtk (xk−1, x k) ·
+
+> n
+
+Y
+
+> k=1
+
+exp −
+
+Z tk
+
+> tk−1
+
+λs(xk−1) d s
+
+!
+
+· exp −
+
+Z Ttn
+
+λs(xn) d s
+
+!
+
+. (41) Since Xt = xk−1 for t ∈ [tk−1, t k), the exponential terms combine into a single integral over the entire time horizon: nY
+
+> k=1
+
+exp −
+
+Z tk
+
+> tk−1
+
+λs(xk−1) d s
+
+!
+
+· exp −
+
+Z Ttn
+
+λs(xn) d s
+
+!
+
+= exp −
+
+Z T
+
+> 0
+
+λt(Xt) d t
+
+!
+
+, (42) which yields the desired result. 
+
+Lemma C.2. Let Qx0 be the forward path measure starting from x0, and Pθ be the neural reverse path measure. For a path ω with jumps at times 0 < t 1 < · · · < t n < T and visited states x0 → x1 → · · · → xn,the log Radon-Nikodym derivative is: 
+
+log dPθ
+
+dQx0
+
+(ω) = log pprior (xn) + 
+
+> n
+
+X
+
+> k=1
+
+log Rθtk (xk, x k−1)
+
+Rtk (xk−1, x k)+
+
+Z T
+
+> 0
+
+h
+
+λfwd  
+
+> t
+
+(Xt(ω)) − λθt (Xt(ω)) 
+
+i
+
+dt. 
+
+(43) 
+
+Proof. From Lemma 2.4, the forward path density (conditional on X0 = x0) is: 
+
+dQx0 (ω) = 
+
+" nY
+
+> k=1
+
+Rtk (xk−1, x k)
+
+#
+
+exp −
+
+Z T
+
+> 0
+
+λfwd  
+
+> t
+
+(Xt) d t
+
+!
+
+. (44) The neural reverse path density for the same path (note the index reversal: jumps are xk → xk−1 in reverse time) is: 
+
+dPθ (ω) = pprior (xn)
+
+" nY
+
+> k=1
+
+Rθtk (xk, x k−1)
+
+#
+
+exp −
+
+Z T
+
+> 0
+
+λθt (Xt) d t
+
+!
+
+. (45) Taking the ratio: 
+
+dPθ
+
+dQx0
+
+(ω) = pprior (xn) ·
+
+Qnk=1 Rθtk (xk, x k−1)
+
+Qnk=1 Rtk (xk−1, x k) · exp 
+
+Z T
+
+> 0
+
+λfwd  
+
+> t
+
+(Xt) − λθt (Xt) dt
+
+!
+
+. (46) Taking logarithms yields (43). 16 Theorem C.3. For any data point x0 ∈ S , the negative log-likelihood satisfies: 
+
+− log pθ (x0) ≤ − EqT |0 [log pprior (XT )] + 
+
+Z T
+
+> 0
+
+X
+
+> i∈S
+
+qt|0(i | x0) ℓt(i) d t, (47) 
+
+where the integrand ℓt(i) is defined as: 
+
+ℓt(i) := X 
+
+> j̸=i
+
+
+
+Rt(i, j ) log Rt(i, j )
+
+Rθt (j, i ) − Rt(i, j ) + Rθt (i, j )
+
+
+
+. (48) 
+
+Proof. Step 1: Importance sampling. 
+
+Since the forward path measure Qx0 has X0 = x0 with probability 1, we can write: 
+
+pθ (x0) = 
+
+Z
+
+> Ω
+
+1[X0(ω) = x0] d Pθ (ω)=
+
+Z
+
+> Ω
+
+1[X0(ω) = x0] · dPθ
+
+dQx0
+
+(ω) d Qx0 (ω) (Radon-Nikodym) 
+
+=
+
+Z
+
+> Ω
+
+dPθ
+
+dQx0
+
+(ω) d Qx0 (ω) (since Qx0 starts from x0)
+
+= EQx0
+
+ dPθ
+
+dQx0
+
+
+
+.
+
+(49) 
+
+Step 2: Jensen’s inequality. 
+
+Since log is concave, we have: 
+
+log pθ (x0) = log EQx0
+
+ dPθ
+
+dQx0
+
+
+
+≥ EQx0
+
+
+
+log dPθ
+
+dQx0
+
+
+
+. (50) Negating both sides: 
+
+− log pθ (x0) ≤ − EQx0
+
+
+
+log dPθ
+
+dQx0
+
+
+
+. (51) 
+
+Step 3: Expand using Lemma 3.1. 
+
+Substituting (43) into (51): 
+
+− log pθ (x0) ≤ − EQx0 [log pprior (XT )] 
+
+− EQx0
+
+" NX
+
+> k=1
+
+log Rθtk (Xtk , X t−
+
+> k
+
+)
+
+Rtk (Xt−
+
+> k
+
+, X tk )
+
+#
+
+− EQx0
+
+"Z T
+
+> 0
+
+(λfwd  
+
+> t
+
+(Xt) − λθt (Xt)) d t
+
+#
+
+,
+
+(52) where N is the random number of jumps. 
+
+Step 4: Apply Campbell-Mecke formula (Theorem A.7). 
+
+For the jump term, set f (t, i, j ) = log Rt(i,j )  
+
+> Rθt(j,i )
+
+:
+
+EQx0
+
+" NX
+
+> k=1
+
+log Rtk (Xt−
+
+> k
+
+, X tk )
+
+Rθtk (Xtk , X t−
+
+> k
+
+)
+
+#
+
+=
+
+Z T
+
+> 0
+
+X
+
+> i∈S
+
+qt|0(i | x0) X 
+
+> j̸=i
+
+Rt(i, j ) log Rt(i, j )
+
+Rθt (j, i ) dt. (53) For the survival term, by Fubini’s theorem: 
+
+EQx0
+
+"Z T
+
+> 0
+
+(λfwd  
+
+> t
+
+(Xt) − λθt (Xt)) d t
+
+#
+
+=
+
+Z T
+
+> 0
+
+EQx0 [λfwd  
+
+> t
+
+(Xt) − λθt (Xt)] d t
+
+=
+
+Z T
+
+> 0
+
+X
+
+> i∈S
+
+qt|0(i | x0) λfwd  
+
+> t
+
+(i) − λθt (i) dt
+
+=
+
+Z T
+
+> 0
+
+X
+
+> i∈S
+
+qt|0(i | x0) X 
+
+> j̸=i
+
+Rt(i, j ) − Rθt (i, j ) dt. 
+
+(54) 17 Step 5: Combine jump and survival terms. 
+
+From Steps 3 and 4, we need to compute: 
+
+−EQx0
+
+
+
+log dPθ
+
+dQx0
+
+
+
+= −EQx0 [log pprior (XT )] + Ijump − Isurv , (55) where the jump and survival integrals are (from Step 4): 
+
+Ijump =
+
+Z T
+
+> 0
+
+X
+
+> i∈S
+
+qt|0(i | x0) X 
+
+> j̸=i
+
+Rt(i, j ) log Rt(i, j )
+
+Rθt (j, i ) dt, (56) 
+
+Isurv =
+
+Z T
+
+> 0
+
+X
+
+> i∈S
+
+qt|0(i | x0) X 
+
+> j̸=i
+
+Rt(i, j ) − Rθt (i, j ) dt. (57) Combining (39) and the survival term: 
+
+Ijump − Isurv =
+
+Z T
+
+> 0
+
+X
+
+> i∈S
+
+qt|0(i | x0) X 
+
+> j̸=i
+
+
+
+Rt(i, j ) log Rt(i, j )
+
+Rθt (j, i ) −  Rt(i, j ) − Rθt (i, j )
+
+dt
+
+=
+
+Z T
+
+> 0
+
+X
+
+> i∈S
+
+qt|0(i | x0) X 
+
+> j̸=i
+
+
+
+Rt(i, j ) log Rt(i, j )
+
+Rθt (j, i ) − Rt(i, j ) + Rθt (i, j )
+
+
+
+dt
+
+=
+
+Z T
+
+> 0
+
+X
+
+> i∈S
+
+qt|0(i | x0) ℓt(i) d t, 
+
+(58) where we define: 
+
+ℓt(i) := X 
+
+> j̸=i
+
+
+
+Rt(i, j ) log Rt(i, j )
+
+Rθt (j, i ) − Rt(i, j ) + Rθt (i, j )
+
+
+
+, (59) which exactly matches (48). This completes the proof. 
+
+Theorem C.4. The expected negative log-likelihood over the data distribution satisfies: 
+
+Ex0∼pdata [− log pθ (x0)] ≤ KL( ˆQ∥Pθ ) + Ctotal , (60) 
+
+where ˆQ is the path measure of the true reverse process, Pθ is the path measure of the neural reverse process, and Ctotal is a constant independent of θ. Explicitly: 
+
+KL( ˆQ∥Pθ ) = 
+
+Z T
+
+> 0
+
+X
+
+> i∈S
+
+qt(i) X 
+
+> j̸=i
+
+"
+
+ˆRt(i, j ) log ˆRt(i, j )
+
+Rθt (i, j ) − ˆRt(i, j ) + Rθt (i, j )
+
+#
+
+dt. (61) 
+
+Proof. Step 1: Average over data. 
+
+Taking expectation of both sides of (47) over x0 ∼ pdata :
+
+Epdata [− log pθ (x0)] ≤ Epdata [−EqT |0 [log pprior (XT )]] + Epdata 
+
+"Z T
+
+> 0
+
+X
+
+> i∈S
+
+qt|0(i | x0) ℓt(i) d t
+
+#
+
+. (62) 
+
+Step 2: Define marginal distribution. 
+
+Define the (unconditional) marginal distribution at time t:
+
+qt(i) := Ex0∼pdata [qt|0(i | x0)] = 
+
+Z
+
+> S
+
+pdata (x0) qt|0(i | x0). (63) By Fubini’s theorem: 
+
+Epdata 
+
+"Z T
+
+> 0
+
+X
+
+> i∈S
+
+qt|0(i | x0) ℓt(i) d t
+
+#
+
+=
+
+Z T
+
+> 0
+
+X
+
+> i∈S
+
+qt(i) ℓt(i) d t. (64) 18 Step 3: Transform jump term. 
+
+Expand ℓt(i) from (48): 
+
+qt(i) ℓt(i) = X 
+
+> j̸=i
+
+qt(i)
+
+
+
+Rt(i, j ) log Rt(i, j )
+
+Rθt (j, i ) − Rt(i, j ) + Rθt (i, j )
+
+
+
+. (65) For the jump term , since ˆRt(j, i ) = Rt(i, j ) qt(i) 
+
+> qt(j)
+
+, we have qt(i)Rt(i, j ) = qt(j) ˆRt(j, i ). Substitute: 
+
+qt(i)Rt(i, j ) log Rt(i, j )
+
+Rθt (j, i ) = qt(j) ˆRt(j, i ) log Rt(i, j )
+
+Rθt (j, i ) . (66) Since Rt(i, j ) = ˆRt(j, i ) qt(j) 
+
+> qt(i)
+
+:
+
+qt(j) ˆRt(j, i ) log Rt(i, j )
+
+Rθt (j, i ) = qt(j) ˆRt(j, i ) log ˆRt(j, i ) qt(j)/q t(i)
+
+Rθt (j, i )= qt(j) ˆRt(j, i )
+
+"
+
+log ˆRt(j, i )
+
+Rθt (j, i ) + log qt(j)
+
+qt(i)
+
+#
+
+.
+
+(67) Summing over i and j (relabel i ↔ j): 
+
+X
+
+> i∈S
+
+X 
+
+> j̸=i
+
+qt(i)Rt(i, j ) log Rt(i, j )
+
+Rθt (j, i ) = X
+
+> i∈S
+
+X 
+
+> j̸=i
+
+qt(i) ˆRt(i, j ) log ˆRt(i, j )
+
+Rθt (i, j )+ X
+
+> i∈S
+
+X 
+
+> j̸=i
+
+qt(i) ˆRt(i, j ) log qt(i)
+
+qt(j)
+
+| {z }  
+
+> C(1)
+> t(independent of θ)
+
+. (68) 
+
+Step 4: Transform survival term. 
+
+For the survival term P 
+
+> j̸=i
+
+[−Rt(i, j ) + Rθt (i, j )] , since qt(i)Rt(i, j ) = qt(j) ˆRt(j, i ):
+
+X
+
+> i∈S
+
+qt(i)λfwd  
+
+> t
+
+(i) = X
+
+> i∈S
+
+qt(i) X 
+
+> j̸=i
+
+Rt(i, j ) = X
+
+> i∈S
+
+X 
+
+> j̸=i
+
+qt(j) ˆRt(j, i ) = X
+
+> i∈S
+
+qt(i)ˆλt(i). (69) Therefore: X
+
+> i∈S
+
+qt(i) X 
+
+> j̸=i
+
+[−Rt(i, j ) + Rθt (i, j )] = − X
+
+> i∈S
+
+qt(i)λfwd  
+
+> t
+
+(i) + X
+
+> i∈S
+
+qt(i)λθt (i)= − X
+
+> i∈S
+
+qt(i)ˆλt(i) + X
+
+> i∈S
+
+qt(i)λθt (i)= X
+
+> i∈S
+
+qt(i) X 
+
+> j̸=i
+
+[Rθt (i, j ) − ˆRt(i, j )] .
+
+(70) 
+
+Step 5: Combine jump and survival terms. 
+
+Putting everything together from Steps 3 and 4: 
+
+Z T
+
+> 0
+
+X
+
+> i∈S
+
+qt(i) ℓt(i) d t =
+
+Z T
+
+> 0
+
+X
+
+> i∈S
+
+qt(i) X 
+
+> j̸=i
+
+"
+
+ˆRt(i, j ) log ˆRt(i, j )
+
+Rθt (i, j ) + Rθt (i, j ) − ˆRt(i, j )
+
+#
+
+dt
+
++
+
+Z T
+
+> 0
+
+C(1)  
+
+> t
+
+dt. 
+
+(71) The first term can be rewritten as: 
+
+Z T
+
+> 0
+
+X
+
+> i∈S
+
+qt(i) X 
+
+> j̸=i
+
+"
+
+ˆRt(i, j ) log ˆRt(i, j )
+
+Rθt (i, j ) − ˆRt(i, j ) + Rθt (i, j )
+
+#
+
+dt = KL( ˆQ∥Pθ ), (72) and the second term (plus the prior term) is Ctotal , independent of θ.19 Corollary C.5. Define the true reverse quantities: 
+
+ˆλt(i) := X 
+
+> j̸=i
+
+ˆRt(i, j ) (exit rate) ,
+
+ˆrt(j | i) := ˆRt(i, j )ˆλt(i) for j̸ = i (jump distribution) ,
+
+(73) 
+
+and similarly for the neural reverse: 
+
+λθt (i) := X 
+
+> j̸=i
+
+Rθt (i, j ),rθt (j | i) := Rθt (i, j )
+
+λθt (i) .
+
+(74) 
+
+Then: 
+
+Epdata [− log pθ (x0)] ≤
+
+Z T
+
+> 0
+
+X
+
+> i∈S
+
+qt(i)
+
+h
+
+KL Poi (ˆλt(i)∥λθt (i)) + ˆλt(i) · KL Cat (ˆ rt(· | i)∥rθt (· | i)) 
+
+i
+
+dt + C, (75) 
+
+where: 
+
+KL Poi (λ∥λθ ) := λ log λλθ − λ + λθ ,
+
+KL Cat (ˆ r∥rθ ) := X 
+
+> j̸=i
+
+ˆr(j | i) log ˆr(j | i)
+
+rθ (j | i) . (76) 
+
+Proof. Substitute ˆRt(i, j ) = ˆλt(i)ˆ rt(j | i) and Rθt (i, j ) = λθt (i)rθt (j | i) into (61): 
+
+X 
+
+> j̸=i
+
+"
+
+ˆRt(i, j ) log ˆRt(i, j )
+
+Rθt (i, j ) − ˆRt(i, j ) + Rθt (i, j )
+
+#
+
+= X 
+
+> j̸=i
+
+ˆλt(i)ˆ rt(j | i) log ˆλt(i)ˆ rt(j | i)
+
+λθt (i)rθt (j | i) − ˆλt(i) + λθt (i)= ˆλt(i) log ˆλt(i)
+
+λθt (i) + ˆλt(i) X 
+
+> j̸=i
+
+ˆrt(j | i) log ˆrt(j | i)
+
+rθt (j | i) − ˆλt(i) + λθt (i)= KL Poi (ˆλt(i)∥λθt (i)) + ˆλt(i) · KL Cat (ˆ rt(· | i)∥rθt (· | i)) .
+
+(77) 
+
+Corollary C.6. The training objective (14) can be estimated via Monte Carlo sampling: 
+
+L(θ) := Et∼U (0 ,T ), x t∼qt
+
+h
+
+KL Poi (ˆλt(xt)∥λθt (xt)) + ˆλt(xt) · Ej∼ˆrt(·| xt)
+
+− log rθt (j | xt) − ˆλt(xt)H(ˆ rt)
+
+i
+
+, (78) 
+
+where H( ˆrt) := − P 
+
+> j̸=i
+
+ˆrt(j | i) log ˆ rt(j | i) is the entropy of the true reverse jump distribution. Equivalently, using the cross-entropy (CE) identity KL Cat = CE − H:
+
+L(θ) = Et,x t
+
+h
+
+KL Poi (ˆλt(xt)∥λθt (xt)) + ˆλt(xt) · CE (ˆ rt(· | xt), r θt (· | xt)) 
+
+i
+
++ const . (79) 
+
+Proof. Direct application of Monte Carlo integration to (14): 
+
+Z T
+
+> 0
+
+X
+
+> i∈S
+
+qt(i) · (· · · ) d t = T · Et∼U (0 ,T )
+
+"X
+
+> i∈S
+
+qt(i) · (· · · )
+
+#
+
+= T · Et∼U (0 ,T ), x t∼qt [( · · · )] . (80) The categorical KL can be written as: 
+
+KL Cat (ˆ rt∥rθt ) = Ej∼ˆrt [− log rθt (j | xt)] − H(ˆ rt), (81) where the first term is the cross-entropy and the second is the entropy (independent of θ). 20 Lemma C.7. Let p0 be a distribution over S, and let p(· | x0) be conditional distributions such that 
+
+p(x) = P
+
+> x0∈S
+
+p0(x0)p(x | x0) is the marginal distribution. For any measurable function f : S × S → R, we have: 
+
+Ex∼p
+
+X 
+
+> y̸=x
+
+f (x, y ) p(y)
+
+p(x)
+
+ = Ex0∼p0, x ∼p(·| x0)
+
+X 
+
+> y̸=x
+
+f (x, y ) p(y | x0)
+
+p(x | x0)
+
+ . (82) 
+
+Proof. 
+
+Ex∼p
+
+X 
+
+> y̸=x
+
+f (x, y ) p(y)
+
+p(x)
+
+ = X
+
+> x∈S
+
+p(x) X 
+
+> y̸=x
+
+f (x, y ) p(y)
+
+p(x)= X
+
+> x∈S
+
+X 
+
+> y̸=x
+
+f (x, y )p(y)= X
+
+> x∈S
+
+X 
+
+> y̸=x
+
+f (x, y ) X
+
+> x0∈S
+
+p0(x0)p(y | x0)= X
+
+> x0∈S
+
+p0(x0) X
+
+> x∈S
+
+X 
+
+> y̸=x
+
+f (x, y )p(y | x0)= X
+
+> x0∈S
+
+p0(x0) X
+
+> x∈S
+
+p(x | x0) X 
+
+> y̸=x
+
+f (x, y ) p(y | x0)
+
+p(x | x0)= Ex0∼p0, x ∼p(·| x0)
+
+X 
+
+> y̸=x
+
+f (x, y ) p(y | x0)
+
+p(x | x0)
+
+ .
+
+(83) 
+
+Proposition C.8. For a fixed data point x0 ∈ S , define the conditional reverse rates: 
+
+ˆRt|0(j, i | x0) := Rt(i, j ) qt|0(i | x0)
+
+qt|0(j | x0) , i̸ = j, (84) 
+
+ˆλt|0(i | x0) := X 
+
+> j̸=i
+
+ˆRt|0(i, j | x0) = X 
+
+> j̸=i
+
+Rt(j, i ) qt|0(j | x0)
+
+qt|0(i | x0) , (85) 
+
+ˆrt|0(j | i, x 0) := ˆRt|0(i, j | x0)ˆλt|0(i | x0) = Rt(j, i ) qt|0(j|x0)
+
+> qt|0(i|x0)
+
+ˆλt|0(i | x0) , j̸ = i. (86) 
+
+Then the training loss (79) can be equivalently written as: 
+
+L(θ) = Et∼U (0 ,T ), x 0∼pdata , i ∼qt|0(·| x0)
+
+− X 
+
+> j̸=i
+
+Rt(j, i ) qt|0(j | x0)
+
+qt|0(i | x0) log λθt (i)rθt (j | i) − ˆλt|0(i | x0) + λθt (i)
+
++const .
+
+(87) 
+
+Proof. We expand the training loss (79) and apply Lemma C.7 to transform marginal distributions to conditional distributions. Starting from (79), expand the KL divergence and cross-entropy: 
+
+L(θ) = Et∼U (0 ,T ), i ∼qt
+
+h
+
+KL Poi (ˆλt(i)∥λθt (i)) + ˆλt(i) · CE (ˆ rt(· | i), r θt (· | i)) 
+
+i
+
++ const 
+
+= Et∼U (0 ,T ), i ∼qt
+
+ˆλt(i) log ˆλt(i)
+
+λθt (i) − ˆλt(i) + λθt (i) − ˆλt(i) X 
+
+> j̸=i
+
+ˆrt(j | i) log rθt (j | i)
+
+ + const .
+
+(88) Using ˆλt(i) = P 
+
+> j̸=i
+
+ˆRt(i, j ) = P 
+
+> j̸=i
+
+Rt(j, i ) qt(j) 
+
+> qt(i)
+
+and ˆλt(i)ˆ rt(j | i) = ˆRt(i, j ) = Rt(j, i ) qt(j) 
+
+> qt(i)
+
+, we can write: 21 The first term: 
+
+Et∼U (0 ,T ), i ∼qt
+
+"
+
+ˆλt(i) log ˆλt(i)
+
+λθt (i)
+
+#
+
+= Et,i 
+
+X 
+
+> j̸=i
+
+Rt(j, i ) qt(j)
+
+qt(i) log 
+
+P 
+
+> k̸=i
+
+Rt(k, i ) qt(k)
+
+> qt(i)
+
+λθt (i)
+
+
+
+= Et,i 
+
+X 
+
+> j̸=i
+
+Rt(j, i ) qt(j)
+
+qt(i) log 
+
+P 
+
+> k̸=i
+
+Rt(k, i ) qt(k)
+
+> qt(i)
+
+λθt (i)
+
+
+
+− Et∼U (0 ,T ), x 0∼pdata , i ∼qt|0(·| x0)
+
+X 
+
+> j̸=i
+
+Rt(j, i ) qt|0(j | x0)
+
+qt|0(i | x0) log λθt (i)
+
+
+
+= const − Et∼U (0 ,T ), x 0∼pdata , i ∼qt|0(·| x0)
+
+hˆλt|0(i | x0) log λθt (i)
+
+i
+
+.
+
+(89) The second term: 
+
+Et∼U (0 ,T ), i ∼qt
+
+h
+
+−ˆλt(i)
+
+i
+
+= Et,i 
+
+− X 
+
+> j̸=i
+
+Rt(j, i ) qt(j)
+
+qt(i)
+
+
+
+= Et∼U (0 ,T ), x 0∼pdata , i ∼qt|0(·| x0)
+
+− X 
+
+> j̸=i
+
+Rt(j, i ) qt|0(j | x0)
+
+qt|0(i | x0)
+
+
+
+= Et∼U (0 ,T ), x 0∼pdata , i ∼qt|0(·| x0)
+
+h
+
+−ˆλt|0(i | x0)
+
+i
+
+.
+
+(90) The third term: 
+
+Et∼U (0 ,T ), i ∼qt
+
+−ˆλt(i) X 
+
+> j̸=i
+
+ˆrt(j | i) log rθt (j | i)
+
+ = Et,i 
+
+− X 
+
+> j̸=i
+
+ˆλt(i)ˆ rt(j | i) log rθt (j | i)
+
+
+
+= Et,i 
+
+− X 
+
+> j̸=i
+
+Rt(j, i ) qt(j)
+
+qt(i) log rθt (j | i)
+
+
+
+= Et, x 0, i 
+
+− X 
+
+> j̸=i
+
+Rt(j, i ) qt|0(j | x0)
+
+qt|0(i | x0) log rθt (j | i)
+
+
+
+(91) Therefore, combining the three terms leads to the conclusion. 
+
+Proposition C.9. Assume: (i) forward quantities ( qt, qt|0, p(x0 | xt)) are independent of θ; (ii) Rθt (i, j ) > 0
+
+and differentiable in θ for all i̸ = j; and (iii) differentiation can be exchanged with expectation/integration. Then there exists a θ-independent constant Cgap ≥ 0 such that 
+
+LKL (θ) = KL( ˆQ∥Pθ ) + Cgap ,
+
+hence 
+
+∇θ LKL (θ) = ∇θ KL( ˆQ∥Pθ ).
+
+In particular, 
+
+arg min  
+
+> θ
+
+LKL (θ) = arg min  
+
+> θ
+
+KL( ˆQ∥Pθ ),
+
+and every stationary point of one objective is a stationary point of the other. 
+
+22 Proof. For fixed (t, i, j ), let R := ˆRt(i, j | X0) with X0 ∼ p(x0 | xt = i) and let c := Rθt (i, j ). Since 
+
+E[R] = ˆRt(i, j ), expanding f (r, c ) = r log rc − r + c gives 
+
+E[f (R, c )] − f (E[R], c ) = E[R log R] − E[R] log E[R] =: ∆ t,i,j ≥ 0,
+
+where ∆t,i,j is independent of c and thus independent of θ. Multiplying by qt(i), summing over i ∈ S and 
+
+j̸ = i, and integrating over t yields 
+
+LKL (θ) = KL( ˆQ∥Pθ ) + 
+
+Z T
+
+> 0
+
+X
+
+> i∈S
+
+qt(i) X 
+
+> j̸=i
+
+∆t,i,j dt. 
+
+Setting Cgap := R T
+
+> 0
+
+P
+
+> i∈S
+
+qt(i) P 
+
+> j̸=i
+
+∆t,i,j dt ≥ 0, under assumptions (i)–(iii), differentiation can be passed through the expectation and integral, so ∇θ LKL (θ) = ∇θ KL ( ˆQ∥Pθ ). Adding a θ-independent constant does not change the minimizers, and identical gradients imply identical stationary points. 
+
+Corollary C.10. Defining K(a) := a(log a − 1) , the loss LKL (θ) equals: 
+
+Lcond (θ) = Et, x 0, i 
+
+h X  
+
+> j̸=i
+
+λθt (i)rθt (j | i) − X 
+
+> j̸=i
+
+Rt(j, i ) qt|0(j | x0)
+
+qt|0(i | x0) log λθt (i) rθt (j | i)
+
+Rt(j, i )+ X 
+
+> j̸=i
+
+Rt(j, i ) K
+
+ qt|0(j | x0)
+
+qt|0(i | x0)
+
+i
+
+.
+
+(92) 
+
+Proof. For fixed (t, x 0, i, j ), write 
+
+ˆRt|0(i, j | x0) = Rt(j, i ) qt|0(j | x0)
+
+qt|0(i | x0) and Rθt (i, j ) = λθt (i) rθt (j | i).
+
+Expanding the Poisson KL density gives 
+
+f
+
+ ˆRt|0(i, j | x0), R θt (i, j )
+
+
+
+= ˆRt|0(i, j | x0) log ˆRt|0(i, j | x0)
+
+Rθt (i, j ) − ˆRt|0(i, j | x0) + Rθt (i, j )= Rθt (i, j ) − ˆRt|0(i, j | x0) log Rθt (i, j )
+
+Rt(j, i )+ Rt(j, i ) K
+
+ qt|0(j | x0)
+
+qt|0(i | x0)
+
+
+
+.
+
+(93) Summing over j̸ = i and taking expectation over (t, x 0, i ) yields Lcond (θ). Since LKL (θ) is defined as the expectation of the same pairwise density f , this proves Lcond (θ) = LKL (θ).
+
+Corollary C.11 (Equivalence to MDLM, restated) . If the forward process is the masked (absorbing) process on S = V ∪ { m}, then for any valid noise schedule αt, the loss (22) reduces to the MDLM cross-entropy loss (23) .Proof. We work directly with Lcond (θ). The integrand of (22) decomposes as 
+
+− X 
+
+> j̸=i
+
+ˆRt(i, j | x0) log Rθt (i, j )
+
+| {z } 
+
+> Term 1○
+
++ X 
+
+> j̸=i
+
+Rθt (i, j )
+
+| {z } 
+
+> Term 2○
+
++ (θ-independent terms) ,
+
+where ˆRt(i, j | x0) = γt e⊤ 
+
+> j
+
+(x0 − em)1{i=m} and Rθt (i, j ) = γt e⊤ 
+
+> j
+
+(xθ − em)1{i=m} with γt := −α′
+
+> t
+
+/(1 − αt) > 0.When i̸ = m, both rates vanish, so the integrand is zero. For i = m, the sum runs over j̸ = m, and orthogonality e⊤ 
+
+> j
+
+em = 0 simplifies the rates to ˆRt(m, j | x0) = γt e⊤ 
+
+> j
+
+x0 and Rθt (m, j ) = γt e⊤ 
+
+> j
+
+xθ .23 Term 1○:1○ = − X 
+
+> j̸=m
+
+γt(e⊤ 
+
+> j
+
+x0) log  γt e⊤ 
+
+> j
+
+xθ
+
+ = −γt log γt
+
+X 
+
+> j̸=m
+
+(e⊤ 
+
+> j
+
+x0)
+
+| {z }
+
+> = 1
+
+−γt
+
+X 
+
+> j̸=m
+
+(e⊤ 
+
+> j
+
+x0) log( e⊤ 
+
+> j
+
+xθ )= −γt log γt − γt x⊤ 
+
+> 0
+
+log xθ ,
+
+where we used that x0 is one-hot on V so P 
+
+> j̸=m
+
+e⊤ 
+
+> j
+
+x0 = 1 .Term 2○:2○ = X 
+
+> j̸=m
+
+γt e⊤ 
+
+> j
+
+xθ = γt
+
+X 
+
+> j̸=m
+
+e⊤ 
+
+> j
+
+xθ
+
+| {z }
+
+> = 1
+
+= γt,
+
+using the normalization of xθ on V.Combining: setting Ct := −γt log γt + γt (independent of θ): 1○ + 2○ = −γt x⊤ 
+
+> 0
+
+log xθ + Ct = α′
+
+> t
+
+1 − αt
+
+x⊤ 
+
+> 0
+
+log xθ + Ct.
+
+Taking the expectation over (t, x 0, x t) and absorbing all θ-independent terms into C yields (23). 
+
+Proposition C.12 (Pointwise optimality, restated) . For fixed t and i, define gt,i (λ, r ) := KL Poi  ˆλt(i)∥λ +ˆλt(i) KL Cat  ˆrt(· | i)∥r. If ˆλt(i) > 0, then gt,i (λ, r ) ≥ 0 with equality if and only if λ = ˆλt(i) and r = ˆrt(· | i).If ˆλt(i) = 0 , the unique minimizer in λ is λ = 0 and the choice of r is irrelevant. Proof. Since both terms are non-negative, gt,i (λ, r ) ≥ 0. For the Poisson KL, KL Poi ( ˆλ∥λ) = ˆλ log ˆλλ − ˆλ + λ.Taking the derivative with respect to λ and setting it to zero: −ˆλ/λ + 1 = 0 , giving λ∗ = ˆλ. The second derivative ˆλ/λ 2 > 0 confirms this is a strict minimum, and KL Poi ( ˆλ∥ˆλ) = 0 . For the categorical KL, 
+
+KL Cat ( ˆr∥r) ≥ 0 by Gibbs’ inequality, with equality if and only if r = ˆr. When ˆλt(i) = 0 , the Poisson KL reduces to λ ≥ 0 with minimum at λ = 0 , and the categorical term vanishes since it is weighted by 
+
+ˆλt(i) = 0 .
+
+# D Additional Experimental Details 
+
+Datasets. We evaluate on two datasets: (1) TinyStories [Eldan and Li, 2023], a corpus of simple short stories for language modeling; (2) OpenWebText (OWT) [Radford et al., 2019], a large-scale web text corpus. Both are tokenized with the GPT-2 BPE tokenizer (vocabulary size 50257) and truncated or padded to a maximum sequence length of 512. 
+
+Architecture. Neural CTMC uses a 12-layer DiT-style Transformer with hidden dimension 768, 12 attention heads, and a time-conditioning dimension of 128. The vocabulary embedding is rounded up to 50304 (the nearest multiple of 128) for hardware efficiency. The total parameter count is approximately 163M. 
+
+Baselines. For TinyStories, we train MDLM and GIDD from their official source code using the same architecture and training budget as Neural CTMC. For OpenWebText, we use the official released checkpoints of SEDD (682B training tokens), MDLM (262B), and GIDD (262B). GIDD is evaluated with its best interpolation parameter punif = 0 .1. Tokenization and maximum sequence length are matched across methods; for OpenWebText, we regard the resulting comparison as best-effort because the released checkpoints are not trained under a completely identical pipeline. 24 Evaluation. All methods are evaluated using the same protocol: we generate 1024 unconditional samples per configuration and score them with a pretrained Gemma-2 model to obtain generative perplexity (PPL). This measures sample quality under a common external language model, rather than the ELBO-based perplexity reported in some prior work. Because the estimate is computed from a finite sample set, we report the resulting values using ≤ notation in the tables and discussion. For TinyStories, we report PPL over training epochs with 50 sampling steps. For OpenWebText, we sweep the number of sampling steps over 
+
+{16 , 32 , 64 , 128 } at the final checkpoint. 
+
+Sampling. We evaluate two sampling schemes: Euler (Algorithm 3) and τ -leaping (Algorithm 2). For TinyStories, we report both; for OpenWebText, we report the Euler sampler at varying step counts. The number of sampling steps is 50 for TinyStories training curves and varies from 16 to 128 for the OpenWebText step-sweep experiment. Pseudocode for both samplers is given below. 
+
+Algorithm 2 τ -Leaping  
+
+> 1:
+
+Set τ = TN and sample xT ∼ Uniform( S) 
+
+> 2:
+
+for n = N downto 1 do  
+
+> 3:
+
+t ← nτ ;  λθt (xt), · ← Φθ (xt, t ) 
+
+> 4:
+
+Sample k ∼ Poisson  λθt (xt) · τ  and set x′ ←
+
+xt 
+
+> 5:
+
+for m = 1 to k do 
+
+> 6:
+
+ ·, r θt (· | x′) ← Φθ (x′, t ); x′ ∼ rθt (· | x′) 
+
+> 7:
+
+end for  
+
+> 8:
+
+xt−τ ← x′ 
+
+> 9:
+
+end for  
+
+> 10:
+
+Return x0
+
+Algorithm 3 Euler  
+
+> 1:
+
+Set τ = TN and sample xT ∼ Uniform( S) 
+
+> 2:
+
+for n = N downto 1 do  
+
+> 3:
+
+t ← nτ ;  λθt (xt), r θt (· | xt) ← Φθ (xt, t ) 
+
+> 4:
+
+Set pj ← λθt (xt) · rθt (j | xt) · τ for j̸ = xt, and 
+
+pxt ← 1 − λθt (xt) · τ 
+
+> 5:
+
+xt−τ ∼ Cat  {pj }j∈S 
+
+ (requires λθt (xt)τ ≤ 1) 
+
+> 6:
+
+end for  
+
+> 7:
+
+Return x0
+
+# E Generated Samples 
+
+We present generated samples from Neural CTMC, shown without post-processing. 25 E.1 Image Generation    
+
+> (a) Euler (128 steps) (b) τ-leaping (128 steps)
+
+Figure 2: Unconditional MNIST samples generated by Neural CTMC at epoch 80 with 128 sampling steps. Each row corresponds to one digit class (0–9), with 10 samples per class. 
+
+## E.2 TinyStories 
+
+Sample 1. One day, a girl named Amy went to the park to play. She saw a van full of yummy snacks. Amy’s friend Tom wanted to buy some from the store. Amy and Tom went to the store, but they didn’t sell the snacks. There were still many things, and Amy was sad. Then they saw a lady in the park. She saw how sad Amy was. The lady said “Amy, why don’t you sell the snacks?” Amy thought for a moment and said, “Let’s tell the other boy to ask.” They walked to a boy and said, “We did this in the shop. Can we buy the food?” The boy sold the food and Tom was happy. He said “thank you, Tom!” Amy smiled and said, “You’re welcome Tom! We shared a story and sometimes it’s good to tell questions, it can make others happy.” Amy and Tom became the best of friends. 
+
+Sample 2. Once upon a time there was a stubborn little boy. He liked to play all day, but one day he found a whistle. He decided to pick it up and blow it. He wiggled around and his head started to blow a tune. He was so happy and he was having so much fun. He was playing when a wise old owl came along. The owl asked the whistle: “Dumb, you have some music coming from when you work up close. Watch the practice”. The stubborn little boy listened as the owl had said earlier. He just listened to the music and then opened his mouth and blowing it in the air. The whistle was so happy he could whistle louder, but eventually he started to forget how stubborn he was. 
+
+Sample 3. Lily and Tom are at the park with their mom. They see a slide and want to go on the big slide. So they take turns to go first. Lily goes first and sits on the slide fast. She says, “Look, I did it, I had fun!” Tom slides down again and again. Lily is sad and angry. She walks to the bench and says, “Take it back! The slide is not fair with all the fun!” But Tom says, “No, mom! Go away, this is my slide!” Mom sees what is happening and comes to the bench. She sees Lily and Tom fighting. She is not happy. She says to them, “You are naughty kids. You cannot play on the slide. You have to ask before you play. The slide is a park, it is a place to play. You have the chance.” Lily and Tom feel sorry. They say, “I’m sorry, mom. I was wrong. We will be nice next time. We will wait for you and you will be happy.” They decide to go on the slide together. They climb the steps slowly. They make it to the top. Mom smiles. She says, “Good job, kids. You are brave. Let’s go home now. Lunch time.” Lily and Tom hug mom. They are happy again. 
+
+Sample 4. Once upon a time, there was a boy called Timmy. Tommy loved to play outside, so he loaded rocks with him. Tommy especially loved playing in the sand when he was outside. One night, Timmy got 26 so light, he fell asleep by the sea. He ran to the beach to take his shovels in the sand. When he came to the beach, though, he encountered fear. He saw a alive little puppy and that it seemed to be stuck in the sea. Timmy’s heart sank and ran with his shovel to help the pup. He worriedly dug free the little pup, as it couldn’t breathe properly. The little puppy wagged its tail and was looking back at Tommy in his eyes. From then on, Timmy never wanted to go back to the beach. He wanted to play and have a new furry friend to explore. The End. 
+
+Sample 5. Once upon a time, there was a little girl who liked to touch things. She had a lot of questions and always wondered where she could go because she liked to explore nature. One day in the forest, she came across something very fragile. It was a small button and looked very fascinating. She touched it out and realized it hurt her. The little girl looked around and saw unknown things that she had never seen before. She was so excited as she touched it to show her friends. She quickly ran back home and proudly showed them the fragile button. Her one of her friends said, “That is amazing! That looks fragile. We should keep extra care in the future.” The little girl smiled and said “I know, what friendship will come with?” Just that, the little girl and her friends had a wonderful time in the forest! 
+
+Sample 6. Once upon a time there lived a girl called Mia. She was three years old and had big ears. All the little kids near the beach, Mia liked to whistle with her lip in the sandpit. One day, Mia put on her swim suit and went to the beach. She looked around and saw a little box full of toys in it. Mia picked up the toys and tried to shout. Nothing she could hear, Mia tried and tried, but she couldn’t. Then, Mia heard a noise behind her. She turned and saw a man in a funny hat was walking towards her. He said, “hello Mia!” Mia was embarrassed but she decided not to be scared, and she managed to pay down the sound of whistle. The man came out of the car and approached them both. Mia said, “I’m Mia”. The man smiled and said, “I’m Henry”. Mia’s mom was so happy to meet Mia and the man. They all became friends and had a lot of fun. Mia even bought a new toy. Mia smiled and waved goodbye as the man left, feeling Mia would never forget her day. 
+
+Sample 7. Jack woke ready today one morning. He put on his hat, and on his lovely shoes. He grabbed his lunch bag because he knew he was going. At the park, Jack saw a big tank that he had never seen before. He was so excited and he ran over to see the tank, but when he got the tank down in front of him, he was very sad. He saw worms, bugs, and shout. But then a friendly voice shouted, “Don’t worry Jack. I can help you”. Jack looked up and saw a friend. It was his friend John. John said, “Let’s go explore the tank together!” So they went in, and Jack was so happy. Jack and his friend explored together all night and eventually they discovered a big aquarium. They played games together and saw fish swimming in the tank. Jack was so happy. Jack started it was time to go home, but instead he said “I want to be friends?” John just smiled and hugged his best friend. They both ran back to the park and they had a great day. 
+
+Sample 8. Lily and Ben were twins and liked to play outside with their toys. They had a red cart that they always filled with tape and toys. They liked to make roads and houses with blocks and pretend they were lions and horses. One day, they decided to go with their cart to the park. They asked their mom to let them have fun. She said yes and let them. They pushed their cart on the road, holding hands, jumping and laughing. Ben was driving the cart, but Lily was faster. She saw that their cart had a big stick that had been cut off. She tried to cut it, but it was too tight. She pushed it off and ran away. Ben said that was not fair and ran after it. They both took the cart with all their might. But they did not see a big puddle of mud behind. They did not hear how mom was coming to pull them out. Their mom was not happy. She made them wash the mud and the cart. She told them to take away all their toys and go home. She told them to say sorry and share their toys, and never to play with their cart for a week. Ben and Lily felt sad and sorry. They realized they did not mean to be polite. They wished they had never fought over the stick again. They wished they had been more polite. 
+
+Sample 9. Once upon a time there was a bear and a rabbit in their den in the forest. In the forest there was a big cake. The bear and rabbit were curious about the cake so they decided to go. Slowly, they bounced and skipped on their way. They were starting to feel very happy. Soon they realized they were in a place to get to the cake. “Where are we going?” shouted the tree. The rabbit and bear looked around. Suddenly a wise voice said back, “Why won’t you return to a group of humans? They will compete for the best cake at the competition!” The bear in the forest cheered. The bear was so excited and wanted to join the competition. Together they went on the stage and cheered as they won. 27 Sample 10. Once upon a time there was a curious frog. He lived in a green and peaceful forest. One day, the frog decided to go for a swim. He went to the pond but his body settled down the water. He liked to see the water and decided to take a closer look. But afterwards all the way closer, he came across a keeper that was causing the water. The keeper didn’t like having the water frog along the pond so he agreed to arrest him. The frog was sad but he was determined to give himself a try. He jumped and splashed with the animals for a long time. Suddenly, something wonderful happened. The gust of wind blew very hard and the little frog was blown away from the pond. The frog was so happy and quickly swam away. The other animals watched him to drink the pond from above, happy he had helped his friends. 
+
+## E.3 OpenWebText 
+
+Sample 1. Let’s examine Golden State’s next in this year-end battle: allowing people aspiring to buy health-care policies from companies to enjoy access to one for everyone. The commission whose leading role in acquiring health insurance is considering that an exchange delivered from state over state to Golden State be moved to the new opportunity to compete to policies denied consumers by government — resulting in the health insurance industry’s loss of interest — through 2017. While that leaves Sacramento residents looking for an option, a free, tangible savings account appears insufficient because they don’t think it could help any of them. “If the general democracy was against it, we would be reluctant to get our health insurance in that state and go through that state,” Tourer said. Now that leaves an alternative: “Making sure you don’t out and buy insurance and anything about our state we love is equity and fairness and everything else, now we have to decide whether not for you and you want to have subsidies and or not,” he said. More close-to-your-time credit or financial security is what the current system does. But that financial stability has recently led to many types of miners copying and rewriting health insurance policies, as well as an increasing interest in the markets becoming the norm. That, unlike some things in the health care markets, are terms that certainly aren’t too complicated in fact. The federal government can explain why and how it changed years ago. Of course, the new Consumer Financial Protection Bureau report provided that some of the support changed came from the same agency that had commissioned a statewide campaign to force the 10-percent health care burden toward poor and rich Southern California. It argues that it means that the bottom line comes in with those of our new neighbors. 
+
+Sample 2. After taking off a plane Monday morning, Alex Campbell met with the coach himself Monday night, as the Flames haven’t played under Campbell this year. In addition to autographs by former Flames-line player and right-arm captain Alexander Grad (who was the Stanley Cup team’s affiliate with hockey team Arizona last year) we’ve taken a look at the life of city’s top scorer, who moves the third straight. “I think we end up a pretty good overall record in a team. Really here, during that period when people come to a wedding or dinner, who take in season trophies, he does play remarkably well overall,” said Westberg, who is coach in the North Central Lakes Helacs. Former GM Simon Keller spent an extended 20 years in the NHL but has been slowly to build into a guy as an 18-year-old 13 years. He’s pretty well engaged and has a good story. He began to really early grow as a person, and was definitely a contributor in a few of them before he went to the Devils in 2004. That fierce sense of humor is useful to those in our organization as well as him. “That’s cognac stuff. And we are a great, centered person. It needs some energy and variety, he’s great. And he’s supposed to be a proper player. But we might deliver some tactical stuff.” 
+
+Sample 3. As Japan’s tech industry has coalesced their startup talent and created so much future there will be computer generated labor for entrepreneurs to do in Japanese. Concern among those around the country is about how best to train workers to complex tasks such as to for goods during limited shifts. For some resigned, tech employees in this sector have been pushing to increase the labor base to more than expected, which could help boost corporations’ share of corporate workers from a projected low 600,000 a year, according to USA Today, with some regulations to protect businesses from worker making human workforce. Long-time automation — as a result, the controversy surrounding an AI company by the Open House artificial intelligence Institute called Magnii, based on a capitalists’ vision, has been heavily development by Nune Labs and its Tokyo headquarters. Though Tokyo, with its 11 million population, features the country’s top job market, over a million Japanese entrepreneurs lack any longer work. Nvo Labs had a disparate interest in AI that led to the head of police department Yumsuki backing away with Niigueu in fall of 2013. The Lab has committed to introducing autonomy and run AI development programs at warehouse laboratories in 28 villages, comparable to an ITTA cooperative. She also continued to pursue efforts to install local government staff that can better handle high-end robots, like the AITs. 
+
+Sample 4. Chief thing here today from my employer, Barlan Yblin. You’ve got to be the newest newcomer to the limelight, Bernie Sanders. I’ve long been paying attention to the Sanders’ argument too much. As CNBC reports, the American economy has lost roughly $3.6 million worth of jobs per month in June, or $37 million — making up the rest, such as child care and childcare for mental veterans. Sanders seems to be not making claims that have put the economy “under far greater strain.” Case: In 2009, since is fourth year, a data center report showed the net worth of all U.S. households had plunged. The report insisted that in 2009, the entire economy lost roughly $1 trillion more. This was down by a little over a tenth of a share compared with five years. For comparison to the past, incomes were consistently diminished with little improvement in value, and earnings analyses found no improvement. But jobs seem to have seemed to have a great impact. Ultimately, any company looking to hire workers in this is notoriously insubordinate. Now the Washington Post’s library of political papers has covered none of this. We mention that Mr. Sanders has said that many companies lowered their payloss because of the country’s improving economy and the currently difficult times. 
+
+Sample 5. For the past decade, Google has attempts to take the leap in building up a truly free WiFi-only hardware platform given that it lacks single-party cross-network support, and that its OS will allow all to get a full unexperimental operating system in the modern day world through an incredibly revolutionary privacy approach. “We woke up the OEM crowd with maybe 1 chance so they realise that Google’s not afraid of it,” explains Johannes Systant, vice-president of GTH. This isn’t really too much different for what hardware Google, though, are trying to do. Cross-network devices are the first to lead connected platforms in terms of improving our devices by allowing all computers to interact with data, talk and play. Android is part of many a very powerful advancement of the Internet through the same way that Chromebooks pick up their favourite Android app for free. Google is basically plugging the Internet into the plug out of incorporate common USB devices. The key for Google to deliver on its traditional model is where networks and handhelds succeed. Using this technology, you can comfortably control a USB device to a network device to connect a USB DN port, or other abstractly or remotely, to the network. Through open standards, paired between two USB ports, you can securely connect your Ethernet device connected to a cryptographic service and from any USB port. Using such devices, you’ll be able to encrypt your computer’s pointing code and transfer that data right out into your home computer’s additional encryption chip. 
+
+Sample 6. Down on Labor? The Radical Coalition says “came cut off” from Federal Broadcasting Commission investigation. A UN conference urging Labor to join an inquiry into violations of public broadcasting freedom has turned up and out. The inquiry’s focus is an ongoing effort to examine the internal climate science submissions debate that led to the Rudd government’s denial of access to the Danish and Dutch Science Centre (EK) in the Delta area. It gives retreat access to report to be chaired by Mike Smith, UN wildlife director, the morning of a press conference. It was revealed former Labor backbencher Gordon Bensonberg, from the WA Liberals and now the head of the environmental campaign of the Greens, is in step wrong for the activities of a UN inquiry into the practice. “As I reported, there is a regime in the Australian people have so far known that the issue of using this column to a UN investigation regarding the conversations between the EK and the Australian organisation was — a legally relevant issue, that the land owners were not worthy to answer,” Bensonberg told a hallway questions account. Senior members of the committee of the inquiry were not immediately available to comment for this report. The United Party of Labor spokesperson, Elizabeth Raffre, told the ABC the group would not join the UN inquiry: “Currently, we are carrying out what they deal with at that, but we know that’s not a part of investigation that they’ll get to us.” The conference stressed it had not been told how the Radical Coalition gathered for the human rights briefings in September. 
+
+Sample 7. Chinese Super League Poland have won for the first time in a World Cup. The Lions are expected to win this past Champions International in 2010 after three successive competitions. Clant-Club City and Cardiff were bracing for plenty after a disappointing losing performance at the 2015 Cup. Nevertheless, with the on-and-out post-season August 1 International, them should have the opportunity to compete. The World Championship match will no doubt irritate the young squad. However a huge performance is not always the answer, however who knew it was an unsuccessful visit to England. With many hoping there is a red-and-red affair aimed at Tony Bois, it’s unlikely that there will. The players do have plenty of prying over this fixture, 29 though it should fit the eye better for Yi Xiaakis and the rest of the emerging squad. Speaking after this clash, Tony Bois told Daily Football that “it can’t be enough ambition”. The 30-year-old believes that now with China the organisation is listening. He couldn’t force the fight after the court in a commercial clash. Although China is Poland’s problem, Hoo still has a motivation that his team will get better. They have won a lot in a little over three seasons at the top, and I will defend another great old team. 
+
+Sample 8. WASHINGTON — The Huffington Post recently reported that Connecticut Arms Owners Protection (DFA) background checks are necessary for gun purchases related to the Newtown shooting, leading to law-abiding pistol-regulators and killing people. Per the report on Friday, government-sponsored gun legislation, employing a concealed weapon legislation that protects gun transactions and convictions for possessing the concealed weapons, had by 2013 violated federal and legal authority for concealed weapon holders. In 2013, when DFA along with additional gun restrictions went on the books, the power of state lawmakers and manufacturers to manufacture and prohibit concealed weapon holders from carrying guns for personal use would create a precedent for the act of mass murder of someone fatally using a gun or a handgun, as well as committing a killing for dealers and other gun dealers. On Saturday, The Washington Post came out with the news, carrying an account of the shooting of 20 people killed on Boston streets. It is not clear whether the shooting chose to use a federal TPP agreement to bring concealed handguns outside the U.S. after Newtown. The story did not attract concerned attention. It should have become clear that the story is either the whole story or, with its many parts, however, it was a first-hand experience that would have sparked outrage among only the front organs of the newspaper. 
+
+Sample 9. In northeast Wisconsin’s second Congressional district, Rep. Frank Miller (R-WI) was making out to reporters in a pricey real estate section of Bloomberg headquarters. He called himself a physicist — like the humble servant that found iron Aug. 25 on Jay Jones and addressing his fans at the CEO Leadership Leaders Summit in San Francisco. The clue is silly and incomplete, intended to unify conservatives with a 2016 election season over the horizon. It bears out a lot of never-ending confusion about whether the president’s plan, which would impose new corporate income taxes, is simply flying under the radar. The stuff hasn’t changed and it’s a make-believe policy package. It doesn’t necessarily matter because you are an investment banker. In the way the plan specifically considers, you’re the one who doesn’t pay income tax. But in the wake of last month’s results, the president has not proposed a taxcut, but it’s to promote the dream of personal deductions. And the bottom line: you won’t get an income-cut for millions of people. Miller’s website has a similar message, but in reality, it helps the people who don’t understand it understand the roots. The billionaire businessman’s brand rests on revenue and its business model — not Bloomberg, for three local newspapers. 
+
+Sample 10. New York J Committee Giants Nats Jets 10-3 Set To Play. That’s the common sense for the Jets offense, common with a defensive powerhouse feeling out after making an unexpected draw in overtime against the Giants. Despite a healthy quarterback that was named doubtful for an 80-plus-point rally — the Jets had an outstanding defensive performance in the home defeat. The Jets go on a limb even if it can be said that the Jets pushed offenses into the brawl after the trade of Charlie Mario Bisolo near the end of the team’s game. “I’ll be here tonight,” Mike Gonzalez, the Green Bay and defensive tackle’s overall skill, told a Giants coach. But then something changed. “The problem with that, we go to make sure you can get true wins, you can have interceptions at all times,” Gonzalez said. The Jets will need more aggressive defense when sometimes and power are paid. “Without reaching the distance, you’ll pretty much never be playing,” Gonzalez said. “But I think, they’ve always had their defensive players tell me, they can’t give you a challenge. No, I said, you can’t score if you have no, you can’t be good, you cannot be effective from the line I got on the edge.” 30
