@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.16865v1/fig-001.webp",
+      "caption": "Table 1: Best MAE, original time series Bx.",
+      "page": 19,
+      "index": 1,
+      "width": 895,
+      "height": 237
+    },
+    {
+      "url": "assets/figures/arxiv/2604.16865v1/fig-002.webp",
+      "caption": "Table 2: Best RMSE, original time series Bx.",
+      "page": 19,
+      "index": 2,
+      "width": 895,
+      "height": 237
+    },
+    {
+      "url": "assets/figures/arxiv/2604.16865v1/fig-003.webp",
+      "caption": "Table 3: Best DIR, original time series Bx.",
+      "page": 20,
+      "index": 3,
+      "width": 895,
+      "height": 237
+    },
+    {
+      "url": "assets/figures/arxiv/2604.16865v1/fig-004.webp",
+      "caption": "Table 9: Best DIR, Time series Bx smoothed over four observations.",
+      "page": 21,
+      "index": 4,
+      "width": 995,
+      "height": 1148
+    }
+  ]
+}

@@ -1,0 +1,176 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-21T20:44:10.084722+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [
+    {
+      "id": "2604.13366v2",
+      "source": "arxiv",
+      "title": "Diffusion Sequence Models for Generative In-Context Meta-Learning of Robot Dynamics",
+      "abstract": "Accurate modeling of robot dynamics is essential for model-based control, yet remains challenging under distributional shifts and real-time constraints. In this work, we formulate system identification as an in-context meta-learning problem and compare deterministic and generative sequence models for forward dynamics prediction. We take a Transformer-based meta-model, as a strong deterministic baseline, and introduce to this setting two complementary diffusion-based approaches: (i) inpainting diffusion (Diffuser), which learns the joint input-observation distribution, and (ii) conditioned diffusion models (CNN and Transformer), which generate future observations conditioned on control inputs. Through large-scale randomized simulations, we analyze performance across in-distribution and out-of-distribution regimes, as well as computational trade-offs relevant for control. We show that diffusion models significantly improve robustness under distribution shift, with inpainting diffusion achieving the best performance in our experiments. Finally, we demonstrate that warm-started sampling enables diffusion models to operate within real-time constraints, making them viable for control applications. These results highlight generative meta-models as a promising direction for robust system identification in robotics.",
+      "authors": [
+        "Angelo Moroncelli",
+        "Matteo Rufolo",
+        "Gunes Cagin Aydin",
+        "Asad Ali Shahid",
+        "Loris Roveda"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.RO",
+        "eess.SY"
+      ],
+      "published": "2026-04-15T00:21:49+00:00",
+      "link": "https://arxiv.org/pdf/2604.13366v2",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "diffusion sequence models for robot dynamics prediction",
+      "llm_evidence_cn": "用于机器人动力学预测的扩散序列模型",
+      "llm_evidence": "用于机器人动力学预测的扩散序列模型",
+      "canonical_evidence": "用于机器人动力学预测的扩散序列模型",
+      "llm_tldr_en": "Compares diffusion-based sequence models for generative prediction of robot dynamics.",
+      "llm_tldr_cn": "比较了基于扩散的序列模型在机器人动力学生成预测中的应用。",
+      "llm_tldr": "比较了基于扩散的序列模型在机器人动力学生成预测中的应用。",
+      "llm_tags": [
+        "query:diffts:composite"
+      ],
+      "matched_query_tag": "query:diffts:composite",
+      "matched_query_text": "Papers central to 查询将扩散模型应用于时间序列任务的相关论文, especially work that connects or combines: Time Series; research on diffusion models for time-series data; methods using diffusion models for time series forecasting; denoising diffusion probabilistic models applied to time series; sequence modeling with diffusion processes for time-dependent data; conditional diffusion frameworks for time series generation; research papers on diffusion models applied to time series tasks.",
+      "matched_requirement_id": "req-composite-diffts",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.17566v1",
+      "source": "arxiv",
+      "title": "Target Parameterization in Diffusion Models for Nonlinear Spatiotemporal System Identification",
+      "abstract": "Machine learning is becoming increasingly important for nonlinear system identification, including dynamical systems with spatially distributed outputs. However, classical identification and forecasting approaches become markedly less reliable in turbulent-flow regimes, where the dynamics are high-dimensional, strongly nonlinear, and highly sensitive to compounding rollout errors. Diffusion-based models have recently shown improved robustness in this setting and offer probabilistic inference capabilities, but many current implementations inherit target parameterizations from image generation, most commonly noise or velocity prediction. In this work, we revisit this design choice in the context of nonlinear spatiotemporal system identification. We consider a simple, self-contained patch-based transformer that operates directly on physical fields and use turbulent flow simulation as a representative testbed. Our results show that clean-state prediction consistently improves rollout stability and reduces long-horizon error relative to velocity- and noise-based objectives, with the advantage becoming more pronounced as the per-token dimensionality increases. These findings identify target parameterization as a key modeling choice in diffusion-based identification of nonlinear systems with spatial outputs in turbulent regimes.",
+      "authors": [
+        "Achraf El Messaoudi",
+        "Noureddine Khaous",
+        "Karim Cherifi"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY",
+        "cs.LG",
+        "physics.flu-dyn"
+      ],
+      "published": "2026-04-19T18:11:14+00:00",
+      "link": "https://arxiv.org/pdf/2604.17566v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "diffusion models applied to spatiotemporal system identification",
+      "llm_evidence_cn": "扩散模型应用于时空系统辨识",
+      "llm_evidence": "扩散模型应用于时空系统辨识",
+      "canonical_evidence": "扩散模型应用于时空系统辨识",
+      "llm_tldr_en": "Explores target parameterization in diffusion models for robust nonlinear spatiotemporal forecasting.",
+      "llm_tldr_cn": "探讨了扩散模型中的目标参数化，以实现稳健的非线性时空预测。",
+      "llm_tldr": "探讨了扩散模型中的目标参数化，以实现稳健的非线性时空预测。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "research papers on diffusion models applied to time series tasks",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2604.11275v2",
+      "source": "arxiv",
+      "title": "Dynamic Sheaf Diffusion Networks with Adaptive Local Structure for Heterogeneous Spatio-Temporal Graph Learning",
+      "abstract": "Spatio-temporal processes often exhibit highly heterogeneous and non-intuitive responses to localized disruptions, limiting the effectiveness of conventional message passing approaches in modeling local heterogeneity. We reformulate spatio-temporal forecasting as the problem of learning information flow over locally structured spaces, rather than propagating globally aligned node representations. To this end, we introduce a spatio-temporal sheaf diffusion graph neural network (ST-Sheaf GNN) that embeds graph topology into sheaf-based vector spaces connected by learned linear restriction maps. Unlike prior approaches relying on static or globally shared transformations, our model learns dynamic restriction maps that evolve over time and adapt to local spatio-temporal patterns, enabling more expressive interactions. The proposed framework both theoretically guarantees and empirically demonstrates evidence that the proposed diffusion mechanism mitigates oversmoothing, preserving discriminative node representations even with increasing diffusion layer depth. Experiments on diverse real-world spatio-temporal forecasting benchmarks across multiple domains demonstrate state-of-the-art performance, highlighting the effectiveness of sheaf topological representations as a principled foundation for spatio-temporal graph learning. The code is available at: https://anonymous.4open.science/r/ST-SheafGNN-6523/.",
+      "authors": [
+        "Abeer Mostafa",
+        "Raneen Younis",
+        "Zahra Ahmadi"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-04-13T10:32:20+00:00",
+      "link": "https://arxiv.org/pdf/2604.11275v2",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "spatio-temporal forecasting using sheaf diffusion",
+      "llm_evidence_cn": "使用层扩散进行时空预测",
+      "llm_evidence": "使用层扩散进行时空预测",
+      "canonical_evidence": "使用层扩散进行时空预测",
+      "llm_tldr_en": "Proposes ST-Sheaf GNN for spatio-temporal forecasting by learning information flow over locally structured spaces.",
+      "llm_tldr_cn": "提出ST-Sheaf GNN，通过学习局部结构化空间上的信息流进行时空预测。",
+      "llm_tldr": "提出ST-Sheaf GNN，通过学习局部结构化空间上的信息流进行时空预测。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "methods using diffusion models for time series forecasting",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.16865v1",
+      "source": "arxiv",
+      "title": "Extraction of informative statistical features in the problem of forecasting time series generated by It{ô}-type processes",
+      "abstract": "In this paper, we consider the problem of extraction of most informative features from time series that are regarded as observed values of stochastic processes satisfying the It{ô} stochastic differential equations with unknown random drift and diffusion coefficients. We do not attract any additional information and use only the information contained in the time series as it is. Therefore, as additional features, we use the parameters of statistically adjusted mixture-type models of the observed regularities of the behavior of the time series. Several algorithms of construction of these parameters are discussed. These algorithms are based on statistical reconstruction of the coefficients which, in turn, is based on statistical separation of normal mixtures. We obtain two types of parameters by the techniques of the uniform and non-uniform statistical reconstruction of the coefficients of the underlying It{ô} process. The reconstructed coefficients obtained by uniform techniques do not depend on the current value of the process, while the non-uniform techniques reconstruct the coefficients with the account of their dependence on the value of the process. Actually, the non-uniform techniques used in this paper represent a stochastic analog of the Taylor expansion for the time series. The efficiency of the obtained additional features is compared by using them in the autoregressive algorithms of prediction of time series. In order to obtain pure conclusion that is not affected by unwanted factors, say, related to a special choice of the architecture of the neural network prediction methods, we used only simple autoregressive algorithms. We show that the use of additional statistical features improves the prediction.",
+      "authors": [
+        "Victor Korolev",
+        "Mikhail Ivanov",
+        "Tatiana Kukanova",
+        "Artyom Rukavitsa",
+        "Alexander Vakshin",
+        "Peter Solomonov",
+        "Alexander Zeifman"
+      ],
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.LG",
+        "math.PR"
+      ],
+      "published": "2026-04-18T06:31:21+00:00",
+      "link": "https://arxiv.org/pdf/2604.16865v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "forecasting time series with diffusion coefficients",
+      "llm_evidence_cn": "利用扩散系数进行时间序列预测",
+      "llm_evidence": "利用扩散系数进行时间序列预测",
+      "canonical_evidence": "利用扩散系数进行时间序列预测",
+      "llm_tldr_en": "Extracts features from time series based on stochastic differential equations with diffusion coefficients.",
+      "llm_tldr_cn": "基于具有扩散系数的随机微分方程从时间序列中提取特征。",
+      "llm_tldr": "基于具有扩散系数的随机微分方程从时间序列中提取特征。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "methods using diffusion models for time series forecasting",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

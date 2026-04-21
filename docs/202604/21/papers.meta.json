@@ -1,0 +1,69 @@
+{
+  "label": "2026-04-21",
+  "date": "2026-04-21",
+  "generated_at": "2026-04-21T20:45:36",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202604/21/2604.13366v2-diffusion-sequence-models-for-generative-in-context-meta-learning-of-robot-dynamics",
+      "section": "deep",
+      "title_en": "Diffusion Sequence Models for Generative In-Context Meta-Learning of Robot Dynamics",
+      "authors": "Angelo Moroncelli, Matteo Rufolo, Gunes Cagin Aydin, Asad Ali Shahid, Loris Roveda",
+      "date": "2026-04-15",
+      "pdf": "https://arxiv.org/pdf/2604.13366v2",
+      "score": "9.0",
+      "evidence": "用于机器人动力学预测的扩散序列模型",
+      "tldr": "本研究针对机器人动力学建模在分布变化与实时约束下的挑战，将系统辨识视为上下文元学习问题，提出并比较了Transformer确定性模型与扩散生成模型。通过大规模仿真验证，扩散模型在分布外场景中显著提高了鲁棒性，补全扩散法表现最佳，并实现了实时推理。",
+      "tags": "query:diffts",
+      "abstract_en": "Accurate modeling of robot dynamics is essential for model-based control, yet remains challenging under distributional shifts and real-time constraints. In this work, we formulate system identification as an in-context meta-learning problem and compare deterministic and generative sequence models for forward dynamics prediction. We take a Transformer-based meta-model, as a strong deterministic baseline, and introduce to this setting two complementary diffusion-based approaches: (i) inpainting diffusion (Diffuser), which learns the joint input-observation distribution, and (ii) conditioned diffusion models (CNN and Transformer), which generate future observations conditioned on control inputs. Through large-scale randomized simulations, we analyze performance across in-distribution and out-of-distribution regimes, as well as computational trade-offs relevant for control. We show that diffusion models significantly improve robustness under distribution shift, with inpainting diffusion achieving the best performance in our experiments. Finally, we demonstrate that warm-started sampling enables diffusion models to operate within real-time constraints, making them viable for control applications. These results highlight generative meta-models as a promising direction for robust system identification in robotics.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/21/2604.17566v1-target-parameterization-in-diffusion-models-for-nonlinear-spatiotemporal-system-identification",
+      "section": "deep",
+      "title_en": "Target Parameterization in Diffusion Models for Nonlinear Spatiotemporal System Identification",
+      "authors": "Achraf El Messaoudi, Noureddine Khaous, Karim Cherifi",
+      "date": "2026-04-19",
+      "pdf": "https://arxiv.org/pdf/2604.17566v1",
+      "score": "9.0",
+      "evidence": "扩散模型应用于时空系统辨识",
+      "tldr": "本文研究了用于非线性时空系统识别的扩散模型目标参数化问题，提出在物理场上直接运行的补丁式Transformer模型，并通过湍流流动仿真实验验证清洁状态预测较噪声或速度预测显著提升稳定性与长期精度。",
+      "tags": "query:diffts",
+      "abstract_en": "Machine learning is becoming increasingly important for nonlinear system identification, including dynamical systems with spatially distributed outputs. However, classical identification and forecasting approaches become markedly less reliable in turbulent-flow regimes, where the dynamics are high-dimensional, strongly nonlinear, and highly sensitive to compounding rollout errors. Diffusion-based models have recently shown improved robustness in this setting and offer probabilistic inference capabilities, but many current implementations inherit target parameterizations from image generation, most commonly noise or velocity prediction. In this work, we revisit this design choice in the context of nonlinear spatiotemporal system identification. We consider a simple, self-contained patch-based transformer that operates directly on physical fields and use turbulent flow simulation as a representative testbed. Our results show that clean-state prediction consistently improves rollout stability and reduces long-horizon error relative to velocity- and noise-based objectives, with the advantage becoming more pronounced as the per-token dimensionality increases. These findings identify target parameterization as a key modeling choice in diffusion-based identification of nonlinear systems with spatial outputs in turbulent regimes.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/21/2604.11275v2-dynamic-sheaf-diffusion-networks-with-adaptive-local-structure-for-heterogeneous-spatio-temporal-graph-learning",
+      "section": "quick",
+      "title_en": "Dynamic Sheaf Diffusion Networks with Adaptive Local Structure for Heterogeneous Spatio-Temporal Graph Learning",
+      "authors": "Abeer Mostafa, Raneen Younis, Zahra Ahmadi",
+      "date": "2026-04-13",
+      "pdf": "https://arxiv.org/pdf/2604.11275v2",
+      "score": "7.0",
+      "evidence": "使用层扩散进行时空预测",
+      "tldr": "本文针对时空图学习中局部异质性与过度平滑问题，提出动态剪影扩散网络ST-Sheaf GNN，通过引入可学习的时间变化限制映射，在剪影空间中实现自适应信息流建模，从而提升预测性能与特征区分性。",
+      "tags": "query:diffts",
+      "abstract_en": "Spatio-temporal processes often exhibit highly heterogeneous and non-intuitive responses to localized disruptions, limiting the effectiveness of conventional message passing approaches in modeling local heterogeneity. We reformulate spatio-temporal forecasting as the problem of learning information flow over locally structured spaces, rather than propagating globally aligned node representations. To this end, we introduce a spatio-temporal sheaf diffusion graph neural network (ST-Sheaf GNN) that embeds graph topology into sheaf-based vector spaces connected by learned linear restriction maps. Unlike prior approaches relying on static or globally shared transformations, our model learns dynamic restriction maps that evolve over time and adapt to local spatio-temporal patterns, enabling more expressive interactions. The proposed framework both theoretically guarantees and empirically demonstrates evidence that the proposed diffusion mechanism mitigates oversmoothing, preserving discriminative node representations even with increasing diffusion layer depth. Experiments on diverse real-world spatio-temporal forecasting benchmarks across multiple domains demonstrate state-of-the-art performance, highlighting the effectiveness of sheaf topological representations as a principled foundation for spatio-temporal graph learning. The code is available at: https://anonymous.4open.science/r/ST-SheafGNN-6523/.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/21/2604.16865v1-extraction-of-informative-statistical-features-in-the-problem-of-forecasting-time-series-generated-by-it-type-processes",
+      "section": "quick",
+      "title_en": "Extraction of informative statistical features in the problem of forecasting time series generated by It{ô}-type processes",
+      "authors": "Victor Korolev, Mikhail Ivanov, Tatiana Kukanova, Artyom Rukavitsa, Alexander Vakshin, Peter Solomonov, Alexander Zeifman",
+      "date": "2026-04-18",
+      "pdf": "https://arxiv.org/pdf/2604.16865v1",
+      "score": "6.0",
+      "evidence": "利用扩散系数进行时间序列预测",
+      "tldr": "本文针对由Itô型随机过程生成的时间序列，提出从观测数据中提取信息特征的新方法，通过构建混合型统计模型并利用均匀与非均匀系数重建技术提取过程特征，用于增强自回归预测，实验表明该方法能有效提高预测精度。",
+      "tags": "query:diffts",
+      "abstract_en": "In this paper, we consider the problem of extraction of most informative features from time series that are regarded as observed values of stochastic processes satisfying the It{ô} stochastic differential equations with unknown random drift and diffusion coefficients. We do not attract any additional information and use only the information contained in the time series as it is. Therefore, as additional features, we use the parameters of statistically adjusted mixture-type models of the observed regularities of the behavior of the time series. Several algorithms of construction of these parameters are discussed. These algorithms are based on statistical reconstruction of the coefficients which, in turn, is based on statistical separation of normal mixtures. We obtain two types of parameters by the techniques of the uniform and non-uniform statistical reconstruction of the coefficients of the underlying It{ô} process. The reconstructed coefficients obtained by uniform techniques do not depend on the current value of the process, while the non-uniform techniques reconstruct the coefficients with the account of their dependence on the value of the process. Actually, the non-uniform techniques used in this paper represent a stochastic analog of the Taylor expansion for the time series. The efficiency of the obtained additional features is compared by using them in the autoregressive algorithms of prediction of time series. In order to obtain pure conclusion that is not affected by unwanted factors, say, related to a special choice of the architecture of the neural network prediction methods, we used only simple autoregressive algorithms. We show that the use of additional statistical features improves the prediction.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
