@@ -1,0 +1,39 @@
+{
+  "label": "2026-04-22",
+  "date": "2026-04-22",
+  "generated_at": "2026-04-22T20:05:37",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202604/22/2604.13366v2-diffusion-sequence-models-for-generative-in-context-meta-learning-of-robot-dynamics",
+      "section": "deep",
+      "title_en": "Diffusion Sequence Models for Generative In-Context Meta-Learning of Robot Dynamics",
+      "authors": "Angelo Moroncelli, Matteo Rufolo, Gunes Cagin Aydin, Asad Ali Shahid, Loris Roveda",
+      "date": "2026-04-15",
+      "pdf": "https://arxiv.org/pdf/2604.13366v2",
+      "score": "9.0",
+      "evidence": "用于前向动力学预测的扩散序列模型",
+      "tldr": "本文将机器人系统识别问题建模为上下文元学习任务，对比确定性Transformer模型与两类扩散模型，在大规模仿真中测试其在分布变化与实时控制条件下的性能，结果表明扩散模型提升了鲁棒性并可满足实时要求。",
+      "tags": "query:diffts",
+      "abstract_en": "Accurate modeling of robot dynamics is essential for model-based control, yet remains challenging under distributional shifts and real-time constraints. In this work, we formulate system identification as an in-context meta-learning problem and compare deterministic and generative sequence models for forward dynamics prediction. We take a Transformer-based meta-model, as a strong deterministic baseline, and introduce to this setting two complementary diffusion-based approaches: (i) inpainting diffusion (Diffuser), which learns the joint input-observation distribution, and (ii) conditioned diffusion models (CNN and Transformer), which generate future observations conditioned on control inputs. Through large-scale randomized simulations, we analyze performance across in-distribution and out-of-distribution regimes, as well as computational trade-offs relevant for control. We show that diffusion models significantly improve robustness under distribution shift, with inpainting diffusion achieving the best performance in our experiments. Finally, we demonstrate that warm-started sampling enables diffusion models to operate within real-time constraints, making them viable for control applications. These results highlight generative meta-models as a promising direction for robust system identification in robotics.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/22/2604.18313v1-denoise-and-align-diffusion-driven-foreground-knowledge-prompting-for-open-vocabulary-temporal-action-detection",
+      "section": "quick",
+      "title_en": "Denoise and Align: Diffusion-Driven Foreground Knowledge Prompting for Open-Vocabulary Temporal Action Detection",
+      "authors": "Sa Zhu, Wanqian Zhang, Lin Wang, Jinchao Zhang, Cong Wang, Bo Li",
+      "date": "2026-04-20",
+      "pdf": "https://arxiv.org/pdf/2604.18313v1",
+      "score": "6.0",
+      "evidence": "基于扩散去噪的时序动作检测",
+      "tldr": "本文研究开放词汇时间动作检测中视频与动作语义难以有效对齐的问题，提出扩散驱动的DFAlign框架，通过条件、去噪与对齐三个步骤生成前景知识以指导动作视频语义对齐，显著提升了未见类别的检测性能，实现了当前最优的结果。",
+      "tags": "query:diffts",
+      "abstract_en": "Open-Vocabulary Temporal Action Detection (OV-TAD) aims to localize and classify action segments of unseen categories in untrimmed videos, where effective alignment between action semantics and video representations is critical for accurate detection. However, existing methods struggle to mitigate the semantic imbalance between concise, abstract action labels and rich, complex video contents, inevitably introducing semantic noise and misleading cross-modal alignment. To address this challenge, we propose DFAlign, the first framework that leverages diffusion-based denoising to generate foreground knowledge for the guidance of action-video alignment. Following the 'conditioning, denoising and aligning' manner, we first introduce the Semantic-Unify Conditioning (SUC) module, which unifies action-shared and action-specific semantics as conditions for diffusion denoising. Then, the Background-Suppress Denoising (BSD) module generates foreground knowledge by progressively removing background redundancy from videos through denoising process. This foreground knowledge serves as effective intermediate semantic anchor between video and text representations, mitigating the semantic gap and enhancing the discriminability of action-relevant segments. Furthermore, we introduce the Foreground-Prompt Alignment (FPA) module to inject extracted foreground knowledge as prompt tokens into text representations, guiding model's attention towards action-relevant segments and enabling precise cross-modal alignment. Extensive experiments demonstrate that our method achieves state-of-the-art performance on two OV-TAD benchmarks. The code repository is provided as follows: https://anonymous.4open.science/r/Code-2114/.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
