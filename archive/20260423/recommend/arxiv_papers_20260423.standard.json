@@ -1,0 +1,367 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-23T19:54:09.436525+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 7,
+    "quick_skim_target": 11,
+    "quick_selected": 7
+  },
+  "deep_dive": [
+    {
+      "id": "2604.20370v1",
+      "source": "arxiv",
+      "title": "Cold-Start Forecasting of New Product Life-Cycles via Conditional Diffusion Models",
+      "abstract": "Forecasting the life-cycle trajectory of a newly launched product is important for launch planning, resource allocation, and early risk assessment. This task is especially difficult in the pre-launch and early post-launch phases, when product-specific outcome history is limited or unavailable, creating a cold-start problem. In these phases, firms must make decisions before demand patterns become reliably observable, while early signals are often sparse, noisy, and unstable We propose the Conditional Diffusion Life-cycle Forecaster (CDLF), a conditional generative framework for forecasting new-product life-cycle trajectories under cold start. CDLF combines three sources of information: static descriptors, reference trajectories from similar products, and newly arriving observations when available. Here, static descriptors refer to structured pre-launch characteristics of the product, such as category, price tier, brand or organization identity, scale, and access conditions. This structure allows the model to condition forecasts on relevant product context and to update them adaptively over time without retraining, yielding flexible multi-modal predictive distributions under extreme data scarcity. The method satisfies consistency with a horizon-uniform distributional error bound for recursive generation. Across studies on Intel microprocessor stock keeping unit (SKU) life cycles and the platform-mediated adoption of open large language model repositories, CDLF delivers more accurate point forecasts and higher-quality probabilistic forecasts than classical diffusion models, Bayesian updating approaches, and other state-of-the-art machine-learning baselines.",
+      "authors": [
+        "Ruihan Zhou",
+        "Zishi Zhang",
+        "Jinhui Han",
+        "Yijie Peng",
+        "Xiaowei Zhang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "stat.ML"
+      ],
+      "published": "2026-04-22T09:07:55+00:00",
+      "link": "https://arxiv.org/pdf/2604.20370v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "Conditional diffusion framework for forecasting product life-cycle trajectories",
+      "llm_evidence_cn": "用于预测产品生命周期轨迹的条件扩散框架",
+      "llm_evidence": "用于预测产品生命周期轨迹的条件扩散框架",
+      "canonical_evidence": "用于预测产品生命周期轨迹的条件扩散框架",
+      "llm_tldr_en": "Proposes a conditional diffusion model to forecast new product life-cycle trajectories under cold-start conditions.",
+      "llm_tldr_cn": "提出一种条件扩散模型，用于在冷启动情况下预测新产品的生命周期轨迹。",
+      "llm_tldr": "提出一种条件扩散模型，用于在冷启动情况下预测新产品的生命周期轨迹。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "methods using diffusion models for time series forecasting",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.20594v1",
+      "source": "arxiv",
+      "title": "Physics-Informed Conditional Diffusion for Motion-Robust Retinal Temporal Laser Speckle Contrast Imaging",
+      "abstract": "Retinal laser speckle contrast imaging (LSCI) is a noninvasive optical modality for monitoring retinal blood flow dynamics. However, conventional temporal LSCI (tLSCI) reconstruction relies on sufficiently long speckle sequences to obtain stable temporal statistics, which makes it vulnerable to acquisition disturbances and limits effective temporal resolution. A physically informed reconstruction framework, termed RetinaDiff (Retinal Diffusion Model), is proposed for retinal tLSCI that is robust to motion and requires only a few frames. In RetinaDiff, registration based on phase correlation is first applied to stabilize the raw speckle sequence before contrast computation, reducing interframe misalignment so that fluctuations at each pixel primarily reflect true flow dynamics. This step provides a physics prior corrected for motion and a high quality multiframe tLSCI reference. Next, guided by the physics prior, a conditional diffusion model performs inverse reconstruction by jointly conditioning on the registered speckle sequence and the corrected prior. Experiments on data acquired with a retinal LSCI system developed in house show improved structural continuity and statistical stability compared with direct reconstruction from few frames and representative baselines. The framework also remains effective in a small number of extremely challenging cases, where both the direct 5-frame input and the conventional multiframe reconstruction are severely degraded. Overall, this work provides a practical and physically grounded route for reliable retinal tLSCI reconstruction from extremely limited frames. The source code and model weights will be publicly available at https://github.com/QianChen113/RetinaDiff.",
+      "authors": [
+        "Qian Chen",
+        "Yuehao Chen",
+        "Qiang Wang",
+        "Lei Zhu",
+        "Yanye Lu",
+        "Qiushi Ren"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-22T14:11:27+00:00",
+      "link": "https://arxiv.org/pdf/2604.20594v1",
+      "tags": [
+        "keyword:DiffTS"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Conditional diffusion for retinal temporal laser speckle contrast imaging",
+      "llm_evidence_cn": "用于视网膜时序激光散斑对比成像的条件扩散模型",
+      "llm_evidence": "用于视网膜时序激光散斑对比成像的条件扩散模型",
+      "canonical_evidence": "用于视网膜时序激光散斑对比成像的条件扩散模型",
+      "llm_tldr_en": "Proposes a physics-informed conditional diffusion model for robust retinal temporal imaging reconstruction.",
+      "llm_tldr_cn": "提出一种物理启发的条件扩散模型，用于鲁棒的视网膜时序成像重建。",
+      "llm_tldr": "提出一种物理启发的条件扩散模型，用于鲁棒的视网膜时序成像重建。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "conditional diffusion frameworks for time series generation",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2604.17350v1",
+      "source": "arxiv",
+      "title": "SPaRSe-TIME: Saliency-Projected Low-Rank Temporal Modeling for Efficient and Interpretable Time Series Prediction",
+      "abstract": "Time series forecasting is traditionally dominated by sequence-based architectures such as recurrent neural networks and attention mechanisms, which process all time steps uniformly and often incur substantial computational cost. However, real-world temporal signals typically exhibit heterogeneous structure, where informative patterns are sparsely distributed and interspersed with redundant observations. This work introduces \\textbf{SPaRSe-TIME}, a structured and computationally efficient framework that models time series through a decomposition into three complementary components: saliency, memory, and trend. The proposed approach reformulates temporal modeling as a projection onto informative subspaces, where saliency acts as a data-dependent sparsification operator, memory captures dominant low-rank temporal patterns, and trend encodes low-frequency dynamics. These components are integrated through a lightweight, adaptive mapping that enables simplified, selective, and interpretable temporal reasoning. Extensive experiments on diverse real-world datasets demonstrate that SPaRSe-TIME achieves competitive predictive performance compared to recurrent and attention-based architectures, while significantly reducing computational complexity. The model is particularly effective in structured time series with clear temporal components and provides explicit interpretability through component-wise contributions. Furthermore, analysis reveals both the strengths and limitations of decomposition-based modeling, highlighting challenges in highly stochastic and complex multivariate settings. Overall, SPaRSe-TIME offers a principled alternative to monolithic sequence models, bridging efficiency, interpretability, and performance, and providing a scalable framework for time series learning.",
+      "authors": [
+        "K. A. Shahriar"
+      ],
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP",
+        "cs.LG"
+      ],
+      "published": "2026-04-19T09:55:28+00:00",
+      "link": "https://arxiv.org/pdf/2604.17350v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Time series forecasting using low-rank temporal modeling",
+      "llm_evidence_cn": "使用低秩时间建模进行时间序列预测",
+      "llm_evidence": "使用低秩时间建模进行时间序列预测",
+      "canonical_evidence": "使用低秩时间建模进行时间序列预测",
+      "llm_tldr_en": "Proposes SPaRSe-TIME for efficient and interpretable time series prediction via saliency and trend decomposition.",
+      "llm_tldr_cn": "提出 SPaRSe-TIME，通过显著性、记忆和趋势分解实现高效且可解释的时间序列预测。",
+      "llm_tldr": "提出 SPaRSe-TIME，通过显著性、记忆和趋势分解实现高效且可解释的时间序列预测。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.13748v1",
+      "source": "arxiv",
+      "title": "Forecasting Multivariate Time Series under Predictive Heterogeneity: A Validation-Driven Clustering Framework",
+      "abstract": "We study adaptive pooling under predictive heterogeneity in high-dimensional multivariate time series forecasting, where global models improve statistical efficiency but may fail to capture heterogeneous predictive structure, while naive specialization can induce negative transfer. We formulate adaptive pooling as a statistical decision problem and propose a validation-driven framework that determines when and how specialization should be applied. Rather than grouping series based on representation similarity, we define partitions through out-of-sample predictive performance, thereby aligning data organization with predictive risk, defined as expected out-of-sample loss and approximated via validation error. Cluster assignments are iteratively updated using validation losses for both point (Huber) and probabilistic (pinball) forecasting, improving robustness to heavy-tailed errors and local anomalies. To ensure reliability, we introduce a leakage-free fallback mechanism that reverts to a global model whenever specialization fails to improve validation performance, providing a safeguard against performance degradation under a strict training-validation-test protocol. Experiments on large-scale traffic datasets demonstrate consistent improvements over strong baselines while avoiding degradation when heterogeneity is weak. Overall, the proposed framework provides a principled and practically reliable approach to adaptive pooling in high-dimensional forecasting problems.",
+      "authors": [
+        "Ziling Ma",
+        "Ángel López Oriona",
+        "Hernando Ombao",
+        "Ying Sun"
+      ],
+      "primary_category": "stat.ME",
+      "categories": [
+        "stat.ME",
+        "stat.ML"
+      ],
+      "published": "2026-04-15T11:35:32+00:00",
+      "link": "https://arxiv.org/pdf/2604.13748v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Multivariate time series forecasting under predictive heterogeneity",
+      "llm_evidence_cn": "预测异质性下的多变量时间序列预测",
+      "llm_evidence": "预测异质性下的多变量时间序列预测",
+      "canonical_evidence": "预测异质性下的多变量时间序列预测",
+      "llm_tldr_en": "Develops a validation-driven clustering framework for adaptive pooling in multivariate time series forecasting.",
+      "llm_tldr_cn": "开发了一个验证驱动的聚类框架，用于多变量时间序列预测中的自适应池化。",
+      "llm_tldr": "开发了一个验证驱动的聚类框架，用于多变量时间序列预测中的自适应池化。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.18393v1",
+      "source": "arxiv",
+      "title": "One-Step Diffusion with Inverse Residual Fields for Unsupervised Industrial Anomaly Detection",
+      "abstract": "Diffusion models have achieved outstanding performance in unsupervised industrial anomaly detection (uIAD) by learning a manifold of normal data under the common assumption that off-manifold anomalies are harder to generate, resulting in larger reconstruction errors in data space or lower probability densities in the tractable latent space. However, their iterative denoising and noising nature leads to slow inference. In this paper, we propose OSD-IRF, a novel one-step diffusion with inverse residual fields, to address this limitation for uIAD task. We first train a deep diffusion probabilistic model (DDPM) on normal data without any conditioning. Then, for a test sample, we predict its inverse residual fields (IRF) based on the noise estimated by the well-trained parametric noise function of the DDPM. Finally, uIAD is performed by evaluating the probability density of the IRF under a Gaussian distribution and comparing it with a threshold. Our key observation is that anomalies become distinguishable in this IRF space, a finding that has seldom been reported in prior works. Moreover, OSD-IRF requires only single step diffusion for uIAD, thanks to the property that IRF holds for any neighboring time step in the denoising process. Extensive experiments on three widely used uIAD benchmarks show that our model achieves SOTA or competitive performance across six metrics, along with roughly a 2X inference speedup without distillation.",
+      "authors": [
+        "Boan Zhang",
+        "Wen Li",
+        "Guanhua Yu",
+        "Xiyang Liu",
+        "Wenchao Chen",
+        "Long Tian"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-20T15:16:32+00:00",
+      "link": "https://arxiv.org/pdf/2604.18393v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "One-step diffusion model for unsupervised industrial anomaly detection",
+      "llm_evidence_cn": "用于无监督工业异常检测的一步扩散模型",
+      "llm_evidence": "用于无监督工业异常检测的一步扩散模型",
+      "canonical_evidence": "用于无监督工业异常检测的一步扩散模型",
+      "llm_tldr_en": "Proposes a one-step diffusion method with inverse residual fields for efficient industrial anomaly detection.",
+      "llm_tldr_cn": "提出一种带有逆残差场的一步扩散方法，用于高效的工业异常检测。",
+      "llm_tldr": "提出一种带有逆残差场的一步扩散方法，用于高效的工业异常检测。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "denoising diffusion probabilistic models applied to time series",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.16919v1",
+      "source": "arxiv",
+      "title": "Noise-Adaptive Diffusion Sampling for Inverse Problems Without Task-Specific Tuning",
+      "abstract": "Diffusion models (DMs) have recently shown remarkable performance on inverse problems (IPs). Optimization-based methods can fast solve IPs using DMs as powerful regularizers, but they are susceptible to local minima and noise overfitting. Although DMs can provide strong priors for Bayesian approaches, enforcing measurement consistency during the denoising process leads to manifold infeasibility issues. We propose Noise-space Hamiltonian Monte Carlo (N-HMC), a posterior sampling method that treats reverse diffusion as a deterministic mapping from initial noise to clean images. N-HMC enables comprehensive exploration of the solution space, avoiding local optima. By moving inference entirely into the initial-noise space, N-HMC keeps proposals on the learned data manifold. We provide a comprehensive theoretical analysis of our approach and extend the framework to a noise-adaptive variant (NA-NHMC) that effectively handles IPs with unknown noise type and level. Extensive experiments across four linear and three nonlinear inverse problems demonstrate that NA-NHMC achieves superior reconstruction quality with robust performance across different hyperparameters and initializations, significantly outperforming recent state-of-the-art methods. The code is available at https://github.com/NA-HMC/NA-HMC.",
+      "authors": [
+        "Yingzhi Xia",
+        "Setthakorn Tanomkiattikun",
+        "Liangli Zhen",
+        "Zaiwang Gu"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CV"
+      ],
+      "published": "2026-04-18T08:53:19+00:00",
+      "link": "https://arxiv.org/pdf/2604.16919v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Diffusion models for inverse problems and posterior sampling",
+      "llm_evidence_cn": "用于反问题和后验采样的扩散模型",
+      "llm_evidence": "用于反问题和后验采样的扩散模型",
+      "canonical_evidence": "用于反问题和后验采样的扩散模型",
+      "llm_tldr_en": "Proposes a noise-space Hamiltonian Monte Carlo method for solving inverse problems using diffusion priors.",
+      "llm_tldr_cn": "提出一种噪声空间哈密顿蒙特卡洛方法，利用扩散先验解决反问题。",
+      "llm_tldr": "提出一种噪声空间哈密顿蒙特卡洛方法，利用扩散先验解决反问题。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "research papers on diffusion models applied to time series tasks",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.17295v1",
+      "source": "arxiv",
+      "title": "LLaTiSA: Towards Difficulty-Stratified Time Series Reasoning from Visual Perception to Semantics",
+      "abstract": "Comprehensive understanding of time series remains a significant challenge for Large Language Models (LLMs). Current research is hindered by fragmented task definitions and benchmarks with inherent ambiguities, precluding rigorous evaluation and the development of unified Time Series Reasoning Models(TSRMs). To bridge this gap, we formalize Time Series Reasoning (TSR) via a four-level taxonomy of increasing cognitive complexity. We introduce HiTSR, a hierarchical time series reasoning dataset comprising 83k samples with diverse task combinations and verified Chain-of-Thought (CoT) trajectories. Leveraging HiTSR, we propose LLaTiSA, a strong TSRM that integrates visualized patterns with precision-calibrated numerical tables to enhance the temporal perception of Vision-Language Models (VLMs). Through a multi-stage curriculum fine-tuning strategy, LLaTiSA achieves superior performance and exhibits robust out-of-distribution generalization across diverse TSR tasks and real-world scenarios. Our code is available at https://github.com/RainingNovember/LLaTiSA.",
+      "authors": [
+        "Yueyang Ding",
+        "HaoPeng Zhang",
+        "Rui Dai",
+        "Yi Wang",
+        "Tianyu Zong",
+        "Kaikui Liu",
+        "Xiangxiang Chu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-04-19T07:25:45+00:00",
+      "link": "https://arxiv.org/pdf/2604.17295v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Time series reasoning and hierarchical datasets",
+      "llm_evidence_cn": "时间序列推理与分层数据集",
+      "llm_evidence": "时间序列推理与分层数据集",
+      "canonical_evidence": "时间序列推理与分层数据集",
+      "llm_tldr_en": "Introduces a taxonomy and dataset for evaluating time series reasoning capabilities in large models.",
+      "llm_tldr_cn": "引入了一种分类法和数据集，用于评估大模型的时间序列推理能力。",
+      "llm_tldr": "引入了一种分类法和数据集，用于评估大模型的时间序列推理能力。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.17388v1",
+      "source": "arxiv",
+      "title": "Back to Repair: A Minimal Denoising Network\\ for Time Series Anomaly Detection",
+      "abstract": "We introduce JuRe (Just Repair), a minimal denoising network for time series anomaly detection that exposes a central finding: architectural complexity is unnecessary when the training objective correctly implements the manifold-projection principle. JuRe consists of a single depthwise-separable convolutional residual block with hidden dimension 128, trained to repair corrupted time series windows and scored at inference by a fixed, parameter-free structural discrepancy function. Despite using no attention, no latent variable, and no adversarial component, JuRe ranks second on the TSB-AD multivariate benchmark (AUC-PR 0.404, 180 series, 17 datasets) and second on the UCR univariate archive by AUC-PR (0.198, 250 series), leading all neural baselines on AUC-PR and VUS-PR. Component ablation on TSB-AD identifies training-time corruption as the dominant factor ($Δ$AUC-PR $= 0.047$ on removal), confirming that the denoising objective, not network capacity, drives detection quality. Pairwise Wilcoxon signed-rank tests establish statistical significance against 21 of 25 baselines on TSB-AD. Code is available at the URL https://github.com/iis-esslingen/JuRe.",
+      "authors": [
+        "Kadir-Kaan Özer",
+        "René Ebeling",
+        "Markus Enzweiler"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-04-19T11:33:25+00:00",
+      "link": "https://arxiv.org/pdf/2604.17388v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Denoising network for time series anomaly detection",
+      "llm_evidence_cn": "用于时间序列异常检测的去噪网络",
+      "llm_evidence": "用于时间序列异常检测的去噪网络",
+      "canonical_evidence": "用于时间序列异常检测的去噪网络",
+      "llm_tldr_en": "Presents a minimal denoising network for time series anomaly detection based on manifold-projection.",
+      "llm_tldr_cn": "提出一种基于流形投影的极简去噪网络，用于时间序列异常检测。",
+      "llm_tldr": "提出一种基于流形投影的极简去噪网络，用于时间序列异常检测。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.18751v1",
+      "source": "arxiv",
+      "title": "Beyond Coefficients: Forecast-Necessity Testing for Interpretable Causal Discovery in Nonlinear Time-Series Models",
+      "abstract": "Nonlinear machine-learning models are increasingly used to discover causal relationships in time-series data, yet the interpretation of their outputs remains poorly understood. In particular, causal scores produced by regularized neural autoregressive models are often treated as analogues of regression coefficients, leading to misleading claims of statistical significance.   In this paper, we argue that causal relevance in nonlinear time-series models should be evaluated through forecast necessity rather than coefficient magnitude, and we present a practical evaluation procedure for doing so. We present an interpretable evaluation framework based on systematic edge ablation and forecast comparison, which tests whether a candidate causal relationship is required for accurate prediction. Using Neural Additive Vector Autoregression as a case study model, we apply this framework to a real-world case study of democratic development, modeled as a multivariate time series of panel data - democracy indicators across 139 countries. We show that relationships with similar causal scores can differ dramatically in their predictive necessity due to redundancy, temporal persistence, and regime-specific effects.   Our results demonstrate how forecast-necessity testing supports more reliable causal reasoning in applied AI systems and provides practical guidance for interpreting nonlinear time-series models in high-stakes domains.",
+      "authors": [
+        "Valentina Kuskova",
+        "Dmitry Zaytsev",
+        "Michael Coppedge"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "stat.ME"
+      ],
+      "published": "2026-04-20T18:55:04+00:00",
+      "link": "https://arxiv.org/pdf/2604.18751v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Causal discovery in nonlinear time-series models",
+      "llm_evidence_cn": "非线性时间序列模型中的因果发现",
+      "llm_evidence": "非线性时间序列模型中的因果发现",
+      "canonical_evidence": "非线性时间序列模型中的因果发现",
+      "llm_tldr_en": "Presents a framework for interpretable causal discovery in time-series based on forecast necessity.",
+      "llm_tldr_cn": "提出一种基于预测必要性的时间序列可解释因果发现框架。",
+      "llm_tldr": "提出一种基于预测必要性的时间序列可解释因果发现框架。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

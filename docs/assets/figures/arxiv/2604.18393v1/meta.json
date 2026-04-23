@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.18393v1/fig-001.webp",
+      "caption": "Figure 1: Graphical comparisons of the previous methods and our proposed OSD-IRF. (a) Illustration of a previous reconstruction-based diffusion model, which conducts anomaly detection (AD) in the input data space x0. It first perturbs an image x0 to a latent state xt using a noise function ϵ, then denoises xt back to x̂0 using a well-trained parametric noise function ϵθ(·, t). The anomaly score is computed as the mean squared error (MSE) between x0 and x̂0. (b) Illustration of a previous density estimation-based diffusion model, which performs AD in the noisy latent state space xT . It uses a well-trained parametric noise function ϵθ(·, t) to perturb an image x0 to a noisy latent state xT , where xT follows a standard Gaussian distribution. The anomaly score is determined by the typicality of xT within this tractable distribution. (c) Unlike the previous methods in (a) and (b), our proposed OSD-IRF carries out AD in the inverse residual fields (IRF) space ∆xt = 1√ βt (xt − √ 1− βtxt−1). The anomaly score is then determined based on the typicality of ∆xt under a Gaussian distribution. Notably, the computation of ∆xt does not require multi-step inference (See Sec.3.1), our model not only achieves SOTA performance but also reduces the inference to a single step.",
+      "page": 2,
+      "index": 1,
+      "width": 948,
+      "height": 215
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18393v1/fig-002.webp",
+      "caption": "Figure 2: Trajectories of the one-step transition from the input data space p(x0) to the output IRF space p(|∆xt|). (a) Trajectory mapping under noisy-state input xt. (b) Trajectory mapping under mean-path input µ(xt).",
+      "page": 5,
+      "index": 2,
+      "width": 936,
+      "height": 332
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18393v1/fig-003.webp",
+      "caption": "Table 1: Quantitative results on different AD datasets under the multi-class setting. The best and the second-best results are highlighted in bold and underlined, respectively. For each row, the mAD averages the evaluation over all image- and pixel-level metrics (i.e., the 3rd to the 9th column). FPS measures the detection efficiency.",
+      "page": 6,
+      "index": 3,
+      "width": 976,
+      "height": 742
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18393v1/fig-004.webp",
+      "caption": "Figure 3: Visualizations of anomaly localization by our model on MVTec-AD, ViSA, and MPDD.",
+      "page": 7,
+      "index": 4,
+      "width": 948,
+      "height": 360
+    }
+  ]
+}

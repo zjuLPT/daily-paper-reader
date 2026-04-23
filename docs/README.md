@@ -6,28 +6,49 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-04-22
-- 运行时间：2026-04-22 20:05:32 UTC
+- 最新运行日期：2026-04-23
+- 运行时间：2026-04-23 19:57:06 UTC
 - 运行状态：成功
-- 本次总论文数：2
-- 精读区：1
-- 速读区：1
+- 本次总论文数：9
+- 精读区：2
+- 速读区：7
 
 ### 今日简报（AI）
-今天聚焦两篇扩散模型相关论文，深入探索生成式元学习与动作识别新方向。  
-最具价值的是 Diffusion 在机器人动态建模中展现的生成式泛化潜力。  
-建议继续关注扩散框架在跨模态感知与机器人自适应学习中的融合应用。
-- 详情：[/202604/22/README](/202604/22/README)
+1) 今天聚焦扩散模型在时间序列预测与医学影像中的创新应用，共精读 2 篇、速读 7 篇。  
+2) 新品冷启动预测与视网膜动态成像中引入条件扩散模型表现突出，显示物理先验和生成式建模融合潜力。  
+3) 建议继续关注扩散模型在工业检测与跨模态预测中的泛化与可解释性研究。
+- 详情：[/202604/23/README](/202604/23/README)
 
 ### 精读区论文标签
-1. [Diffusion Sequence Models for Generative In-Context Meta-Learning of Robot Dynamics](/202604/22/2604.13366v2-diffusion-sequence-models-for-generative-in-context-meta-learning-of-robot-dynamics)  
-   标签：评分：9.0/10、query:diffts
-   evidence：用于前向动力学预测的扩散序列模型
+1. [Cold-Start Forecasting of New Product Life-Cycles via Conditional Diffusion Models](/202604/23/2604.20370v1-cold-start-forecasting-of-new-product-life-cycles-via-conditional-diffusion-models)  
+   标签：评分：10.0/10、query:diffts
+   evidence：用于预测产品生命周期轨迹的条件扩散框架
+2. [Physics-Informed Conditional Diffusion for Motion-Robust Retinal Temporal Laser Speckle Contrast Imaging](/202604/23/2604.20594v1-physics-informed-conditional-diffusion-for-motion-robust-retinal-temporal-laser-speckle-contrast-imaging)  
+   标签：评分：8.0/10、query:diffts
+   evidence：用于视网膜时序激光散斑对比成像的条件扩散模型
 
 ### 速读区论文标签
-1. [Denoise and Align: Diffusion-Driven Foreground Knowledge Prompting for Open-Vocabulary Temporal Action Detection](/202604/22/2604.18313v1-denoise-and-align-diffusion-driven-foreground-knowledge-prompting-for-open-vocabulary-temporal-action-detection)  
+1. [SPaRSe-TIME: Saliency-Projected Low-Rank Temporal Modeling for Efficient and Interpretable Time Series Prediction](/202604/23/2604.17350v1-sparse-time-saliency-projected-low-rank-temporal-modeling-for-efficient-and-interpretable-time-series-prediction)  
+   标签：评分：7.0/10、query:diffts
+   evidence：使用低秩时间建模进行时间序列预测
+2. [One-Step Diffusion with Inverse Residual Fields for Unsupervised Industrial Anomaly Detection](/202604/23/2604.18393v1-one-step-diffusion-with-inverse-residual-fields-for-unsupervised-industrial-anomaly-detection)  
+   标签：评分：7.0/10、query:diffts
+   evidence：用于无监督工业异常检测的一步扩散模型
+3. [Forecasting Multivariate Time Series under Predictive Heterogeneity: A Validation-Driven Clustering Framework](/202604/23/2604.13748v1-forecasting-multivariate-time-series-under-predictive-heterogeneity-a-validation-driven-clustering-framework)  
    标签：评分：6.0/10、query:diffts
-   evidence：基于扩散去噪的时序动作检测
+   evidence：预测异质性下的多变量时间序列预测
+4. [Noise-Adaptive Diffusion Sampling for Inverse Problems Without Task-Specific Tuning](/202604/23/2604.16919v1-noise-adaptive-diffusion-sampling-for-inverse-problems-without-task-specific-tuning)  
+   标签：评分：6.0/10、query:diffts
+   evidence：用于反问题和后验采样的扩散模型
+5. [LLaTiSA: Towards Difficulty-Stratified Time Series Reasoning from Visual Perception to Semantics](/202604/23/2604.17295v1-llatisa-towards-difficulty-stratified-time-series-reasoning-from-visual-perception-to-semantics)  
+   标签：评分：6.0/10、query:diffts
+   evidence：时间序列推理与分层数据集
+6. [Back to Repair: A Minimal Denoising Network\ for Time Series Anomaly Detection](/202604/23/2604.17388v1-back-to-repair-a-minimal-denoising-network-for-time-series-anomaly-detection)  
+   标签：评分：6.0/10、query:diffts
+   evidence：用于时间序列异常检测的去噪网络
+7. [Beyond Coefficients: Forecast-Necessity Testing for Interpretable Causal Discovery in Nonlinear Time-Series Models](/202604/23/2604.18751v1-beyond-coefficients-forecast-necessity-testing-for-interpretable-causal-discovery-in-nonlinear-time-series-models)  
+   标签：评分：6.0/10、query:diffts
+   evidence：非线性时间序列模型中的因果发现
 
 
 <div class="dpr-home-promo-card">

@@ -1,0 +1,94 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.20370v1/fig-001.webp",
+      "caption": "Figure 4 Study 2 (LLM adoption): forecast versus ground truth in a representative episode. The solid line shows realized adoption increments ∆t (likes/day). CDLF is shown under two cold-start settings: pre-launch (t0 = 1) and early post-launch (t0 = 6), with medians distinguished by marker and line style and P10– P90 predictive bands. The vertical dotted line marks t0.",
+      "page": 26,
+      "index": 1,
+      "width": 978,
+      "height": 410
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20370v1/fig-002.webp",
+      "caption": "Figure 7 Actionable playbook from generative launch segmentation. Each quadrant maps potential and risk segments to release actions, with candidate repositories listed in each quadrant.",
+      "page": 29,
+      "index": 2,
+      "width": 626,
+      "height": 370
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20370v1/fig-003.webp",
+      "caption": "Figure D.1 Numerical validation of the stability-based error propagation theory (estimated with R= 104 rollouts). (a) Evolution of the latent-state error Êt under stable vs. unstable configurations, including the damping of an injected pulse at t= 10, consistent with Lemma EC.1. (b) Evolution of the expected one-step discrepancy ∆̂t, showing bounded behavior in the stable regime (κ < 1) and divergence in the unstable regime (κ> 1), consistent with Theorem 1.",
+      "page": 42,
+      "index": 3,
+      "width": 756,
+      "height": 348
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20370v1/fig-004.webp",
+      "caption": "Figure 1 The pipeline of product sales life-cycle forecasting and the associated information phases.",
+      "page": 3,
+      "index": 4,
+      "width": 978,
+      "height": 481
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20370v1/fig-005.webp",
+      "caption": "Figure 3 Study 1: quantile-wise calibration measured by mean pinball loss across 99 quantiles.",
+      "page": 23,
+      "index": 5,
+      "width": 723,
+      "height": 293
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20370v1/fig-006.webp",
+      "caption": "Figure 6 Study 2 (LLM adoption): (a) typical adoption load versus breakout potential, with point size indicating uncertainty (P90–P10 AUC); (b) potential–risk segmentation for LLM repositories based on median splits of P50 AUC and AUC bandwidth.",
+      "page": 28,
+      "index": 6,
+      "width": 915,
+      "height": 295
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20370v1/fig-007.webp",
+      "caption": "Figure 2 Comparison Schematic of Diffusion Modeling Paradigms for Images and Time Series Forecasting",
+      "page": 13,
+      "index": 7,
+      "width": 977,
+      "height": 528
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20370v1/fig-008.webp",
+      "caption": "Table 1 Baseline families and cold-start design requirements. R1: no within-product history (Pre-Launch); R2: conditions on analog life-cycles and static product descriptors; R3: generates coherent life-cycle samples (supporting peak timing, peak magnitude, and cumulative adoption); R4: uses a single model that updates as a prefix arrives.",
+      "page": 8,
+      "index": 8,
+      "width": 934,
+      "height": 234
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20370v1/fig-009.webp",
+      "caption": "Figure 5 Study 2 (LLM adoption): pre-launch adoption curves conditioned on s = (Org,ScaleBucket,Gated). Curves show medians with P10–P90 bands, contrasting high vs. low exposure and friction.",
+      "page": 27,
+      "index": 9,
+      "width": 572,
+      "height": 312
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20370v1/fig-010.webp",
+      "caption": "Table 5 Study 2 (LLM adoption): ablation on conditioning sources. All metrics are computed on the forecast horizon [t0, T ] with T = 10 and t0 = 6 and averaged over rolling windows.",
+      "page": 27,
+      "index": 10,
+      "width": 966,
+      "height": 191
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20370v1/fig-011.webp",
+      "caption": "Table 3 Study 2 (Hugging Face LLM adoption): selected LLM repositories in the public trending panel.",
+      "page": 24,
+      "index": 11,
+      "width": 852,
+      "height": 315
+    }
+  ]
+}

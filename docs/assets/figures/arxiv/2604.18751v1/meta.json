@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.18751v1/fig-001.webp",
+      "caption": "Figure 1: NAVAR Causal Score Matrix computed on the democracy panel. Each entry is the temporal standard deviation of the learned contribution from source i to target j. Diagonal entries (self-effects) are zeroed out.",
+      "page": 5,
+      "index": 1,
+      "width": 502,
+      "height": 441
+    },
+    {
+      "url": "assets/figures/arxiv/2604.18751v1/fig-002.webp",
+      "caption": "Figure 2: SHAP-based local explanations for the Suffrage target. Equal Protection (Source 1) exhibits a consistent lag1 influence, while Equal Access (Source 2) contributes at lag 2 with lower amplitude, explaining why Source 1 is forecast-necessary but Source 2 is not.",
+      "page": 6,
+      "index": 2,
+      "width": 500,
+      "height": 450
+    }
+  ]
+}

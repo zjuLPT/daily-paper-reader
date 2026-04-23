@@ -1,0 +1,54 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.20594v1/fig-001.webp",
+      "caption": "Figure 4. Visual comparison under challenging nonstationary acquisition conditions. For each case, the images are arranged from left to right as Direct 5-f, Degraded Multi-f, and RetinaDiff. (A) Representative challenging cases, where the direct 5-frame reconstruction remains noisy but still preserves recoverable vascular cues, whereas the conventional multiframe reconstruction is degraded by temporal integration over long windows under motion contamination, saturation, or illumination instability. (B) Extremely challenging cases, where both the direct 5-frame input and the conventional multiframe reconstruction are severely degraded. In both regimes, RetinaDiff reconstructs more coherent and interpretable vascular structures than the compared inputs and the degraded baseline from long windows. Here, Degraded Multi-f denotes the conventional multiframe tLSCI reconstructed from the full sequence and is shown as a degraded baseline rather than ground truth.",
+      "page": 7,
+      "index": 1,
+      "width": 1122,
+      "height": 1023
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20594v1/fig-002.webp",
+      "caption": "Table 2. Specifications of the retinal LSCI system developed in house.",
+      "page": 10,
+      "index": 2,
+      "width": 540,
+      "height": 275
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20594v1/fig-003.webp",
+      "caption": "Figure 1. Motivation and core phenomenon of retinal temporal laser speckle contrast imaging (tLSCI) reconstruction that is robust to motion and uses only a few frames. (A) Retinal LSCI acquisition and practical clinical challenges (eye motion artifacts cause inter-frame misalignment and blurring; long acquisition time increases patient discomfort and motion risk). (B) Two paradigms of retinal tLSCI reconstruction: under stable conditions, multiframe temporal integration provides a reliable reference, whereas under challenging conditions, integration over long windows may accumulate artifacts while observations from a few frames can still preserve recoverable vascular structure.",
+      "page": 3,
+      "index": 3,
+      "width": 1100,
+      "height": 583
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20594v1/fig-004.webp",
+      "caption": "Figure 5. Ablation analysis of RetinaDiff under stable acquisition conditions. From left to right, the columns show Direct-5f, Prior-only, Raw-only, RetinaDiff, and the HQ Reference. Insets A and B highlight the respective effects of direct statistics from a few frames, reconstruction from the physics prior only, conditioning on the raw input only, and fusion by the full model on vessel continuity, background suppression, and recovery of fine vessels. Direct-5f is dominated by statistical fluctuation, Prior-only restores the major vascular topology but remains limited in local detail, and Raw-only preserves more structural cues but still exhibits weaker local consistency than the full model. By jointly incorporating the physics prior corrected for motion and raw observations from a few frames, RetinaDiff achieves the closest visual agreement with the HQ Reference.",
+      "page": 8,
+      "index": 4,
+      "width": 869,
+      "height": 616
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20594v1/fig-005.webp",
+      "caption": "Figure 2. Overview of RetinaDiff. Stage 1 performs stabilization based on phase correlation and generates a high quality multiframe tLSCI map. Stage 2 performs physically informed conditional diffusion reconstruction using the aligned speckle sequence of a few frames and the physics prior.",
+      "page": 4,
+      "index": 5,
+      "width": 1093,
+      "height": 669
+    },
+    {
+      "url": "assets/figures/arxiv/2604.20594v1/fig-006.webp",
+      "caption": "Figure 3. Representative results under stable acquisition conditions. The columns correspond to Direct-5f, U-Net [32], GAN [33], RetinaDiff, and the HQ Reference reconstructed from the long registered sequence. Insets A and B show enlarged regions of interest with color-coded annotations: red arrows indicate fine small vessels that are clearly resolved in RetinaDiff but absent or fragmented in competing methods; blue dashed boxes highlight regions where other methods produce blurred or oversmoothed vessel structures; white dashed boxes illustrate regions where RetinaDiff reconstructs a denser and sharper vascular network closely matching the HQ Reference. The visual comparison is consistent with the accompanying quantitative and profile analyses, showing that RetinaDiff better preserves local contrast transitions and fine vascular detail while suppressing background fluctuation.",
+      "page": 5,
+      "index": 6,
+      "width": 1100,
+      "height": 975
+    }
+  ]
+}

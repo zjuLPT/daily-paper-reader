@@ -1,0 +1,418 @@
+Title: Physics-Informed Conditional Diffusion for Motion-Robust Retinal Temporal Laser Speckle Contrast Imaging
+
+URL Source: https://arxiv.org/pdf/2604.20594v1
+
+Published Time: Thu, 23 Apr 2026 01:10:03 GMT
+
+Number of Pages: 15
+
+Markdown Content:
+# Physics-Informed Conditional Diffusion for Motion-Robust Reti-nal Temporal Laser Speckle Contrast Imaging 
+
+Qian Chen, Yuehao Chen, Qiang Wang, Lei Zhu, Yanye Lu,* and Qiushi Ren* 
+
+Q. Chen, Y. Chen, L. Zhu, Y. Lu, Q. Ren Department of Biomedical Engineering, Peking University, Beijing, China Institute of Medical Technology, Peking University, Beijing, China Institute of Biomedical Engineering, Peking University Shenzhen Graduate School, Shenzhen, China National Biomedical Imaging Center, Peking University, Beijing, China Q. Wang SysEye Ltd., Chongqing, China *Corresponding authors: Yanye Lu, Qiushi Ren E-mail: yanye.lu@pku.edu.cn; qren@pku.edu.cn Keywords: retinal laser speckle contrast imaging, conditional diffusion model, few-frame reconstruction 
+
+Retinal laser speckle contrast imaging (LSCI) is a noninvasive optical modality for monitoring retinal blood flow dynamics. However, conventional temporal LSCI (tLSCI) reconstruction relies on sufficiently long speckle sequences to obtain stable temporal statistics, which makes it vulnerable to acquisition disturbances and limits effective temporal resolution. A physically informed reconstruction framework, termed RetinaDiff (Retinal Diffusion Model), is proposed for retinal tLSCI that is robust to motion and requires only a few frames. In RetinaDiff, registration based on phase correlation is first applied to stabilize the raw speckle sequence before contrast computation, reducing interframe misalignment so that fluctuations at each pixel primarily reflect true flow dynamics. This step provides a physics prior corrected for motion and a high quality multiframe tLSCI reference. Next, guided by the physics prior, a conditional diffusion model performs inverse reconstruction by jointly conditioning on the registered speckle sequence and the corrected prior. Experiments on data acquired with a retinal LSCI system developed in house show improved structural continuity and statistical stability compared with direct reconstruction from few frames and representative baselines. The framework also remains effective in a small number of extremely challenging cases, where both the direct 5-frame input and the conventional multiframe reconstruction are severely degraded. Overall, this work provides a practical and physically grounded route for reliable retinal tLSCI reconstruction from extremely limited frames. The source code and model weights will be publicly available at https://github.com/QianChen113/RetinaDiff .
+
+## 1 Introduction 
+
+Retinal microcirculation provides critical physiological information for a broad range of ocular and systemic disorders, and quantitative assessment of retinal blood flow is therefore of substantial clinical and scientific interest. [1–3] Because the retinal vasculature can be observed noninvasively and repeatedly, retinal blood flow imaging also offers a unique window into neurovascular function and microvascular regulation. For practical clinical assessment, the imaging modality should ideally be noncontact, repeatable, and capable of capturing rapid hemodynamic variation with sufficiently high temporal resolution. [4] Temporal laser speckle contrast imaging (tLSCI) is well suited to this purpose because it provides a full field optical approach for visualizing perfusion by analyzing temporal fluctuations of coherent speckle patterns. [5,6] Compared with point scanning flowmetry or approaches based on contrast agents, retinal tLSCI offers a practical route toward repeatable perfusion monitoring without exogenous tracers. [7] In the temporal domain, blood flow information is encoded in the fluctuation statistics of the recorded speckle sequence, making reconstruction quality closely dependent on the consistency and sufficiency of the temporal observations. Conventional retinal tLSCI reconstruction relies on sufficiently long speckle sequences to provide rich temporal statistics for stable contrast estimation. [8,9] However, acquiring long sequences introduces at least two important drawbacks. First, temporal integration over a long acquisition window reduces sensitivity to transient hemodynamic changes by smearing rapid variations. [10] Second, and more critically in retinal imaging, long acquisitions are vulnerable to involuntary eye motion and slow changes in imaging conditions, including illumination drift, ocular surface fluctuation, and other nonstationary disturbances. [11–13] These 
+
+> arXiv:2604.20594v1 [cs.CV] 22 Apr 2026
+
+factors violate the implicit stationarity assumption behind temporal contrast estimation and can cause the result from a long sequence to become unstable or even misleading. This challenge is particularly important in retinal imaging because, even with a well controlled bench-top system, the imaging target itself, i.e., the living eye, introduces involuntary motion that is absent in most static sample speckle imaging scenarios. Even small interframe displacements may produce temporal inconsistency at the pixel level, and their effect becomes more severe when only a few frames are available. At the same time, insisting on long acquisition windows is not always desirable in the clinic, where patient discomfort, fixation instability, and practical throughput must also be considered. Therefore, reconstruct-ing reliable retinal flow maps from only a very small number of frames is highly appealing, as it avoids the motion and stationarity problems inherent in long acquisitions, but remains technically challenging because the limited temporal samples lead to severe statistical undersampling and elevated noise. [14] Ex-isting work has improved retinal temporal imaging through registration, stabilization, and refined contrast estimation strategies. [15–18] Registration based on phase correlation is especially attractive because of its computational efficiency and robustness to global translational motion, making it a suitable solution for retinal interframe stabilization. [15,19] This technique has been widely adopted in diverse imaging fields such as remote sensing and video stabilization, and its effectiveness for translational motion estimation in the frequency domain is well established. However, even after motion handling, conventional statistical recon-struction still depends heavily on temporal averaging and degrades rapidly when only a few frames are available, where estimation variance and residual inconsistency become dominant. [20] Restoration meth-ods based on learning have also been explored for improving reconstructions and flow maps derived from speckle data. [21–23] Such approaches may suppress noise and improve visual quality, but purely regression driven by data does not necessarily preserve the physical relationship between speckle fluctuations and flow indices. Moreover, these methods can become sensitive to domain shift when acquisition conditions, motion patterns, or image statistics deviate from those seen during training. [24] 
+
+Given that retinal tLSCI reconstruction from a few frames is essentially an ill-posed inverse problem with severely undersampled temporal measurements, a generative framework capable of approximating the conditional posterior is a natural fit. Diffusion models are particularly suitable here because they can incorporate auxiliary physical evidence as explicit conditioning, rather than relying only on implicit learned features. [25,26] Specifically, the reconstruction should leverage the known inverse relationship be-tween speckle contrast and flow indices to constrain the solution space. [27,28] This suggests that physically constrained generative reconstruction may be more appropriate than unconstrained image synthesis for retinal tLSCI. [29,30] 
+
+The above analysis is visually summarized in Figure 1 . Under stable and ideal conditions, multiframe temporal integration provides a reliable statistical reference, whereas direct reconstruction using only a few frames is noisy and lacks many fine vessel details. Under challenging conditions, however, integration over long windows may accumulate artifacts caused by motion or saturation, while short temporal snapshots may still retain structurally recoverable vascular information. In addition to this recoverable challenging regime, a small number of more extreme boundary cases may also occur, where both the conventional result from long windows and the input from a few frames become severely degraded. These observations motivate retinal tLSCI reconstruction that is robust to motion and requires only a few frames, rather than unconditional dependence on long temporal windows. Based on this motivation, we propose a physically informed conditional diffusion framework, termed RetinaDiff (Retinal Diffusion Model), for retinal tLSCI that is robust to motion and works from extremely limited frames. The method consists of two coupled stages. First, the raw speckle sequence of a few frames is stabilized by registration based on phase correlation before temporal contrast computation, reducing interframe inconsistency and producing a physical prior corrected for motion. Second, a conditional diffu-sion model reconstructs a retinal flow map equivalent to what a long sequence would produce, by jointly conditioning on the registered raw speckle frames and the physical prior. This design combines explicit physical guidance with probabilistic posterior refinement and is particularly motivated by the practical observation that temporal integration over long windows is conditionally reliable rather than universally reliable. Laser Illumination   
+
+> Detector
+> Retina
+> Vessels
+> (A) Acquisition & Clinical Challenges
+> Challenge 1: Eye Motion Artifacts
+> Causes inter -frame misalignment
+> & blurring
+> Challenge 2: Long Acquisition Time
+> Increase patient discomfort
+> & motion risk
+
+...  ...         
+
+> t=0 t=N
+> (e.g.,>200
+> frames)
+> (B) The Core. Phenomenon –A Tale of Two Paradigms (Standard vs. Challenging)
+> Type I: Stable/Ideal Conditions
+> Eye stable, illumination constant.
+> Raw Speckle
+> Sequence
+> Temporal
+> Statistics
+> (Integration)
+> Ground Truth is
+> high quality.
+> Standard Multi -frame tLSCI
+> (Reliable Reference)
+> Few -frame tLSCI
+> (Noisy)
+> Type II : Challenging Conditions (Motion/Saturation)
+> Paradigm revealed in this study
+> Affected by motion blur or saturation
+> Raw Speckle Sequence
+> Temporal
+> Statistics
+> (Integration
+> FAILS here!)
+> Failure case:
+> Integration
+> accumulates
+> errors/artifacts.
+> Degraded Multi -frame tLSCI
+> (Unreliable Reference)
+> Raw Speckle
+> Sequence
+> Opportunity:
+> High temporal
+> resolution snapshots
+> retain vital structure.
+> Recoverable Few -frame tLSCI
+> (Structurally Intact)
+
+Figure 1. Motivation and core phenomenon of retinal temporal laser speckle contrast imaging (tLSCI) reconstruction that is robust to motion and uses only a few frames. (A) Retinal LSCI acquisition and practical clinical challenges (eye motion artifacts cause inter-frame misalignment and blurring; long acquisition time increases patient discomfort and motion risk). (B) Two paradigms of retinal tLSCI reconstruction: under stable conditions, multiframe temporal integration provides a reliable reference, whereas under challenging conditions, integration over long windows may accumulate artifacts while observations from a few frames can still preserve recoverable vascular structure. 
+
+The primary contributions of this paper are summarized as follows. First, retinal tLSCI from a few frames is formulated as an inverse reconstruction problem that is robust to motion, and a preprocessing strategy guided by physics and based on phase correlation stabilization and contrast to flow mapping is developed. Second, a physically informed conditional diffusion strategy is introduced to jointly leverage registered speckle observations and a prior corrected for motion, enabling flow reconstruction equivalent to that of a long sequence. Third, the framework is validated on retinal LSCI data acquired by the authors and shows improved structural integrity and statistical stability compared with direct reconstruction from a few frames and representative baselines. 
+
+## 2 Results and Discussion 
+
+Two acquisition regimes were considered to evaluate RetinaDiff. The first corresponds to relatively stable imaging conditions, where temporal integration of a long sequence provides a reliable reference of high quality. The second corresponds to challenging nonstationary conditions, where integration over long windows may be degraded by motion contamination, saturation, or illumination inconsistency. In addition, a small number of extremely challenging boundary cases were observed, in which both the direct input of a few frames and the conventional multiframe reconstruction were severely degraded. This design evaluates whether RetinaDiff can (i) faithfully recover retinal tLSCI equivalent to that of a long sequence from very few frames under standard conditions and (ii) remain practically useful when conventional statistics from long windows fail. Unless otherwise specified, the input consisted of 5 speckle frames, while the reference multiframe tLSCI was reconstructed from 200 registered speckle frames. 
+
+2.1 Framework Overview 
+
+Figure 2 illustrates the overall pipeline of RetinaDiff. The framework contains two tightly coupled stages. In Stage 1, the raw speckle sequence is aligned by registration based on phase correlation to suppress 2.2 Performance under Stable Acquisition Conditions Input spe_seq {𝐼 𝑡 }𝑡 =1 
+
+> 𝑁
+> I1
+> IN
+> Reference Frame I 1
+> Current Frame I C
+> FFT,
+> Cross Power
+> Spectrum,
+> IFFT
+> phase spectrum
+> difference
+> Apply
+> Full -Frame
+> Shift
+> Aligned Frames {𝐼 𝑡
+> 𝑟𝑒𝑔 }𝑡 =1
+> 𝑁
+> I1
+> 𝑟𝑒𝑔
+> IN
+> 𝑟𝑒𝑔
+> Multi -Frame
+> tLSC
+> Calculation
+> Multi -Frame
+> Reconstruction
+> (High -Quality)
+
+Stage 1: Motion -Robust High -Quality tLSCI Generation 
+
+Stage 2: Physics -informed Diffusion Model for LSCI    
+
+> Physics Prior
+> Pure Noise
+> Condition
+> Preparation
+> Aligned Frames {𝐼 𝑡
+> 𝑟𝑒𝑔 }𝑡 =1
+> 𝑇
+> I1
+> 𝑟𝑒𝑔
+> IT
+> 𝑟𝑒𝑔
+> Physical
+> Guidance
+
+𝑥 𝑡 
+
+> Output
+> Reverse Denoising Process (Inference)
+> T → 1
+> 𝑥 𝑡 -1
+
+ത𝛼 0 ത𝛼 𝑡 ... 
+
+... x1 xT               
+
+> Forward Diffusion Process (Training)
+> t= 1, ... , T
+> ℒ(𝜃 )=𝔼 𝑥 0,𝑡 ,𝜖 [𝜀 −𝜀 𝜃 (𝑥 𝑡 ,𝑡 ,𝑐 )2
+> 2]
+> U-Net
+> High -Quality
+> tLSC (x0)
+> 𝑥 𝑡 ~𝑁 (0,1)
+
+𝜀 𝜃 (𝑥 𝑡 , 𝑡 , 𝑐 )     
+
+> Sampling
+> Data Acquisition
+> & Initialization
+> Laser
+> Camera
+> Few -frame Reconstruction
+> 5frames ,Low −Quality
+> ROI
+> ROI
+
+Figure 2. Overview of RetinaDiff. Stage 1 performs stabilization based on phase correlation and generates a high quality multiframe tLSCI map. Stage 2 performs physically informed conditional diffusion reconstruction using the aligned speckle sequence of a few frames and the physics prior. 
+
+temporal inconsistency caused by involuntary eye motion. [19,31] Temporal laser speckle contrast is then computed on the aligned sequence to obtain a multiframe reconstruction of high quality and a physics prior corrected for motion. [27] In Stage 2, a conditional diffusion model reconstructs a retinal flow map equivalent to that of a long sequence from a few aligned speckle frames under the additional guidance of the physics prior. This design is motivated by two observations. First, reliable temporal contrast estimation requires interframe consistency, so explicit stabilization is essential for retinal tLSCI from few frames. Second, reconstruction from only a handful of frames is inherently ambiguous, especially in regions with low signal or fine vessels. The prior derived from contrast therefore serves as an interpretable anchor, while the diffusion model refines the estimate toward a statistically stable solution under severe temporal undersampling. As a result, RetinaDiff integrates motion robustness, physical interpretability, and probabilistic inverse reconstruction within a unified framework. 
+
+2.2 Performance under Stable Acquisition Conditions 
+
+We first evaluated RetinaDiff under relatively stable acquisition conditions, where the eye remained suffi-ciently steady and illumination was approximately constant over the acquisition window. In this regime, the reconstruction from a long sequence serves as a reliable reference and enables a standard fidelity evaluation. Representative results are shown in Figure 3. Direct 5-frame reconstruction suffers from strong statistical fluctuation, producing noisy backgrounds, fragmented vessels, and unstable local intensity. The supervised baselines (U-Net and GAN) improve global appearance to some extent, but they still lose fine vessel details or produce local oversmoothing. By comparison, RetinaDiff better preserves overall vascular topology, thin branches, and vessel continuity, especially around bifurcations and peripheral regions of low contrast. The enlarged regions further show that the proposed framework does not simply generate smoother images. Instead, it restores vessel segments that are broken or attenuated in direct estimation from a few 2.2 Performance under Stable Acquisition Conditions 2026/4/22          
+
+> 5frames recon Unet GAN Ours HQ Reference
+> HQ Reference
+> . . . . . .
+> input raw frames
+> 200 frames
+> 5 frames input
+> 5frames recon
+> 200 frames input
+> (A)
+> (B)
+> (C) (D)
+
+Figure 3. Representative results under stable acquisition conditions. The columns correspond to Direct-5f, U-Net [32] , GAN [33] ,RetinaDiff, and the HQ Reference reconstructed from the long registered sequence. Insets A and B show enlarged regions of interest with color-coded annotations: red arrows indicate fine small vessels that are clearly resolved in RetinaDiff but absent or fragmented in competing methods; blue dashed boxes highlight regions where other methods produce blurred or oversmoothed vessel structures; white dashed boxes illustrate regions where RetinaDiff reconstructs a denser and sharper vascular network closely matching the HQ Reference. The visual comparison is consistent with the accompanying quantitative and profile analyses, showing that RetinaDiff better preserves local contrast transitions and fine vascular detail while suppressing background fluctuation. 
+
+frames while maintaining clearer vessel boundaries than the comparison methods. This observation is fur-ther confirmed by the intensity profiles plotted along representative vessel cross-sections (bottom panels of Figure 3): the RetinaDiff curve tracks the reference profile more closely than the other methods, exhibiting sharper peaks at vessel centers and steeper transitions at vessel edges. Together, these findings suggest that the physical prior effectively constrains the global flow structure, whereas the diffusion component refines uncertain local details under severe temporal undersampling. Quantitative results are summarized in Table 1. RetinaDiff achieves the best performance among the listed methods in both Structural Similarity Index Measure (SSIM) and Peak Signal to Noise Ratio (PSNR), indicating improved structural fidelity and numerical consistency with the reliable multiframe reference. Compared with direct 5-frame reconstruction (Direct-5f), the proposed method raises SSIM from 0.159 to 0.533 and PSNR from 14.83 dB to 18.06 dB, confirming that direct temporal contrast estimation from only 2.3 Performance under Challenging and Extremely Challenging Conditions                                        
+
+> Table 1. Quantitative comparison of retinal blood-flow reconstruction performance under stable acquisition conditions (evaluated on 8 independent test sequences). Results are presented as Mean ±Standard Deviation. Direct-5f denotes the direct 5-frame temporal laser speckle contrast (tLSC) reconstruction. Arrows ( ↑,↓) indicate the direction of better performance. The best results are highlighted in
+> bold .
+> Metrics Direct-5f U-Net GAN Ours (RetinaDiff )
+> SSIM ↑0.159 ±0.048 0.505 ±0.074 0.529 ±0.055 0.533 ±0.068
+> PSNR ↑14.83 ±2.21 17.86 ±2.34 16.86 ±2.73 18.06 ±3.64
+> FID ↓303.65 186.24 191.87 129.52
+
+five frames remains strongly limited by undersampled temporal statistics. Compared with U-Net (SSIM 0.505, PSNR 17.86 dB) and GAN (SSIM 0.529, PSNR 16.86 dB), RetinaDiff still achieves the highest scores on both metrics, which agrees with the visual observation that it better preserves vessel continuity and fine structural detail. In addition, RetinaDiff substantially reduces the Fr´ echet Inception Distance (FID) to 129.52, compared with 303.65 for Direct-5f, 186.24 for U-Net, and 191.87 for GAN, indicating closer perceptual agreement with the reference distribution. 
+
+2.3 Performance under Challenging and Extremely Challenging Conditions 
+
+We next evaluated a more practically relevant regime, in which conventional reconstruction over long win-dows itself becomes degraded. In our data, such cases mainly arose from saturation caused by excessive instantaneous illumination, illumination nonuniformity, and motion contamination. [34,35] Under these con-ditions, temporal integration may accumulate corrupted statistics, and the result from a long sequence can no longer be treated as a fully reliable reference, because the stationarity assumption underlying tem-poral contrast estimation is violated by motion, illumination drift, or perturbation related to saturation. In addition to these recoverable challenging cases, we further observed a small number of more extreme boundary cases, in which both the direct 5-frame input and the conventional multiframe reconstruction were severely degraded. As shown in Figure 4, the degraded multiframe output may contain distortion related to saturation, local intensity collapse, or blurred vessel boundaries. Direct reconstruction from a few frames avoids part of the error accumulation associated with integration over long windows, but remains too noisy for practical interpretation. The challenging cases in Panel A correspond to the regime most directly aligned with the core motivation of this work: the result from long windows fails, yet the observation from a few frames still preserves recoverable vascular structure. In these cases, RetinaDiff yields a more coherent vascular map with more continuous major vessels, better recovery of peripheral branches, and more stable background suppression. The extremely challenging cases in Panel B should be interpreted more conservatively as boundary condition examples rather than the primary target setting of the method. Here, both the direct 5-frame input and the conventional multiframe reconstruction are severely degraded, suggesting that the acquisition contains much less directly usable temporal information. Nevertheless, RetinaDiff still reconstructs plausible vascular morphology, indicating that the model can exploit limited informative cues that remain embedded in the raw sequence and combine them with learned structural priors in a physically guided manner. This regime is important because it reflects the practical limitation of relying exclusively on temporal statistics from long windows in retinal imaging. When the acquisition departs from the stationarity as-sumption, more frames do not necessarily imply a more trustworthy result, because averaging over long windows may integrate invalid fluctuations and amplify failure patterns rather than improve statistical reliability. In this context, the value of RetinaDiff lies in exploiting temporally stable observations from a few frames together with a physically derived prior, thereby recovering a flow map that remains inter-pretable even when the nominal multiframe result is partially degraded. For the more extreme cases, the results should be understood as evidence of robustness at the boundary of the recoverable regime rather than strict recovery against a reliable reference. 2.4 Ablation Analysis Direct 5 -f Degraded Multi -f RetinaDiff Direct 5 -f Degraded Multi -f RetinaDiff 
+
+a
+
+b
+
+c
+
+d
+
+e
+
+f
+
+(A) Challenging Acquisition Conditions 
+
+(B) Extremely Challenging Acquisition Conditions 
+
+g
+
+h
+
+i
+
+j
+
+Figure 4. Visual comparison under challenging nonstationary acquisition conditions. For each case, the images are arranged from left to right as Direct 5-f, Degraded Multi-f, and RetinaDiff. (A) Representative challenging cases, where the direct 5-frame reconstruction remains noisy but still preserves recoverable vascular cues, whereas the conventional multiframe reconstruction is degraded by temporal integration over long windows under motion contamination, saturation, or illumination instability. (B) Extremely challenging cases, where both the direct 5-frame input and the conventional multiframe reconstruction are severely degraded. In both regimes, RetinaDiff reconstructs more coherent and interpretable vascular structures than the compared inputs and the degraded baseline from long windows. Here, Degraded Multi-f denotes the conventional multiframe tLSCI reconstructed from the full sequence and is shown as a degraded baseline rather than ground truth. 
+
+2.4 Ablation Analysis 
+
+We further analyzed the contribution of different information sources by comparing direct reconstruction from a few frames, reconstruction conditioned on the physics prior only, conditioning on the raw input only, and the full RetinaDiff model. This ablation is intended to clarify how each component contributes to vascular topology recovery, local detail preservation, and background suppression. Figure 5 shows that Direct-5f remains strongly affected by statistical fluctuation and therefore exhibits incomplete vascular continuity and elevated background noise. Prior-only already recovers the major vas-2.5 Discussion Prior -only  Raw -only  HQ Reference Direct -5f  Ours 
+
+(A) 
+
+(C)  (D) 
+
+(B)    
+
+> Figure 5. Ablation analysis of RetinaDiff under stable acquisition conditions. From left to right, the columns show Direct-5f, Prior-only, Raw-only, RetinaDiff, and the HQ Reference. Insets A and B highlight the respective effects of direct statistics from a few frames, reconstruction from the physics prior only, conditioning on the raw input only, and fusion by the full model on vessel continuity, background suppression, and recovery of fine vessels. Direct-5f is dominated by statistical fluctuation, Prior-only restores the major vascular topology but remains limited in local detail, and Raw-only preserves more structural cues but still exhibits weaker local consistency than the full model. By jointly incorporating the physics prior corrected for motion and raw observations from a few frames, RetinaDiff achieves the closest visual agreement with the HQ Reference.
+
+cular skeleton, confirming that the physical prior corrected for motion carries strong structural information. However, it remains relatively oversmoothed and lacks stable detail of fine vessels. Raw-only preserves more local structure than Direct-5f and is more flexible than Prior-only, but still shows weaker local consistency and less effective background suppression than the full model. The full RetinaDiff model provides the best overall balance between global topology, recovery of fine vessels, and background stability. This result supports the intended complementarity of the two inputs: the physical prior stabilizes the structure at large scale, while the raw observations from a few frames preserve additional local cues that would otherwise be lost in a formulation using only the prior. Their joint fusion within the conditional diffusion framework therefore leads to the closest approximation to the HQ Reference. 
+
+2.5 Discussion 
+
+The above results support three key observations. First, explicit motion correction is essential for reti-nal tLSCI reconstruction from few frames, consistent with previous retinal imaging studies showing that registration based on phase correlation and in the frequency domain is effective for reducing temporal in-consistency induced by motion prior to downstream analysis. [36,10] Unlike generic image restoration tasks, temporal speckle analysis depends directly on interframe statistical consistency. Even small residual dis-placements can produce artificial temporal fluctuations that are difficult to distinguish from true changes related to flow, especially in vessel boundaries and regions of low signal. Second, physically informed conditioning improves both robustness and interpretability. The prior derived from contrast provides a direct estimate related to flow from the stabilized sequence and constrains the generative model toward solutions consistent with the tLSCI formation mechanism and the inverse relationship between speckle contrast and flow dynamics. [27] This helps explain why RetinaDiff is better able to preserve vessel topology and suppress ambiguous artifacts than purely baselines driven by data. In this sense, the diffusion component is not used as a generic synthesis tool, but as a conditional posterior estimator guided by physically meaningful evidence, in line with recent formulations based on diffusion for inverse imaging and restoration. [37,38] 
+
+Third, the practical value of RetinaDiff becomes more evident under nonideal acquisition conditions. Under stable conditions, the main advantage of the proposed framework lies in reconstructing retinal tLSCI of high fidelity from very few frames while approximating a reliable multiframe reference. Under challenging conditions, RetinaDiff offers an additional advantage by recovering a useful flow map even when conventional temporal integration over long windows becomes partially unreliable. A small number of extremely challenging cases further demonstrate that the framework is robust against severely degraded inputs, capable of recovering essential information and vascular structures. It is also worth noting that metrics at the pixel level such as SSIM and PSNR do not always perfectly correlate with perceptual image quality or practical clinical utility, as is widely recognized in biomedical imaging and computer vision. Although the numerical gains over GAN in SSIM (0.529 to 0.533) and PSNR (16.86 dB to 18.06 dB) appear marginal, the comprehensive visual comparisons in Figures 3 and 4 demon-strate substantially improved vessel continuity, sharper details of fine vessels, and more robust recovery of effective target regions that are otherwise lost or laden with artifacts in U-Net or GAN methods. The notable reduction in FID (from 191.87 to 129.52) further supports the advantage of RetinaDiff in capturing the true distributional characteristics of the vascular networks. We anticipate that future research led by domain experts will establish more specialized, clinically aligned evaluation metrics to comprehensively quantify the efficacy of such reconstruction techniques. Several limitations should also be acknowledged. The present motion model mainly addresses dominant translational displacement, whereas more complex deformation or torsional motion may require more advanced registration strategies. In addition, the current work focuses on relative reconstruction of flow rather than absolute quantitative flow calibration. These limitations will be addressed in future work through larger clinical validation, improved motion modeling, and accelerated implementation for retinal hemodynamic monitoring in real time or near real time. 
+
+## 3 Conclusion 
+
+RetinaDiff, a physically informed conditional diffusion framework for retinal temporal laser speckle contrast imaging that is robust to motion and works from extremely limited frames, has been presented. By combining stabilization based on phase correlation, a prior derived from contrast and corrected for motion, and conditional diffusion reconstruction, the proposed method recovers retinal tLSCI maps equivalent to those of a long sequence from only a few speckle frames. Experiments on retinal LSCI data acquired by the authors indicate that RetinaDiff improves vascular continuity, background suppression, and statistical stability relative to direct reconstruction from a few frames and representative baselines. Its value is evident not only under stable acquisition conditions, where it approximates a reliable multiframe reference, but also under challenging nonstationary conditions, where conventional integration over long windows may itself become degraded. A small number of extremely challenging cases further suggest useful robustness beyond the primary recoverable regime, although these cases should be interpreted as boundary condition examples rather than the main target setting. Overall, this work provides a practical and physically grounded route for reliable retinal tLSCI re-construction under short acquisition windows. Future work will focus on larger clinical validation, more advanced motion modeling, and accelerated implementation toward real-time retinal hemodynamic imag-ing. Table 2. Specifications of the retinal LSCI system developed in house.               
+
+> Parameter Value Laser diode RLD85NZJ4-00A Wavelength 850 nm Corneal power 0.8 mW Camera model Basler aca2440-75um med Raw image size 1024 ×1024 pixels Effective ROI 768 ×768 pixels Acquisition mode Free-run Exposure time ≈1/75 s ( ≈13.3 ms) Frame rate 67 fps (actual) / 83 fps (theoretical)
+
+## 4 Experimental Section 
+
+4.1 Retinal LSCI System and Data Acquisition 
+
+A retinal LSCI system developed in house was used in all experiments, following the general retinal LSCI/tLSCI imaging paradigm for noncontact blood flow monitoring based on temporal speckle fluctua-tions. [36] The retina was illuminated by a coherent near-infrared laser source based on a single-mode laser diode (RLD85NZJ4-00A, ROHM, Japan) with a nominal wavelength of 850 nm. The optical power at the corneal plane was approximately 0.8 mW. Backscattered retinal speckle patterns were recorded by a monochrome medical camera (Basler aca2440-75um med, Basler AG, Germany) with a raw sensor reso-lution of 1024 × 1024 pixels. The camera was operated in free-run mode with an actual frame rate of approximately 67 fps (theoretical maximum 83 fps) and an exposure time close to 1/75 s (approximately 13.3 ms). Additional hardware parameters are summarized in Table 2. To eliminate edge interference and uninformative dark borders, the raw 1024 × 1024 speckle images were first centrally cropped to an effective field of view of 768 × 768 pixels. The dataset comprised speckle sequences collected from 198 independent eyes. Among them, 122 sequences were used exclusively for training. To facilitate model training and optimize computational efficiency, each 768 × 768 training se-quence was spatially divided into four 384 × 384 nonoverlapping patches, yielding a total of 488 training data samples. The remaining 76 sequences were reserved for testing. The test set was specifically cat-egorized based on acquisition conditions: 8 sequences for stable conditions, 64 sequences for challenging nonstationary conditions, and 4 sequences for extremely challenging boundary cases. Although the total number of subjects might appear relatively limited compared to large natural image datasets, retinal vas-cular topologies and blood flow speckle dynamics exhibit high structural similarity and regular, repeating physical patterns. By extracting multiple local patches from each full field sequence, the model effectively learns these localized, consistent vascular laws. Consequently, this patch level reconstruction task provides sufficient localized variance, ensuring that the current dataset scale is adequate for the network to capture and generalize the underlying physical mapping without overfitting. For each sample, a long registered subsequence was used to construct the multiframe tLSCI reference of high quality, whereas a small subset of frames was used as the input of a few frames, reflecting the conventional dependence of temporal contrast estimation on sufficiently long observation windows for statistical stability. 
+
+4.2 Stage 1: Motion Stabilization and Physics Prior Construction  
+
+> 4.2.1 Motion Stabilization via Phase Correlation
+
+Given a raw speckle sequence {It(x)}Nt=1 , the first frame I1 was used as the reference and the displacement of each current frame was estimated by phase correlation: 
+
+Rt(u) = F(It)( u) F(I1)∗(u)
+
+|F (It)( u) F(I1)∗(u)| + ϵ, (1) 4.3 Stage 2: Physically Informed Conditional Diffusion Reconstruction 
+
+∆t = arg max  
+
+> δ
+
+F−1(Rt)( δ), (2) and the aligned frame was obtained as ˜It(x) = It(x + ∆ t). (3) This procedure compensates the dominant global translational component of interframe eye motion and improves temporal consistency before any contrast computation is performed, following the use of registra-tion methods in the frequency domain for efficient translational motion compensation in retinal imaging. In the present dataset, global translation was found to capture the main motion pattern sufficiently well for stabilization when only a few frames are used. The aligned sequence 
+
+{ ˜It(x)}Nt=1 
+
+was subsequently used for both multiframe reconstruction of high quality and prior formation from a few frames. This preprocessing is particularly important because temporal contrast estimation is directly affected by interframe consistency.  
+
+> 4.2.2 Temporal Contrast Computation and Physics Prior Corrected for Motion
+
+Temporal speckle contrast was computed on the aligned sequence as 
+
+K(x) = σ(x)
+
+μ(x) + ϵ, (4) where 
+
+μ(x) = 1
+
+N
+
+> N
+
+X
+
+> t=1
+
+˜It(x), σ(x) = 
+
+vuut 1
+
+N
+
+> N
+
+X
+
+> t=1
+
+  ˜It(x) − μ(x)2. (5) Here, μ(x) and σ(x) denote the temporal mean and standard deviation at pixel x, respectively. The above temporal contrast formulation follows standard laser speckle contrast theory and temporal statistical estimation. A physics prior corrected for motion was then defined using the inverse relationship between speckle contrast and activity related to flow: 
+
+Fphy (x) = 1
+
+K(x)2 + ϵ. (6) This mapping provides a relative flow surrogate rather than an absolute flow calibration, and serves as the structural guidance fed into Stage 2. 
+
+4.3 Stage 2: Physically Informed Conditional Diffusion Reconstruction  
+
+> 4.3.1 Conditional Formulation
+
+Let x0 denote the multiframe tLSCI target flow map of high quality. To compensate for the severe informa-tion loss caused by extreme undersampling, we formulate the condition c via a channelwise concatenation of the aligned speckle observations from a few frames and a physically derived prior: 
+
+c = Concat( ˜I1, ˜I2, . . . , ˜INfew , F phy ),
+
+where ˜Ii represents the raw speckle intensity frames, and Fphy is the flow index of limited quality calculated directly from these Nfew frames using the standard tLSC physical model. The rationale behind this hybrid condition is twofold. First, Fphy acts as a topological anchor, explicitly providing the macroscopic vascular skeleton to prevent the diffusion model from hallucinating nonexistent structures. Second, the raw speckle sequences ( ˜Ii) provide statistical fluctuations at high frequency in both space and time that are otherwise smoothed out in Fphy . By feeding this joint condition into the network, the diffusion model is enforced to act as a residual estimator that corrects the physical formula’s inadequacies in regimes of sparse sampling. 4.4 Implementation, Baselines, and Evaluation 
+
+In the forward diffusion process, Gaussian noise is progressively added to the normalized target image: 
+
+xt = √¯αt x0 + √1 − ¯αt ϵ, ϵ ∼ N (0 , I), (7) where t ∈ { 1, . . . , T } denotes the diffusion step, T is the total number of steps, and ¯ αt is determined by the predefined noise schedule. A modified U-Net style denoising network receives the concatenated tensor Concat( xt, c ), the embedded diffusion step t, and predicts the injected noise component ϵ. 
+
+> 4.3.2 Robust Training Objective and Accelerated Inference
+
+Due to the inverse square nature of the flow index (1 /K 2), LSCI targets inherently contain extreme outliers (e.g., static scatterers or glares) that easily destabilize MSE training of diffusion models. Therefore, before the forward process, a robust normalization based on percentile clipping was applied to map all inputs, including x0, Fphy , and ˜Ii, into a strictly bounded domain [ −1, 1]. The denoising network ϵθ is then optimized via the standard objective of noise prediction: 
+
+Ldiff = Ex0,t,ϵ 
+
+∥ϵ − ϵθ(xt, t, c )∥22
+
+ . (8) During inference, to meet the practical requirements of biomedical imaging, we decoupled the training and sampling steps. Starting from pure Gaussian noise xT , the model iteratively reconstructs the final tLSCI map under the same static conditional guidance c using the Denoising Diffusion Implicit Models (DDIM) sampler: 
+
+xt−1 = √¯αt−1
+
+xt − √1 − ¯αtϵθ(xt, t, c )
+
+√¯αt
+
+
+
++ p1 − ¯αt−1ϵθ(xt, t, c ). (9) By exploiting DDIM, the sampling trajectory is compressed from T steps down to S steps ( S ≪ T ), significantly accelerating the inference without compromising structural fidelity. Within this framework, diffusion is not merely a generic image synthesis engine; rather, it serves as a conditional posterior estima-tor strongly guided by physically meaningful evidence, enabling the robust reconstruction of structurally continuous retinal flow maps from extremely limited frames. 
+
+4.4 Implementation, Baselines, and Evaluation 
+
+All models were implemented in PyTorch and trained on a single NVIDIA GeForce RTX 3090 Ti GPU (24 GB VRAM). The input speckle frames and target tLSCI maps were normalized to the range of [-1, 1] and randomly cropped to 384 × 384 pixels during training. Training used the AdamW optimizer, an initial learning rate of 1 ×10 −4, a batch size of 4, and 1200 epochs. The reverse diffusion process used 100 sampling steps with a linear noise schedule. Data augmentation included random horizontal flipping, random vertical flipping, and random rotations by multiples of 90 degrees. For fair comparison, U-Net [32] , GAN [33] , and the diffusion baseline were trained on the same split and with the same preprocessing whenever possible. 
+
+## Supporting Information 
+
+Supporting Information is available from the author and includes detailed network configuration, complete training hyperparameters, and additional implementation details. 
+
+## Acknowledgements 
+
+The authors gratefully acknowledge SysEye Ltd. for providing hardware equipment used in this study. This work was supported by the Science and Technology Innovation Key R&D Program of Chongqing (Program No. CSTB2025TIAD–STX0008). REFERENCES 
+
+Table S1. Detailed Network Configuration and Hyperparameters for RetinaDiff. 
+
+Category Parameter / Setting 
+
+Data Processing & Normalization 
+
+Physical Prior Computation Fphy = 1 /K 2, where K = σ/μ 
+
+Robust Normalization Range Percentile clipping at [0.5%, 99.5%] Input Normalization Scale Mapped to [ −1, 1] 
+
+Network Architecture (Modified U-Net) 
+
+Input Channels 7 (1 Latent + 1 Prior + 5 Raw Speckle) Output Channels 1 (Predicted Noise ϵ)Base Channels 64 Channel Multipliers (1 , 2, 4, 8) → (64, 128, 256, 512) Down-sampling Blocks DownBlock2D, AttnDownBlock2D Attention Mechanism Self-Attention incorporated at lower resolutions 
+
+Training Hyperparameters 
+
+Optimizer AdamW Learning Rate 1 × 10 −4
+
+Loss Function Mean Squared Error (MSE) Patch Size 384 × 384 pixels (Random Crop) Effective Batch Size 4 (via Gradient Accumulation) Training Schedule Linear Beta Schedule Diffusion Timesteps ( T ) 1000 
+
+Inference & Sampling (DDIM) 
+
+Sampler Denoising Diffusion Implicit Models (DDIM) Inference Steps ( S) 100 Prediction Type Epsilon ( ϵ)Value Clipping Disabled ( clip sample = False )
+
+## Conflict of Interest 
+
+The authors declare no conflict of interest. 
+
+## Data Availability Statement 
+
+The data that support the findings of this study are available from the corresponding author upon reason-able request. 
+
+## Author Contributions 
+
+Q.C. conducted the experiments, organized the data, implemented technical details, coordinated the overall project, and drafted the manuscript. Y.C. performed the data acquisition. Q.W. provided specific technical guidance. L.Z. provided suggestions on application construction. Y.L. and Q.R. conceived the study, planned and coordinated the project, and provided overall technical supervision. All authors revised the manuscript and approved the final version. 
+
+## References 
+
+[1] A. Houben, Acta Ophthalmologica 2024 , 102 .[2] Y. Yuan, M. Dong, S. Wen, X. Yuan, L. Zhou, Experimental Eye Research 2024 , 242 109885. [3] C. Balaratnasingam, D. An, M. Hein, P. Yu, D.-Y. Yu, Progress in Retinal and Eye Research 2023 ,
+
+94 101134. REFERENCES 
+
+[4] G. Han, J. Yuan, J. Lu, J. Zhang, H. Wang, R. Chen, Y. Wu, et al., Biomedical Signal Processing and Control 2025 , 100 107091. [5] L. Zhai, Y. Du, X. Wu, Y. Fu, Optics Communications 2024 , 560 130484. [6] R. Li, M. Ma, C. Wang, J. Hong, Z. Zhang, J. Lu, P. Li, Optics Express 2024 , 32 , 5 6887. [7] A. Vinnett, S. Asanad, K.-A. Cho, P. Manalastas, A. Rege, O. Saeedi, Investigative Ophthalmology & Visual Science 2020 , 61 , 7 617. [8] H. Li, P. Bai, Q. Liu, C. Han, W. Zhang, S. Liu, Y. Fu, In Tenth Symposium on Novel Optoelectronic Detection Technology and Applications , volume 13511. SPIE, 2025 395–407. [9] C. Liu, K. Kılı¸ c, S. E. Erdener, D. A. Boas, D. D. Postnov, Biomedical Optics Express 2021 , 12 , 6 3571. [10] X. Feng, M. Geng, X. Meng, D. Zou, Z. Jin, G. Liu, C. Zhou, Q. Ren, Y. Lu, Computerized Medical Imaging and Graphics 2023 , 103 102164. [11] A. Gonz´ alez Olmos, S. Zilpelwar, S. Sunil, D. A. Boas, D. D. Postnov, Scientific reports 2023 , 13 , 1 17970. [12] A. Arrigo, E. Aragona, M. B. Parodi, F. Bandello, Progress in retinal and eye research 2023 , 92 
+
+101111. [13] X. Chen, Z. Ma, C. Wang, J. Cui, F. Fan, X. Gao, J. Zhu, Journal of Biophotonics 2024 , 17 , 10 e202400198. [14] H. Cheng, T. Q. Duong, Optics letters 2007 , 32 , 15 2188. [15] W. S. Hoge, C.-F. Westin, IEEE Transactions on Image Processing 2005 , 14 , 7 884. [16] T. Chanwimaluang, G. Fan, S. R. Fransen, IEEE transactions on information technology in biomedicine 2006 , 10 , 1 129. [17] W. Cheng, X. Zhu, X. Chen, M. Li, J. Lu, P. Li, IEEE transactions on medical imaging 2019 , 38 , 7 1726. [18] E. Morales-Vargas, H. Peregrina-Barreto, J. C. Ramirez-San-Juan, Computer Methods and Programs in Biomedicine 2021 , 212 106486. [19] R. Kolar, V. Harabis, J. Odstrcilik, The Imaging Science Journal 2013 , 61 , 4 369. [20] L. Song, X. Wang, R. Zhang, K. Zhang, Z. Zhou, D. S. Elson, Journal of Optics 2018 , 20 , 7 075301. [21] H.-S. Park, Y.-C. Ahn, Optics & Laser Technology 2024 , 179 111367. [22] Y. Chen, W. Han, G. Bin, S. Wu, S. P. Morgan, S. Sun, Scientific Reports 2024 , 14 , 1 27665. [23] M. Ahmadi, D. Biswas, M. Lin, F. D. Vrionis, J. Hashemi, Y. Tang, Artificial Intelligence Review 
+
+2025 , 58 , 10 297. [24] H. Guan, M. Liu, IEEE Transactions on Biomedical Engineering 2021 , 69 , 3 1173. [25] K. Wu, A. Pan, W. Gao, Optics & Laser Technology 2024 , 176 111016. [26] B. Kim, I. Han, J. C. Ye, In European conference on computer vision . Springer, 2022 347–364. [27] J. D. Briers, S. Webster, Journal of biomedical optics 1996 , 1, 2 174. [28] C. Qiu, J. Situ, S.-Y. Wang, E. Vaghefi, Biomedical Optics Express 2022 , 13 , 11 6136. REFERENCES 
+
+[29] R. Li, G. Della Maggiora, V. Andriasyan, A. Petkidis, A. Yushkevich, N. Deshpande, M. Kudryashev, A. Yakimovich, Communications Engineering 2024 , 3, 1 186. [30] N. Abbasi, A. Wong, K. Bizheva, IEEE Transactions on Biomedical Engineering 2025 .[31] H. Li, B. Tan, V. P. Pandiyan, V. A. Barathi, R. Sabesan, L. Schmetterer, T. Ling, Journal of Physics D: Applied Physics 2025 , 58 , 14 145102. [32] O. Ronneberger, P. Fischer, T. Brox, In International Conference on Medical image computing and computer-assisted intervention . Springer, 2015 234–241. [33] I. J. Goodfellow, J. Pouget-Abadie, M. Mirza, B. Xu, D. Warde-Farley, S. Ozair, A. Courville, Y. Ben-gio, Advances in neural information processing systems 2014 , 27 .[34] Z. Shen, H. Fu, J. Shen, L. Shao, IEEE transactions on medical imaging 2020 , 40 , 3 996. [35] S. H. Rasta, A. Manivannan, P. F. Sharp, Journal of Biomedical Optics 2012 , 17 , 11 116005. [36] X. Feng, Y. Yu, D. Zou, Z. Jin, C. Zhou, G. Liu, J. G. Fujimoto, C. Li, Y. Lu, Q. Ren, Journal of biophotonics 2022 , 15 , 2 e202100285. [37] Z. Dou, Y. Song, In The Twelfth International Conference on Learning Representations . 2024 .[38] F.-A. Croitoru, V. Hondru, R. T. Ionescu, M. Shah, IEEE transactions on pattern analysis and machine intelligence 2023 , 45 , 9 10850.

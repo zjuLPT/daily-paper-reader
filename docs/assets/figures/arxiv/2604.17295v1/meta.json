@@ -1,0 +1,246 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-001.webp",
+      "caption": "Table 1: Performance comparison on out-of-distribution datasets (primarily prior benchmarks BEDTime, MMTSBench, and MCQ2, which differ substantially from the training data) across L1-L3. All tasks report accuracy (Acc), “half-Acc” represents the performance in locating one of the maximum or minimum values, and “SR” denotes whether the model provides valid answers or correctly maps target values with correct indices. For VLMs, “plot” and “num” denote rendering time series as a sequence plot and a numerical table, respectively. “-” denotes that the input modality cannot handle the corresponding task. The best result is bolded and the second best is in underlined.",
+      "page": 6,
+      "index": 1,
+      "width": 941,
+      "height": 436
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-002.webp",
+      "caption": "Table 23: Illustration of “Min/Max Grounding” task. “<ts>” denotes various input types of time series, e.g., numerical tables, textual arrays, or specific time series tokens.",
+      "page": 25,
+      "index": 2,
+      "width": 950,
+      "height": 687
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-003.webp",
+      "caption": "Figure 9: Two types of templates for dual-input of image and textual arrays.",
+      "page": 38,
+      "index": 3,
+      "width": 950,
+      "height": 442
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-004.webp",
+      "caption": "Table 24: Illustration of “Start/End Comparsion” task. “<ts>” denotes various input types of time series, e.g., numerical tables, textual arrays, or specific time series tokens.",
+      "page": 26,
+      "index": 4,
+      "width": 950,
+      "height": 425
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-005.webp",
+      "caption": "Table 16: Dataset properties. “Syn.” denotes the synthetic time series data, and “Train-Test” represents whether the corresponding dataset provides train-test splits instead of as an evaluation benchmark.",
+      "page": 21,
+      "index": 5,
+      "width": 935,
+      "height": 692
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-006.webp",
+      "caption": "Table 15: Evaluation results on key tasks in the HITSR.",
+      "page": 21,
+      "index": 6,
+      "width": 941,
+      "height": 391
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-007.webp",
+      "caption": "Figure 1: (a) Illustration of the four-level TSR taxonomy and HITSR dataset. Each incorporates a simple TSR case with increasing difficulties. (b) A brief introduction to HITSR datasets, containing three levels of TSR scenarios with diverse subtasks.",
+      "page": 2,
+      "index": 7,
+      "width": 808,
+      "height": 456
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-008.webp",
+      "caption": "Table 2: Encoding strategy comparison in out-of-distribution datasets across L1-L3. “Modality” denotes the encoding format of time series. “-” denotes that the input modality cannot handle the corresponding task. All models follow the same training settings based on the Qwen3-8B or Qwen3-VL-8B backbones. All metrics are reported as averages in all subtasks across L1-L3.",
+      "page": 7,
+      "index": 8,
+      "width": 935,
+      "height": 334
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-009.webp",
+      "caption": "Table 27: Illustration of “Local Pattern Differentiation” task in L2. “<ts>” denotes various input types of time series that represent numerical information, e.g., numerical tables, textual arrays, or specific time series tokens.",
+      "page": 29,
+      "index": 9,
+      "width": 955,
+      "height": 746
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-010.webp",
+      "caption": "Table 31: “Min/Max Grounding” OOD example with LLATISA’s response.",
+      "page": 39,
+      "index": 10,
+      "width": 953,
+      "height": 983
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-011.webp",
+      "caption": "Table 17: Full results on the L3 ECG-Grounding task. The best result is bolded and the second best is in underlined.",
+      "page": 22,
+      "index": 11,
+      "width": 939,
+      "height": 473
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-012.webp",
+      "caption": "Figure 4: Prompt template for generating CoT for L2 tasks.",
+      "page": 34,
+      "index": 12,
+      "width": 950,
+      "height": 596
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-013.webp",
+      "caption": "Figure 3: Prompt template for global pattern annotation.",
+      "page": 33,
+      "index": 13,
+      "width": 950,
+      "height": 800
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-014.webp",
+      "caption": "Figure 5: Prompt template for generating L3 QA pairs.",
+      "page": 35,
+      "index": 14,
+      "width": 950,
+      "height": 1000
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-015.webp",
+      "caption": "Table 8: Performance comparison on out-of-distribution datasets across L1-L3 with ChatTime.",
+      "page": 18,
+      "index": 15,
+      "width": 939,
+      "height": 194
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-016.webp",
+      "caption": "Table 9: Performance comparison on out-of-distribution datasets across L1-L3 with superior VLMs. The “-” denotes that the single plot input cannot handle L1 tasks.",
+      "page": 18,
+      "index": 16,
+      "width": 939,
+      "height": 381
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-017.webp",
+      "caption": "Table 10: Extended ablation study results on the curriculum learning strategy.",
+      "page": 18,
+      "index": 17,
+      "width": 447,
+      "height": 320
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-018.webp",
+      "caption": "Table 26: Illustration of “Subseries Localization” task. “<ts>” denotes various input types of time series that represent numerical information, e.g., numerical tables, textual arrays, or specific time series tokens.",
+      "page": 28,
+      "index": 18,
+      "width": 952,
+      "height": 1208
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-019.webp",
+      "caption": "Table 4: Ablation results. “w/o CoT” denotes SFT on the same dataset using only the correct options as supervision during training on L2-L3, “joint training” performs a single-stage training regime.",
+      "page": 8,
+      "index": 19,
+      "width": 448,
+      "height": 292
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-020.webp",
+      "caption": "Table 3: Experimental results on the L3 ECGGrounding task. Diag. Acc. stands for Diagnosis Accuracy; L. Cov. and L. Acc. denote Lead Assessment Coverage and Accuracy, respectively; Evi. Reas. represents Evidence-Based Reasoning. .",
+      "page": 8,
+      "index": 20,
+      "width": 447,
+      "height": 350
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-021.webp",
+      "caption": "Figure 2: Overview of data pipeline and the model framework. (a) Constructions of HITSR, including data collection, sample annotation, and multi-stage verification. (b) Framework of LLATISA, which incorporates dual-image inputs and performed (c) three-stage curriculum fine-tuning on the HITSR.",
+      "page": 4,
+      "index": 21,
+      "width": 808,
+      "height": 433
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-022.webp",
+      "caption": "Figure 6: Prompt template for L3 QA pairs verification.",
+      "page": 36,
+      "index": 22,
+      "width": 950,
+      "height": 1283
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-023.webp",
+      "caption": "Table 12: Hyperparameter settings for each training stage.“#Samples” denotes the number of training items within the corresponding subsets of the HITSR dataset.",
+      "page": 19,
+      "index": 23,
+      "width": 451,
+      "height": 598
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-024.webp",
+      "caption": "Table 30: Illustration of “Semantic Understanding” task in L3. “<ts>” denotes various input types of time series that represent numerical information, e.g., numerical tables, textual arrays, or specific time series tokens.",
+      "page": 32,
+      "index": 24,
+      "width": 952,
+      "height": 832
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-025.webp",
+      "caption": "Table 5: Overview of synthetic time series attributions.",
+      "page": 12,
+      "index": 25,
+      "width": 447,
+      "height": 392
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-026.webp",
+      "caption": "Table 25: Illustration of “Multi-series Comparsion” task. “<ts>” denotes various input types of time series that represent numerical information, e.g., numerical tables, textual arrays, or specific time series tokens.",
+      "page": 27,
+      "index": 26,
+      "width": 950,
+      "height": 1057
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-027.webp",
+      "caption": "Figure 8: Prompt template for numerical table input, e.g., LLATISA.",
+      "page": 37,
+      "index": 27,
+      "width": 950,
+      "height": 713
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-028.webp",
+      "caption": "Table 13: Summary of real-world time series data utilized in HITSR. “Crop Length” denotes the random cropping length of the subseries utilized to create an MCQ. “full” denotes using the full time series. The “Meta Information” is utilized for creating L3 QA pairs.",
+      "page": 20,
+      "index": 28,
+      "width": 941,
+      "height": 884
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-029.webp",
+      "caption": "Table 14: Task overview of HITSR (L1-L3). Each level groups multiple subtasks.",
+      "page": 20,
+      "index": 29,
+      "width": 941,
+      "height": 311
+    },
+    {
+      "url": "assets/figures/arxiv/2604.17295v1/fig-030.webp",
+      "caption": "Table 7: Ablation study on the L4 task. All experiments are conducted on OOD datasets.",
+      "page": 16,
+      "index": 30,
+      "width": 446,
+      "height": 388
+    }
+  ]
+}
