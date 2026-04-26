@@ -1,0 +1,54 @@
+{
+  "label": "2026-04-26",
+  "date": "2026-04-26",
+  "generated_at": "2026-04-26T19:51:43",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202604/26/2604.21180v1-uncertainty-aware-spatiotemporal-super-resolution-data-assimilation-with-diffusion-models",
+      "section": "deep",
+      "title_en": "Uncertainty-Aware Spatiotemporal Super-Resolution Data Assimilation with Diffusion Models",
+      "authors": "Aditya Sai Pranith Ayapilla, Kazuya Miyashita, Yuki Yasuda, Ryo Onishi",
+      "date": "2026-04-23",
+      "pdf": "https://arxiv.org/pdf/2604.21180v1",
+      "score": "9.0",
+      "evidence": "用于时空时间序列数据同化的扩散模型",
+      "tldr": "本研究针对混沌系统中数据同化的高计算成本问题，提出基于扩散模型的DiffSRDA框架，可在低分辨率预报与稀疏观测条件下生成近似高分辨率的分析结果。该方法通过反向扩散采样得到高质量重建和合理的不确定性估计，以较低计算成本实现接近EnKF的效果，并支持传感器布局变化下的灵活应用。",
+      "tags": "query:diffts",
+      "abstract_en": "Data assimilation (DA) improves prediction of chaotic systems by combining model forecasts with sparse, noisy observations. Many DA methods are inherently probabilistic, but accurate probabilistic DA is often computationally expensive because it requires repeated high-resolution (HR) forecasts and large ensembles. In this study, we develop DiffSRDA, a probabilistic spatiotemporal super-resolution data assimilation framework based on denoising diffusion models, and evaluate it on an idealized barotropic ocean jet instability testbed. DiffSRDA is trained offline to generate short HR analysis windows conditioned on (i) a time series of low-resolution (LR) forecast frames and (ii) sparse HR observations. Repeated reverse diffusion sampling then produces an ensemble of HR analyses, providing both point estimates and uncertainty information. Despite relying only on low-cost LR forecasts, DiffSRDA achieves reconstruction quality close to that of an Ensemble Kalman Filter (EnKF) driven by HR forecasts, while improving over deterministic CNN-based SRDA baselines. The sampled ensemble also yields physically meaningful uncertainty patterns, with spread concentrated in dynamically active regions similarly to EnKF. A key practical result is that accurate base DiffSRDA cycling does not require long reverse chains: most of the full-chain accuracy is retained with only a few reverse steps, making diffusion-based SRDA practical for repeated cycling. Finally, by exploiting the score-based structure of diffusion sampling, we demonstrate training-free observation-consistency guidance for deployment-time sensor-layout shifts, enabling improved use of changed observation configurations without retraining. Overall, diffusion models provide a practical, uncertainty-aware, and computationally efficient approach for spatiotemporal SRDA in chaotic fluid flows.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/26/2604.21903v1-a-scale-adaptive-framework-for-joint-spatiotemporal-super-resolution-with-diffusion-models",
+      "section": "deep",
+      "title_en": "A Scale-Adaptive Framework for Joint Spatiotemporal Super-Resolution with Diffusion Models",
+      "authors": "Max Defez, Filippo Quarenghi, Mathieu Vrac, Stephan Mandt, Tom Beucler",
+      "date": "2026-04-23",
+      "pdf": "https://arxiv.org/pdf/2604.21903v1",
+      "score": "8.0",
+      "evidence": "用于气候序列时间超分辨率的扩散模型",
+      "tldr": "本文提出一种尺度自适应的时空联合超分辨框架，利用扩散模型和注意力机制分解为条件均值预测和残差扩散部分，可在不同空间与时间提升比例下复用同一结构，实现从气候数据中灵活的时空超分辨。",
+      "tags": "query:diffts",
+      "abstract_en": "Deep-learning video super-resolution has progressed rapidly, but climate applications typically super-resolve (increase resolution) either space or time, and joint spatiotemporal models are often designed for a single pair of super-resolution (SR) factors (upscaling spatial and temporal ratio between the low-resolution sequence and the high-resolution sequence), limiting transfer across spatial resolutions and temporal cadences (frame rates). We present a scale-adaptive framework that reuses the same architecture across factors by decomposing spatiotemporal SR into a deterministic prediction of the conditional mean, with attention, and a residual conditional diffusion model, with an optional mass-conservation (same precipitation amount in inputs and outputs) transform to preserve aggregated totals. Assuming that larger SR factors primarily increase underdetermination (hence required context and residual uncertainty) rather than changing the conditional-mean structure, scale adaptivity is achieved by retuning three factor-dependent hyperparameters before retraining: the diffusion noise schedule amplitude beta (larger for larger factors to increase diversity), the temporal context length L (set to maintain comparable attention horizons across cadences) and optionally a third, the mass-conservation function f (tapered to limit the amplification of extremes for large factors). Demonstrated on reanalysis precipitation over France (Comephore), the same architecture spans super-resolution factors from 1 to 25 in space and 1 to 6 in time, yielding a reusable architecture and tuning recipe for joint spatiotemporal super-resolution across scales.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202604/26/2604.20494v1-near-field-wideband-channel-estimation-for-xl-mimo-systems-via-denoising-diffusion-model",
+      "section": "quick",
+      "title_en": "Near-Field Wideband Channel Estimation for XL-MIMO Systems via Denoising Diffusion Model",
+      "authors": "Qingxia Feng, Yin Fang, Meng Hua, Cheng Zhang, Chunguo Li, Yongming Huang, Luxi Yang",
+      "date": "2026-04-22",
+      "pdf": "https://arxiv.org/pdf/2604.20494v1",
+      "score": "6.0",
+      "evidence": "用于宽带信道估计的去噪扩散模型",
+      "tldr": "本文面向6G的超大规模多输入多输出（XL-MIMO）系统，针对阵列孔径和信号带宽增加导致的宽带近场信道估计难题，提出利用扩散模型进行信道估计的新方法，通过多尺度注意力机制提升信道特征建模能力，实现高精度、鲁棒的估计。",
+      "tags": "query:diffts",
+      "abstract_en": "Extremely large-scale multiple-input multiple-output (XL-MIMO) is a key enabling technology for sixth-generation (6G) communication systems. Nevertheless, the increase in array aperture and signal bandwidth brings new challenges to wideband channel estimation in XL-MIMO systems. Motivated by recent advances in deep generative modeling, we propose a diffusion model-based method for near-field wideband channel estimation in XL-MIMO systems. We first analyze the statistical correlation of wideband channel and show that near-field wideband channel exhibits both spatial non-stationarity and beam split effects. Based on these observations, the channel estimation problem is formulated as a Bayesian posterior inference task, in which a diffusion model is employed to learn the prior distribution of the channel. To further enhance the representation of complex spatial-frequency channel structures, we design a denoising network with a multi-scale attention mechanism. In particular, the network extracts multi-scale spatial-frequency features via parallel convolutional branches with different receptive fields, and combines feature attention and spatial attention modules to adaptively emphasize critical channel features. This design enables more accurate modeling of near-field wideband channel distributions and consequently improves channel estimation performance. Experimental results demonstrate that the proposed method exhibits superior robustness to existing baseline schemes for XL-MIMO wideband channel estimation under different experimental settings.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

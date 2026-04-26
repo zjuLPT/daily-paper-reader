@@ -1,0 +1,137 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-26T19:49:40.799220+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2604.21180v1",
+      "source": "arxiv",
+      "title": "Uncertainty-Aware Spatiotemporal Super-Resolution Data Assimilation with Diffusion Models",
+      "abstract": "Data assimilation (DA) improves prediction of chaotic systems by combining model forecasts with sparse, noisy observations. Many DA methods are inherently probabilistic, but accurate probabilistic DA is often computationally expensive because it requires repeated high-resolution (HR) forecasts and large ensembles. In this study, we develop DiffSRDA, a probabilistic spatiotemporal super-resolution data assimilation framework based on denoising diffusion models, and evaluate it on an idealized barotropic ocean jet instability testbed. DiffSRDA is trained offline to generate short HR analysis windows conditioned on (i) a time series of low-resolution (LR) forecast frames and (ii) sparse HR observations. Repeated reverse diffusion sampling then produces an ensemble of HR analyses, providing both point estimates and uncertainty information. Despite relying only on low-cost LR forecasts, DiffSRDA achieves reconstruction quality close to that of an Ensemble Kalman Filter (EnKF) driven by HR forecasts, while improving over deterministic CNN-based SRDA baselines. The sampled ensemble also yields physically meaningful uncertainty patterns, with spread concentrated in dynamically active regions similarly to EnKF. A key practical result is that accurate base DiffSRDA cycling does not require long reverse chains: most of the full-chain accuracy is retained with only a few reverse steps, making diffusion-based SRDA practical for repeated cycling. Finally, by exploiting the score-based structure of diffusion sampling, we demonstrate training-free observation-consistency guidance for deployment-time sensor-layout shifts, enabling improved use of changed observation configurations without retraining. Overall, diffusion models provide a practical, uncertainty-aware, and computationally efficient approach for spatiotemporal SRDA in chaotic fluid flows.",
+      "authors": [
+        "Aditya Sai Pranith Ayapilla",
+        "Kazuya Miyashita",
+        "Yuki Yasuda",
+        "Ryo Onishi"
+      ],
+      "primary_category": "physics.flu-dyn",
+      "categories": [
+        "physics.flu-dyn",
+        "physics.ao-ph",
+        "physics.comp-ph"
+      ],
+      "published": "2026-04-23T00:56:25+00:00",
+      "link": "https://arxiv.org/pdf/2604.21180v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "diffusion models for spatiotemporal time series data assimilation",
+      "llm_evidence_cn": "用于时空时间序列数据同化的扩散模型",
+      "llm_evidence": "用于时空时间序列数据同化的扩散模型",
+      "canonical_evidence": "用于时空时间序列数据同化的扩散模型",
+      "llm_tldr_en": "DiffSRDA uses diffusion models for probabilistic spatiotemporal super-resolution in chaotic systems.",
+      "llm_tldr_cn": "DiffSRDA利用扩散模型在混沌系统中实现概率性时空超分辨率数据同化。",
+      "llm_tldr": "DiffSRDA利用扩散模型在混沌系统中实现概率性时空超分辨率数据同化。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "conditional diffusion frameworks for time series generation",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.21903v1",
+      "source": "arxiv",
+      "title": "A Scale-Adaptive Framework for Joint Spatiotemporal Super-Resolution with Diffusion Models",
+      "abstract": "Deep-learning video super-resolution has progressed rapidly, but climate applications typically super-resolve (increase resolution) either space or time, and joint spatiotemporal models are often designed for a single pair of super-resolution (SR) factors (upscaling spatial and temporal ratio between the low-resolution sequence and the high-resolution sequence), limiting transfer across spatial resolutions and temporal cadences (frame rates). We present a scale-adaptive framework that reuses the same architecture across factors by decomposing spatiotemporal SR into a deterministic prediction of the conditional mean, with attention, and a residual conditional diffusion model, with an optional mass-conservation (same precipitation amount in inputs and outputs) transform to preserve aggregated totals. Assuming that larger SR factors primarily increase underdetermination (hence required context and residual uncertainty) rather than changing the conditional-mean structure, scale adaptivity is achieved by retuning three factor-dependent hyperparameters before retraining: the diffusion noise schedule amplitude beta (larger for larger factors to increase diversity), the temporal context length L (set to maintain comparable attention horizons across cadences) and optionally a third, the mass-conservation function f (tapered to limit the amplification of extremes for large factors). Demonstrated on reanalysis precipitation over France (Comephore), the same architecture spans super-resolution factors from 1 to 25 in space and 1 to 6 in time, yielding a reusable architecture and tuning recipe for joint spatiotemporal super-resolution across scales.",
+      "authors": [
+        "Max Defez",
+        "Filippo Quarenghi",
+        "Mathieu Vrac",
+        "Stephan Mandt",
+        "Tom Beucler"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-04-23T17:49:16+00:00",
+      "link": "https://arxiv.org/pdf/2604.21903v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "diffusion models for temporal super-resolution in climate sequences",
+      "llm_evidence_cn": "用于气候序列时间超分辨率的扩散模型",
+      "llm_evidence": "用于气候序列时间超分辨率的扩散模型",
+      "canonical_evidence": "用于气候序列时间超分辨率的扩散模型",
+      "llm_tldr_en": "A scale-adaptive framework using diffusion models for joint spatiotemporal super-resolution in climate data.",
+      "llm_tldr_cn": "一种利用扩散模型对气候数据进行联合时空超分辨率的尺度自适应框架。",
+      "llm_tldr": "一种利用扩散模型对气候数据进行联合时空超分辨率的尺度自适应框架。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "sequence modeling with diffusion processes for time-dependent data",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2604.20494v1",
+      "source": "arxiv",
+      "title": "Near-Field Wideband Channel Estimation for XL-MIMO Systems via Denoising Diffusion Model",
+      "abstract": "Extremely large-scale multiple-input multiple-output (XL-MIMO) is a key enabling technology for sixth-generation (6G) communication systems. Nevertheless, the increase in array aperture and signal bandwidth brings new challenges to wideband channel estimation in XL-MIMO systems. Motivated by recent advances in deep generative modeling, we propose a diffusion model-based method for near-field wideband channel estimation in XL-MIMO systems. We first analyze the statistical correlation of wideband channel and show that near-field wideband channel exhibits both spatial non-stationarity and beam split effects. Based on these observations, the channel estimation problem is formulated as a Bayesian posterior inference task, in which a diffusion model is employed to learn the prior distribution of the channel. To further enhance the representation of complex spatial-frequency channel structures, we design a denoising network with a multi-scale attention mechanism. In particular, the network extracts multi-scale spatial-frequency features via parallel convolutional branches with different receptive fields, and combines feature attention and spatial attention modules to adaptively emphasize critical channel features. This design enables more accurate modeling of near-field wideband channel distributions and consequently improves channel estimation performance. Experimental results demonstrate that the proposed method exhibits superior robustness to existing baseline schemes for XL-MIMO wideband channel estimation under different experimental settings.",
+      "authors": [
+        "Qingxia Feng",
+        "Yin Fang",
+        "Meng Hua",
+        "Cheng Zhang",
+        "Chunguo Li",
+        "Yongming Huang",
+        "Luxi Yang"
+      ],
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP"
+      ],
+      "published": "2026-04-22T12:26:35+00:00",
+      "link": "https://arxiv.org/pdf/2604.20494v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "denoising diffusion model for wideband channel estimation",
+      "llm_evidence_cn": "用于宽带信道估计的去噪扩散模型",
+      "llm_evidence": "用于宽带信道估计的去噪扩散模型",
+      "canonical_evidence": "用于宽带信道估计的去噪扩散模型",
+      "llm_tldr_en": "A diffusion model-based method for near-field wideband channel estimation in XL-MIMO systems.",
+      "llm_tldr_cn": "一种基于扩散模型的XL-MIMO系统近场宽带信道估计方法。",
+      "llm_tldr": "一种基于扩散模型的XL-MIMO系统近场宽带信道估计方法。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "denoising diffusion probabilistic models applied to time series",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

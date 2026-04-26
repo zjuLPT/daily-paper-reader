@@ -6,49 +6,31 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-04-23
-- 运行时间：2026-04-23 19:57:06 UTC
+- 最新运行日期：2026-04-26
+- 运行时间：2026-04-26 19:51:38 UTC
 - 运行状态：成功
-- 本次总论文数：9
+- 本次总论文数：3
 - 精读区：2
-- 速读区：7
+- 速读区：1
 
 ### 今日简报（AI）
-1) 今天聚焦扩散模型在时间序列预测与医学影像中的创新应用，共精读 2 篇、速读 7 篇。  
-2) 新品冷启动预测与视网膜动态成像中引入条件扩散模型表现突出，显示物理先验和生成式建模融合潜力。  
-3) 建议继续关注扩散模型在工业检测与跨模态预测中的泛化与可解释性研究。
-- 详情：[/202604/23/README](/202604/23/README)
+聚焦扩散模型在时空超分辨与数据同化中的创新应用。  
+最值得关注的是不确定性感知与尺度自适应框架在提升时空重建精度上的突破。  
+下一步建议关注扩散模型在通信或传感场景下的泛化能力与计算效率优化。
+- 详情：[/202604/26/README](/202604/26/README)
 
 ### 精读区论文标签
-1. [Cold-Start Forecasting of New Product Life-Cycles via Conditional Diffusion Models](/202604/23/2604.20370v1-cold-start-forecasting-of-new-product-life-cycles-via-conditional-diffusion-models)  
-   标签：评分：10.0/10、query:diffts
-   evidence：用于预测产品生命周期轨迹的条件扩散框架
-2. [Physics-Informed Conditional Diffusion for Motion-Robust Retinal Temporal Laser Speckle Contrast Imaging](/202604/23/2604.20594v1-physics-informed-conditional-diffusion-for-motion-robust-retinal-temporal-laser-speckle-contrast-imaging)  
+1. [Uncertainty-Aware Spatiotemporal Super-Resolution Data Assimilation with Diffusion Models](/202604/26/2604.21180v1-uncertainty-aware-spatiotemporal-super-resolution-data-assimilation-with-diffusion-models)  
+   标签：评分：9.0/10、query:diffts
+   evidence：用于时空时间序列数据同化的扩散模型
+2. [A Scale-Adaptive Framework for Joint Spatiotemporal Super-Resolution with Diffusion Models](/202604/26/2604.21903v1-a-scale-adaptive-framework-for-joint-spatiotemporal-super-resolution-with-diffusion-models)  
    标签：评分：8.0/10、query:diffts
-   evidence：用于视网膜时序激光散斑对比成像的条件扩散模型
+   evidence：用于气候序列时间超分辨率的扩散模型
 
 ### 速读区论文标签
-1. [SPaRSe-TIME: Saliency-Projected Low-Rank Temporal Modeling for Efficient and Interpretable Time Series Prediction](/202604/23/2604.17350v1-sparse-time-saliency-projected-low-rank-temporal-modeling-for-efficient-and-interpretable-time-series-prediction)  
-   标签：评分：7.0/10、query:diffts
-   evidence：使用低秩时间建模进行时间序列预测
-2. [One-Step Diffusion with Inverse Residual Fields for Unsupervised Industrial Anomaly Detection](/202604/23/2604.18393v1-one-step-diffusion-with-inverse-residual-fields-for-unsupervised-industrial-anomaly-detection)  
-   标签：评分：7.0/10、query:diffts
-   evidence：用于无监督工业异常检测的一步扩散模型
-3. [Forecasting Multivariate Time Series under Predictive Heterogeneity: A Validation-Driven Clustering Framework](/202604/23/2604.13748v1-forecasting-multivariate-time-series-under-predictive-heterogeneity-a-validation-driven-clustering-framework)  
+1. [Near-Field Wideband Channel Estimation for XL-MIMO Systems via Denoising Diffusion Model](/202604/26/2604.20494v1-near-field-wideband-channel-estimation-for-xl-mimo-systems-via-denoising-diffusion-model)  
    标签：评分：6.0/10、query:diffts
-   evidence：预测异质性下的多变量时间序列预测
-4. [Noise-Adaptive Diffusion Sampling for Inverse Problems Without Task-Specific Tuning](/202604/23/2604.16919v1-noise-adaptive-diffusion-sampling-for-inverse-problems-without-task-specific-tuning)  
-   标签：评分：6.0/10、query:diffts
-   evidence：用于反问题和后验采样的扩散模型
-5. [LLaTiSA: Towards Difficulty-Stratified Time Series Reasoning from Visual Perception to Semantics](/202604/23/2604.17295v1-llatisa-towards-difficulty-stratified-time-series-reasoning-from-visual-perception-to-semantics)  
-   标签：评分：6.0/10、query:diffts
-   evidence：时间序列推理与分层数据集
-6. [Back to Repair: A Minimal Denoising Network\ for Time Series Anomaly Detection](/202604/23/2604.17388v1-back-to-repair-a-minimal-denoising-network-for-time-series-anomaly-detection)  
-   标签：评分：6.0/10、query:diffts
-   evidence：用于时间序列异常检测的去噪网络
-7. [Beyond Coefficients: Forecast-Necessity Testing for Interpretable Causal Discovery in Nonlinear Time-Series Models](/202604/23/2604.18751v1-beyond-coefficients-forecast-necessity-testing-for-interpretable-causal-discovery-in-nonlinear-time-series-models)  
-   标签：评分：6.0/10、query:diffts
-   evidence：非线性时间序列模型中的因果发现
+   evidence：用于宽带信道估计的去噪扩散模型
 
 
 <div class="dpr-home-promo-card">
