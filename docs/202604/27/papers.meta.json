@@ -1,0 +1,24 @@
+{
+  "label": "2026-04-27",
+  "date": "2026-04-27",
+  "generated_at": "2026-04-27T20:14:41",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202604/27/2604.22712v1-statistical-analysis-of-markovian-generative-modeling",
+      "section": "quick",
+      "title_en": "Statistical Analysis of Markovian Generative Modeling",
+      "authors": "Eddie Aamari, Arthur Stéphanovitch",
+      "date": "2026-04-24",
+      "pdf": "https://arxiv.org/pdf/2604.22712v1",
+      "score": "6.0",
+      "evidence": "基于评分的扩散模型统计分析",
+      "tldr": "本文系统分析了基于马尔可夫动力学的连续时间生成模型的统计性质，从得分基扩散模型的随机微积分基础入手，提出生成器匹配的统一框架，探讨有限样本误差传播和最优收敛速率，为理解现代生成模型的理论性能提供支撑。",
+      "tags": "query:diffts",
+      "abstract_en": "These lecture notes introduce the statistical analysis of continuous-time generative models built from Markov dynamics. We begin with the stochastic-calculus foundations of score-based diffusion models, including time reversal, score matching, and sampling from learned scores. We then present the broader framework of generator matching, which describes flows, diffusions, jump processes, and discrete generative models through their infinitesimal generators. We then focus on finite-sample guarantees. We explain how errors in the learned drift or generator propagate to the final generated distribution, why stability and regularity properties are essential, and how time-adaptive neural network classes can achieve optimal Wasserstein rates for smooth target distributions. Overall, the notes aim to connect modern generative modeling algorithms with the probabilistic, analytic, and statistical tools needed to understand their worst-case performance.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
