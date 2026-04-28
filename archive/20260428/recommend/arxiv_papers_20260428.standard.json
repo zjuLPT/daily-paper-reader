@@ -1,0 +1,246 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-28T20:10:18.383809+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 5,
+    "quick_skim_target": 11,
+    "quick_selected": 5
+  },
+  "deep_dive": [
+    {
+      "id": "2604.22901v1",
+      "source": "arxiv",
+      "title": "Accelerating Frequency Domain Diffusion Models with Error-Feedback Event-Driven Caching",
+      "abstract": "Diffusion models achieve remarkable success in time series generation. However, slow inference limits their practical deployment. We propose E$^2$-CRF (Error-Feedback Event-Driven Cumulative Residual Feature caching) to accelerate frequency domain diffusion models. Our method exploits two structural properties: (1) spectral localization, where signal energy concentrates in low frequencies, and (2) mirror symmetry, which halves the effective frequency dimension. E$^2$-CRF uses a closed-loop error-feedback system that adaptively caches transformer KV features across diffusion steps. We trigger recomputation using event-driven residual dynamics instead of fixed schedules. Our method selectively recomputes high-energy or rapidly-changing tokens while reusing cached features for stable high-frequency components. E$^2$-CRF achieves ~2.2 speedup while maintaining sample quality. We demonstrate effectiveness on 5 datasets. Our caching strategy naturally aligns with the diffusion process's structure-to-detail progression. We include sufficient-condition error and complexity bounds under standard regularity assumptions (Appendix), alongside empirical validation. Our code is available at https://github.com/NoakLiu/FastFourierDiffusion and is also integrated in https://github.com/NoakLiu/FastCache-xDiT.",
+      "authors": [
+        "Dong Liu",
+        "Haisheng Wang",
+        "Yanxuan Yu"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-04-24T13:56:55+00:00",
+      "link": "https://arxiv.org/pdf/2604.22901v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "accelerating frequency domain diffusion models for time series generation",
+      "llm_evidence_cn": "加速用于时间序列生成的频域扩散模型",
+      "llm_evidence": "加速用于时间序列生成的频域扩散模型",
+      "canonical_evidence": "加速用于时间序列生成的频域扩散模型",
+      "llm_tldr_en": "Develops an event-driven caching method to speed up diffusion models for time series generation.",
+      "llm_tldr_cn": "开发了一种事件驱动的缓存方法，以加速用于时间序列生成的扩散模型。",
+      "llm_tldr": "开发了一种事件驱动的缓存方法，以加速用于时间序列生成的扩散模型。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "conditional diffusion frameworks for time series generation",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2604.20122v1",
+      "source": "arxiv",
+      "title": "Adaptive Conformal Anomaly Detection with Time Series Foundation Models for Signal Monitoring",
+      "abstract": "We propose a post-hoc adaptive conformal anomaly detection method for monitoring time series that leverages predictions from pre-trained foundation models without requiring additional fine-tuning. Our method yields an interpretable anomaly score directly interpretable as a false alarm rate (p-value), facilitating transparent and actionable decision-making. It employs weighted quantile conformal prediction bounds and adaptively learns optimal weighting parameters from past predictions, enabling calibration under distribution shifts and stable false alarm control, while preserving out-of-sample guarantees. As a model-agnostic solution, it integrates seamlessly with foundation models and supports rapid deployment in resource-constrained environments. This approach addresses key industrial challenges such as limited data availability, lack of training expertise, and the need for immediate inference, while taking advantage of the growing accessibility of time series foundation models. Experiments on both synthetic and real-world datasets show that the proposed approach delivers strong performance, combining simplicity, interpretability, robustness, and adaptivity.",
+      "authors": [
+        "Natalia Martinez Gil",
+        "Fearghal O'Donncha",
+        "Wesley M. Gifford",
+        "Nianjun Zhou",
+        "Dhaval C. Patel",
+        "Roman Vaculin"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-04-22T02:39:46+00:00",
+      "link": "https://arxiv.org/pdf/2604.20122v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "anomaly detection for monitoring time series",
+      "llm_evidence_cn": "用于时间序列监测的异常检测",
+      "llm_evidence": "用于时间序列监测的异常检测",
+      "canonical_evidence": "用于时间序列监测的异常检测",
+      "llm_tldr_en": "Proposes an adaptive conformal anomaly detection method for time series using foundation models.",
+      "llm_tldr_cn": "提出一种利用基础模型进行时间序列监测的自适应一致性异常检测方法。",
+      "llm_tldr": "提出一种利用基础模型进行时间序列监测的自适应一致性异常检测方法。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.22328v1",
+      "source": "arxiv",
+      "title": "FETS Benchmark: Foundation Models Outperform Dataset-specific Machine Learning in Energy Time Series Forecasting",
+      "abstract": "Driven by the transition towards a climate-neutral energy system, accurate energy time series forecasting is critical for planning and operation. Yet, it remains largely a dataset-specific task, requiring comprehensive training data, limiting scalability, and resulting in high model development and maintenance effort. Recently, foundation models that aim to learn generalizable patterns via extensive pretraining have shown superior performance in multiple prediction tasks. Despite their success and strong potential to address challenges in energy forecasting, their application in this domain remains largely unexplored. We address this gap by presenting the Foundation Models in Energy Time Series Forecasting (FETS) benchmark. We (1) provide a structured overview of energy forecasting use cases along three main dimensions: stakeholders, attributes, and data categories; (2) collect and analyze 54 datasets across 9 data categories, guided by typical stakeholder interests; (3) benchmark foundation models against classical machine learning approaches across different forecasting settings. Foundation models consistently outperform dataset-specific optimized machine learning approaches across all settings and data categories, despite the latter having seen the full historic target data during training. In particular, covariate-informed foundation models achieve the strongest performance. Further analysis reveals a strong correlation between predictive performance and spectral entropy, performance saturation beyond a certain context length, and improved performance at higher aggregation levels such as national load, district heating, and power grid data. Overall, our findings highlight the strong potential of foundation models as scalable and generalizable forecasting solutions for the energy domain, particularly in data-constrained and privacy-sensitive settings.",
+      "authors": [
+        "Marco Obermeier",
+        "Marco Pruckner",
+        "Florian Haselbeck",
+        "Andreas Zeiselmair"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CE"
+      ],
+      "published": "2026-04-24T08:00:50+00:00",
+      "link": "https://arxiv.org/pdf/2604.22328v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "foundation models for energy time series forecasting",
+      "llm_evidence_cn": "能源时间序列预测的基础模型",
+      "llm_evidence": "能源时间序列预测的基础模型",
+      "canonical_evidence": "能源时间序列预测的基础模型",
+      "llm_tldr_en": "Evaluates foundation models against dataset-specific ML for energy time series forecasting tasks.",
+      "llm_tldr_cn": "评估了基础模型在能源时间序列预测任务中相对于特定数据集机器学习模型的表现。",
+      "llm_tldr": "评估了基础模型在能源时间序列预测任务中相对于特定数据集机器学习模型的表现。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "methods using diffusion models for time series forecasting",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.22077v1",
+      "source": "arxiv",
+      "title": "Empirical Assessment of Time-Series Foundation Models For Power System Forecasting Applications",
+      "abstract": "Accurate forecasting of electric load and renewable generation is essential for reliable and cost effective power system operations. Recent advances in transformer based and foundation machine learning models, driven by large scale pretraining, increased available data and computation, in addition to architectural innovations, have shown promise in time series forecasting across multiple domains. However, their application to power system forecasting tasks remains largely underexplored. This work presents a comprehensive, empirical benchmark of state of the art time series foundation models, transformer architectures, and deep learning baselines for solar, wind, and load forecasting using the high resolution ARPAE PERFORM dataset for the Electric Reliability Council of Texas (ERCOT) grid. Eight core capabilities are assessed, including zero shot performance, fine tuning efficiency, multivariate input and output handling, horizon sensitivity, generalization to unseen sites, probabilistic forecasting, and context window effects. Models evaluated include TimesFM, Chronos Bolt, MoiraiL, MOMENT, Tiny Time Mixer, Temporal Fusion Transformer, PatchTST, TimeXer, LSTM, and CNN. The manuscript aims to provide clear guidance on when foundation models can provide enhanced renewable and load forecasting capabilities and when other approaches remain the more practical choice for power system operations.",
+      "authors": [
+        "Muhy Eddin Za'ter",
+        "Bri-Mathias Hodge"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY"
+      ],
+      "published": "2026-04-23T21:05:47+00:00",
+      "link": "https://arxiv.org/pdf/2604.22077v1",
+      "tags": [
+        "keyword:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "time-series foundation models for power system forecasting",
+      "llm_evidence_cn": "用于电力系统预测的时间序列基础模型",
+      "llm_evidence": "用于电力系统预测的时间序列基础模型",
+      "canonical_evidence": "用于电力系统预测的时间序列基础模型",
+      "llm_tldr_en": "Benchmarks time-series foundation models for solar, wind, and load forecasting in power systems.",
+      "llm_tldr_cn": "对电力系统中太阳能、风能和负荷预测的时间序列基础模型进行基准测试。",
+      "llm_tldr": "对电力系统中太阳能、风能和负荷预测的时间序列基础模型进行基准测试。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "methods using diffusion models for time series forecasting",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.23968v1",
+      "source": "arxiv",
+      "title": "DecompKAN: Decomposed Patch-KAN for Long-Term Time Series Forecasting",
+      "abstract": "Accurate time series forecasting in scientific domains such as climate modeling, physiological monitoring, and energy systems benefits from both competitive predictions and model transparency. This work proposes DecompKAN, a lightweight attention-free architecture that combines trend-residual decomposition, channel-wise patching, learned instance normalization, and B-spline Kolmogorov-Arnold Network (KAN) edge functions. Each KAN edge learns an explicit, inspectable 1D scalar function over learned patch-embedding coordinates that can be directly visualized. On standard benchmarks, DecompKAN achieves best or tied-best MSE on 15 of 32 dataset-horizon combinations among selected published baselines, and achieves best or tied-best MSE on 20 of 36 comparisons under a controlled same-recipe evaluation across 9 datasets including the physiological PPG-DaLiA benchmark. The architecture shows particular strength on datasets with smooth temporal dynamics (Solar -17%, ECL -10% vs. iTransformer, Weather) and physiological time series. Visualization of learned edge functions reveals qualitatively different latent nonlinearities across domains. Ablation analysis shows that the architectural pipeline (decomposition, patching, normalization) drives performance more than the choice of nonlinear layer, while the KAN formulation enables inspection of learned latent transformations.",
+      "authors": [
+        "Naveen Mysore"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "stat.ML"
+      ],
+      "published": "2026-04-27T02:29:35+00:00",
+      "link": "https://arxiv.org/pdf/2604.23968v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "long-term time series forecasting architecture",
+      "llm_evidence_cn": "长期时间序列预测架构",
+      "llm_evidence": "长期时间序列预测架构",
+      "canonical_evidence": "长期时间序列预测架构",
+      "llm_tldr_en": "Proposes DecompKAN, an interpretable architecture for accurate long-term time series forecasting.",
+      "llm_tldr_cn": "提出了 DecompKAN，一种用于准确长期时间序列预测的可解释架构。",
+      "llm_tldr": "提出了 DecompKAN，一种用于准确长期时间序列预测的可解释架构。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.24041v1",
+      "source": "arxiv",
+      "title": "End-to-End Learning for Partially-Observed Time Series with PyPOTS",
+      "abstract": "Partially-observed time series (POTS) is ubiquitous in real-world applications, yet most existing toolchains separate missing-value handling from downstream learning, which limits reproducibility and overall performance. This tutorial introduces PyPOTS, an open-source Python ecosystem for end-to-end data mining and machine learning on POTS. We present practical workflows spanning missingness simulation, data preprocessing, model training, and evaluation across core tasks, including imputation, forecasting, classification, clustering, and anomaly detection. The tutorial consists of two parts: Part I emphasizes hands-on application for practitioners through unified APIs and benchmark-oriented experiments. Part II targets developers and researchers, focusing on extending PyPOTS with custom models, domain-specific constraints, and contribution-ready engineering practices. Participants will gain both conceptual understanding and implementation experience for building robust, transparent, and reusable POTS pipelines in research and production settings. PyPOTS is publicly available at https://github.com/WenjieDu/PyPOTS",
+      "authors": [
+        "Wenjie Du",
+        "Yiyuan Yang",
+        "Tianxiang Zhan",
+        "Qingsong Wen"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-04-27T05:01:23+00:00",
+      "link": "https://arxiv.org/pdf/2604.24041v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "ecosystem for partially-observed time series tasks",
+      "llm_evidence_cn": "部分观测时间序列任务的生态系统",
+      "llm_evidence": "部分观测时间序列任务的生态系统",
+      "canonical_evidence": "部分观测时间序列任务的生态系统",
+      "llm_tldr_en": "Introduces PyPOTS, a comprehensive Python library for data mining and machine learning on incomplete time series.",
+      "llm_tldr_cn": "介绍了 PyPOTS，一个用于不完整时间序列数据挖掘和机器学习的综合 Python 库。",
+      "llm_tldr": "介绍了 PyPOTS，一个用于不完整时间序列数据挖掘和机器学习的综合 Python 库。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

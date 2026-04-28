@@ -1,0 +1,134 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.22328v1/fig-001.webp",
+      "caption": "Figure 9: Forecast horizon sensitivity analysis for Chronos-2 (covariate mode) across four representative datasets, evaluated at context lengths of 676, 2,000, and 8,000 time steps. The x-axis spans forecast horizons from 100 to 1,000 time steps, reflecting the full supported range of Chronos-2. Each box plot summarizes the NRMSE distribution across all time series within the respective dataset, with the red dashed line indicating the median trend. Datasets include country-level (DE Power) [40] and industrial load aggregations (Industrial VEA) [53], market data (California CASIO) [51], and grid data (Netze BW LV) [60].",
+      "page": 25,
+      "index": 1,
+      "width": 804,
+      "height": 959
+    },
+    {
+      "url": "assets/figures/arxiv/2604.22328v1/fig-002.webp",
+      "caption": "Figure 10: Aggregation level sensitivity analysis for Chronos-2 (covariate mode) across three representative datasets – residential household demand [55], EV charging stations [42], and industrial load profiles [53] – evaluated at forecast horizons of 96, 192, and 288 time steps. The x-axis represents the number of aggregated individual time series, ranging from a single profile up to the full available pool. Each box plot summarizes the NRMSE distribution, with the red dashed line indicating the median trend. The decreasing error with increasing aggregation level reflects the smoothing effect of temporal aggregation, characteristic of energy demand patterns described by standard load profiles [76, 77].",
+      "page": 26,
+      "index": 2,
+      "width": 804,
+      "height": 711
+    },
+    {
+      "url": "assets/figures/arxiv/2604.22328v1/fig-003.webp",
+      "caption": "Figure 4: Data splitting and rolling evaluation scheme. Each dataset is divided into a training/fine-tuning block of dataset-dependent length and a fixed evaluation block of 4,500 steps plus a 1,000-step buffer matching the maximum forecast horizon of Chronos-2. Within the evaluation block, a rolling scheme shifts the context window and horizon H in steps of 132, yielding W = ⌈4,500 / 132⌉ = 35 windows per model and horizon.",
+      "page": 15,
+      "index": 3,
+      "width": 744,
+      "height": 725
+    },
+    {
+      "url": "assets/figures/arxiv/2604.22328v1/fig-004.webp",
+      "caption": "Figure 2: An overview of energy forecasts from different perspectives and dimensions. It constitutes a synthesis of an abstracted interpretation of ENTSO-E market role definitions [37], and forecast attributes derived from Ferdaus et al. [20], common energy balances on a state or national level [38], with aggregated nodes summarizing consumption and production sectors, as well as own considerations.",
+      "page": 7,
+      "index": 4,
+      "width": 794,
+      "height": 697
+    },
+    {
+      "url": "assets/figures/arxiv/2604.22328v1/fig-005.webp",
+      "caption": "Table A.5: Dataset Statistics Overview: Comprehensive characteristics of all time series datasets including sample size (N), temporal resolution (Frequency), coefficient of variation (CV), percentage of negative and positive values, and forecastability index (ϕ). The forecastability index is based on spectral entropy, where values closer to 1 indicate more predictable time series with strong periodic patterns, while values near 0 suggest higher randomness and lower predictability.",
+      "page": 39,
+      "index": 5,
+      "width": 814,
+      "height": 889
+    },
+    {
+      "url": "assets/figures/arxiv/2604.22328v1/fig-006.webp",
+      "caption": "Figure 7: Forecastability analysis for Chronos-2 across all experimental settings. The x-axis shows the Forecastability Index ϕ of each dataset – a measure of inherent predictability based on signal regularity – while the y-axis reports the forecast score (1-NRMSE), where higher values indicate better performance. A positive correlation (r = 0.673, p < 0.001) confirms that datasets with more regular patterns yield consistently better forecasts. Datasets with higher aggregation levels – such as grid data and heat data (upper right) – exhibit both high forecastability and strong forecast scores, suggesting that spatial or temporal aggregation smooths stochastic variability. In contrast, granular datasets such as individual residential load profiles cluster in the lower-left region. Surprisingly, some cases with high forecastability but near-zero forecast scores may indicate catastrophic forgetting during fine-tuning [75], which remains an open question for future work (see Section 6).",
+      "page": 22,
+      "index": 6,
+      "width": 807,
+      "height": 504
+    },
+    {
+      "url": "assets/figures/arxiv/2604.22328v1/fig-007.webp",
+      "caption": "Table 2: Comprehensive overview of all datasets used in this study, categorized according to Figure 2 and providing references besides a general description and outlining their usage in our comparative study.",
+      "page": 10,
+      "index": 7,
+      "width": 794,
+      "height": 602
+    },
+    {
+      "url": "assets/figures/arxiv/2604.22328v1/fig-008.webp",
+      "caption": "Figure 5: Aggregation pipeline of the benchmark results, from individual experiments to the per-category, overall, and best-count rows of Table 4.",
+      "page": 18,
+      "index": 8,
+      "width": 798,
+      "height": 433
+    },
+    {
+      "url": "assets/figures/arxiv/2604.22328v1/fig-009.webp",
+      "caption": "Table 3: Overview of the forecasting models used in this study, including references and the forecasting modes we employ.",
+      "page": 13,
+      "index": 9,
+      "width": 818,
+      "height": 345
+    },
+    {
+      "url": "assets/figures/arxiv/2604.22328v1/fig-010.webp",
+      "caption": "Table A.6: Model Specifications. Hyperparameter search spaces and configuration for trained models. For XGBoost and Random Forest, Optuna TPE sampler is used with n = 250 trials. SHAP-based feature selection and automatic lag selection are enabled for both tree-based models.",
+      "page": 40,
+      "index": 10,
+      "width": 796,
+      "height": 896
+    },
+    {
+      "url": "assets/figures/arxiv/2604.22328v1/fig-011.webp",
+      "caption": "Table 4: Results overview across all benchmark modes. Each cell shows the averaged median NRMSE across all datasets and configurations for each data category and prediction model. Best median per benchmark highlighted. Best Count shows wins across all benchmarks. Total: 17,010 unique experiments (Dataset:Target × Rolling Windows × Horizon × Context Length) evaluated for each model across different benchmark modes. Values shown as median with (Q10, Q90) interval for classes and overall row. For Best Count, All = Total - Ties = 17,010 - 9 = 17,001. A orange background marks the best model within each benchmark mode, while a green background highlights the overall best across all modes in each row.",
+      "page": 19,
+      "index": 11,
+      "width": 814,
+      "height": 421
+    },
+    {
+      "url": "assets/figures/arxiv/2604.22328v1/fig-012.webp",
+      "caption": "Figure B.11: Forecast evaluation for Bayernwerk MV Grid feed-in [59]: Historical data (blue), seasonal naive baseline forecast (orange), model forecast (red dashed), 10%-90% uncertainty interval (red shaded), and actual values (green). Model: Chronos-2 (covariate) | MASE: 0.4259 | CRPS: 0.2119 | NRMSE: 0.0677 | CORR: 0.9733 | SUM_RATIO: 1.0126",
+      "page": 41,
+      "index": 12,
+      "width": 790,
+      "height": 684
+    },
+    {
+      "url": "assets/figures/arxiv/2604.22328v1/fig-013.webp",
+      "caption": "Figure 8: Context length sensitivity analysis for Chronos-2 (covariate mode) across four representative datasets spanning load, market, and grid data categories, evaluated at forecast horizons of 96, 192, and 288 time steps. Each box plot summarizes the NRMSE distribution across all rolling windows within the respective dataset, with the red dashed line indicating the median trend. Context length ranges from 100 to 8,000 time steps (maximum supported by Chronos-2). Datasets include country-level (FR Power) [40] and industrial load aggregations (Industrial VEA) [53], market data (California Caiso) [51], and grid data (Netze BW LV) [60].",
+      "page": 24,
+      "index": 13,
+      "width": 804,
+      "height": 959
+    },
+    {
+      "url": "assets/figures/arxiv/2604.22328v1/fig-014.webp",
+      "caption": "Figure 3: Benchmark architecture overview: Datasets are fed into three deployment modes with covariates as additional inputs. Models are evaluated across multiple perspectives with consistent benchmark settings.",
+      "page": 9,
+      "index": 14,
+      "width": 746,
+      "height": 627
+    },
+    {
+      "url": "assets/figures/arxiv/2604.22328v1/fig-015.webp",
+      "caption": "Figure 6: Pairwise relative NRMSE comparison between TabPFN (covariate) and Chronos-2 (covariate), the two top-ranked models by overall median NRMSE (cf. Table 4). Bars show (Chronos − 2 − T abP F N)/Chronos − 2 × 100%; positive values (amber) favour TabPFN, negative values (blue) favour Chronos-2. Lines (right axis) show per-category win rates with absolute counts in parentheses. Overall, Chronos-2 wins 62% of the 17,010 paired experiments, yielding a net relative improvement of 2.6%.",
+      "page": 20,
+      "index": 15,
+      "width": 791,
+      "height": 489
+    },
+    {
+      "url": "assets/figures/arxiv/2604.22328v1/fig-016.webp",
+      "caption": "Figure 1: Zero-shot time series forecasting schematic for univariate and covariate modes: The upper panel shows historical data (blue, 7 days context), model forecast with median (red dashed, 1 day horizon), 10%-90% uncertainty interval (red shaded), and actual values (green). The lower panel displays optional covariates (blue) that are used as additional input features in covariate mode across the same time axis.",
+      "page": 5,
+      "index": 16,
+      "width": 784,
+      "height": 408
+    }
+  ]
+}
