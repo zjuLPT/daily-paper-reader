@@ -1,0 +1,211 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-04-30T20:33:17.720999+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 3,
+    "quick_skim_target": 11,
+    "quick_selected": 3
+  },
+  "deep_dive": [
+    {
+      "id": "2604.24913v1",
+      "source": "arxiv",
+      "title": "Generative diffusion models for spatiotemporal influenza forecasting",
+      "abstract": "Forecasting infectious disease incidence can provide important information to guide public health planning, yet is difficult because epidemic dynamics are complex. Current mechanistic and statistical approaches often struggle to capture multimodal uncertainty or emergent trends. Influpaint adapts denoising diffusion probabilistic models to epidemic forecasting. By encoding influenza seasons as spatiotemporal images in which pixel intensity represents incidence, Influpaint learns a rich distribution of disease dynamics from a hybrid dataset of surveillance and simulated trajectories. Forecasting is formulated as a conditional generation (inpainting) task from partial observations. We show that Influpaint generates realistic, diverse epidemic trajectories and achieves forecast accuracy that is competitive with leading ensemble methods in retrospective evaluation. In real-time evaluation during the 2023--2025 U.S. CDC FluSight challenges, performance improved substantially across seasons, with highly accurate but somewhat overconfident projections in 2024--2025. The best performance was achieved with a training dataset containing 30% surveillance and 70% simulated trajectories. These results show that diffusion models can capture important spatiotemporal structure in influenza dynamics and provide a flexible framework for probabilistic infectious disease forecasting.",
+      "authors": [
+        "Joseph Lemaitre",
+        "Justin Lessler"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-bio.PE"
+      ],
+      "published": "2026-04-27T18:48:40+00:00",
+      "link": "https://arxiv.org/pdf/2604.24913v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "diffusion models for spatiotemporal influenza forecasting",
+      "llm_evidence_cn": "用于时空流感预测的扩散模型",
+      "llm_evidence": "用于时空流感预测的扩散模型",
+      "canonical_evidence": "用于时空流感预测的扩散模型",
+      "llm_tldr_en": "Adapts DDPMs for epidemic forecasting by treating influenza seasons as spatiotemporal images.",
+      "llm_tldr_cn": "通过将流感季节视为时空图像，将DDPM应用于流行病预测。",
+      "llm_tldr": "通过将流感季节视为时空图像，将DDPM应用于流行病预测。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "methods using diffusion models for time series forecasting",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2604.26366v1",
+      "source": "arxiv",
+      "title": "Probabilistic data quality assessment for structural monitoring data via outlier-resistant conditional diffusion model",
+      "abstract": "Data quality assessment is an essential step that ensures the reliability of the subsequent structural health monitoring (SHM) tasks. This study proposes a prediction deviation-based SHM data quality assessment method using a univariate implicit auto-regressive model, enabling outlier diagnosis and data cleaning. The proposed conditional diffusion model (CDM) augments the standard diffusion model with a conditional embedding module to incorporate temporal context, quartile normalization to mitigate distribution skew, and a Huber loss to enhance robustness against outliers. Within this univariate implicit autoregressive framework, each data point is assigned an outlier probability, quantifying its degree of \"outlier-ness\", and a global quality evaluation score is computed to characterize the overall dataset quality. Extensive case studies utilizing operational data from real-world structures demonstrate that the proposed framework significantly improves the accuracy of data quality assessment, outperforming other strong baselines representative of clustering, isolation-based, and deep reconstruction methods. The effectiveness and robustness of the proposed framework are further demonstrated by the findings of ablation experiments and hyperparameter analysis.",
+      "authors": [
+        "Qi Li",
+        "Yong Huang",
+        "Hui Li"
+      ],
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.LG"
+      ],
+      "published": "2026-04-29T07:26:37+00:00",
+      "link": "https://arxiv.org/pdf/2604.26366v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "conditional diffusion model for structural monitoring time series data quality",
+      "llm_evidence_cn": "用于结构监测时间序列数据质量的条件扩散模型",
+      "llm_evidence": "用于结构监测时间序列数据质量的条件扩散模型",
+      "canonical_evidence": "用于结构监测时间序列数据质量的条件扩散模型",
+      "llm_tldr_en": "Uses a conditional diffusion model for outlier diagnosis and data cleaning in structural health monitoring.",
+      "llm_tldr_cn": "使用条件扩散模型进行结构健康监测中的异常诊断和数据清洗。",
+      "llm_tldr": "使用条件扩散模型进行结构健康监测中的异常诊断和数据清洗。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "conditional diffusion frameworks for time series generation",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2604.21199v1",
+      "source": "arxiv",
+      "title": "ARFBench: Benchmarking Time Series Question Answering Ability for Software Incident Response",
+      "abstract": "Time series question-answering (TSQA), in which we ask natural language questions to infer and reason about properties of time series, is a promising yet underexplored capability of foundation models. In this work, we present ARFBench, a TSQA benchmark that evaluates the understanding of multimodal foundation models (FMs) on time series anomalies prevalent in software incident data. ARFBench consists of 750 questions across 142 time series and 5.38M data points from 63 production incidents sourced exclusively from internal telemetry at Datadog. We evaluate leading proprietary and open-source LLMs, VLMs, and time series FMs and observe that frontier VLMs perform markedly better than existing baselines; the leading model (GPT-5) achieves a 62.7% accuracy and 51.9% F1. We next demonstrate the promise of specialized multimodal approaches. We develop a novel TSFM + VLM hybrid prototype which we post-train on a small set of synthetic and real data that yields comparable overall F1 and accuracy with frontier models. Lastly, we find models and human domain experts exhibit complementary strengths. We define a model-expert oracle, a best-of-2 oracle selector over model and expert answers, yielding 82.8% F1 and 87.2% accuracy and establishing a new superhuman frontier for future TSQA models. The benchmark is available at https://huggingface.co/datasets/Datadog/ARFBench.",
+      "authors": [
+        "Stephan Xie",
+        "Ben Cohen",
+        "Mononito Goswami",
+        "Junhong Shen",
+        "Emaad Khwaja",
+        "Chenghao Liu",
+        "David Asker",
+        "Othmane Abou-Amal",
+        "Ameet Talwalkar"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CV"
+      ],
+      "published": "2026-04-23T01:45:10+00:00",
+      "link": "https://arxiv.org/pdf/2604.21199v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "benchmarking time series question answering",
+      "llm_evidence_cn": "时间序列问答基准测试",
+      "llm_evidence": "时间序列问答基准测试",
+      "canonical_evidence": "时间序列问答基准测试",
+      "llm_tldr_en": "Presents ARFBench to evaluate foundation models on time series anomaly reasoning and question answering.",
+      "llm_tldr_cn": "提出 ARFBench，用于评估基础模型在时间序列异常推理和问答方面的能力。",
+      "llm_tldr": "提出 ARFBench，用于评估基础模型在时间序列异常推理和问答方面的能力。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.21843v1",
+      "source": "arxiv",
+      "title": "Causality-Encoded Diffusion Models for Interventional Sampling and Edge Inference",
+      "abstract": "Standard diffusion models are flexible estimators of complex distributions, but they do not encode causal structures and therefore do not by themselves support causal analysis. We propose a causality-encoded diffusion framework that incorporates a known directed acyclic graph by training conditional diffusion models consistent with the graph factorisation. The resulting sampler approximately recovers the observational distribution and enables interventional sampling by fixing intervened variables while propagating effects through the graph during reverse diffusion. Building on this interventional simulator, we develop a resampling-based test for directed edges that generates null replicates under a candidate graph. We establish convergence guarantees for observational and interventional distribution estimation, with rates governed by the maximum local dimension rather than the ambient dimension, and prove asymptotic control of type I error for the edge test. Simulations show improved interventional distribution recovery relative to baselines, with near-nominal size and favourable power in inference. An application to flow cytometry data demonstrates practical utility of the proposed method in assessing disputed signalling linkages.",
+      "authors": [
+        "Li Chen",
+        "Xiaotong Shen",
+        "Wei Pan"
+      ],
+      "primary_category": "stat.ME",
+      "categories": [
+        "stat.ME",
+        "stat.ML"
+      ],
+      "published": "2026-04-23T16:32:49+00:00",
+      "link": "https://arxiv.org/pdf/2604.21843v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "causality-encoded diffusion framework for complex distributions",
+      "llm_evidence_cn": "用于复杂分布的因果编码扩散框架",
+      "llm_evidence": "用于复杂分布的因果编码扩散框架",
+      "canonical_evidence": "用于复杂分布的因果编码扩散框架",
+      "llm_tldr_en": "Proposes a causality-encoded diffusion framework to enable interventional sampling and causal analysis.",
+      "llm_tldr_cn": "提出一种因果编码扩散框架，以支持干预采样和因果分析。",
+      "llm_tldr": "提出一种因果编码扩散框架，以支持干预采样和因果分析。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "research papers on diffusion models applied to time series tasks",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.26535v1",
+      "source": "arxiv",
+      "title": "ARMA approximation of a Non-separable Spatio-Temporal Model with Fractional Smoothnesses in Space and Time",
+      "abstract": "The Matérn covariance model is ubiquitous in spatial modelling, but there is no default choice for spatio-temporal modelling. In this paper, we consider the recently proposed ``diffusion-based'' extension of the spatial Matérn covariance model to a spatio-temporal non-separable covariance model that allows fractional smoothnesses in space and in time. The model is described in terms of a space-time fractional stochastic partial differential equation, but currently proposed computational approaches have strong restrictions on the possible smoothnesses in time. We propose a discretization method based on rational approximations in time to handle arbitrary smoothnesses, which leads to a vector autoregressive moving average process (VARMA). We prove that the covariance function of the approximation converges pointwise, determine explicit convergence rates as a function of spatial and temporal resolutions and the accuracy of the rational approximation, and conduct numerical verification to demonstrate small pointwise error for low orders of the VARMA process. Through a simulation study, we demonstrate that the parameters can be estimated back and that correctly specifying the temporal smoothness is especially important for forecasting. The approach is illustrated for three months of daily mean temperatures in mainland France.",
+      "authors": [
+        "S. Knutsen Furset",
+        "Geir-Arne Fuglstad",
+        "Espen R. Jakobsen"
+      ],
+      "primary_category": "stat.ME",
+      "categories": [
+        "stat.ME",
+        "math.NA"
+      ],
+      "published": "2026-04-29T11:04:56+00:00",
+      "link": "https://arxiv.org/pdf/2604.26535v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion-based extension of spatial Matérn covariance to spatio-temporal models",
+      "llm_evidence_cn": "将基于扩散的空间Matérn协方差扩展到时空模型",
+      "llm_evidence": "将基于扩散的空间Matérn协方差扩展到时空模型",
+      "canonical_evidence": "将基于扩散的空间Matérn协方差扩展到时空模型",
+      "llm_tldr_en": "Proposes an ARMA approximation for spatio-temporal models using diffusion-based covariance extensions.",
+      "llm_tldr_cn": "提出了一种基于扩散协方差扩展的时空模型ARMA近似方法。",
+      "llm_tldr": "提出了一种基于扩散协方差扩展的时空模型ARMA近似方法。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "sequence modeling with diffusion processes for time-dependent data",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

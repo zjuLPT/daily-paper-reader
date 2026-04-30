@@ -1,0 +1,70 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.24913v1/fig-001.webp",
+      "caption": "Figure 3: Full-season forecasts. a. Each panel for the United States, California, New York, and Texas shows reported hospitalizations (black line) and reference forecast dates (colored dashed vertical line), followed by forecast quantiles from 512 conditional trajectories (colored bands/lines) representing the probabilistic forecast. 10 example trajectories are highlighted as thin colored lines. b. Same as panel a, but for the 2024–2025 influenza season.",
+      "page": 6,
+      "index": 1,
+      "width": 918,
+      "height": 445
+    },
+    {
+      "url": "assets/figures/arxiv/2604.24913v1/fig-002.webp",
+      "caption": "Figure 7: Training losses during Influpaint calibration. Curves show the training loss over 3,000 epochs for the candidate model configurations evaluated during calibration. The model selected for downstream analyses, based on its combined ranking in relative and absolute WIS, is highlighted in black.",
+      "page": 21,
+      "index": 2,
+      "width": 914,
+      "height": 454
+    },
+    {
+      "url": "assets/figures/arxiv/2604.24913v1/fig-003.webp",
+      "caption": "Figure 8: Relationship between training loss and forecasting performance. Final training loss is compared with relative WIS (a) and absolute WIS (b) across candidate model configurations. Each point represents one model variant, and the configuration selected for downstream analyses is highlighted in red.",
+      "page": 22,
+      "index": 3,
+      "width": 890,
+      "height": 379
+    },
+    {
+      "url": "assets/figures/arxiv/2604.24913v1/fig-004.webp",
+      "caption": "Figure 9: a. Each panel shows submitted 4-week-ahead FluSight forecasts from UNC_IDD-InfluPaint for North Carolina, New York, Texas, and Florida at the same reference dates used in the reference figure (colored dashed vertical lines). Forecast uncertainty is summarized by the submitted quantiles (colored fan) and median (colored line). The solid black line shows the observed final values. For the same reference dates, the FluSight ensemble forecast is shown as a dotted line. b. Same as panel a, but for the 2024–2025 influenza season.",
+      "page": 22,
+      "index": 4,
+      "width": 918,
+      "height": 460
+    },
+    {
+      "url": "assets/figures/arxiv/2604.24913v1/fig-005.webp",
+      "caption": "Figure 5: Methods behind Influpaint. A. Epidemic seasons are represented as images with time and space as axes, and pixel intensity corresponding to incident hospitalizations. B. Denoising Diffusion Probabilistic Models generate data by training a U-Net to restore an image that has been progressively corrupted by Gaussian noise. C. For forecasting, the ground truth and a mask (green: observed values to preserve) are provided. At each denoising step, we stitch the noised ground truth and the intermediate denoised sample to obtain the updated trajectory.",
+      "page": 12,
+      "index": 5,
+      "width": 918,
+      "height": 450
+    },
+    {
+      "url": "assets/figures/arxiv/2604.24913v1/fig-006.webp",
+      "caption": "Figure 4: Robustness to mask design. Black curves show observed hospitalizations during the 2023–2024 season; colored fans and lines show Influpaint predictive quantiles and medians. Insets show the conditioning mask for each panel, where green values are observed and red values are hidden and reconstructed by Influpaint. The arrow in each inset indicates which state/row is shown in the graph. a.1–3. Half-subpopulation spatial mask for California (a.1), Florida (a.2), and Maryland (a.3). b. Leave-one-stateout mask for North Carolina. c. Leave-one-state-out mask for Illinois. d. Midseason gap mask for Maryland. e. Past-only conditioning mask for Florida. f. Checkerboard spatial-temporal mask for California.",
+      "page": 9,
+      "index": 6,
+      "width": 918,
+      "height": 477
+    },
+    {
+      "url": "assets/figures/arxiv/2604.24913v1/fig-007.webp",
+      "caption": "Figure 6: Ablation effects on WIS. Each point shows the mean paired change in absolute WIS for a model variant relative to the baseline configuration. Positive values indicate improved forecasting performance relative to the baseline, whereas negative values indicate worse performance. The first group reports diffusion-model denoising schedules, comparing 500 or 200 diffusion steps with either a linear (l) or cosine (c) variance schedule. The second group compares U-Net architectures, with 124 denoting a three-scale architecture with channel multipliers (1, 2, 4) and 1224 a deeper four-scale architecture with channel multipliers (1, 2, 2, 4). The dataset group compares training sets denoted xxSyyM, where xx% of samples come from surveillance data and yy% from modeled trajectories. The transform group compares square-root scaling of incidence values (Sqrt) with linear scaling (Lins). The enrichment group evaluates additional training perturbations: No (none), Pois (Poisson resampling), PoisPadScaleSmall (Poisson resampling with narrow temporal padding and intensity scaling), and PoisPadScale (Poisson resampling with wide temporal padding and intensity scaling). The final group compares the three inpainting configurations described in the main text.",
+      "page": 20,
+      "index": 7,
+      "width": 594,
+      "height": 454
+    },
+    {
+      "url": "assets/figures/arxiv/2604.24913v1/fig-008.webp",
+      "caption": "Figure 2: 4-week-ahead forecasts. a. Each panel shows 4-week-ahead forecasts for North Carolina, New York, Texas, and Florida at multiple reference dates (colored dashed vertical lines). Forecast uncertainty is summarized by quantiles (colored fan) and the median (colored line) from 512 conditional trajectories. The solid black line shows the observed final values. For the same reference dates, the FluSight ensemble forecast is shown as a dotted line. b. Same as panel a, but for the 2024–2025 influenza season.",
+      "page": 5,
+      "index": 8,
+      "width": 918,
+      "height": 458
+    }
+  ]
+}

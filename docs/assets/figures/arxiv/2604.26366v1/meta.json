@@ -1,0 +1,126 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.26366v1/fig-001.webp",
+      "caption": "Fig. 7 Model prediction performance with different models",
+      "page": 26,
+      "index": 1,
+      "width": 496,
+      "height": 422
+    },
+    {
+      "url": "assets/figures/arxiv/2604.26366v1/fig-002.webp",
+      "caption": "Fig. 10 Probabilistic data quality assessment result of the representative time series Generally, in meaningful structural health monitoring data, the proportion of outlier is relatively small. The selection of appropriate metrics to quantify outlier detection performance is of paramount importance. This paper employs three metrics, namely, Precision, Recall and F1-score as follows:",
+      "page": 29,
+      "index": 2,
+      "width": 871,
+      "height": 404
+    },
+    {
+      "url": "assets/figures/arxiv/2604.26366v1/fig-003.webp",
+      "caption": "Fig. 13 Time-history curves: (a)(b) track temperature, (c)(d) track strain The results of the data quality assessment on two exemplary time series are presented in Fig. 14, where the parameter settings are the same as that in subsubsection",
+      "page": 34,
+      "index": 3,
+      "width": 804,
+      "height": 1079
+    },
+    {
+      "url": "assets/figures/arxiv/2604.26366v1/fig-004.webp",
+      "caption": "Fig. 3 The structure of the denoising network",
+      "page": 14,
+      "index": 4,
+      "width": 641,
+      "height": 469
+    },
+    {
+      "url": "assets/figures/arxiv/2604.26366v1/fig-005.webp",
+      "caption": "Fig. 12 Evolution of QES over iterations under different values of k",
+      "page": 33,
+      "index": 5,
+      "width": 866,
+      "height": 300
+    },
+    {
+      "url": "assets/figures/arxiv/2604.26366v1/fig-006.webp",
+      "caption": "Fig. 5 Monitoring object and sensor:(a) suspension bridge (b) three-dimensional ultrasonic anemometer",
+      "page": 23,
+      "index": 6,
+      "width": 871,
+      "height": 937
+    },
+    {
+      "url": "assets/figures/arxiv/2604.26366v1/fig-007.webp",
+      "caption": "Fig. 2 The structure of the conditional diffusion model",
+      "page": 13,
+      "index": 7,
+      "width": 608,
+      "height": 456
+    },
+    {
+      "url": "assets/figures/arxiv/2604.26366v1/fig-008.webp",
+      "caption": "Fig. 14 Probabilistic data quality assessment result of the representative time series Table. 2 Metrics before and after outlier detection and removal",
+      "page": 36,
+      "index": 8,
+      "width": 871,
+      "height": 402
+    },
+    {
+      "url": "assets/figures/arxiv/2604.26366v1/fig-009.webp",
+      "caption": "Fig. 11 Performance metrics with different data quality assessment methods Table. 1 Runtime of outlier diagnosis using different methods",
+      "page": 32,
+      "index": 9,
+      "width": 448,
+      "height": 406
+    },
+    {
+      "url": "assets/figures/arxiv/2604.26366v1/fig-010.webp",
+      "caption": "Fig. 8 Model prediction performance with different number of diffusion step",
+      "page": 27,
+      "index": 10,
+      "width": 498,
+      "height": 423
+    },
+    {
+      "url": "assets/figures/arxiv/2604.26366v1/fig-011.webp",
+      "caption": "Fig. 9 Model prediction performance with different number of context window",
+      "page": 27,
+      "index": 11,
+      "width": 498,
+      "height": 420
+    },
+    {
+      "url": "assets/figures/arxiv/2604.26366v1/fig-012.webp",
+      "caption": "Fig. 6 Wind speed and wind direction time-history curves: (a) horizontal wind speed, (b) horizontal wind direction, (c) vertical wind speed, (d) vertical wind direction",
+      "page": 24,
+      "index": 12,
+      "width": 871,
+      "height": 292
+    },
+    {
+      "url": "assets/figures/arxiv/2604.26366v1/fig-013.webp",
+      "caption": "Fig. 1 Flowchart of the proposed method for data quality assessment",
+      "page": 9,
+      "index": 13,
+      "width": 787,
+      "height": 913
+    },
+    {
+      "url": "assets/figures/arxiv/2604.26366v1/fig-014.webp",
+      "caption": "Fig. 15 Evolution of QES over iterations under different values of k",
+      "page": 37,
+      "index": 14,
+      "width": 866,
+      "height": 300
+    },
+    {
+      "url": "assets/figures/arxiv/2604.26366v1/fig-015.webp",
+      "caption": "Fig. 4 Workflow of the time-series cleaning framework with data quality assessment 1. For a univariate time-series dataset D: (a) determine the sampling frequency 𝐹 , training set size 𝑁 , context window length 𝐶 , number of diffusion steps 𝑇 and number of sampling points 𝑀; (b) initialize the imputation mask 𝐦 = [0, . . . , 0]𝑇. 2. The 𝑁 data points constituting the training set data are segmented into 𝑁 − 𝐶 time windows, with each window comprising 𝐶 + 1 data points. The gradient descent algorithm is employed to optimize the model parameters until convergence is achieved. 3. For 𝑡 ∈ [𝑁 − 𝐶 + 1, 𝑁 + 𝐿], draw 𝑀 diffusion samples to compute the predicted",
+      "page": 20,
+      "index": 15,
+      "width": 675,
+      "height": 511
+    }
+  ]
+}

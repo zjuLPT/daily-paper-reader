@@ -1,0 +1,2393 @@
+Title: 2604.26366v1.pdf
+
+URL Source: https://arxiv.org/pdf/2604.26366v1
+
+Published Time: Thu, 30 Apr 2026 00:31:33 GMT
+
+Number of Pages: 45
+
+Markdown Content:
+1
+
+# Probabilistic Data Quality Assessment for Structural Monitoring 
+
+# Data Via Outlier -resistant Conditional Diffusion Model    
+
+> Qi Li 1,2 , Yong Huang 1,2* , Hui Li 1,2
+> 1. Key Lab of Smart Prevention and Mitigation of Civil Engineering Disasters of the Ministry of
+> Industry and Information Technology, School of Civil Engineering, Harbin Institute of
+> Technology, Harbin, 150090, China
+> 2. Key Lab of Structures Dynamic Behavior and Control of the Ministry of Education, Harbin
+> Institute of Tec hnology, Harbin, 150090, China
+
+# Abstract 
+
+Data quality assessment is a n essential step that ensures the reliability of the subsequent 
+
+structural health monitoring (SHM) tasks. This study proposes a prediction deviation -
+
+based SHM data quality assessment method using a univariate implicit autoregressive 
+
+model, enabling outlier diagnosis and data cleaning. The proposed conditional diffusion 
+
+model (CDM) augments the standard diffusi on model with a conditional embedding 
+
+module to incorporate temporal context, quartile normalization to mitigate distribution 
+
+skew, and a Huber loss to enhance robustness against outliers. Within this univariate 
+
+implicit auto regressive framework, each data point is assigned an outlier probability, 
+
+quantifying its degree of “outlier -ness”, and a global quality evaluation score is 
+
+computed to characterize the overall dataset quality. Extensive case studies ut ili zing 
+
+operational data from real -world structures demonstrate that the proposed framework 2
+
+significantly improves the accuracy of data quality assessment , outperforming other 
+
+strong baselines representative of clustering, isolation -based, and deep reconstruction 
+
+methods. The effectiveness and robustness of the proposed framework are further 
+
+demonstrated by the findings of ablation experiments and hyperparameter analysis. 
+
+Keywords: Data quality assessment ; Conditional diffusion model ; Bayesian inference; 
+
+Outlier probabilit y; Structural health monitoring 
+
+# 1. Introduction 
+
+As global transport networks expand, long -lived assets such as bridges and high -speed 
+
+railways undergo cumulative environmental and traffic -induced deterioration with 
+
+potentially catastrophic consequences, making effective structural health monitoring 
+
+(SHM) (Bao et al., 2019; Bao & Li , 2021; Gharehbaghi et al., 2022; Xu et al.,2024) 
+
+indispensable. SHM deploys environmental sensors ( e.g., temperature, wind speed ,
+
+wind direction ) and structural r esponse sensors ( e.g., acceleration, strain , relative 
+
+displacement ) on the asset in order to collect opera tional data. Subsequent analys es
+
+utilize these data to identify potential damage, fatigue, and other safety risks, thereby 
+
+helping to extend service l ife . The accuracy and reliability of the data are of paramount 
+
+importance , because clean and reliable datasets are prerequisite s for the s uccessful 
+
+implementation of subsequent tasks such as structural condition assessment (Ni et al., 
+
+2020; Wang et al., 2024; Wei et al., 2025 ), damage detection (Wan et al., 2023; Xue et 
+
+al., 2023; Shi et al., 2025) and early warning (Wang et al., 2022; Liu et al., 20 22 ). In 3
+
+practice , outliers are unavoidable due to environmental impacts, sensor faults , and 
+
+unstable data transmission (Bao et al., 2019) . Consequently , data quality assessment ,
+
+also termed data outlier detection by some researchers (Aslan & Onut, 2022; Hussain 
+
+& Zhang, 2025; Papastefanopoulos et al., 2025 ; Yuen & Ortiz, 2017 ), ha s become a
+
+central task in current SHM research. 
+
+Numerous studies on data quality assessment have been conducted . Several data 
+
+quality assessment methods leverage cluster analysis , classifying data points in low -
+
+density regions as outliers . For example, Aslan & Onut (2022 ) employed the Density -
+
+Based Sp atial Clustering of Applications with Noise (DBSCAN) algorithm to identify 
+
+outliers and extreme events in ground -based PM10 measurements . The algorithm 
+
+requires two parameters , a neighborhood radius and the minimum number of points 
+
+within th at radius to form a cluster . It then classifies points as core points, boundary 
+
+points, or noise based on density connectivity , and it performs well in practice. Shrifan 
+
+et al. (2022) proposed an improved K -means algorithm that incorporat e Tukey ’s rule 
+
+together with a novel distance metric. Th e method determines whether the data 
+
+distribution is left -skewed, right -skewed, or symmetric about the mean, which enabl es 
+
+adaptive remov al of outliers . Although effective , cluster -based data quality assessment 
+
+methods require predefin ed hyperparameters ( e.g., neighborhood radius, minimum 
+
+cluster size , and cluster count ), which makes performance highly sensitive to the chosen 
+
+values. 
+
+Isolation me chanism methods, such as Isolation Forest and Extended Isolated 4
+
+Forest , which replace explicit modeling of normal distributions with “random partition 
+
+- fast isolation ”, have become one of the mainstream paradigms for unsupervised 
+
+anomaly detection. Liu et al . (2008) first proposed the Isolation Forest method, which 
+
+measures the anomaly degree by randomly dividing the space and isolating the path 
+
+length. It has the advantages of approximately linear complexity and low memory 
+
+requirements. Fang et al. (2023) conducted unsupervised anomaly detection on sensor 
+
+monitoring data for deep foundation pit construction using EIF, and combined with 
+
+Variational Mode Decomposition to achieve adaptive denoising. Verification on real -
+
+life data shows that this method can effectively improve data quality and is helpful in 
+
+supporting subsequent geotechnical safety assessment and decision -making. Despite 
+
+their scalability and simplicity, isolation -based methods are sensitive to threshold 
+
+choices and training -set contamina tion, and depend heavily on feature scaling or 
+
+representation. 
+
+Owing to its powerful representation learning and capacity to model highly non -
+
+linear decision boundaries, d eep learning methods ha ve also been explor ed for data 
+
+quality assessment in recent ye ars. Xiao et al . (2024) proposed a n autoencoder -based 
+
+method for assessing data quality in bridge health monitoring that adaptively 
+
+determines evaluation threshold s by calculating Euclidean distance between 
+
+compressed latent space representations . Deng et al. (2023) leveraged a continuous 
+
+wavelet transform to extract time -frequency features and subsequently construc ted a
+
+convolutional neural network to assess data quality , and they demonstrated cross -object 5
+
+applications. Pan et al . (2023) developed a transfer learning -based anomaly detection 
+
+method that exploits similar in anomaly patterns across different bridges , enabling 
+
+knowledge transfer for high -precision anomaly detection in bridge groups. However, 
+
+the output of these approaches are typically continuous time series data and do not 
+
+provide precision at the level of individual data point. They are less suitabl e when 
+
+sampling frequency is low and monitoring data are sparse . Furthermore, they still rely 
+
+on manually labeled datasets for supervised methods .
+
+Data quality assessment methods based on model prediction deviations constitute 
+
+another significant category, encompassing both machine learning and statistical 
+
+models. These methods identify data points exhibiting large prediction deviations as 
+
+outliers . Hussain & Zhang (2025) proposed a machine learning -based anomaly 
+
+detection method for pipeline internal inspection data. The ir approach employ s an 
+
+improved interquartile range technique , although optimal performance still requires 
+
+user -defined thresholds . Yuen & Ortiz (2017) proposed a robust regression and outlier 
+
+detection method for correlated da ta . It explicitly account s for interdependence us ing 
+
+the minimum volume ellipsoid method to quanti fy the outlier probability for each data 
+
+point , and it was validated on both simulated and real -world data. Li et al. (2024) 
+
+proposed a Bayesian extreme learning machine –based method for outlier detection in 
+
+long -term high -speed rail track monitoring data. It computes outlier probabilities from 
+
+posterior mean uncertainty and noise, and substantially improves prediction accuracy 
+
+after removing detected outliers. Nevertheless , these approaches typically rely on 6
+
+regression relationships among different variables. If either the input or the output 
+
+contains an outlier , the entire input -output data pair is flagged as anomalous. In pra ctical 
+
+SHM systems, the profusion and coupling of variables make it difficult to define input –
+
+output mappings for such cross -correlation –based regression. Owing to persistent 
+
+environmental forcing and the modal decay of structural responses, data collected by 
+
+SHM system s typically exhibit strong serial dependence (Farrar & Worden, 2012; Yao 
+
+& Pakzad, 2012 ). It is therefore often more natural to model auto regression behavior 
+
+within individual time series rather than perform cross -regression among disparate 
+
+variables (Qu et al., 2022) .
+
+Beyond the difficulty of specifying input -output mappings, prediction deviation 
+
+methods suffer from another limitation, namely that they require highly accurate 
+
+predictions to enable precise data quality assessment. Consequently, they typically rely 
+
+on pre -cleaning the training data or further screening a relatively reliable subset for 
+
+model training (Yuen & Ortiz, 2017; Qu et al., 2022; Li et al., 2024) , which further 
+
+limits their practicality. With recent advances in generative artificial, diffusion models 
+
+(Ho et al., 2020) have become a promising avenue for this problem. Diffusion models 
+
+are intrinsically well suited to SHM data quality assessment because their forward –
+
+reve rse noising paradigm learns a noise -aware, multi -scale representation of the data 
+
+distribution with calibrated uncertainty and thus provides inherent robustness to sensor 
+
+noise, impulsive spikes, and heavy -tailed perturbations. Beyond image generation, 
+
+dif fusion models have been applied to time -series forecasting (Rasul et al., 2021) ,7
+
+physics -informed prediction (Jadhav et al., 2023) , engineering design (Gu et al., 2024), 
+
+and dynamic -response reconstruction (Shu et al, 2025) . Their progressive denoising 
+
+mec hanism enables stable training without mode collapse, provides explicit control of 
+
+noise levels that mirrors real -world corruption, and yields full probabilistic distribution 
+
+through the learned reverse process. Nevertheless, the robustness of diffusion mo del to 
+
+low -quality measurements and their use as a probabilistic engine for SHM data quality 
+
+assessment remain largely underexplored. 
+
+To fill these gaps, we propose a probabilistic data quality assessment method for 
+
+SHM data via outlier -resistant condition al diffusion model (CDM). Specifically , we 
+
+develop a CDM for autoregressive time -series forecasting that integrates conditional 
+
+embeddings to encode contextual and exogenous information, quartile normalization to 
+
+mitigate heavy -tailed contamination, and a Huber loss to reduce sensitivity to outliers 
+
+during training. Since the cond itional embedding module leverages past contextual 
+
+information to guide the generation process, it can also be considered an implicit 
+
+autoregressive method. Within this probabilistic framework, we compute pointwise 
+
+outlier probabilities by jointly accounti ng for various sources of uncertaint ies , yielding 
+
+a quantitative measure of data quality at each datapoint; these probabilities are further 
+
+aggregated into a global quality evaluation score. The proposed method is validated 
+
+using real -world data from a bri dge and a high -speed railway track monitoring system .
+
+The remainder of the paper is organized as follows . In Section 2, we introduce the 
+
+outlier -resistant conditional diffusion model and the associated data quality assessment 8
+
+method. Section 3 presents two illustrative applications to demonstrate the effectiveness 
+
+and practicality. We further discuss practical deployment challenges and mitigation 
+
+strategies. Section 4 summarizes the main contributions and directions f or future work. 
+
+# 2. The proposed approach 
+
+# 2.1 Overview 
+
+Let D = { 𝑥 1
+
+> 0
+
+, 𝑥 2
+
+> 0
+
+, . . . , 𝑥 𝑁  
+
+> 0
+
+, 𝑥 𝑁 +1 
+
+> 0
+
+, . . . , 𝑥 𝑁 +𝐿  
+
+> 0
+
+denote the univariate structural health 
+
+monitoring time series data , where 𝑥 𝑁  
+
+> 0
+
+is the monitoring data corresponding to the 𝑁 -
+
+th  time moment. The objective of data quality assessment is to reliably discriminate 
+
+normal from anomalous observations, thereby preventing outliers from biasing 
+
+subsequent SHM analysis and decision -making. To accomplish this goal, we propose a 
+
+novel probabilistic method for detecting outliers with the associated discrimination 
+
+criterion in the form of outlier probability. This approach can estimate both the 
+
+probability that each data point is an outlier (i.e., local data -quality assessment) and, 
+
+from these probabilities, a quality score for the entire time series (i.e., global quality 
+
+assessment). The framework of the proposed method is schematically illustrated in  Fig 
+
+1. It comprises two main components: an outlier -resistant conditional diffusion model 
+
+for probabilistic prediction, and an outlier probability compute and data quality 
+
+assessment module . These components are detail ed in subsequent subsections. 9
+
+Fig . 1 Flowchart of the proposed method for data quality assessment 
+
+# 2. 2 Outlier -resistant c onditional diffusion model for probabili stic 
+
+# prediction 
+
+The Denoising Diffusion Probabilistic Model (DDPM) (Ho et al., 2020) is a generative 
+
+framework that draws inspiration from nonequilibrium thermodynamics. It generates 
+
+data by gradually corrupting samples with noise and then learning a reverse diffusion 
+
+(denoising) process . Its core is the reverse diffusion process , which re construct s the 
+
+underlying structure of the data from noise. 10 
+
+In the forward diffusion process, the original monitoring data 𝑥 𝑡  
+
+> 0
+
+is gradually 
+
+corrupted with Gaussian noise until the data eventually becomes pure noise . Here, 𝑥 𝑡 
+
+> 0
+
+denote s the monitoring dat a at time step 𝑡 . The amount of injected Gaussian noise at 
+
+step 𝑚 is controlled by the noise coefficient 𝛽 𝑚 , and the process is modeled as a
+
+Markov chain: 
+
+𝑥 𝑡  
+
+> 𝑚
+
+= √1 − 𝛽 𝑚  
+
+> 2
+
+𝑥 𝑡  
+
+> 𝑚 −1
+
++ 𝛽 𝑚 𝛆  (1)
+
+𝑥 𝑡  
+
+> 𝑚
+
+= 𝛼 ̅𝑚 𝑥 𝑡  
+
+> 0
+
++ 𝛽 ̅𝑚 𝛆  (2)
+
+where 𝑥 𝑡  
+
+> 𝑚
+
+is the data after 𝑚 diffusion steps, 𝛼 ̅ 𝑚 = √1 − 𝛽 𝑚  
+
+> 2
+
+∙ … ∙ √1 − 𝛽 1 
+
+> 2
+
+, 𝛽 ̅𝑚 =
+
+√1 − 𝛼 ̅𝑚  
+
+> 2
+
+, and 𝛆 ~𝒩 (0, I) . The sequence {𝛽 𝑚 }𝑚 =1 
+
+> 𝑇
+
+is chosen to be monotonically 
+
+increasing over the diffusion steps . Early steps inject less noise, later steps inject more, 
+
+until the sample becomes pure noise. The linear schedule for 𝛽 𝑚 is as follows: 
+
+𝛽 𝑚 = 𝛽 𝑚𝑖𝑛 + (𝛽 𝑚 𝑎𝑥 − 𝛽 𝑚 𝑖𝑛 ) ∙ 𝑚 −1 
+
+> 𝑇 −1
+
+(3)
+
+where 𝛽 𝑚 𝑖𝑛 and 𝛽 𝑚 𝑎𝑥 are the preset minimum and maximum values, respectively, and 
+
+𝑇 is the total number of diffusion steps. 
+
+The reverse generation process starts from 𝑥 𝑡 
+
+> 𝑇
+
+~𝒩 (0, I) and iteratively removes 
+
+noise to recover 𝑥 𝑡 
+
+> 0
+
+. Th e process is principally concerned with the derivation of the 
+
+diffusion state at step 𝑚 − 1 , 𝑥 𝑡  
+
+> 𝑚 −1
+
+, from the diffusion state at step 𝑚 , 𝑥 𝑡  
+
+> 𝑚
+
+. In 
+
+accordance with the forward diffusion process delineated above , the likelihood function 
+
+for the diffusion state at step 𝑚 , given the diffusion state at step 𝑚 − 1 is as follows :
+
+𝑝 (𝑥 𝑡 
+
+> 𝑚
+
+|𝑥 𝑡 
+
+> 𝑚 −1
+
+) = 𝒩 (𝑥 𝑡 
+
+> 𝑚
+
+; √1 − 𝛽 𝑚  
+
+> 2
+
+𝑥 𝑡 
+
+> 𝑚 −1
+
+, 𝛽 𝑚  
+
+> 2
+
+I) (4)
+
+As demonstrated in Eq . (2), given 𝑥 𝑡 
+
+> 0
+
+, the prior probability density function (PDF) of 11 
+
+the diffusion state at step 𝑚 − 1, 𝑥 𝑡 
+
+> 𝑚 −1
+
+, is Gaussian :
+
+𝑝 (𝑥 𝑡 
+
+> 𝑚 −1
+
+|𝑥 𝑡 
+
+> 0
+
+) = 𝒩 (𝑥 𝑡 
+
+> 𝑚 −1
+
+; 𝛼 ̅𝑚 −1𝑥 𝑡 
+
+> 0
+
+, 𝛽 ̅𝑚 −1 
+
+> 2
+
+I) (5)
+
+Utili zing the likelihood function in Eq. (4) and the prior PDF in Eq. ( 5), the posterior 
+
+PDF can be derived by Bayes’ Theorem (Huang et al., 2019; Meng et al., 2025) :
+
+𝑝 (𝑥 𝑡 
+
+> 𝑚 −1
+
+|𝑥 𝑡 
+
+> 𝑚
+
+, 𝑥 𝑡 
+
+> 0
+
+) = 𝑝 (𝑥 𝑡 
+
+> 𝑚 |
+
+𝑥 𝑡 
+
+> 𝑚 −1)𝑝 (
+
+𝑥 𝑡 
+
+> 𝑚 −1|
+
+𝑥 𝑡 
+
+> 0)
+> 𝑝 (
+
+𝑥 𝑡 
+
+> 𝑚 |
+
+𝑥 𝑡  
+
+> 0)
+
+= 𝒩 (𝑥 𝑡 
+
+> 𝑚 −1
+
+; 𝜇 𝑚 (𝑥 𝑡 
+
+> 𝑚
+
+, 𝑥 𝑡 
+
+> 0
+
+), 1 
+
+> 𝛽 ̃𝑚
+> 2
+
+I) (6)
+
+where the posterior mean and precision parameter are :
+
+𝜇 𝑚 (𝑥 𝑡 
+
+> 𝑚
+
+, 𝑥 𝑡 
+
+> 0
+
+) = 𝛼 ̅𝑚 −1𝛽 𝑚  
+
+> 2
+> 𝛽 ̅𝑚
+> 2
+
+𝑥 𝑡  
+
+> 0
+
++ 𝛼 𝑚 𝛽 ̅𝑚 −1 
+
+> 2
+> 𝛽 ̅𝑚
+> 2
+
+𝑥 𝑡  
+
+> 𝑚
+
+(7)
+
+𝛽 ̃𝑚  
+
+> 2
+
+= 𝛽 ̅𝑚   
+
+> 2
+> 𝛽 ̅𝑚 −1
+> 2𝛽 𝑚
+> 2
+
+(8)
+
+The normalization constant for the posterior probability density function , known as the 
+
+evidence function , is :
+
+𝑝 (𝑥 𝑡 
+
+> 𝑚
+
+|𝑥 𝑡 
+
+> 0
+
+) = 𝒩 (𝑥 𝑡 
+
+> 𝑚
+
+; 𝛼 ̅𝑚 𝑥 𝑡 
+
+> 0
+
+, 𝛽 ̅𝑚  
+
+> 2
+
+𝐈 ) (9)
+
+It is imperative to acknowledge that Eq. (7), Eq. ( 8) and Eq. ( 9) have been derived 
+
+under the supposition that 𝑥 𝑡  
+
+> 0
+
+is given . Nevertheless , 𝑥 𝑡  
+
+> 0
+
+is the final result that should 
+
+be generate d and is not available during the reverse generation process. In order t o
+
+remove this dependency on 𝑥 𝑡  
+
+> 0
+
+, an alternative strategy involves employing a neural 
+
+network to approximate the relationship between 𝑥 𝑡  
+
+> 𝑚
+
+and 𝑥 𝑡 
+
+> 0
+
+. In the event that 𝑥 𝑡  
+
+> 0
+
+can 
+
+be predicted from 𝑥 𝑡 
+
+> 𝑚
+
+, it follows that the reverse generation process can rely solely on 
+
+𝑥 𝑡 
+
+> 𝑚
+
+:
+
+𝑝 (𝑥 𝑡 
+
+> 𝑚 −1
+
+|𝑥 𝑡 
+
+> 𝑚
+
+) ≈ 𝑝 𝜃 (𝑥 𝑡 
+
+> 𝑚 −1
+
+|𝑥 𝑡 
+
+> 𝑚
+
+, 𝑥 𝑡  
+
+> 0
+
+= 𝜇 ̅ (𝑥 𝑡 
+
+> 𝑚
+
+)) (10)
+
+From Eq. ( 2), it can be deduced that the following equation governs the 12 
+
+relationship between 𝑥 𝑡  
+
+> 0
+
+and 𝑥 𝑡 
+
+> 𝑚
+
+:
+
+𝑥 𝑡  
+
+> 0
+
+= 1
+
+> 𝛼 ̅𝑚
+
+(𝑥 𝑡  
+
+> 𝑚
+
+− 𝛽 ̅𝑚 𝛆 ) (11)
+
+Based on the form of 𝑥 𝑡 
+
+> 0
+
+, the prediction result 𝜇 ̅ (𝑥 𝑡 
+
+> 𝑚
+
+) of the neural network is chosen 
+
+as: 
+
+𝜇 ̅ (𝑥 𝑡 
+
+> 𝑚
+
+) = 1
+
+> 𝛼 ̅𝑚
+
+(𝑥 𝑡  
+
+> 𝑚
+
+− 𝛽 ̅𝑚 𝛆 𝛉 (𝑥 𝑡 
+
+> 𝑚
+
+, 𝑚 )) (12)
+
+The loss function is conventionally designated as the ℓ2 − norm , i.e., ‖𝑥 𝑡  
+
+> 0
+
+− 𝜇 ̅ (𝑥 𝑡 
+
+> 𝑚
+
+)‖2
+
+> 2
+
+,
+
+where 𝑥 𝑡  
+
+> 0
+
+represents the original data and 𝑥 𝑡  
+
+> 𝑚
+
+represents the noisy data. Therefore, 
+
+the network essentially operates as a denoising network. 
+
+In order to enhance the robustness of the model against outliers and ensure its 
+
+applicability to SHM data , three improved strategies have been adopted, based on the 
+
+traditional diffu sion model. Specifically, we add a conditional embedding network, 
+
+apply quartile normali zation and train with the Huber loss function. The conditional 
+
+embedding network module employ s a Recurrent Neural Network, specifically utiliz ing 
+
+Gated Recurrent Units (Dey & Salem, 2017) , which offer faster training speeds and 
+
+fewer parameters compared to Long Short -Term Memory cell s. This module enables 
+
+the conditioning of time series data generation not only on the temporal characteristics 
+
+of the current time step bu t also on the data characteristics within the context window, 
+
+thereby implicitly incorporating autoregressive dependencies. A schematic of the 
+
+conditional diffusion model is illustrated in  Fig. 2 .13 
+
+Fig. 2 The structure of the conditional diffusion model 
+
+The network consists of four hidden layers, with each hidden layer comprising 30 
+
+nodes. The covariate 𝐜 𝐭 is composed of time -dependent features at time step 𝑡 (such 
+
+as the date, the day of the week, hour, and minute ), as well as lag features from the 
+
+co ntext window. The covariate 𝐜 𝐭 , along with the hidden state 𝐡 𝐭 −𝟏 =
+
+{𝐡 𝐭 −𝟏  
+
+> 𝟏
+
+, 𝐡 𝐭 −𝟏  
+
+> 𝟐
+
+, 𝐡 𝐭 −𝟏  
+
+> 𝟑
+
+, 𝐡 𝐭 −𝟏  
+
+> 𝟒
+
+} from the previous time step 𝑡 − 1, serves as the input to the 
+
+conditional network. The output of the first layer is the hidden state 𝐡 𝐭  
+
+> 𝟏
+
+, which is 
+
+computed through the following equations: 
+
+𝐫 𝐭 −𝟏  
+
+> 𝟏
+
+= 𝜎 (𝐖 𝐫  
+
+> 𝟏
+
+⋅ [𝐡 𝐭 −𝟏  
+
+> 𝟏
+
+; 𝐜 𝐭 ] + 𝐛 𝐫 
+
+> 𝟏
+
+) (13) 
+
+𝐳 𝐭 −𝟏  
+
+> 𝟏
+
+= 𝜎 (𝐖 𝐳  
+
+> 𝟏
+
+⋅ [𝐡 𝐭 −𝟏  
+
+> 𝟏
+
+; 𝐜 𝐭 ] + 𝐛 𝐳 
+
+> 𝟏
+
+) (14) 
+
+𝐡 ̃𝐭 −𝟏  
+
+> 𝟏
+
+= 𝑡𝑎𝑛 ℎ (𝐖 𝐡  
+
+> 𝟏
+
+⋅ (𝐫 𝐭 −𝟏  
+
+> 𝟏
+
+⊙ [𝐡 𝐭 −𝟏  
+
+> 𝟏
+
+; 𝐜 𝐭 ]) + 𝐛 𝐡 
+
+> 𝟏
+
+) (15) 
+
+𝐡 𝐭  
+
+> 𝟏
+
+= (𝟏 − 𝐳 𝐭 −𝟏  
+
+> 𝟏
+
+) ⊙ 𝐡 𝐭 −𝟏  
+
+> 𝟏
+
++ 𝐳 𝐭 −𝟏  
+
+> 𝟏
+
+⊙ 𝐡 ̃𝐭 −𝟏  
+
+> 𝟏
+
+(16) 
+
+The function 𝜎 (𝑥 ) = 1 
+
+> 1+𝑒 −𝑥
+
+represents the sigmoid activation function, and 
+
+𝑡𝑎𝑛 ℎ(𝑥 ) = 𝑒 𝑥 −𝑒 −𝑥  
+
+> 𝑒 𝑥 +𝑒 −𝑥
+
+represents the Tanh activation function. The symbol ⊙ denotes 14 
+
+element -wise multiplication . The computation type for the subsequent layers is similar, 
+
+with the only difference being that the input to each layer is the output of the previous 
+
+layer. The set 𝐑 𝛉 = {𝐖 𝐫 
+
+> 𝐢
+
+, 𝐖 𝐳 
+
+> 𝐢
+
+, 𝐖 𝐡  
+
+> 𝐢
+
+, 𝐛 𝐫  
+
+> 𝐢
+
+, 𝐛 𝐳  
+
+> 𝐢
+
+, 𝐛 𝐡  
+
+> 𝐢
+
+}𝑖 =1 
+
+> 4
+
+refers to the model parameters of the 
+
+conditional embedding network, which are initia lized randomly from a standard normal 
+
+distribution and optimized during the training process . The initial hidden stat e is given 
+
+by 𝐡 𝟎 = 𝟎 .
+
+The denoising network module takes the hidden state as an additional input and 
+
+comp rises eight residual blocks with skip connections. The network architecture is 
+
+illustrated in  Fig. 3 . At each iteration, a diffusion step 𝑚 is chosen from the set 
+
+{1,2, … , 𝑇 }, and th e network model parameters are optimized by gradient descent. The 
+
+learnable parameters consist of two set s: 𝐑 𝛉 for the conditional embedding network 
+
+and 𝛆 𝛉 for the denoising network .
+
+Fig. 3 The structure of the denoising network 
+
+The second improvement strategy concerns the choice of data normalization 15 
+
+method . This study utilizes quantile normalization instead of the prevalent min -max 
+
+Normalization or Z -score normalization methods. The scaled value is computed as :
+
+𝑥 𝑠𝑐𝑎𝑙𝑒𝑑 = 𝑥 𝑡 −𝑥 50% 
+
+> 𝑥 75% −𝑥 25%
+
+(17)
+
+where 𝑥 25% , 𝑥 50% and 𝑥 75% denote the 25 th , 50 th and 75 th percentile s computed on the 
+
+training set , respectively . This method centers each feature by its median and scales by 
+
+its interquartile range, without forcing identical feature distributions across samples . It 
+
+effective ly mitigat es the impact of extreme outliers , thereby enhancing model 
+
+robustness and accuracy. Finally, we optimize with the Huber loss instead of the 
+
+standard ℓ2-norm:                                    
+
+> 𝐿𝑜𝑠𝑠 ℎ𝑢𝑏𝑒𝑟 =∑{(𝛆 −𝛆 𝛉 (√𝛼 ̅𝑚 𝑥 𝑖
+> 0+√1−𝛼 ̅𝑚 𝛆 ,𝐡 𝐭 −𝟏 ,𝑚 ))2,|𝛆 −𝛆 𝛉 (√𝛼 ̅𝑚 𝑥 𝑖
+> 0+√1−𝛼 ̅𝑚 𝛆 ,𝐡 𝐭 −𝟏 ,𝑚 )|≤1
+> |𝛆 −𝛆 𝛉 (√𝛼 ̅𝑚 𝑥 𝑖
+> 0+√1−𝛼 ̅𝑚 𝛆 ,𝐡 𝐭 −𝟏 ,𝑚 )|,otherwise
+> 𝑇
+> 𝑚 =1
+
+(18)
+
+The Huber loss is quadratic near zero ( smooth gradients ) and becomes linear for large 
+
+residuals, limiting outlier influence .
+
+# 2.3 Outlier probability and d ata quality assessment 
+
+After training , given the hidden state 𝐡 𝐭 −𝟏 , 𝑥 𝑡  
+
+> 𝑚 −1
+
+can be sampled from the distribution 
+
+based on Eq. ( 7), Eq. (8) and Eq. (12) :
+
+𝑥 𝑡  
+
+> 𝑚 −1
+
+= 1
+
+> √1−𝛽 𝑚
+> 2
+
+(𝑥 𝑡  
+
+> 𝑚
+
+− 𝛽 𝑚 
+
+> 2
+> √1−𝛼 ̅𝑚
+> 2
+
+𝛆 𝛉 (𝑥 𝑡 
+
+> 𝑚
+
+, 𝐡 𝐭 −𝟏 , 𝑚 )) + 𝑧 
+
+> 𝛽 ̃𝑚
+
+(19 )
+
+where z~𝒩 (0, I) for 𝑚 = 2,3, … , 𝑇 , and z = 0 for 𝑚 = 1 . After completing the 
+
+reverse generation process for 𝑇 steps, the model’s predicted output 𝑥 𝑡  
+
+> 0,𝑖
+
+at time step 
+
+𝑡 is obtained under the given condition. By sampling 𝑀 samples from standard 16 
+
+Gaussian noise, the predicted mean 𝜇 𝑡 and standard deviation 𝜎 𝑡 at this time step are 
+
+given by: 
+
+𝜇 𝑡 = 1 
+
+> 𝑀
+
+∑ 𝑥 𝑡  
+
+> 0,𝑖 𝑀
+> 𝑖 =1
+
+(2 0)
+
+𝜎 𝑡 = √ 1 
+
+> 𝑀 −1
+
+∑ (𝑥 𝑡  
+
+> 0,𝑖
+
+− 𝜇 𝑡 )2𝑀  
+
+> 𝑖 =1
+
+(2 1)
+
+where 𝑥 𝑡  
+
+> 0,𝑖
+
+denotes the 𝑖 -th generated prediction sample. Since sampling 
+
+progressively denoises an initial Gaussian noise, we approximate the predict ive 
+
+distribution as a Gaussian distribution 𝑝 (𝑥 𝑡 )~𝒩 (𝜇 𝑡 , 𝜎 𝑡 
+
+> 2
+
+).
+
+Many existing data quality assessment methods in regression analysis are based 
+
+on the deviations of the predictions , where the threshold for identifying outliers is often 
+
+set arbitraril y. For instance, some methods use the criterion |𝜀 |/𝜎 > 3 for outlier 
+
+detection (Alimohammadi & Chen, 2022 ). It goes without saying that such a threshold 
+
+has a significant impact on the data quality assessment results. In this paper, we propose 
+
+an alternative approach through the defin ition and comput ation of out lier probability 
+
+for each data point with in the time series . This probability integrates data noise, 
+
+modelling errors and uncertainty in model prediction, offering a more nuanced , data -
+
+driven criterion for data quality assessment .
+
+Taking into account both data noise and model ling errors, the relationship in the 
+
+time series forecasting model can be expressed as :
+
+𝐘 = CDM (𝐗 ⨁𝐓 ) + 𝛆  (22)
+
+where ⨁ represents the concatenation of the feature dimension of the matrix along the 
+
+row direction , 𝐗 ⨁𝐓 = [𝐱 𝐶 +1⨁𝐭 𝐶 +1, … , 𝐱 𝑁 ⨁𝐭 𝑁 ]𝑇 ∈ ℝ(𝑁 −𝐶 )×(𝐶 +𝑓 ) and 𝐱 𝐭 ⨁𝐭 𝐭 =17 
+
+[𝑥 𝑡 −𝐶 , … , 𝑥 𝑡 −1, 𝑡 1, … , 𝑡 𝑓 ]𝑇 ∈ ℝ𝐶 +𝑓 ( 𝑁 denotes the number of time instants , 𝐶 the 
+
+context window length, and 𝑓 the dimension of time -dependent features ) are the input 
+
+data matrix for (𝑁 − 𝐶 ) time instants and data vector for the 𝑖 -th time instant, CDM (·)
+
+refers to the conditional diffusion model for time series forecasting , and 𝐘 =
+
+[𝑥 𝐶 +1, … , 𝑥 𝑁 ]𝑇 ∈ ℝ(𝑁 −𝐶 )×1 is the corresponding output data vector of the model . 𝛆 =
+
+[𝜀 𝐶 +1, … , 𝜀 𝑁 ]𝑇 is the (𝑁 − 𝐶 ) × 1 prediction -error vector , which can be modeled as an 
+
+(𝑁 − 𝐶 ) -variate zero -mean Gaussian distribution 𝒩 (𝟎 , 𝜎 2𝐈 𝑁 −𝐶 ) inspired by the 
+
+principle of maximum entropy (Huang et al., 2017) and the 𝜎 2 is the prediction -error 
+
+variance parameter. It is assumed that the correlations between the time series have been 
+
+fully learned during the model ’s training phase , and thus, the prediction errors 
+
+{𝜀 𝐶 +1, … , 𝜀 𝑁 } for each data points are modelled as mutually independent .
+
+Due to the presence of outliers , a resampling -based method is employed to 
+
+robustly estima te the predic tion error variance parameter. The variance parameter is 
+
+estimated by repeatedly sampling random subset s of the data 𝐿 times from the residual 
+
+dataset: 
+
+𝜎 2 = 1 
+
+> 𝐿
+
+∑ [ 1 
+
+> 𝑆 𝑖 −1
+
+∑ (𝜀 𝑟 − 𝜇 𝑆 𝑖 )2𝑆 𝑖  
+
+> 𝑟 =1
+
+]𝐿  
+
+> 𝑖 =1
+
+(23)
+
+where 𝜀 𝑟 = 𝑥 𝑟 − 𝜇 𝑟 is the residual of r -th data point , 𝑆 𝑖 denote s a subset of the 
+
+residual data which formed by randomly selecting a fraction of the residual data , and 
+
+𝜇 𝑆 𝑖 represents the mean of this subset. Given the predicted mean, variance, and the 
+
+variance of the prediction errors, the predictive distribution of the observation at time 
+
+step 𝑡 remain s a Gaussian distribution due to the additivity property of the Gaussian 18 
+
+distribution: 
+
+𝑝 (𝑥 𝑡 ) = 𝒩 (𝑥 𝑡 |𝜇 𝑡 , 𝜎 𝑡  
+
+> 2
+
++ 𝜎 2) (24)
+
+Outliers are typically defined as data points that exhibit substantial deviat ions 
+
+from the expected or predicted behavior (Aggarwal, 2017) . In this paper , the degree of 
+
+“outlier -ness” is defined as the probability that all 𝑀 data points generated through 
+
+prediction will be closer to the predicted mean 𝜇 𝑡 than to the actual observ ation , given 
+
+the probability model 𝑝 (𝑥 𝑡 ) of the monitoring data 𝑥 𝑡 . This probability indicates the 
+
+likelihood that the absolute residuals of all 𝑀 data points are smaller than the current 
+
+|𝜀 𝑡 |. Given the parameters 𝜇 𝑡 , 𝜎 𝑡  
+
+> 2
+
+and 𝜎 2, the outlier probability for the 𝑡 -th data point 
+
+𝑥 𝑡 is computed as: 
+
+𝑃 𝑜 (𝑥 𝑡 |𝜇 𝑡 , 𝜎 𝑡 
+
+> 2
+
+, 𝜎 2) = [1 − 2Φ (− | 𝑥 𝑡 −𝜇 𝑡 
+
+> √𝜎 𝑡
+> 2+𝜎 2
+
+|)]𝑀  (25)
+
+where Φ(·) denotes the cumulative distribution function of the standard normal 
+
+distribution . If 𝑃 𝑜 (𝑥 𝑡 |𝜇 𝑡 , 𝜎 𝑡 
+
+> 2
+
+, 𝜎 2) > 0.5, it indicates that the probability of 𝑥 𝑡 being an
+
+outlier is greater than that of being a normal data point. In this case , 𝑥 𝑡 should be 
+
+classified as a n outlier and moved to the low -quality dataset U; otherwise , it will be 
+
+retained as a normal data point .
+
+Following the determination of outlier probabilities for individual data points 
+
+(local quality assessment), the quality evaluation score ( QES ) for the entire time series 
+
+dataset (global quality assessment) is defined by integrating both the proportion of 
+
+outliers within the dataset and the severity of their anomalies: 19 
+
+𝑄𝐸𝑆 = 1 − 2× 𝑄     
+
+> 𝑘 (𝑁 −𝐶 )×1
+> 𝑄 [∑𝑃 𝑜 (𝑥 𝑖 |𝜇 𝑖 ,𝜎 𝑖
+> 2,𝜎 2)]
+> 𝑄
+> 𝑖 =1
+> 𝑄
+> 𝑘 (𝑁 −𝐶 )+1
+> 𝑄 [∑𝑃 𝑜 (𝑥 𝑖 |𝜇 𝑖 ,𝜎 𝑖
+> 2,𝜎 2)]
+> 𝑄
+> 𝑖 =1
+
+(2 6)
+
+where Q is the number of identified outlier s, that is, the number of data points 
+
+corre sponding to 𝑃 𝑜 (𝑥 𝑖 |𝜇 𝑖 , 𝜎 𝑖 2, 𝜎 2) > 0.5; 𝑘 ∈ (0,1) is a dimensionless scaling factor 
+
+to rescale the outlier -proportion term . The motivation is to make the dataset -level 
+
+deliberately conservation. In other words, 𝑘 sets a reference level such that , once the 
+
+detected outlier proportion becomes large, 𝑄𝐸 𝑆 is penalized more strongly. 𝑄𝐸𝑆 is 
+
+defined analogously to the F1 -score, combining the propo rtion of outlier and their 
+
+anomaly severity via a harmonic -mean -style aggregation. As either the proportion of 
+
+outlier or the aggregate anomaly severity increases, 𝑄𝐸𝑆 decreases (lower is worse 
+
+quality, higher is better). When taking 𝑄𝐸𝑆 as the optimization objective, the 
+
+application of multiple iterations enables the effective identification of all possible 
+
+instanc es of outliers. 
+
+# 2.4 Proposed algorithm 
+
+The data quality assessment algorithm for structural monitoring data is summar ized in 
+
+Fig. 4 , and is as follow s:20 
+
+Fig . 4 Workflow of the time -series cleaning framework with data quality assessment 
+
+1. For a univariate time -series dataset D: (a) determine the sampling frequency 𝐹 ,
+
+training set size 𝑁 , context window length 𝐶 , number of diffusion steps 𝑇 and 
+
+number of sampling points 𝑀 ; (b) initialize the imputation mask 𝐦 = [0, . . . , 0]𝑇 .
+
+2. The 𝑁 data points constituting the training set data are segmented into 𝑁 − 𝐶 time 
+
+windows, with each window comprising 𝐶 + 1 data points . The gradient descent 
+
+algorithm is employed to optimi ze the model parameters until convergence is 
+
+achieved. 
+
+3. For 𝑡 ∈ [𝑁 − 𝐶 + 1, 𝑁 + 𝐿 ], draw 𝑀 diffusion samples to compute the predicted 
+
+mean 𝜇 𝑡 and standard deviation 𝜎 𝑡 via Eq. (2 0) and Eq. (2 1). Estimate t he 
+
+prediction error variance 𝜎 2 on the training set according to Eq. (2 3). If |∆𝜎 2| ≤
+
+𝜏 (with 𝜏 = 0.02 ), proceed to step 6; otherwise continue to step 4. 
+
+4. The calculation of the outlier probability 𝑃 𝑜 (𝑥 𝑡 |𝜇 𝑡 , 𝜎 𝑡 
+
+> 2
+
+, 𝜎 2) for each data point is to 21 
+
+be conducted in accordance with Eq. (25). Aggregate these probabilities to obtain a 
+
+dataset -level quality evaluation score using Eq. (2 6). 
+
+5. Data points exhibiting a n outlier probability greater than 0.5 are identified as 
+
+outliers . The corresponding data points in the training set are replaced with their 
+
+predicted mean, and the imputation mask is updated, with the corresponding 
+
+position elements updated to 1. Subsequent to the updat ing of the training set, the 
+
+process is to revert to step 2. This process is repeated iteratively until ∆𝜎 2 ≤ 𝜏 .
+
+6. The final low -quality dataset, designated U, and the clean time series dataset, 
+
+marked 𝐃 ′, are obtained after the data clea ning .
+
+Implementation details . Additional variable, imputation mask 𝐦 , is introduced to flag 
+
+whether the backfill value generated by the model prediction exists during the tra ining 
+
+process. If present, the loss for the corresponding training window is weighted by 0.5, 
+
+mitigating self -confirmation bias. 
+
+# 3. Illustrative applications and discussion 
+
+In this section, two illustrative examples are presented to validate the effectiveness and 
+
+practicality of the proposed method: one using suspension bridge monitoring data and 
+
+the other using high -speed rail track monitoring data. These examples demonstrat e the 
+
+robustness of the model to outliers, its accuracy in data quality assessment , and its 
+
+enhanced predictive performance after the identification and removal of outliers . It is 
+
+imp erative to acknowledge that these a pplications presuppose the system unde r22 
+
+investigation is time -invariant, signifying that subsequent to the model’s training, its 
+
+properties remain unchanged over time . Finally, we discuss potential issues that may 
+
+arise when deploying the proposed method in real -world applications. 
+
+# 3.1 Illustrative application: bridge monitoring data 
+
+# 3.1.1 Dataset establishment 
+
+The data employed in this example are collected from a moni toring system installed on 
+
+a suspension bridge in southwest China during the period from December 2023 to 
+
+March 20 24 , as shown in  Fig 5 . The dataset primarily includ es measurements of wind 
+
+speed and wind direction . Three -dimensional ultrasonic anemometers, installed at the 
+
+mid -span of the bridge , are used for data collection with a sampling frequency of 10 Hz .
+
+As illustrated in  Fig. 6 , the time -history of horizontal wind speed, horizontal wind 
+
+direction, vertical wind speed, and vertical wind direction are presented in the four 
+
+subplots , respectively . In the absence of ext reme weather conditions, such as typhoons, 
+
+wind direction data typically exhibits a dominant wind direction, accompanied by 
+
+gentle and random changes related to the intensity of air turbulence (Song et al., 2017; 
+
+Hou et al., 2019) . It is evident from the p lots that there are some significant mutation 
+
+points in the horizontal wind direction data monitored at the millisecond level, which 
+
+are divergent from the normal mutation caused by the measurement range from 360° to 
+
+0°. Consequently , effective data qualit y assessment for the monitoring data is a critical 
+
+issue that warrants thorough investigation. 23 
+
+(a) (b) 
+
+Fig . 5 Monitoring object and sensor:(a) suspension bridge (b) three -dimensional 
+
+ultrasonic anemometer 
+
+(a) 
+
+(b) 
+
+(c) 24 
+
+(d) 
+
+Fig. 6 Wind speed and wind direction time -history curves: (a) horizontal wind speed, 
+
+(b) horizontal wind direction, (c) vertical wind speed, (d) vertical wind direction 
+
+# 3.1.2 Model performance verification 
+
+In order t o validate the performance of the proposed method in resisting outliers , wind 
+
+direction monitoring over a one -hour period, comprising 28290 data points, was taken 
+
+as inp ut . And the data points have been labelled based on expert knowledge. The 
+
+computations were performed on a computer device with an Intel i9 -10900F CPU and 
+
+an NVIDIA RTX 3070 GPU, utilizing PyTorch framework for implementation. The 
+
+parameter settings for model tra ining were as follows: the number of diffusion steps 
+
+was set to 𝑇 = 140 , with maximum and minimum noise coefficients of 𝛽 𝑚𝑎𝑥 = 0.1
+
+and 𝛽 𝑚𝑖𝑛 = 0.0001 , respectively . The context window length wa s configured as 𝐶 =
+
+80 , and the model underwent a total of 20 training epochs, using the Adam optimizer 
+
+with an initial learning rate of 0.001. A cosine annealing strategy was employed for 
+
+dynamically adjust ing of the learning rate . The minimum learning rate was set to 10 −9.
+
+With regard to data partitio ning, 70 % of the data set wa s designated as the training set, 
+
+while the remaining 30% wa s allocated to the test set. To evaluate the model’s 
+
+robustness against outliers , annotated outliers in the training set were incorporated 25 
+
+during model training. However , outliers in the test set were excluded during evaluation 
+
+to ensure the assessment focused on the model’s prediction performance. 
+
+A series of a blation experiments we re conducted using the following variations of 
+
+the model: the original diffusion model ( Base), the model with only the conditional 
+
+embedding module (Conditional) , the model with only the Huber loss function (Loss) ,
+
+the model with only the modified normalizat ion method (Scaling) , the model 
+
+incorporating both normalization and loss function modifications (Scaling+L) , and the 
+
+model with both normalization and conditional embedding (Scaling+C) . These 
+
+experiments have been conducted in accordance with the paramete rs and dataset 
+
+previously delineated .
+
+In order to further quantify the predicti ve performance of the proposed model , two 
+
+evaluation metrics , mean square error (MSE) and the logarithmic mean absolute error 
+
+(LMAE), are  computed as follows :
+
+MSE = 1
+
+> 𝑁 𝑡
+
+∑ (𝑦 𝑖 − 𝑦 ̂𝑖 )2𝑁 𝑡  
+
+> 𝑖 =1
+
+(27)
+
+LMAE = 1
+
+> 𝑁 𝑡
+
+∑ |log (𝑦 𝑖 + 1) − log (𝑦 ̂𝑖 + 1)|𝑁 𝑡  
+
+> 𝑖 =1
+
+(28)
+
+where 𝑁 𝑡 is the total number of test data samples after the removal of outliers. , and 𝑦 𝑖 
+
+and 𝑦 ̂𝑖 denote the actual and predicted wind direction values , respectively. The results 
+
+are summarized in  Fig. 7 . It is evident that , among the three measures implemented to 
+
+mitigate the impact of outliers, the incorporation of the conditional network module or 
+
+the utilization of the Huber loss function on their own only lead to marginal 
+
+improvements in prediction performance. In contrast , the quartile normalization method 26 
+
+significant ly enhances the model’s accuracy . When all three measures are combined, 
+
+the model achieves the best predictive performance , highlighting the importan ce of 
+
+these strategies in improv ing the effectiveness of data quality assessment based on 
+
+prediction deviation. 
+
+Fig . 7 Model prediction performance with different models 
+
+In the s ubsequent analysis , we have investigated the effect of the diffusion step 
+
+(𝑇 ) and the context window length (𝐶 ) on the predictive performance of the model .
+
+The number of diffusion steps direct ly affects the ability of the model to capture 
+
+underlying data patterns. If 𝑇 is too small, the data does not undergo sufficient 
+
+corrupt ion into pure noise, limit ing the model ’s ability to extract meaningful structure .
+
+Conversely, an excessively large 𝑇 leads to a prolonged sampling process during 
+
+prediction , reducing computational efficiency. The results of varying 𝑇 , shown in  Fig. 
+
+8, indicate that performance metrics exhibit considerable variability with increasing 𝑇 .
+
+The model achieves optimal performance at 𝑇 = 140 and 𝑇 = 240 . Considering the 27 
+
+trade -off between performance and efficiency, 𝑇 = 140 is selected as the optimal 
+
+choice. A similar analysis is conducted to assess the effect of context window length 
+
+(𝐶 ) on model performance , with results shown in  Fig. 9 . It can be found that increasing 
+
+the context window length does not always improve prediction accu racy . The model 
+
+achieves its best performance at 𝐶 = 80 .
+
+Fig . 8 Model prediction performance with different number of diffusion step 
+
+Fig . 9 Model prediction performance with different number of context window 28 
+
+# 3.1.3 Data quality assessment performance verification 
+
+This sub subsection adopts the algorithm in Subsection 2.4 for data quality assessment. 
+
+The initial training parameters are equivalent to those delineated in sub subsection 3.1.2. 
+
+During the subsequent iterative update stage of model training, the model parameters 
+
+are optimi zed based on the results of the previous iteration as the initial state. The initial 
+
+learni ng rate in each iteration is reduced to 0.3 times that of the previous one, and the 
+
+epoch is set to 10. The probabilistic data quality assessment results of the time series 
+
+are displayed in  Fig. 10 . For the period in  Fig. 10 (a) , a total of 611 outliers were detected 
+
+by the proposed a lgorithm, accounting for 2.16 % of the total data. The presence of low -
+
+data quality results in predictions that are significantly different from the actual values. 
+
+As shown in  Fig. 10 , the greater the disparity between the predicted and actual values, 
+
+the darker the data point appears, indicating a higher degree of "outlier -ness" and a 
+
+larger calculated outlier probability .
+
+(a) 29 
+
+(b) 
+
+Fig. 10 Probabilistic data quality assessment result of the representative time series 
+
+Generally, in meaningful structural health monitoring data, the proportion of 
+
+outlier is relatively small. The s elect ion of appropriate metrics to quantif y outlier 
+
+detection performance is of paramount importance . This paper employ s three metrics, 
+
+namely, Precision, Recall and F1 -score as follows: 
+
+Precision = TP  
+
+> TP +FP
+
+(29 )
+
+Recall = TP  
+
+> TP +FN
+
+(3 0)
+
+F1 − score = 2×Precision ×Recall  
+
+> Precision +Recall
+
+(3 1)
+
+where TP, FP and FN denote the number s of true -positive, false -positive and false -
+
+negat ive samples, respective ly. A higher Precision is indicative of a lower proportion of 
+
+normal data misidentified as outlier (a phenomenon referred to by some scholars as 
+
+“swamping ”) (Yuen & Mu, 2012) , thus implying a lower likelihood of misclassification. 
+
+Conversely, higher Recall is indicative of a higher proportion of true outlier being 
+
+correctly identified by the method (a phenomenon referred to as “masking ”) (Yuen & 
+
+Mu, 2012) , thereby implying a l ower likelihood of missing detections. The F1 -score is 30 
+
+defined as the harmonic mean of Precision and Recall, serving as a comprehensive 
+
+metric that takes both factors into account. 
+
+We have compared our method with several strong baselines that are 
+
+representative of data quality assessment and anomaly detection, including DBSCAN 
+
+(Aslan & Onut, 2022) , Local Outlier Factor (LOF) (Tan et al., 2024) , Isolation Forest 
+
+(Iso) (Liu et al., 2008) , Anomaly Transformer (ATF) (Xu et al., 2021) . Fur thermore , a
+
+comparison of the present method with the percentile -based predictive error variance 
+
+parameter estimation approach (Percentiles) (Yuen & Ortiz, 2017) was undertaken. It 
+
+is important to n ote that DBSCAN, LOF and Iso are machine learning methods, 
+
+whereas ATF is a deep learning method, implying that this comparison quantitatively 
+
+reveal s the superior performance of the proposed method compared to the baseline 
+
+machine and deep learning methods. All experiments were conducted under three 
+
+settings to ensure a fair comparison. First , DBSCAN, LOF and Iso were applied to the 
+
+prediction residuals produced by the conditional diffusion model, rather than to the raw 
+
+monitoring data. This choice is motivated by two fairness considerations. Our method 
+
+perfor ms probabilistic scoring in the residual domain, and applying baselines directly 
+
+to raw measurements would confound temporal dynamics modeling with outlier 
+
+detection. Evaluating all methods on the same residual sequence ensures that they are 
+
+assessed using an identical anomaly -evidence signal. In addition, raw SHM time series 
+
+typically exhibit strong autocorrelation, which may substantially degrade density -based 
+
+and isolation -based detectors when used without an explicit temporal model. Using the 31 
+
+CDM -genera ted residuals for all methods therefore isolates the outlier -detection 
+
+capability itself, rather than disadvantaging baselines that do not include a dedicated 
+
+forecasting component. Second, ATF simi larly includes outliers during the model 
+
+training process. Third, the hyperparameter s us ed in these methods were determined 
+
+through grid search to ensure the best performance of each technique. 
+
+The results of the three metrics in Eq . (29 )-(3 1) are demonstrated in  Fig. 11 . As 
+
+can be see n from the figure, t he Precision and Recall metrics of the DBSCAN and the 
+
+method using percentiles to estimate the predictive error variance parameter for data 
+
+quality assessment are similar, indicating balanced model performance. LOF and Iso 
+
+exhibit comparable performance, achieving up to 90% recall, but with precision around 
+
+50%. The ATF deep learning method performs exceptionally well in terms of precision, 
+
+but it has the lowest recall. This could be attributed to the relatively poor resistance of 
+
+unsupervised data quality assessment methods based on deep learning models to 
+
+outlier s. These models typically use only normal data during the training phase, which 
+
+further limits the practicality in engineering applications . In contrast, the method 
+
+proposed in this paper achieves the best performan ce, with an F1 score of 85%, 
+
+outperforming the other data quality assessment techniques. 
+
+To further assess computational efficiency, we compared the runtime required for 
+
+a single round of anomaly diagnosis across these methods. All runtimes were measured 
+
+using Python’s Time module, and each method was executed five times with the average 
+
+runtime reported; the results are summarized in  Table. 1. The ATF method was excluded 32 
+
+because it performs anomaly diagnosis after retraining a deep network, resulting in a 
+
+runtime that is substantially ( several orders of magnitude ) higher than that of the other 
+
+methods. As shown in Table.1, although our approach i s the most time -consuming 
+
+among the remaining three methods, it requires only 3.41s on average to compute the 
+
+anomaly probabilities for 28130 data points, which remains acceptable in practice. 
+
+Fig . 11 Performance metrics with differ ent data quality assessment methods 
+
+Table. 1 Runtime of outlier diagnosis using different methods 
+
+Method  Runtime(s) 
+
+DBSCAN  0.61 
+
+LOF  3.07 
+
+Iso  1.02 
+
+Ours  3.41 
+
+The changes in the QES indicators for the two time -series data sets corresponding 
+
+to  Fig. 10  after each round of iterative cleaning are presented in  Fig. 12 . As outlier 
+
+identific ation progresses, QES increases consistently and eventually reaches an optimal 
+
+level. Different values of 𝑘 lead to only a moderate vertical shift in QES during the 33 
+
+early iterations, while the overall behavior remains unchanged: QES increases 
+
+monotonicall y as the iterative cleaning proceeds, and the curves converge as the 
+
+algorithm stabilizes. This indicates that the qualitative conclusions drawn from QES are 
+
+insensitive to the choice of 𝑘 , supporting the validity and rational of the proposed 
+
+indicator de finition. Moreover, the proposed algorithm typically converges within a 
+
+small number of iterations, generally no more than ten. 
+
+(a) (b) 
+
+Fig. 12 Evolution of QES over iterations under different values of k
+
+# 3.2 Illustrative application: high -speed rail way track monitoring data 
+
+In this example, monitoring data of high -speed railway track structure s from the period 
+
+between August 2018 and December 2018 is utilized . The t ypes of monitoring data 
+
+include track temperature and strain collected using fiber Bragg grating sensors . This 
+
+monitoring system mainly monitors the impact of temperature effects on track. To avoid 
+
+the influence of train operation, the sampling frequency is 10 min . More relevant details 
+
+can be obtained from Li et al. (2024) . The number of data samples is about 17 577 points .
+
+The track temperature and strain time -history curves of some example measuring points 
+
+are shown in  Fig. 13 . The track strain data should exhibit a periodic characteristic in 34 
+
+response to changes in temperatu re. However, as is evident in the figure that there are 
+
+some abrupt points ( outliers ) in the strain monitoring data. 
+
+(a) 
+
+(b) 
+
+(c) 
+
+(d) 
+
+Fig. 13 Time -history curves: (a)(b) track temperature, (c)(d) track strain 
+
+The results of the data quality assessment on two exemplary time series are 
+
+presented in  Fig. 14 , where the parameter setting s are the same as that in subsub section 35 
+
+3.1 .3 . A total of 507 outliers was detected by the proposed algorithm, accounting for 
+
+2. 88 % of the total data. The true values are indicated by the solid blue line, while the 
+
+model’s predicted values are shown by the dashed red line. The outliers ha ve been 
+
+marked by the pentagram, where the darker the star, the higher the outlier probability 
+
+for that specific point. To provide a more detailed illustration, the data contained within 
+
+the red rectangular box in the figure has been magnified for closer inspection. As 
+
+demonstr ated in the figure, the greater the deviation between the predicted values and 
+
+the true values, the darker the color of the identified outliers. This suggests that the 
+
+definition of outlier probability is valid, as it effectively quantifies the degree of 
+
+anomaly of the data points. 
+
+(a) 36 
+
+(b) 
+
+Fig. 14 Probabilistic data quality assessment result of the representative time series 
+
+Table. 2 Metrics before and after outlier detection and removal 
+
+Time series  Metric  Before outlier removal  After outlier removal 
+
+1 MSE  0.00 30  0.00 24 
+
+LMAE  0.0210  0.0 202 
+
+2 MSE  0.0 042  0.0 011
+
+LMAE  0.0 112  0.0 056 
+
+The comparison of the prediction results before and after data quality assessment 
+
+and removal in two different time serie s has been conducted . The difference is that 
+
+identified outliers are removed when prediction is performed after data quality 
+
+assessment . In  Table. 2, the corresponding MSE and LMAE values for the data before 
+
+and after data quality assessment is given. The values of both indicators become smaller 
+
+after the outlier identification and removal. It is interesting to see that for time series 2, 
+
+the prediction indicators significantly decreased. This suggests that our algorithm can 
+
+successfully identify outliers even when there are serious data anomalies .
+
+At the final stage of this stu dy , we examined how the QES metrics for the two 37 
+
+representative time series data corresponding to  Fig. 14  changed after each cleaning 
+
+iteration. The results are presented in  Fig. 15 . We can d raw a similar conclusion that the 
+
+QES metric typically re aches an optimum within fewer than ten iterations, indicating 
+
+that all possible outliers ha ve been identified. And the qualitative conclusions drawn 
+
+from QES are insensitive to the choice of 𝑘 .These results further validate the 
+
+effectiveness of the proposed method. 
+
+(a) (b) 
+
+Fig. 15 Evolution of QES over iterations under different values of k
+
+# 3.3 Discuss ion 
+
+In this study, a novel method for SHM data quality assessment is developed .
+
+Notwithstanding its effectiveness in outlier diagnosis and data cleaning, the proposed 
+
+framework raises several practical considerations that deserve further discussion. 
+
+First, the illustrative case stud ies adopt a time -invariance assumption after model 
+
+training to demonstrate the effectiveness of the proposed data quality assessment 
+
+approach. However, real -world structures are subject to continuous aging, which 
+
+introduces shifts in the underlying distrib ution of the data. These shifts, often referred 38 
+
+to as concept drift, can be gradual and persistent rather than abrupt, as seen in transient 
+
+outliers caused by sensor faults or environmental disturbances. Under the time -invariant 
+
+assumption, natural degrada tion may indeed be erroneously identified as outliers. To 
+
+address this challenge, we recommend adopting a trigger -based model update strategy 
+
+in practical deployments. Since natural aging typically manifests as a slow, persistent 
+
+distributional shift rathe r than isolated spike -like anomalies, frequent retraining is 
+
+unnecessary. A more practical approach is to treat phenomena such as pronounced 
+
+temporal clustering of detected anomalies as a potential signal of “model -system 
+
+mismatch”, and then trigger an upd ate of the model using recently collected, quality -
+
+screened data. In this way, the model can gradually track the evolving structural state 
+
+and avoid misinterpreting long -term, gradual aging as a data -quality issue. 
+
+Second, we evaluate the computational eff iciency of the proposed algorithm and 
+
+its feasibility for real -time deployment. In the proposed framework, the dominant 
+
+computational cost arises from pointwise probabilistic forecasting, namely estimating 
+
+the predictive distribution through reverse diffus ion sampling, rather than from model 
+
+training or the subsequent computation of anomaly probabilities. In our current Python 
+
+implementation, timed using the Time module, a complete training run under the 
+
+aforementioned settings takes approximately 600s, and evaluating outlier probabilities 
+
+for all predicted data points requires 3.41s. In contrast, estimating pointwise predictive 
+
+distributions for 28130 data points with 𝑇 = 140 diffusion steps and 100 samples 
+
+requires 3754.41s. Th is corresponds to an average throughput of approximately 7.5 data 39 
+
+points per second, or about 0.13s per data point. This runtime is sufficient for many 
+
+SHM scenarios with low -to -moderate sampling rates, such as minute -level or 10 -
+
+mintue sampling, where nea r-real -time alerts can be generated reliably. For high -
+
+frequency data streams, however, a straightforward deployment strategy that performs 
+
+full sampling for every data point may become computationally demanding, and 
+
+practical acceleration strategies are t herefore required. Overall, these timing results 
+
+demonstrate that the proposed method is practical for offline analysis and for many 
+
+online SHM settings. Real -time deployment under high -frequency sampling is expected 
+
+to be achievable by incorporating stand ard inference -speed optimizations, which we 
+
+identify as an important direction for future work. 
+
+Finally, we discuss the rationale for applying the 0.5 threshold to datasets with 
+
+different noise -to -signal ratios. In our framework, outlier classification is conducted in 
+
+the probability domain rather than by applying a hard residual cutoff. Specifically, a
+
+data point is flagged as an outlier when its outlier probability 𝑃 𝑜 exceeds 0.5. The value 
+
+0.5 corresponds to the standard Bayes/MAP decision rule under the common 
+
+assumption that false -positive and false -negative costs are approximately symmetric. 
+
+Mo re importantly, 𝑃 𝑜 is computed from a predictive distribution that explicitly 
+
+incorporates both the model predictive uncertainty 𝜎 𝑡  
+
+> 2
+
+and a resampling -based 
+
+estimate of the prediction -error variance 𝜎 2, thereby reflecting different noise levels 
+
+and mod eling errors in a data -driven manner. Consequently, when the noise -to -signal 
+
+ratio changes, the probability -based criterion will be adjusted accordingly, therefore, 40 
+
+the same threshold does not act as a strict, global “residual cutoff” across the entire 
+
+dat aset . This robustness is also supported empirically by our case studies. We validated 
+
+the method on real monitoring data from a suspension bridge and a high -speed railway 
+
+track, which differ substantially in structural form, operating environment, sensor t ype, 
+
+and sampling characteristics, and thus typically exhibit different noise -to -signal ratios. 
+
+Despite these differences, the proposed probability -based criterion with the default 
+
+threshold 𝑃 𝑜 > 0.5 remained effective in both applications, suggesting that the 
+
+threshold is reasonably transferable across heterogeneous SHM datasets. That said, if a 
+
+particular deployment involves asymmetric decision costs (e.g., prioritizing extremely 
+
+low false alarms or maximizing sensitivity), the threshold should be adjuste d upward 
+
+or downward as appropriate to meet the application requirements. 
+
+# 4. Conclusion 
+
+This study proposes a prediction deviation -based method for assessing the quality of 
+
+structural health monitoring data using a univariate implicit autoregressive model, 
+
+thereby enabling outlier diagnosis and data cleaning. By incorporating context through 
+
+conditional embedding, applying quartile normalization, and using a Huber loss 
+
+function, the proposed framework effectively learns the underlying data distribution, 
+
+eve n in the presence of outliers. Additionally, this framework can be considered an 
+
+implicit autoregressive prediction model. The outlier probability for each data point is 
+
+computed within this framework, and these probabilities are then aggregated into a 41 
+
+glo bal quality evaluation score for dataset -level assessment. 
+
+As a univariate implicit autoregressive method based on prediction deviation, it 
+
+offers the following distinct advantages. First, this framework is inherently outlier -
+
+resistant, removing the need for pre -cleaning or noise -free training data, and is therefore 
+
+highly adaptable to complex and uncertain real -world engineering environments .
+
+Second, unlike existing methods that only categorize data as normal or anomalous, our 
+
+framework quantifi es the degree of anomaly for each data point, providing a
+
+comprehensive data -quality assessment at both the local (pointwise outlier probability) 
+
+and global (QES ) levels. Third, the method demonstrates broad applicability, 
+
+consistently identifying outliers across various structures and heterogeneous sensor 
+
+types. These advantages suggest that the proposed method is well -suited for integration 
+
+into operational SHM systems. 
+
+For future study, it would be useful to relax the assumption of a time -invariant 
+
+syste m and extend the present univariate framework to non -stationary and multivariate 
+
+SHM data . Further gains may come from improving computational efficiency, for 
+
+example by optimizing the diffusion sampling process, to enable real -time deployment 
+
+in large -sca le SHM systems. Despite these limitations, the proposed method constitutes 
+
+a significant advance in SHM data management, providing a robust probabilistic tool 
+
+for quantifying and enhancing data quality and thereby improving the reliability of 
+
+SHM outcomes. 42 
+
+# Reference s
+
+Aggarwal, C. C. (2017). An introduction to outlier analysis. Springer International 
+
+Publishing. https://doi.org/10.1007/978 -3-319 -47578 -3_1 
+
+Alimohammadi, H., & Chen, S. N. (2022). Performance evaluation of outlier detection 
+
+techniques in produc tion time series: A systematic review and meta -analysis. 
+
+Expert Systems with Applications, 191 , 116371.  https://doi.org/10.1016/j. eswa .
+
+2021.116371 
+
+Aslan, M. E., & Onut, S. (2022). Detection of outliers and e xtreme events of ground 
+
+level particulate matter using DBSCAN algorithm with local parameters. Water, 
+
+Air, & Soil Pollution, 233 (6), 203. https://doi.org/10.1007/s11270 -022 -05679 -6
+
+Bao, Y., Chen, Z., Wei, S., Xu, Y., Tang, Z., & Li, H. (2019). The state of the art of data 
+
+science and engineering in structural health monitoring. Engineering, 5 (2), 234 –
+
+242. https://doi.org/10.1016/j.eng.2018.11.027 
+
+Bao, Y., Tang, Z., Li, H., & Zhang, Y . (2019). Computer vision and deep learning -based 
+
+data anomaly detection method for structural health monitoring. Structural Health 
+
+Monitoring, 18 (2), 401 –421. https://doi.org/10.1177/1475921718757405 
+
+Bao, Y., & Li, H. (2021). Machine learning paradigm for structural health monitoring. 
+
+Structural Health Monitoring, 20 (4), 1353 –1372.  https://doi.org/10.1177/ 
+
+1475921720972416 
+
+Deng, Y., Ju, H., Zhong, G., Li, A., & Ding, Y. (2023). A general data quality evaluation 
+
+fram ework for dynamic response monitoring of long -span bridges. Mechanical 
+
+Systems and Signal Processing, 200 , 110514.  https://doi.org/10.1016/j.ymssp .
+
+2023.110514 
+
+Dey, R., & Salem, F. M. (2017, August). Gate -variants of gated recurrent unit (GRU) 
+
+neural networks. In 2017 IEEE 60th International Midwest Symposium on Circuits 
+
+and Systems (MWSCAS) (pp. 1597 –1600).  https://doi.or g/10.1109/ 
+
+MWSCAS.2017.8053243 
+
+Fang, W., Shao, Y., Love, P. E., Hartmann, T., & Liu, W. (2023). Detecting anomalies 
+
+and de -noising monitoring data from sensors: A smart data approach. Advanced 
+
+Engineering Informatics, 55 , 101870. https://doi.org/10.1016/j. aei.2022.101870 
+
+Farrar, C. R., & Worden, K. (2012). Structural health monitoring: A machine learning 
+
+perspective. John Wiley & Sons. 
+
+Gharehbaghi, V. R., Noroozinejad Farsangi, E., Noori, M., Yang, T. Y., Li, S., Nguyen, 
+
+A., Málaga -Chuquitaype, C., & Gardon i, P. (2022). A critical review on structural 
+
+health monitoring: Definitions, methods, and perspectives. Archives of 
+
+Computational Methods in Engineering, 29 (4), 2209 –2235.  https://doi.org/ 
+
+10.1007/s11831 -021 -09665 -9
+
+Gu, Y. , Huang, Y., Liao, W., & Lu, X. (2024). Intelligent design of shear wall layout 
+
+based on diffusion models. Computer -Aided Civil and Infrastructure Engineering, 
+
+39 (23), 3610 -3625. https://doi.org/10.1111/mice.13236 43 
+
+Ho, J., Jain, A., & Abbeel, P. (2020). Den oising diffusion probabilistic models. 
+
+Advances in Neural Information Processing Systems, 33 , 6840 –6851. 
+
+Hou, C., Han, H., Liu, Z., & Su, M. (2019, March). A wind direction forecasting method 
+
+based on Z -score normalization and long short -term memory. In 20 19 IEEE 3rd 
+
+International Conference on Green Energy and Applications (ICGEA) (pp. 172 –
+
+176). https://doi.org/10.1109/ICGEA.2019.8880774 
+
+Huang, Y., Beck, J. L., & Li, H. (2017). Bayesian system identification based on 
+
+hierarchical sparse Bayesian learning a nd Gibbs sampling with application to 
+
+structural damage assessment. Computer Methods in Applied Mechanics and 
+
+Engineering, 318 , 382 –411. https://doi.org/10.1016/j.cma.2017.01.030 
+
+Huang, Y., Beck, J. L., & Li, H. (2019). Multitask sparse Bayesian learning w ith 
+
+applications in structural health monitoring. Computer -Aided Civil and 
+
+Infrastructure Engineering, 34 (9), 732 –754. https://doi.org/10.1111/mice.12408 
+
+Hussain, M., & Zhang, T. (2025). Machine learning -based outlier detection for pipeline 
+
+in -line inspect ion data. Reliability Engineering & System Safety, 254 , 110553. 
+
+https://doi.org/10.1016/j.ress.2024.110553 
+
+Jadhav, Y., Berthel, J., Hu, C., Panat, R., Beuth, J., & Barati Farimani, A. (2023). 
+
+StressD: 2D stress estimation using denoising diffusion model. Computer Methods 
+
+in Applied Mechanics and Engineering, 416 , 116343.  https://doi.org/10.1016/ 
+
+j.cma.2023.116343 
+
+Li, Q., Gao, J., Beck, J. L., Lin, C., Huang, Y., & Li, H. (2024). Probabilistic outlier 
+
+detection for robust regression modeling of structural response for high -speed 
+
+railway track monitoring. Structural Health Monitoring, 23 (2), 1280 –1296. 
+
+https://doi.or g/10.1177/14759217231184584 
+
+Liu, F. T., Ting, K. M., & Zhou, Z. H. (2008, December). Isolation forest. In 2008 Eighth 
+
+IEEE International Conference on Data Mining (pp. 413 –422).  https://doi.org/ 
+
+10.1109/ICDM.2008.17 
+
+Liu, J. , Qin, X., Sun, Y., & Zhang, Q. (2022). Interval early warning method for state 
+
+of engineering structures based on structural health monitoring data. Structural 
+
+Control and Health Monitoring, 29 (8), e2969. https://doi.org/10.1002/stc.2969 
+
+Meng, X., Beck, J . L., Huang, Y., & Li, H. (2025). Adaptive meta -learning stochastic 
+
+gradient Hamiltonian Monte Carlo simulation for Bayesian updating of structural 
+
+dynamic models. Computer Methods in Applied Mechanics and Engineering, 437 ,
+
+117753. https://doi.org/10.1016/ j.cma.2025.117753 
+
+Ni, Y. Q., Wang, Y. W., & Zhang, C. (2020). A Bayesian approach for condition 
+
+assessment and damage alarm of bridge expansion joints using long -term 
+
+structural health monitoring data. Engineering Structures, 212 , 110520. 
+
+https://doi.org/1 0.1016/j.engstruct.2020.110520 
+
+Pan, Q., Bao, Y., & Li, H. (2023). Transfer learning -based data anomaly detection for 
+
+structural health monitoring. Structural Health Monitoring, 22 (5), 3077 –3091. 
+
+https://doi.org/10.1177/14759217221142174 44 
+
+Papastefanopoulos, V., Linardatos, P., & Kotsiantis, S. (2025). Combining normalizing 
+
+flows with decision trees for interpretable unsupervised outlier detection. 
+
+Engineering Applications of Artificial Intelligence, 141 , 109770.  https://doi.or g/ 
+
+10.1016/j.engappai.2024.109770 
+
+Qu, B., Liao, P., & Huang, Y. (2022). Outlier detection and forecasting for bridge health 
+
+monitoring based on time series intervention analysis. Structural Durability & 
+
+Health Monitoring, 16 (4), 323 –341. https://doi.org/10 .32604/sdhm.2022.021446 
+
+Rasul, K., Seward, C., Schuster, I., & Vollgraf, R. (2021). Autoregressive denoising 
+
+diffusion models for multivariate probabilistic time series forecasting. In 
+
+International Conference on Machine Learning (pp. 8857 –8868). PMLR. 
+
+Shr ifan, N. H. M. M., Akbar, M. F., & Mat Isa, N. A. (2022). An adaptive outlier 
+
+removal aided k -means clustering algorithm. Journal of King Saud University -
+
+Computer and Information Sciences, 34 (8), 6365 –6376.  https:// doi.org/10.1016/ 
+
+j.jksuci.2021.07.003 
+
+Shi, S., Du, D., Mercan, O., & Zhang, L. (2025). Contrastive and self -supervised 
+
+learning for open -set damage classification in structural health monitoring with 
+
+incomplete and imbalanced vibration data. Expert Systems with Applications ,
+
+128731. https://doi.org/10.1016/j.eswa.2025.128731 
+
+Shu, J., Yu, H., Liu, G., Duan, Y., Hu, H., & Zhang, H. (2025). DF -CDM: Conditional 
+
+diffusion model with data fusion for structural dynamic response reconstruction. 
+
+Mechanical Systems and Signal Processing, 222 , 111783.  https://doi.org/10.1016/ 
+
+j.ymssp.2024.111783 
+
+Song, D., Yang, J., Liu, Y., Su, M., Liu, A., & Joo, Y. H. (2017). Wind direction 
+
+prediction for yaw control of wind turbines. International Journal of Control, 
+
+Automation and Systems, 15 (4), 1720 –1728. htt ps://doi.org/10.1007/s12555 -017 -
+
+0289 -6
+
+Tan, Y. K., Wang, Y. W., Ni, Y. Q., & Zhang, Q. L. (2024). Parallel reservoir computing 
+
+based signal outlier detection and recovery method for structural health monitoring. 
+
+Developments in the Built Environment, 18 , 1 00463.  https://doi.org/10.1016/ 
+
+j.dibe.2024.100463 
+
+Wan, H., Gao, L., Yuan, Z., Mei, Y., & Zhao, X. (2023). A novel transformer model for 
+
+surface damage detection and cognition of concrete bridges. Expert Systems wit h
+
+Applications, 213 , 119019. https://doi.org/10.1016/j.eswa.2022.119019 
+
+Wang, J., You, H., Qi, X., & Yang, N. (2022). BIM -based structural health monitoring 
+
+and early warning for heritage timber structures. Automation in Construction, 144 ,
+
+104618. https:// doi.org/10.1016/j.autcon.2022.104618 
+
+Wang, Y., Cai, C. S., Han, B., Xie, H., Bao, F., & Wu, H. (2024). A deep learning -based 
+
+approach for assessment of bridge condition through fusion of multi -type 
+
+inspection data. Engineering Applications of Artificial In telligence, 128 , 107468. 
+
+https://doi.org/10.1016/j.engappai.2023.107468 45 
+
+Wei, S., Huang, Y., & Li, H. (2025). Disentangling the latent space of an end2end 
+
+generative VRNN model for structural health condition diagnosis. Mechanical 
+
+Systems and Signal Process ing, 225 , 112270.  https://doi.org/10.1016/ 
+
+j.ymssp.2024.112270 
+
+Xiao, B., Di, J., Wang, J., Wu, G., Shi, J., Wang, X., & Fan, J. (2024). Autoencoder -
+
+based method to assess bridge health monitoring data quality. Compu ter -Aided 
+
+Civil and Infrastructure Engineering, 39 (15) , 2367 -2388.  https://doi.org/10.1111/ 
+
+mice.13191 
+
+Xu, J., Wu, H., Wang, J., & Long, M. (2021). Anomaly transformer: Time series 
+
+anomaly detection with association discrepancy. arXiv preprint arXiv:2110.02642. 
+
+Xu, Y., Fan, Y., Bao, Y., & Li, H. (2024). Few -shot learning for structural health 
+
+diagnosis of civil infrastructure. Advanced Engineering Informatics, 62 , 102650. 
+
+https://doi.org/10.1016/j.aei.2024.102650 
+
+Xue , S., Zhou, W., Beck, J. L., Huang, Y., & Li, H. (2023). Damage localization and 
+
+robust diagnostics in guided -wave testing using multitask complex hierarchical 
+
+sparse Bayesian learning. Mechanical Systems and Signal Processing, 197 ,
+
+110365. https://doi.org /10.1016/j.ymssp.2023.110365 
+
+Yao, R., & Pakzad, S. N. (2012). Autoregressive statistical pattern recognition 
+
+algorithms for damage detection in civil structures. Mechanical Systems and 
+
+Signal Processing, 31 , 355 –368. https://doi.org/10.1016/j.ymssp.2012.02 .014 
+
+Yuen, K. V., & Mu, H. Q. (2012). A novel probabilistic method for robust parametric 
+
+identification and outlier detection. Probabilistic Engineering Mechanics, 30 , 48 –
+
+59. https://doi.org/10.1016/j.probengmech.2012.06.002 
+
+Yuen, K. V., & Ortiz, G. A. (2017). Outlier detection and robust regression for correlated 
+
+data. Computer Methods in Applied Mechanics and Engineering , 313 , 632 –646. 
+
+https://doi.org/10.1016/j.cma.2016.10.00 4

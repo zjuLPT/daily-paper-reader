@@ -1,0 +1,62 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.26535v1/fig-001.webp",
+      "caption": "Figure 4: Top: Daily mean temperature measurements in France for January 1, February 1 and March 1, 2023. Bottom: The three covariates we include in our model. Elevation (left), proximity to ocean (middle), and latitude (right).",
+      "page": 15,
+      "index": 1,
+      "width": 940,
+      "height": 627
+    },
+    {
+      "url": "assets/figures/arxiv/2604.26535v1/fig-002.webp",
+      "caption": "Figure 1: Sup-norm log10-error in covariance function of the rational approximation using M = 162 spatial basis function. Different colours correspond to different orders of approximation. The x-axis represents the temporal smoothness νt. The dashed vertical bars represent integer values of γ. (A) is rt = 1.0, βs = 0.25. (B) is rt = 1.0, βs = 0.50. (C) is rt = 3.0, βs = 0.25. (D) is rt = 3.0, βs = 0.50. All cases have νs = 0.5, rs = 0.25, and σ = 1.0.",
+      "page": 10,
+      "index": 2,
+      "width": 913,
+      "height": 865
+    },
+    {
+      "url": "assets/figures/arxiv/2604.26535v1/fig-003.webp",
+      "caption": "Figure 3: Box-plots of RMSE and CRPS of both filtered and forecasted predictions on new datasets with 30 replicates, for both the ’Full’ model and the ’Simple’ model.",
+      "page": 14,
+      "index": 3,
+      "width": 1013,
+      "height": 592
+    },
+    {
+      "url": "assets/figures/arxiv/2604.26535v1/fig-004.webp",
+      "caption": "Figure 6: Interpolated daily mean temperature in France on February 1, 2023. Filtered temperature means with linear model (left), prediction error (middle), and filtered temperature means without linear model (right). M = 82 (top), M2 = 122 (middle), and M = 162 (bottom). Axes are in kilometres.",
+      "page": 18,
+      "index": 4,
+      "width": 936,
+      "height": 939
+    },
+    {
+      "url": "assets/figures/arxiv/2604.26535v1/fig-005.webp",
+      "caption": "Figure 2: Violin-plots of the estimated parameters over the 30 replicates, for both the ’Full’ model and the ’Simple’ model. Top row only includes ’Full’ model since these parameters are not estimated in the ’Simple’ model. The true value of the parameter is marked in red.",
+      "page": 13,
+      "index": 5,
+      "width": 948,
+      "height": 846
+    },
+    {
+      "url": "assets/figures/arxiv/2604.26535v1/fig-006.webp",
+      "caption": "Figure 8: Cross-validation scores for √ M = 4, 5, 6, 7, 8, 9, 10, 11, 12, 16. ”o”-lines are for the ’Full’ model. ”x”-lines are scores for the ’Simple’ model. The same M was used both for parameter inference and prediction.",
+      "page": 19,
+      "index": 6,
+      "width": 935,
+      "height": 427
+    },
+    {
+      "url": "assets/figures/arxiv/2604.26535v1/fig-007.webp",
+      "caption": "Figure 5: Daily mean temperatures in France from January 1 to March 31 at two arbitrarily selected stations. Blue line displays one step forecasts with corresponding 95% blue shaded prediction region. Red line displays filtered predictions with corresponding 95% red shaded prediction region. The temperature measurements are displayed as black points. The approximate location of the station is displayed in the bottom left corner.",
+      "page": 16,
+      "index": 7,
+      "width": 1040,
+      "height": 695
+    }
+  ]
+}
