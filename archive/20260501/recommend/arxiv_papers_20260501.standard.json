@@ -1,0 +1,303 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-05-01T20:08:36.011855+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 6,
+    "quick_skim_target": 11,
+    "quick_selected": 6
+  },
+  "deep_dive": [
+    {
+      "id": "2604.27443v1",
+      "source": "arxiv",
+      "title": "ABC: Any-Subset Autoregression via Non-Markovian Diffusion Bridges in Continuous Time and Space",
+      "abstract": "Generating continuous-time, continuous-space stochastic processes (e.g., videos, weather forecasts) conditioned on partial observations (e.g., first and last frames) is a fundamental challenge. Existing approaches, (e.g., diffusion models), suffer from key limitations: (1) noise-to-data evolution fails to capture structural similarity between states close in physical time and has unstable integration in low-step regimes; (2) random noise injected is insensitive to the physical process's time elapsed, resulting in incorrect dynamics; (3) they overlook conditioning on arbitrary subsets of states (e.g., irregularly sampled timesteps, future observations). We propose ABC: Any-Subset Autoregressive Models via Non-Markovian Diffusion Bridges in Continuous Time and Space. Crucially, we model the process with one continual SDE whose time variable and intermediate states track the real time and process states. This has provable advantages: (1) the starting point for generating future states is the already-close previous state, rather than uninformative noise; (2) random noise injection scales with physical time elapsed, encouraging physically plausible dynamics with similar time-adjacent states. We derive SDE dynamics via changes-of-measure on path space, yielding another advantage: (3) path-dependent conditioning on arbitrary subsets of the state history and/or future. To learn these dynamics, we derive a path- and time-dependent extension of denoising score matching. Our experiments show ABC's superiority to competing methods on multiple domains, including video generation and weather forecasting.",
+      "authors": [
+        "Gabe Guo",
+        "Thanawat Sornwanee",
+        "Lutong Hao",
+        "Elon Litman",
+        "Stefano Ermon",
+        "Jose Blanchet"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-04-30T05:29:06+00:00",
+      "link": "https://arxiv.org/pdf/2604.27443v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Non-Markovian diffusion bridges for continuous-time stochastic processes like weather forecasting",
+      "llm_evidence_cn": "针对天气预报等连续时间随机过程的非马尔可夫扩散桥模型",
+      "llm_evidence": "针对天气预报等连续时间随机过程的非马尔可夫扩散桥模型",
+      "canonical_evidence": "针对天气预报等连续时间随机过程的非马尔可夫扩散桥模型",
+      "llm_tldr_en": "Proposes a non-Markovian diffusion bridge model for generating continuous-time stochastic processes like forecasting.",
+      "llm_tldr_cn": "提出一种非马尔可夫扩散桥模型，用于生成天气预报等连续时间随机过程，支持任意子集条件生成。",
+      "llm_tldr": "提出一种非马尔可夫扩散桥模型，用于生成天气预报等连续时间随机过程，支持任意子集条件生成。",
+      "llm_tags": [
+        "query:diffts:composite"
+      ],
+      "matched_query_tag": "query:diffts:composite",
+      "matched_query_text": "Papers central to 查询将扩散模型应用于时间序列任务的相关论文, especially work that connects or combines: Time Series; research on diffusion models for time-series data; methods using diffusion models for time series forecasting; denoising diffusion probabilistic models applied to time series; sequence modeling with diffusion processes for time-dependent data; conditional diffusion frameworks for time series generation; research papers on diffusion models applied to time series tasks.",
+      "matched_requirement_id": "req-composite-diffts",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2604.26985v1",
+      "source": "arxiv",
+      "title": "Simple Self-Conditioning Adaptation for Masked Diffusion Models",
+      "abstract": "Masked diffusion models (MDMs) generate discrete sequences by iterative denoising under an absorbing masking process. In standard masked diffusion, if a token remains masked after a reverse update, the model discards its clean-state prediction for that position. Thus, still-masked positions must be repeatedly inferred from the mask token alone. This design choice limits cross-step refinement. To address this limitation, this paper proposes a simple, yet effective, post-training adaptation for MDMs that conditions each denoising step on the model's own previous clean-state predictions. The resulting method, called Self-Conditioned Masked Diffusion Models (SCMDM), requires minimal architectural change, does not introduce a recurrent latent-state pathway, does not rely on an auxiliary reference model, and adds no extra denoiser evaluations during sampling. This is an important departure from partial self-conditioning approaches which requires expensive model training from scratch. In particular, the paper shows that partial self-conditioning, including the commonly used 50% dropout strategy for training self-conditioned models from scratch, is suboptimal in the post-training regime. Instead, once the model's self-generated clean-state estimates become informative, the specialization to refinement is preferable to mixing conditional and unconditional objectives. SCMDM is evaluated across multiple domains, demonstrating consistent improvement over vanilla MDM baselines, achieving nearly a 50% reduction in generative perplexity on OWT-trained models (42.89 to 23.72), alongside strong improvements in discretized image synthesis quality, small molecular generation, and enhanced fidelity in genomic distribution modeling.",
+      "authors": [
+        "Michael Cardei",
+        "Huu Binh Ta",
+        "Ferdinando Fioretto"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-04-28T19:34:04+00:00",
+      "link": "https://arxiv.org/pdf/2604.26985v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "discrete sequence modeling with masked diffusion processes",
+      "llm_evidence_cn": "使用掩码扩散过程进行离散序列建模",
+      "llm_evidence": "使用掩码扩散过程进行离散序列建模",
+      "canonical_evidence": "使用掩码扩散过程进行离散序列建模",
+      "llm_tldr_en": "Proposes a self-conditioning adaptation for masked diffusion models to improve discrete sequence generation.",
+      "llm_tldr_cn": "提出一种掩码扩散模型的自调节适配方法，通过利用先前的预测来改进离散序列生成。",
+      "llm_tldr": "提出一种掩码扩散模型的自调节适配方法，通过利用先前的预测来改进离散序列生成。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "sequence modeling with diffusion processes for time-dependent data",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.21809v1",
+      "source": "arxiv",
+      "title": "Quotient-Space Diffusion Models",
+      "abstract": "Diffusion-based generative models have reformed generative AI, and have enabled new capabilities in the science domain, for example, generating 3D structures of molecules. Due to the intrinsic problem structure of certain tasks, there is often a symmetry in the system, which identifies objects that can be converted by a group action as equivalent, hence the target distribution is essentially defined on the quotient space with respect to the group. In this work, we establish a formal framework for diffusion modeling on a general quotient space, and apply it to molecular structure generation which follows the special Euclidean group $\\text{SE}(3)$ symmetry. The framework reduces the necessity of learning the component corresponding to the group action, hence simplifies learning difficulty over conventional group-equivariant diffusion models, and the sampler guarantees recovering the target distribution, while heuristic alignment strategies lack proper samplers. The arguments are empirically validated on structure generation for small molecules and proteins, indicating that the principled quotient-space diffusion model provides a new framework that outperforms previous symmetry treatments.",
+      "authors": [
+        "Yixian Xu",
+        "Yusong Wang",
+        "Shengjie Luo",
+        "Kaiyuan Gao",
+        "Tianyu He",
+        "Di He",
+        "Chang Liu"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "q-bio.QM",
+        "stat.ML"
+      ],
+      "published": "2026-04-23T16:04:40+00:00",
+      "link": "https://arxiv.org/pdf/2604.21809v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Methodological bridge for diffusion modeling on structured spaces",
+      "llm_evidence_cn": "结构化空间扩散建模的方法论桥梁",
+      "llm_evidence": "结构化空间扩散建模的方法论桥梁",
+      "canonical_evidence": "结构化空间扩散建模的方法论桥梁",
+      "llm_tldr_en": "Proposes a framework for diffusion models on quotient spaces, applicable to structured scientific data generation.",
+      "llm_tldr_cn": "提出商空间扩散模型框架，适用于具有对称性的科学数据生成任务。",
+      "llm_tldr": "提出商空间扩散模型框架，适用于具有对称性的科学数据生成任务。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "research papers on diffusion models applied to time series tasks",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.25289v1",
+      "source": "arxiv",
+      "title": "Exploring Time Conditioning in Diffusion Generative Models from Disjoint Noisy Data Manifolds",
+      "abstract": "Practically, training diffusion models typically requires explicit time conditioning to guide the network through the denoising sampling process. Especially in deterministic methods like DDIM, the absence of time conditioning leads to significant performance degradation. However, other deterministic sampling approaches, such as flow matching, can generate high-quality content without this conditioning, raising the question of its necessity. In this work, we revisit the role of time conditioning from a geometric perspective. We analyze the evolution of noisy data distributions under the forward diffusion process and demonstrate that, in high-dimensional spaces, these distributions concentrate on low-dimensional hyper-cylinder-like manifolds embedded within the input space. Successful generation, we argue, stems from the disentanglement of these manifolds in high-dimensional space. Based on this insight, we modify the forward process of DDIM to align the noisy data manifold with the flow-matching approach, proving that DDIM can generate high-quality content without time conditioning, provided the noisy manifold evolves according to the flow-matching method. Additionally, we extend our framework to class-conditioned generation by decoupling classes into distinct time spaces, enabling class-conditioned synthesis with a class-unconditional denoising model. Extensive experiments validate our theoretical analysis and show that high-quality generation is achievable without explicit conditional embeddings.",
+      "authors": [
+        "Liuzhuozheng Li",
+        "Zhiyuan Zhan",
+        "Shuhong Liu",
+        "Dengyang Jiang",
+        "Zanyi Wang",
+        "Guang Dai",
+        "Jingdong Wang",
+        "Mengmeng Wang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CV"
+      ],
+      "published": "2026-04-28T06:53:57+00:00",
+      "link": "https://arxiv.org/pdf/2604.25289v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Analysis of time conditioning in denoising diffusion probabilistic models",
+      "llm_evidence_cn": "去噪扩散概率模型中时间调节机制的分析",
+      "llm_evidence": "去噪扩散概率模型中时间调节机制的分析",
+      "canonical_evidence": "去噪扩散概率模型中时间调节机制的分析",
+      "llm_tldr_en": "This paper investigates the necessity and geometric role of time conditioning in diffusion model denoising processes.",
+      "llm_tldr_cn": "本文从几何角度探讨了扩散模型去噪过程中时间调节机制的必要性及其作用。",
+      "llm_tldr": "本文从几何角度探讨了扩散模型去噪过程中时间调节机制的必要性及其作用。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "denoising diffusion probabilistic models applied to time series",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.26365v1",
+      "source": "arxiv",
+      "title": "Beyond Fixed Formulas: Data-Driven Linear Predictor for Efficient Diffusion Models",
+      "abstract": "To address the high sampling cost of Diffusion Transformers (DiTs), feature caching offers a training-free acceleration method. However, existing methods rely on hand-crafted forecasting formulas that fail under aggressive skipping. We propose L2P (Learnable Linear Predictor), a simple data-driven caching framework that replaces fixed coefficients with learnable per-timestep weights. Rapidly trained in ~20 seconds on a single GPU, L2P accurately reconstructs current features from past trajectories. L2P significantly outperforms existing baselines: it achieves a 4.55x FLOPs reduction and 4.15x latency speedup on FLUX.1-dev, and maintains high visual fidelity under up to 7.18x acceleration on Qwen-Image models, where prior methods show noticeable quality degradation. Our results show learning linear predictors is highly effective for efficient DiT inference. Code is available at https://github.com/Aredstone/L2P-Cache.",
+      "authors": [
+        "Zhirong Shen",
+        "Rui Huang",
+        "Jiacheng Liu",
+        "Chang Zou",
+        "Peiliang Cai",
+        "Shikang Zheng",
+        "Zhengyi Shi",
+        "Liang Feng",
+        "Linfeng Zhang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-04-29T07:22:16+00:00",
+      "link": "https://arxiv.org/pdf/2604.26365v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "forecasting formulas for feature trajectories in diffusion models",
+      "llm_evidence_cn": "扩散模型中特征轨迹的预测公式",
+      "llm_evidence": "扩散模型中特征轨迹的预测公式",
+      "canonical_evidence": "扩散模型中特征轨迹的预测公式",
+      "llm_tldr_en": "Proposes a learnable linear predictor to accelerate diffusion models by forecasting features from past trajectories.",
+      "llm_tldr_cn": "提出一种可学习的线性预测器，通过预测过去轨迹的特征来加速扩散模型采样。",
+      "llm_tldr": "提出一种可学习的线性预测器，通过预测过去轨迹的特征来加速扩散模型采样。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "sequence modeling with diffusion processes for time-dependent data",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.27182v1",
+      "source": "arxiv",
+      "title": "Preserving Temporal Dynamics in Time Series Generation",
+      "abstract": "Time-series data augmentation plays a crucial role in regression-oriented forecasting tasks, where limited data restricts the performance of deep learning models. While Generative Adversarial Networks (GANs) have shown promise in synthetic time-series generation, existing approaches primarily focus on matching marginal data distributions and often overlook the temporal dynamics that naturally exist in the original multivariate time series. When generating multivariate time series, this mismatch leads to distribution shift and temporal drift, thereby degrading the fidelity of the synthetic sequences.   In this work, we propose a model-agnostic Markov Chain Monte Carlo (MCMC)-based framework to mitigate distribution shift and preserve temporal dynamics in synthetic time series. We provide a theoretical analysis of how conditional generative models accumulate deviations under sequential generation and demonstrate that the MCMC algorithm can correct these discrepancies by enforcing consistency with empirical transition statistics between neighboring time points.   Extensive experiments on the Lorenz, Licor, ETTh, and ILI datasets using RCGAN, GCWGAN, TimeGAN, SigCWGAN, and AECGAN demonstrate that the proposed MCMC framework consistently improves autocorrelation alignment, skewness error, kurtosis error, R$^2$, discriminative score, and predictive score. These results suggest that synthetic time series consistent with the original data require explicit preservation of transition laws rather than solely relying on adversarial distribution matching, thereby offering a principled direction for improving generative modeling of time-series data.",
+      "authors": [
+        "Ci Lin",
+        "Futong Li",
+        "Tet Yeap",
+        "Iluju Kiringa"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-04-29T20:32:45+00:00",
+      "link": "https://arxiv.org/pdf/2604.27182v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Focuses on time series generation and temporal dynamics preservation",
+      "llm_evidence_cn": "专注于时间序列生成和时间动态特性的保留",
+      "llm_evidence": "专注于时间序列生成和时间动态特性的保留",
+      "canonical_evidence": "专注于时间序列生成和时间动态特性的保留",
+      "llm_tldr_en": "Proposes an MCMC-based framework to improve the fidelity and temporal dynamics of synthetic time-series data.",
+      "llm_tldr_cn": "提出一种基于MCMC的框架，旨在提高合成时间序列数据的保真度和时间动态特性。",
+      "llm_tldr": "提出一种基于MCMC的框架，旨在提高合成时间序列数据的保真度和时间动态特性。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.27889v1",
+      "source": "arxiv",
+      "title": "Noise2Map: End-to-End Diffusion Model for Semantic Segmentation and Change Detection",
+      "abstract": "Semantic segmentation and change detection are two fundamental challenges in remote sensing, requiring models to capture either spatial semantics or temporal differences from satellite imagery. Existing deep learning models often struggle with temporal inconsistencies or in capturing fine-grained spatial structures, require extensive pretraining, and offer limited interpretability - especially in real-world remote sensing scenarios. Recent advances in diffusion models show that Gaussian noise can be systematically leveraged to learn expressive data representations through denoising. Motivated by this, we investigate whether the noise process in diffusion models can be effectively utilized for discriminative tasks. We propose Noise2Map, a unified diffusion-based framework that repurposes the denoising process for fast, end-to-end discriminative learning. Unlike prior work that uses diffusion only for generation or feature extraction, Noise2Map directly predicts semantic or change maps using task-specific noise schedules and timestep conditioning, avoiding the costly sampling procedures of traditional diffusion models. The model is pretrained via self-supervised denoising and fine-tuned with supervision, enabling both interpretability and robustness. Our architecture supports both tasks (SS and CD) through a shared backbone and task-specific noise schedulers. Extensive evaluations on the SpaceNet7, WHU, and xView2 buildings damaged by wildfires datasets demonstrate that Noise2Map ranks on average 1st among seven models on semantic segmentation and 1st on change detection by a cross-dataset rank metric (average F1 primary, IoU tie-break). Ablation studies highlight the robustness of our model against different training noise schedulers and timestep control in the diffusion process, as well as the ability of the model to perform multi-task learning.",
+      "authors": [
+        "Ali Shibli",
+        "Andrea Nascetti",
+        "Yifang Ban"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-04-30T14:06:39+00:00",
+      "link": "https://arxiv.org/pdf/2604.27889v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion model for temporal differences and change detection in satellite imagery",
+      "llm_evidence_cn": "用于卫星图像时间差异和变化检测的扩散模型",
+      "llm_evidence": "用于卫星图像时间差异和变化检测的扩散模型",
+      "canonical_evidence": "用于卫星图像时间差异和变化检测的扩散模型",
+      "llm_tldr_en": "Noise2Map uses diffusion models for remote sensing tasks like change detection to capture temporal differences.",
+      "llm_tldr_cn": "Noise2Map 利用扩散模型处理遥感任务中的变化检测，以捕捉图像序列中的时间差异。",
+      "llm_tldr": "Noise2Map 利用扩散模型处理遥感任务中的变化检测，以捕捉图像序列中的时间差异。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "sequence modeling with diffusion processes for time-dependent data",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

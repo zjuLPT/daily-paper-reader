@@ -6,37 +6,43 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-04-30
-- 运行时间：2026-04-30 20:46:10 UTC
+- 最新运行日期：2026-05-01
+- 运行时间：2026-05-01 20:20:24 UTC
 - 运行状态：成功
-- 本次总论文数：5
-- 精读区：2
-- 速读区：3
+- 本次总论文数：7
+- 精读区：1
+- 速读区：6
 
 ### 今日简报（AI）
-聚焦扩散模型在流感预测与结构监测数据质量评估中的最新突破。  
-重点关注生成式与条件扩散模型如何提升时空建模的精度与抗异常能力。  
-下步可持续关注扩散模型在时序问答和因果推断中的应用潜力。
-- 详情：[/202604/30/README](/202604/30/README)
+今天聚焦连续时空扩散桥与多类扩散模型的创新算法，共阅读 7 篇生成建模论文。  
+重点方向在非马尔可夫连续时间自回归及时间条件扩散模型的泛化潜力。  
+建议读者关注这些方法对复杂数据分布重建的提升与潜在应用场景。
+- 详情：[/202605/01/README](/202605/01/README)
 
 ### 精读区论文标签
-1. [Generative diffusion models for spatiotemporal influenza forecasting](/202604/30/2604.24913v1-generative-diffusion-models-for-spatiotemporal-influenza-forecasting)  
-   标签：评分：10.0/10、query:diffts
-   evidence：用于时空流感预测的扩散模型
-2. [Probabilistic data quality assessment for structural monitoring data via outlier-resistant conditional diffusion model](/202604/30/2604.26366v1-probabilistic-data-quality-assessment-for-structural-monitoring-data-via-outlier-resistant-conditional-diffusion-model)  
+1. [ABC: Any-Subset Autoregression via Non-Markovian Diffusion Bridges in Continuous Time and Space](/202605/01/2604.27443v1-abc-any-subset-autoregression-via-non-markovian-diffusion-bridges-in-continuous-time-and-space)  
    标签：评分：9.0/10、query:diffts
-   evidence：用于结构监测时间序列数据质量的条件扩散模型
+   evidence：针对天气预报等连续时间随机过程的非马尔可夫扩散桥模型
 
 ### 速读区论文标签
-1. [ARFBench: Benchmarking Time Series Question Answering Ability for Software Incident Response](/202604/30/2604.21199v1-arfbench-benchmarking-time-series-question-answering-ability-for-software-incident-response)  
+1. [Simple Self-Conditioning Adaptation for Masked Diffusion Models](/202605/01/2604.26985v1-simple-self-conditioning-adaptation-for-masked-diffusion-models)  
+   标签：评分：7.0/10、query:diffts
+   evidence：使用掩码扩散过程进行离散序列建模
+2. [Quotient-Space Diffusion Models](/202605/01/2604.21809v1-quotient-space-diffusion-models)  
    标签：评分：6.0/10、query:diffts
-   evidence：时间序列问答基准测试
-2. [Causality-Encoded Diffusion Models for Interventional Sampling and Edge Inference](/202604/30/2604.21843v1-causality-encoded-diffusion-models-for-interventional-sampling-and-edge-inference)  
+   evidence：结构化空间扩散建模的方法论桥梁
+3. [Exploring Time Conditioning in Diffusion Generative Models from Disjoint Noisy Data Manifolds](/202605/01/2604.25289v1-exploring-time-conditioning-in-diffusion-generative-models-from-disjoint-noisy-data-manifolds)  
    标签：评分：6.0/10、query:diffts
-   evidence：用于复杂分布的因果编码扩散框架
-3. [ARMA approximation of a Non-separable Spatio-Temporal Model with Fractional Smoothnesses in Space and Time](/202604/30/2604.26535v1-arma-approximation-of-a-non-separable-spatio-temporal-model-with-fractional-smoothnesses-in-space-and-time)  
+   evidence：去噪扩散概率模型中时间调节机制的分析
+4. [Beyond Fixed Formulas: Data-Driven Linear Predictor for Efficient Diffusion Models](/202605/01/2604.26365v1-beyond-fixed-formulas-data-driven-linear-predictor-for-efficient-diffusion-models)  
    标签：评分：6.0/10、query:diffts
-   evidence：将基于扩散的空间Matérn协方差扩展到时空模型
+   evidence：扩散模型中特征轨迹的预测公式
+5. [Preserving Temporal Dynamics in Time Series Generation](/202605/01/2604.27182v1-preserving-temporal-dynamics-in-time-series-generation)  
+   标签：评分：6.0/10、query:diffts
+   evidence：专注于时间序列生成和时间动态特性的保留
+6. [Noise2Map: End-to-End Diffusion Model for Semantic Segmentation and Change Detection](/202605/01/2604.27889v1-noise2map-end-to-end-diffusion-model-for-semantic-segmentation-and-change-detection)  
+   标签：评分：6.0/10、query:diffts
+   evidence：用于卫星图像时间差异和变化检测的扩散模型
 
 
 <div class="dpr-home-promo-card">
