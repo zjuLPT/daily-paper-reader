@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-05-02 <!--dpr-date:20260502-->
+    * 精读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202605/02/2604.27443v1-abc-any-subset-autoregression-via-non-markovian-diffusion-bridges-in-continuous-time-and-space" data-sidebar-item="{&quot;title&quot;: &quot;ABC: Any-Subset Autoregression via Non-Markovian Diffusion Bridges in Continuous Time and Space&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2604.27443v1-abc-any-subset-autoregression-via-non-markovian-diffusion-bridges-in-continuous-time-and-space&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;diffts&quot;}], &quot;evidence&quot;: &quot;用于连续时间随机过程的非马尔可夫扩散桥&quot;}">ABC: Any-Subset Autoregression via Non-Markovian Diffusion Bridges in Continuous Time and Space</a>
   * 2026-05-01 <!--dpr-date:20260501-->
     * 精读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202605/01/2604.27443v1-abc-any-subset-autoregression-via-non-markovian-diffusion-bridges-in-continuous-time-and-space" data-sidebar-item="{&quot;title&quot;: &quot;ABC: Any-Subset Autoregression via Non-Markovian Diffusion Bridges in Continuous Time and Space&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2604.27443v1-abc-any-subset-autoregression-via-non-markovian-diffusion-bridges-in-continuous-time-and-space&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;diffts&quot;}], &quot;evidence&quot;: &quot;针对天气预报等连续时间随机过程的非马尔可夫扩散桥模型&quot;}">ABC: Any-Subset Autoregression via Non-Markovian Diffusion Bridges in Continuous Time and Space</a>
