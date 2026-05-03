@@ -6,26 +6,32 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-05-02
-- 运行时间：2026-05-02 19:59:01 UTC
+- 最新运行日期：2026-05-03
+- 运行时间：2026-05-03 19:45:24 UTC
 - 运行状态：成功
-- 本次总论文数：1
-- 精读区：1
-- 速读区：0
+- 本次总论文数：3
+- 精读区：0
+- 速读区：3
 
 ### 今日简报（AI）
-聚焦高分论文《ABC: Any-Subset Autoregression via Non-Markovian Diffusion Bridges in Continuous Time and Space》。  
-该研究提出在连续时空中以非马尔可夫扩散桥实现任意子集自回归的新框架，拓宽复杂动态系统建模方式。  
-建议关注其在时空预测和生成模型中的潜在应用，尤其对多变量连续数据的处理能力。
-- 详情：[/202605/02/README](/202605/02/README)
+聚焦时间序列建模新趋势，速读三篇算法创新论文。  
+概率模型与遗传编程方法在预测与分类两大方向上表现亮眼，凸显模型可解释性与适应性潜力。  
+建议关注概率Transformer框架的实际应用案例，并留意自动进化算法在复杂时序问题中的可扩展性。
+- 详情：[/202605/03/README](/202605/03/README)
 
 ### 精读区论文标签
-1. [ABC: Any-Subset Autoregression via Non-Markovian Diffusion Bridges in Continuous Time and Space](/202605/02/2604.27443v1-abc-any-subset-autoregression-via-non-markovian-diffusion-bridges-in-continuous-time-and-space)  
-   标签：评分：9.0/10、query:diffts
-   evidence：用于连续时间随机过程的非马尔可夫扩散桥
+- 本次无精读推荐。
 
 ### 速读区论文标签
-- 本次无速读推荐。
+1. [Exploring the Potential of Probabilistic Transformer for Time Series Modeling: A Report on the ST-PT Framework](/202605/03/2604.26762v1-exploring-the-potential-of-probabilistic-transformer-for-time-series-modeling-a-report-on-the-st-pt-framework)  
+   标签：评分：7.0/10、query:diffts
+   evidence：用于时间序列建模的概率 Transformer
+2. [Probabilistic Circuits for Irregular Multivariate Time Series Forecasting](/202605/03/2604.27814v1-probabilistic-circuits-for-irregular-multivariate-time-series-forecasting)  
+   标签：评分：7.0/10、query:diffts
+   evidence：多元时间序列预测的概率建模
+3. [EvoTSC: Evolving Feature Learning Models for Time Series Classification via Genetic Programming](/202605/03/2604.25499v1-evotsc-evolving-feature-learning-models-for-time-series-classification-via-genetic-programming)  
+   标签：评分：6.0/10、query:diffts
+   evidence：时间序列分类的特征学习
 
 
 <div class="dpr-home-promo-card">

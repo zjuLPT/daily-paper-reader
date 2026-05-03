@@ -1,0 +1,54 @@
+{
+  "label": "2026-05-03",
+  "date": "2026-05-03",
+  "generated_at": "2026-05-03T19:45:31",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202605/03/2604.26762v1-exploring-the-potential-of-probabilistic-transformer-for-time-series-modeling-a-report-on-the-st-pt-framework",
+      "section": "quick",
+      "title_en": "Exploring the Potential of Probabilistic Transformer for Time Series Modeling: A Report on the ST-PT Framework",
+      "authors": "Zhangzhi Xiong, Haoyi Wu, You Wu, Shuqi Gu, Kan Ren, Kewei Tu",
+      "date": "2026-04-29",
+      "pdf": "https://arxiv.org/pdf/2604.26762v1",
+      "score": "7.0",
+      "evidence": "用于时间序列建模的概率 Transformer",
+      "tldr": "本文提出空间-时间概率 Transformer（ST-PT），将概率 Transformer 的因子图特性引入时间序列建模。研究探讨如何通过结构修改注入时序先验、通过条件编程实现结构化生成、以及将自回归预测转化为后验更新。结果显示，ST-PT 在数据稀缺、噪声和长期预测任务中表现出更强的可解释性与鲁棒性。",
+      "tags": "query:diffts",
+      "abstract_en": "The Probabilistic Transformer (PT) establishes that the Transformer's self-attention plus its feed-forward block is mathematically equivalent to Mean-Field Variational Inference (MFVI) on a Conditional Random Field (CRF). Under this equivalence the Transformer ceases to be a black-box neural network and becomes a programmable factor graph: graph topology, factor potentials, and the message-passing schedule are all explicit and inspectable primitives that can be engineered. PT was originally developed for natural language and in this report we investigate its potential for time series. We first lift PT into the Spatial-Temporal Probabilistic Transformer (ST-PT) to repair PT's missing channel axis and weak per-step semantics, and adopt ST-PT as a shared cornerstone backbone. We then identify three distinct properties that PT/ST-PT offers as a factor-graph model and derive three Research Questions, one per property, that probe how each property can be exploited in time series: RQ1. The graph topology and potentials are direct programmable primitives. Can this be used to inject symbolic time-series priors into ST-PT through structural graph modifications, especially under data scarcity and noise? RQ2. The CRF's factor matrices are the operator's potentials. Can an external condition program these factor matrices on a per-sample basis, so that conditional generation becomes structural rather than feature-level modulation of a fixed one? RQ3. Each MFVI iteration is a Bayesian posterior update on the factor graph. Can this turn the latent transition of latent-space AutoRegressive (AR) forecasting from an opaque MLP into a principled posterior update, and can a CRF teacher distill its latents into the AR student to counter cumulative error? We give one empirical study per question. Together, these three studies position ST-PT as a programmable framework for time-series modeling.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202605/03/2604.27814v1-probabilistic-circuits-for-irregular-multivariate-time-series-forecasting",
+      "section": "quick",
+      "title_en": "Probabilistic Circuits for Irregular Multivariate Time Series Forecasting",
+      "authors": "Christian Klötergens, Vijaya Krishna Yalavarthi, Lars Schmidt-Thieme",
+      "date": "2026-04-30",
+      "pdf": "https://arxiv.org/pdf/2604.27814v1",
+      "score": "7.0",
+      "evidence": "多元时间序列预测的概率建模",
+      "tldr": "本文针对不规则多变量时间序列预测中联合概率建模的困难，提出了基于概率电路的CircuITS架构，以在捕捉复杂通道依赖关系的同时保证有效的联合分布结构。实验结果显示，CircuITS在多个真实数据集上显著提升了联合与边缘密度估计效果，展现出强大的预测稳定性与不确定性量化能力。",
+      "tags": "query:diffts",
+      "abstract_en": "Joint probabilistic modeling is essential for forecasting irregular multivariate time series (IMTS) to accurately quantify uncertainty. Existing approaches often struggle to balance model expressivity with consistent marginalization, frequently leading to unreliable or contradictory forecasts. To address this, we propose CircuITS, a novel architecture for probabilistic IMTS forecasting based on probabilistic circuits. Our model is flexible in capturing intricate dependencies between time series channels while structurally guaranteeing valid joint distributions. Experiments on four real world datasets demonstrate that CircuITS achieves superior joint and marginal density estimation compared to state of the art baselines.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202605/03/2604.25499v1-evotsc-evolving-feature-learning-models-for-time-series-classification-via-genetic-programming",
+      "section": "quick",
+      "title_en": "EvoTSC: Evolving Feature Learning Models for Time Series Classification via Genetic Programming",
+      "authors": "Xuanhao Yang, Bing Xue, Mengjie Zhang",
+      "date": "2026-04-28",
+      "pdf": "https://arxiv.org/pdf/2604.25499v1",
+      "score": "6.0",
+      "evidence": "时间序列分类的特征学习",
+      "tldr": "本研究提出EvoTSC，一种基于遗传编程的时间序列分类特征学习模型自动演化方法，通过嵌入专家知识与定制的多层程序结构，提高分类性能与模型泛化能力，同时显著降低计算资源需求。",
+      "tags": "query:diffts",
+      "abstract_en": "Time series classification is an important analytical task across diverse domains. However, its practical application is often hindered by the scarcity of labeled data and the requirement for substantial computational resources. To address these challenges, this paper proposes EvoTSC, a novel genetic programming approach designed to automatically evolve lightweight feature learning models for time series classification. The core of EvoTSC is a carefully designed multi-layer program structure that strategically embeds diverse forms of prior expert knowledge into the evolutionary process, effectively guiding the search toward operations known to be highly effective for time series analysis. To mitigate the common overfitting problem in time series classification, a tailored Pareto tournament selection strategy is proposed to favor models that perform consistently well across varying training data subsets, promoting the discovery of highly generalizable models. Extensive experiments conducted on univariate time series classification datasets demonstrate that EvoTSC significantly outperforms eleven benchmark methods in most comparisons. Further analyses verify the contribution of each component and the resource efficiency of the evolved models.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

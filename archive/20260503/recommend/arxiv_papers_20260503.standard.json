@@ -1,0 +1,133 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-05-03T19:44:45.026509+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 3,
+    "quick_skim_target": 11,
+    "quick_selected": 3
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2604.26762v1",
+      "source": "arxiv",
+      "title": "Exploring the Potential of Probabilistic Transformer for Time Series Modeling: A Report on the ST-PT Framework",
+      "abstract": "The Probabilistic Transformer (PT) establishes that the Transformer's self-attention plus its feed-forward block is mathematically equivalent to Mean-Field Variational Inference (MFVI) on a Conditional Random Field (CRF). Under this equivalence the Transformer ceases to be a black-box neural network and becomes a programmable factor graph: graph topology, factor potentials, and the message-passing schedule are all explicit and inspectable primitives that can be engineered. PT was originally developed for natural language and in this report we investigate its potential for time series. We first lift PT into the Spatial-Temporal Probabilistic Transformer (ST-PT) to repair PT's missing channel axis and weak per-step semantics, and adopt ST-PT as a shared cornerstone backbone. We then identify three distinct properties that PT/ST-PT offers as a factor-graph model and derive three Research Questions, one per property, that probe how each property can be exploited in time series: RQ1. The graph topology and potentials are direct programmable primitives. Can this be used to inject symbolic time-series priors into ST-PT through structural graph modifications, especially under data scarcity and noise? RQ2. The CRF's factor matrices are the operator's potentials. Can an external condition program these factor matrices on a per-sample basis, so that conditional generation becomes structural rather than feature-level modulation of a fixed one? RQ3. Each MFVI iteration is a Bayesian posterior update on the factor graph. Can this turn the latent transition of latent-space AutoRegressive (AR) forecasting from an opaque MLP into a principled posterior update, and can a CRF teacher distill its latents into the AR student to counter cumulative error? We give one empirical study per question. Together, these three studies position ST-PT as a programmable framework for time-series modeling.",
+      "authors": [
+        "Zhangzhi Xiong",
+        "Haoyi Wu",
+        "You Wu",
+        "Shuqi Gu",
+        "Kan Ren",
+        "Kewei Tu"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-04-29T14:57:21+00:00",
+      "link": "https://arxiv.org/pdf/2604.26762v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "probabilistic transformer for time series modeling",
+      "llm_evidence_cn": "用于时间序列建模的概率 Transformer",
+      "llm_evidence": "用于时间序列建模的概率 Transformer",
+      "canonical_evidence": "用于时间序列建模的概率 Transformer",
+      "llm_tldr_en": "Adapts the Probabilistic Transformer into a spatial-temporal framework for time series analysis.",
+      "llm_tldr_cn": "将概率 Transformer 适配为用于时间序列分析的时空框架。",
+      "llm_tldr": "将概率 Transformer 适配为用于时间序列分析的时空框架。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2604.25499v1",
+      "source": "arxiv",
+      "title": "EvoTSC: Evolving Feature Learning Models for Time Series Classification via Genetic Programming",
+      "abstract": "Time series classification is an important analytical task across diverse domains. However, its practical application is often hindered by the scarcity of labeled data and the requirement for substantial computational resources. To address these challenges, this paper proposes EvoTSC, a novel genetic programming approach designed to automatically evolve lightweight feature learning models for time series classification. The core of EvoTSC is a carefully designed multi-layer program structure that strategically embeds diverse forms of prior expert knowledge into the evolutionary process, effectively guiding the search toward operations known to be highly effective for time series analysis. To mitigate the common overfitting problem in time series classification, a tailored Pareto tournament selection strategy is proposed to favor models that perform consistently well across varying training data subsets, promoting the discovery of highly generalizable models. Extensive experiments conducted on univariate time series classification datasets demonstrate that EvoTSC significantly outperforms eleven benchmark methods in most comparisons. Further analyses verify the contribution of each component and the resource efficiency of the evolved models.",
+      "authors": [
+        "Xuanhao Yang",
+        "Bing Xue",
+        "Mengjie Zhang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.NE"
+      ],
+      "published": "2026-04-28T11:01:37+00:00",
+      "link": "https://arxiv.org/pdf/2604.25499v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "feature learning for time series classification",
+      "llm_evidence_cn": "时间序列分类的特征学习",
+      "llm_evidence": "时间序列分类的特征学习",
+      "canonical_evidence": "时间序列分类的特征学习",
+      "llm_tldr_en": "Proposes a genetic programming approach to evolve lightweight models for time series classification.",
+      "llm_tldr_cn": "提出一种遗传编程方法，用于演化轻量级的时间序列分类模型。",
+      "llm_tldr": "提出一种遗传编程方法，用于演化轻量级的时间序列分类模型。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2604.27814v1",
+      "source": "arxiv",
+      "title": "Probabilistic Circuits for Irregular Multivariate Time Series Forecasting",
+      "abstract": "Joint probabilistic modeling is essential for forecasting irregular multivariate time series (IMTS) to accurately quantify uncertainty. Existing approaches often struggle to balance model expressivity with consistent marginalization, frequently leading to unreliable or contradictory forecasts. To address this, we propose CircuITS, a novel architecture for probabilistic IMTS forecasting based on probabilistic circuits. Our model is flexible in capturing intricate dependencies between time series channels while structurally guaranteeing valid joint distributions. Experiments on four real world datasets demonstrate that CircuITS achieves superior joint and marginal density estimation compared to state of the art baselines.",
+      "authors": [
+        "Christian Klötergens",
+        "Vijaya Krishna Yalavarthi",
+        "Lars Schmidt-Thieme"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-04-30T12:57:53+00:00",
+      "link": "https://arxiv.org/pdf/2604.27814v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "probabilistic modeling for multivariate time series forecasting",
+      "llm_evidence_cn": "多元时间序列预测的概率建模",
+      "llm_evidence": "多元时间序列预测的概率建模",
+      "canonical_evidence": "多元时间序列预测的概率建模",
+      "llm_tldr_en": "Proposes CircuITS, a probabilistic circuit architecture for irregular multivariate time series forecasting.",
+      "llm_tldr_cn": "提出 CircuITS，一种用于不规则多元时间序列预测的概率电路架构。",
+      "llm_tldr": "提出 CircuITS，一种用于不规则多元时间序列预测的概率电路架构。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
