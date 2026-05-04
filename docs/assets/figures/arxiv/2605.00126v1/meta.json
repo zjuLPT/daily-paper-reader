@@ -1,0 +1,246 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-001.webp",
+      "caption": "Table 13: Load-only gap MSE for 7-day gaps (min-max [0, 1]). Bold marks the best per dataset.",
+      "page": 25,
+      "index": 1,
+      "width": 718,
+      "height": 318
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-002.webp",
+      "caption": "Table 12: Architecture and training hyperparameters.",
+      "page": 25,
+      "index": 2,
+      "width": 668,
+      "height": 569
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-003.webp",
+      "caption": "Table 16: Downstream forecasting quality. Lower is better.",
+      "page": 26,
+      "index": 3,
+      "width": 806,
+      "height": 236
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-004.webp",
+      "caption": "Table 15: Gap-length sensitivity summary. Win counts use all available datasets per gap (12 for 7 d/30 d excl. SEMAResNstar1009; 8 for 91 d proprietary-only excl. SEMA). The full 13-dataset enhanced-decoder comparison at 91 d is in Table 1. Mean rank is computed over the same sets. SPLICE columns combine Bridge, Diffusion, and Flow-Matching variants.",
+      "page": 26,
+      "index": 4,
+      "width": 598,
+      "height": 243
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-005.webp",
+      "caption": "Table 14: Load-only gap MSE for 30-day gaps (min-max [0, 1]). Bold marks the best per dataset.",
+      "page": 26,
+      "index": 5,
+      "width": 718,
+      "height": 312
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-006.webp",
+      "caption": "Figure 9: Adaptive αt trajectories for three representative proprietary datasets. Dashed line: static α = 0.05.",
+      "page": 21,
+      "index": 6,
+      "width": 829,
+      "height": 356
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-007.webp",
+      "caption": "Table 1: Load-only gap MSE vs. external imputation baselines (min-max normalised to [0, 1] on truth range). Lower is better; bold marks the best per dataset. Values show mean±std over 3 random seeds (42, 43, 44); Seasonal Naïve is deterministic (single run). †TimesNet diverged on UCI_Elec_MT_150 (catastrophic overfitting of 37M-parameter model on a small dataset). ‡SEMAResNstar1009 is near-degenerate (MSE rounds to zero under min-max normalisation); mean and win counts exclude this dataset.",
+      "page": 7,
+      "index": 7,
+      "width": 756,
+      "height": 322
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-008.webp",
+      "caption": "Table 19: Decoder ablation: Load-only MSE (min-max [0, 1]). Base = baseline hourly decoder (37K params); Enhanced = larger decoder (123K params, Load-weighted loss, noise augmentation). Bold marks lower MSE.",
+      "page": 29,
+      "index": 8,
+      "width": 582,
+      "height": 359
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-009.webp",
+      "caption": "Figure 10: Conformal prediction bands (95% target) for three representative proprietary datasets. Shaded region: adaptive conformal interval. Solid black: ground truth. Dashed blue: median prediction.",
+      "page": 22,
+      "index": 9,
+      "width": 764,
+      "height": 1070
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-010.webp",
+      "caption": "Figure 4: UMAP projection of pooled JEPA embeddings for all thirteen datasets (nine training, four held-out). (a) Coloured by dataset identity: training datasets (circles) form distinct but overlapping clusters; held-out datasets (stars) interleave with training domains, indicating that the pooled encoder maps unseen feeds into a shared manifold. (b) Coloured by season: the seasonal structure (winter/summer separation) is preserved across all domains, confirming that temporal dynamics transfer.",
+      "page": 14,
+      "index": 10,
+      "width": 818,
+      "height": 269
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-011.webp",
+      "caption": "Figure 3: t-SNE projections of 64-dimensional JEPA embeddings for four datasets, coloured by season (top) and day type (bottom). The encoder captures both seasonal and occupancy structure without supervision.",
+      "page": 14,
+      "index": 11,
+      "width": 829,
+      "height": 409
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-012.webp",
+      "caption": "Figure 1: Overview of the SPLICE pipeline. Multivariate daily segments (load, temperature, wind, solar angle, and other covariates) are encoded by JEPA into 64-dimensional latent embeddings. A conditional latent bridge (four modes; see §4) generates gap trajectories. A weather- and calendarconditioned MLP decoder maps back to hourly signal space. ACI wraps the output with adaptive prediction intervals.",
+      "page": 3,
+      "index": 12,
+      "width": 829,
+      "height": 335
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-013.webp",
+      "caption": "Table 8: Computational cost (single dataset, NVIDIA RTX A4000).",
+      "page": 18,
+      "index": 13,
+      "width": 686,
+      "height": 202
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-014.webp",
+      "caption": "Table 9: All-feature gap-frame MSE (normalised [0, 1], daily decoder) on the nine proprietary datasets. Internal ablation; lower is better.",
+      "page": 18,
+      "index": 14,
+      "width": 656,
+      "height": 265
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-015.webp",
+      "caption": "Figure 6: Gap-frame MSE comparison across the nine proprietary datasets. Orange: legacy VAE+Bridge. Light blue: JEPA-only decoder. Dark blue: full pipeline.",
+      "page": 18,
+      "index": 15,
+      "width": 790,
+      "height": 327
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-016.webp",
+      "caption": "Table 11: CRPS (lower is better) on [0, 1] normalised Load, nine proprietary datasets. For deterministic baselines, CRPS = MAE. SPLICE uses a 20-member latent ensemble (σ=0.15). Bold = best per row.",
+      "page": 23,
+      "index": 16,
+      "width": 710,
+      "height": 266
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-017.webp",
+      "caption": "Figure 11: CRPS / MAE comparison across nine proprietary datasets. SPLICE-ensemble (purple, black border) achieves the lowest score on 6 of 9 datasets, with the best average (0.161 vs. 0.197 for SAITS).",
+      "page": 23,
+      "index": 17,
+      "width": 829,
+      "height": 332
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-018.webp",
+      "caption": "Table 18: Generative backend ablation: all-feature gap-frame MSE (normalised [0, 1], 91-day gap). Bold = best method per dataset. DDIM uses 50 reverse steps; FM-A (standard) and FM-C (bridgeresidual) use 5 Euler steps.",
+      "page": 28,
+      "index": 18,
+      "width": 464,
+      "height": 380
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-019.webp",
+      "caption": "Table 4: Gap-reconstruction error in physical units. Units vary by dataset: kW for utility-metered feeds, kWh for hourly-integrated feeds.",
+      "page": 13,
+      "index": 19,
+      "width": 427,
+      "height": 307
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-020.webp",
+      "caption": "Figure 2: Coverage vs. interval width. Each point is one dataset; grey arrows show the shift from static CQR (blue circles) to ACI (red squares). Green dashed line: 95% target.",
+      "page": 8,
+      "index": 20,
+      "width": 706,
+      "height": 509
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-021.webp",
+      "caption": "Table 10: MAPE (%) vs. external imputation baselines (original scale). Lower is better; bold marks the best per dataset. †Near-zero loads inflate MAPE for all methods. ‡SPLICE MAPE not computed for ETTh1.",
+      "page": 19,
+      "index": 21,
+      "width": 594,
+      "height": 276
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-022.webp",
+      "caption": "Figure 7: Load-only MSE across thirteen datasets for six imputation methods. SPLICE (green) achieves the lowest MSE on 9 of 12 non-degenerate datasets (3-seed means). Dashed lines separate proprietary, UCI, and ETTh1 groups. †TimesNet on UCI_Elec_MT_150 diverged (MSE = 7.17; bar capped at 0.5).",
+      "page": 19,
+      "index": 22,
+      "width": 829,
+      "height": 293
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-023.webp",
+      "caption": "Table 7: Coverage and interval width: static CQR vs. ACI on the nine proprietary datasets. Coverage values closer to 0.95 are better; narrower widths are better at equal coverage.",
+      "page": 17,
+      "index": 23,
+      "width": 826,
+      "height": 611
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-024.webp",
+      "caption": "Figure 5: Qualitative gap-filling comparison for three representative datasets spanning commercial (PepcoCOM), residential (RIRes1012), and volatile mixed (UES_NH_Med) load profiles. Each sub-panel shows 60 days of observed context followed by 91 days of reconstructed load in the gap. (a) JEPA predictor, (b) Bridge+Decoder, (c) SPLICE (full pipeline). Constraint violation rates are shown per panel.",
+      "page": 17,
+      "index": 24,
+      "width": 402,
+      "height": 329
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-025.webp",
+      "caption": "Table 3: Guidance-scale sweep: gap-frame MSE (mean ± std over DDIM samples). Bold marks the per-dataset optimum. All values on normalised [0, 1] scale.",
+      "page": 12,
+      "index": 25,
+      "width": 532,
+      "height": 238
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-026.webp",
+      "caption": "Table 17: Accuracy–diversity tradeoff: deterministic bridge vs. FM-A (5 Euler steps). Positive ∆ indicates higher MSE for the generative variant, reflecting the expected cost of increased trajectory diversity. ∗WCMA1011lig is the only dataset where FM-A improves over the bridge.",
+      "page": 27,
+      "index": 26,
+      "width": 833,
+      "height": 595
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-027.webp",
+      "caption": "Figure 12: ACI vs. static CQR: coverage (left) and normalised width (right) on the nine proprietary datasets. ACI (purple) maintains near-95% coverage on all nine feeds, including RIInd1014 and UES_NH_Med where CQR under-covers. Dashed red line: target 95%.",
+      "page": 24,
+      "index": 27,
+      "width": 829,
+      "height": 330
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-028.webp",
+      "caption": "Figure 13: CRPS improvement from latent ensemble (M=20, σ=0.15) over deterministic prediction on the nine proprietary datasets. The ensemble reduces CRPS by 9–55%, with the largest gains on stable, high-volume feeds (PepcoCOM, WCMAnatGridRes1004).",
+      "page": 24,
+      "index": 28,
+      "width": 706,
+      "height": 348
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-029.webp",
+      "caption": "Figure 8: Bridge-decoded gap reconstruction on the three UCI Electricity datasets. Faded traces show hourly ground truth (dark) and predictions (red); bold lines show daily means. Load-only MSE values reported on the min-max [0, 1] normalised scale.",
+      "page": 20,
+      "index": 29,
+      "width": 829,
+      "height": 1010
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00126v1/fig-030.webp",
+      "caption": "Table 6: Summary of the thirteen evaluation datasets. The nine proprietary datasets span 2015–2025; the three UCI datasets span 2011–2014; ETTh1 spans 2016–2018. All are at hourly resolution.",
+      "page": 16,
+      "index": 30,
+      "width": 632,
+      "height": 338
+    }
+  ]
+}

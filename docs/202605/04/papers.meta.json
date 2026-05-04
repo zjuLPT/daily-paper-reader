@@ -1,0 +1,39 @@
+{
+  "label": "2026-05-04",
+  "date": "2026-05-04",
+  "generated_at": "2026-05-04T20:43:16",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202605/04/2605.00126v1-splice-latent-diffusion-over-jepa-embeddings-for-conformal-time-series-inpainting",
+      "section": "deep",
+      "title_en": "SPLICE: Latent Diffusion over JEPA Embeddings for Conformal Time-Series Inpainting",
+      "authors": "Arnaud Zinflou",
+      "date": "2026-04-30",
+      "pdf": "https://arxiv.org/pdf/2605.00126v1",
+      "score": "10.0",
+      "evidence": "用于时间序列修复和插补的潜空间扩散模型",
+      "tldr": "本文提出SPLICE框架，将潜变量扩散模型和自适应保序推断相结合，用于时间序列数据缺失的可靠插补。通过JEPA编码器映射负载数据至潜空间，使用条件潜桥生成补齐序列，并由自适应保序算法提供置信区间。该方法在多组数据上显著优于现有基线，兼顾高精度与置信覆盖率。",
+      "tags": "query:diffts",
+      "abstract_en": "Generative models for time-series imputation achieve strong reconstruction accuracy, yet provide no finite-sample reliability guarantees, a critical limitation in power systems where imputed values inform dispatch and planning. We introduce SPLICE (Self-supervised Predictive Latent Inpainting with Conformal Envelopes), a modular framework coupling latent generative imputation with distribution-free, online-adaptive prediction intervals. A JEPA encoder maps daily load segments into a 64-dimensional latent space; a conditional latent bridge with four sampling modes generates candidate gap trajectories; an hourly-conditioned decoder maps back to signal space; and Adaptive Conformal Inference (ACI) wraps the output with coverage-guaranteed prediction bands. The flow-matching variant achieves comparable quality to DDIM in 5--10 ODE steps (5-10x speedup). On thirteen load datasets (nine proprietary, three UCI Electricity, ETTh1), SPLICE achieves the lowest mean Load-only MSE (0.056), winning 9/12 non-degenerate datasets at 91-day gaps and 18/32 across all gap lengths vs. five established baselines, and produces the best CRPS (0.161, -18.3% vs. the strongest competitor). ACI delivers 93--95% empirical coverage, correcting under-coverage failures of up to 7.5 pp observed with static conformal prediction. A pooled JEPA encoder trained on nine feeds transfers to four unseen domains, matching or exceeding per-dataset oracles with only a quick bridge fine-tuning.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202605/04/2604.28149v1-explainable-load-forecasting-with-covariate-informed-time-series-foundation-models",
+      "section": "quick",
+      "title_en": "Explainable Load Forecasting with Covariate-Informed Time Series Foundation Models",
+      "authors": "Matthias Hertel, Alexandra Nikoltchovska, Sebastian Pütz, Ralf Mikut, Benjamin Schäfer, Veit Hagenmeyer",
+      "date": "2026-04-30",
+      "pdf": "https://arxiv.org/pdf/2604.28149v1",
+      "score": "6.0",
+      "evidence": "时间序列基础模型的可解释负荷预测",
+      "tldr": "本文旨在提升时序基础模型在电力负荷预测中的可解释性，提出基于时序与协变量屏蔽的高效SHAP算法，并在零样本条件下验证Chronos-2与TabPFN-TS模型的性能与解释性，使其预测结果透明可靠。",
+      "tags": "query:diffts",
+      "abstract_en": "Time Series Foundation Models (TSFMs) have recently emerged as general-purpose forecasting models and show considerable potential for applications in energy systems. However, applications in critical infrastructure like power grids require transparency to ensure trust and reliability and cannot rely on pure black-box models. To enhance the transparency of TSFMs, we propose an efficient algorithm for computing Shapley Additive Explanations (SHAP) tailored to these models. The proposed approach leverages the flexibility of TSFMs with respect to input context length and provided covariates. This property enables efficient temporal and covariate masking (selectively withholding inputs), allowing for a scalable explanation of model predictions using SHAP. We evaluate two TSFMs - Chronos-2 and TabPFN-TS - on a day-ahead load forecasting task for a transmission system operator (TSO). In a zero-shot setting, both models achieve predictive performance competitive with a Transformer model trained specifically on multiple years of TSO data. The explanations obtained through our proposed approach align with established domain knowledge, particularly as the TSFMs appropriately use weather and calendar information for load prediction. Overall, we demonstrate that TSFMs can serve as transparent and reliable tools for operational energy forecasting.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

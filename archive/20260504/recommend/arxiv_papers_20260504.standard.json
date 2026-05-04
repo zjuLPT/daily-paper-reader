@@ -1,0 +1,94 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-05-04T20:41:47.120246+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2605.00126v1",
+      "source": "arxiv",
+      "title": "SPLICE: Latent Diffusion over JEPA Embeddings for Conformal Time-Series Inpainting",
+      "abstract": "Generative models for time-series imputation achieve strong reconstruction accuracy, yet provide no finite-sample reliability guarantees, a critical limitation in power systems where imputed values inform dispatch and planning. We introduce SPLICE (Self-supervised Predictive Latent Inpainting with Conformal Envelopes), a modular framework coupling latent generative imputation with distribution-free, online-adaptive prediction intervals. A JEPA encoder maps daily load segments into a 64-dimensional latent space; a conditional latent bridge with four sampling modes generates candidate gap trajectories; an hourly-conditioned decoder maps back to signal space; and Adaptive Conformal Inference (ACI) wraps the output with coverage-guaranteed prediction bands. The flow-matching variant achieves comparable quality to DDIM in 5--10 ODE steps (5-10x speedup). On thirteen load datasets (nine proprietary, three UCI Electricity, ETTh1), SPLICE achieves the lowest mean Load-only MSE (0.056), winning 9/12 non-degenerate datasets at 91-day gaps and 18/32 across all gap lengths vs. five established baselines, and produces the best CRPS (0.161, -18.3% vs. the strongest competitor). ACI delivers 93--95% empirical coverage, correcting under-coverage failures of up to 7.5 pp observed with static conformal prediction. A pooled JEPA encoder trained on nine feeds transfers to four unseen domains, matching or exceeding per-dataset oracles with only a quick bridge fine-tuning.",
+      "authors": [
+        "Arnaud Zinflou"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "eess.SP",
+        "stat.ML"
+      ],
+      "published": "2026-04-30T18:27:08+00:00",
+      "link": "https://arxiv.org/pdf/2605.00126v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "latent diffusion for time-series inpainting and imputation",
+      "llm_evidence_cn": "用于时间序列修复和插补的潜空间扩散模型",
+      "llm_evidence": "用于时间序列修复和插补的潜空间扩散模型",
+      "canonical_evidence": "用于时间序列修复和插补的潜空间扩散模型",
+      "llm_tldr_en": "Proposes a latent diffusion framework for reliable time-series inpainting with conformal prediction intervals.",
+      "llm_tldr_cn": "提出一种结合符合性预测区间的潜空间扩散框架，用于可靠的时间序列修复。",
+      "llm_tldr": "提出一种结合符合性预测区间的潜空间扩散框架，用于可靠的时间序列修复。",
+      "llm_tags": [
+        "query:diffts:composite"
+      ],
+      "matched_query_tag": "query:diffts:composite",
+      "matched_query_text": "Papers central to 查询将扩散模型应用于时间序列任务的相关论文, especially work that connects or combines: Time Series; research on diffusion models for time-series data; methods using diffusion models for time series forecasting; denoising diffusion probabilistic models applied to time series; sequence modeling with diffusion processes for time-dependent data; conditional diffusion frameworks for time series generation; research papers on diffusion models applied to time series tasks.",
+      "matched_requirement_id": "req-composite-diffts",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2604.28149v1",
+      "source": "arxiv",
+      "title": "Explainable Load Forecasting with Covariate-Informed Time Series Foundation Models",
+      "abstract": "Time Series Foundation Models (TSFMs) have recently emerged as general-purpose forecasting models and show considerable potential for applications in energy systems. However, applications in critical infrastructure like power grids require transparency to ensure trust and reliability and cannot rely on pure black-box models. To enhance the transparency of TSFMs, we propose an efficient algorithm for computing Shapley Additive Explanations (SHAP) tailored to these models. The proposed approach leverages the flexibility of TSFMs with respect to input context length and provided covariates. This property enables efficient temporal and covariate masking (selectively withholding inputs), allowing for a scalable explanation of model predictions using SHAP. We evaluate two TSFMs - Chronos-2 and TabPFN-TS - on a day-ahead load forecasting task for a transmission system operator (TSO). In a zero-shot setting, both models achieve predictive performance competitive with a Transformer model trained specifically on multiple years of TSO data. The explanations obtained through our proposed approach align with established domain knowledge, particularly as the TSFMs appropriately use weather and calendar information for load prediction. Overall, we demonstrate that TSFMs can serve as transparent and reliable tools for operational energy forecasting.",
+      "authors": [
+        "Matthias Hertel",
+        "Alexandra Nikoltchovska",
+        "Sebastian Pütz",
+        "Ralf Mikut",
+        "Benjamin Schäfer",
+        "Veit Hagenmeyer"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-04-30T17:36:24+00:00",
+      "link": "https://arxiv.org/pdf/2604.28149v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "explainable load forecasting with time series foundation models",
+      "llm_evidence_cn": "时间序列基础模型的可解释负荷预测",
+      "llm_evidence": "时间序列基础模型的可解释负荷预测",
+      "canonical_evidence": "时间序列基础模型的可解释负荷预测",
+      "llm_tldr_en": "Proposes an efficient SHAP-based algorithm to enhance transparency in time series foundation models.",
+      "llm_tldr_cn": "提出了一种高效的 SHAP 算法，以增强时间序列基础模型的透明度。",
+      "llm_tldr": "提出了一种高效的 SHAP 算法，以增强时间序列基础模型的透明度。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
