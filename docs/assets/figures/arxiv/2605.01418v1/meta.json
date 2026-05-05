@@ -1,0 +1,150 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2605.01418v1/fig-001.webp",
+      "caption": "Figure 6. Example of Gaussian kernel smoothing with varying ℓ values. The original signal (Original) is shown together with smoothed signals for different ℓ. Note that ℓ = 8 is identical to the original signal.",
+      "page": 11,
+      "index": 1,
+      "width": 1017,
+      "height": 342
+    },
+    {
+      "url": "assets/figures/arxiv/2605.01418v1/fig-002.webp",
+      "caption": "Table 7. Marginal (Unconditional) Generation Performance of ECG5000. FID is evaluated at each granularity level (L1–L8).",
+      "page": 15,
+      "index": 2,
+      "width": 1012,
+      "height": 217
+    },
+    {
+      "url": "assets/figures/arxiv/2605.01418v1/fig-003.webp",
+      "caption": "Table 6. Marginal (Unconditional) Generation Performance of Nasdaq. FID is evaluated at each granularity level (L1–L8).",
+      "page": 15,
+      "index": 3,
+      "width": 1012,
+      "height": 217
+    },
+    {
+      "url": "assets/figures/arxiv/2605.01418v1/fig-004.webp",
+      "caption": "Table 11. Evaluation Results of Other Information Reducing Operators. We report the CRPSsum value at GC-TSG task.",
+      "page": 21,
+      "index": 4,
+      "width": 1010,
+      "height": 216
+    },
+    {
+      "url": "assets/figures/arxiv/2605.01418v1/fig-005.webp",
+      "caption": "Figure 12. Information Reducing Operators. Visualization of alternative information reducing operators for each granularity level",
+      "page": 21,
+      "index": 5,
+      "width": 996,
+      "height": 369
+    },
+    {
+      "url": "assets/figures/arxiv/2605.01418v1/fig-006.webp",
+      "caption": "Figure 1. Visualization at Different Token Lengths. TimeTok encodes time series into a hierarchically ordered sequence of discrete tokens that progressively capture coarse-to-fine temporal granularities. We visualize samples from the finance (i.e., Nasdaq stock data) and medical domain (i.e., ECG signals); additional results are provided in Section C.",
+      "page": 2,
+      "index": 6,
+      "width": 979,
+      "height": 199
+    },
+    {
+      "url": "assets/figures/arxiv/2605.01418v1/fig-007.webp",
+      "caption": "Table 2. Conditional Generation. Conditional GC-TSG evaluation under two settings: Coarse-to-Fine (i = 1, j = 8) and All-Pairs average (Avg, i → j, 0 < i < j). C-Cons denotes coarse-level consistency, measured by RMSE. Full results of TimeTok in Section D.",
+      "page": 7,
+      "index": 7,
+      "width": 977,
+      "height": 271
+    },
+    {
+      "url": "assets/figures/arxiv/2605.01418v1/fig-008.webp",
+      "caption": "Figure 13. Generating Fine-Grained Signals Conditioned on Coarse Outline: An Analysis in Financial Market Scenario. For this analysis, we used TimeTok trained on the Nasdaq dataset. We employed ChatGPT to write code that generates the coarse signal, then used TimeTok to generate time series at various granularity levels, conditioned on the given coarse signal.",
+      "page": 22,
+      "index": 8,
+      "width": 1015,
+      "height": 763
+    },
+    {
+      "url": "assets/figures/arxiv/2605.01418v1/fig-009.webp",
+      "caption": "Figure 9. ECG5000 Reconstruction.",
+      "page": 18,
+      "index": 9,
+      "width": 955,
+      "height": 997
+    },
+    {
+      "url": "assets/figures/arxiv/2605.01418v1/fig-010.webp",
+      "caption": "Figure 14. Token Usage Pattern Analysis in Nasdaq. (A) We quantify samples based on their volatility, and visualize three representative samples. (B) To narrow down the analysis space, we filter to samples that start with token index 3260, which generally exhibit an increasing trend pattern. From these samples, we visualize a heatmap depicting the token usage pattern at the full sequence length (i.e., 128 tokens). We observe that higher-volatility samples tend to utilize fewer tokens, whereas lower-volatility samples exhibit larger and more diverse token usage. (C) Understanding that such pattern occurs in the selected samples, we subsequently expand our focus to all samples. In the scatter plot, the x-axis represents the volatility, and the y-axis is the token usage entropy. We observe that such token-usage pattern occurs throughout the whole samples.",
+      "page": 23,
+      "index": 10,
+      "width": 987,
+      "height": 542
+    },
+    {
+      "url": "assets/figures/arxiv/2605.01418v1/fig-011.webp",
+      "caption": "Figure 5. Centroid Visualization. We first identify the tokens used in Level 1 centroids, and use this token as a condition to generate Level 8 samples. We visualize the centroids of Level 8.",
+      "page": 8,
+      "index": 11,
+      "width": 426,
+      "height": 342
+    },
+    {
+      "url": "assets/figures/arxiv/2605.01418v1/fig-012.webp",
+      "caption": "Figure 2. An Overview of TimeTok. (1) Training: The hierarchical tokenizer is trained to encode input time series into a sequence of discrete tokens structured in a coarse-to-fine temporal hierarchy. These tokens are then used to train the VAR Transformer that autoregressively predicts tokens at the next granularity level. (2) Inference: A conditioning time series of unknown granularity is encoded into a full token sequence, from which tokens at the inferred granularity are selected as a prefix for the VAR Transformer to generate the remaining tokens. The completed token sequence is then decoded into a time series at the target granularity.",
+      "page": 4,
+      "index": 12,
+      "width": 980,
+      "height": 417
+    },
+    {
+      "url": "assets/figures/arxiv/2605.01418v1/fig-013.webp",
+      "caption": "Figure 10. Nasdaq Reconstruction.",
+      "page": 19,
+      "index": 13,
+      "width": 955,
+      "height": 986
+    },
+    {
+      "url": "assets/figures/arxiv/2605.01418v1/fig-014.webp",
+      "caption": "Figure 8. Validation reconstruction loss measured on the original time-series signals, comparing exponential (Pow2) and uniform (Equal Bin) token allocation strategies. The two approaches show nearly identical convergence trends, suggesting comparable reconstruction performance on the validation set.",
+      "page": 17,
+      "index": 14,
+      "width": 511,
+      "height": 314
+    },
+    {
+      "url": "assets/figures/arxiv/2605.01418v1/fig-015.webp",
+      "caption": "Figure 7. Level-wise training loss comparison between exponential (Pow2) and uniform (Equal Bin) token allocation strategies across all eight granularity levels. Both strategies exhibit nearly identical optimization behavior at every level, indicating that allocating fewer tokens to coarser levels does not adversely affect training dynamics. The x-axis denotes training progress, where one unit corresponds to 10 epochs.",
+      "page": 17,
+      "index": 15,
+      "width": 1017,
+      "height": 440
+    },
+    {
+      "url": "assets/figures/arxiv/2605.01418v1/fig-016.webp",
+      "caption": "Table 5. Dataset Statistics. For each dataset, we report the number of samples in the original train/test splits, the total number of samples, the number of classes, and the length of the time series. For the UTSD dataset, we report the actual number of samples used to train TimeTok. Here, we randomly sample 1% of the original data due to computational budget.",
+      "page": 12,
+      "index": 16,
+      "width": 945,
+      "height": 185
+    },
+    {
+      "url": "assets/figures/arxiv/2605.01418v1/fig-017.webp",
+      "caption": "Figure 11. GC-TSG of ECG5000. We visualize the generation of i → j in ECG5000 dataset. Our level detection module first detects the granularity level of the sample. Using this sample as the condition, we generate time series at target granularity.",
+      "page": 20,
+      "index": 17,
+      "width": 845,
+      "height": 1187
+    },
+    {
+      "url": "assets/figures/arxiv/2605.01418v1/fig-018.webp",
+      "caption": "Table 8. Full Results of GC-TSG. Full results for granularity-controlled time-series generation (GC-TSG) on the ECG5000 and Nasdaq datasets. Here, i denotes the source level and j the target level, i.e., generating level-j time series from level-i input. We report CRPSsum and coarse-consistency (C-Cons), where C-Cons measures the RMSE between the original coarse input and the generated output after re-coarsening with a Gaussian filter.",
+      "page": 16,
+      "index": 18,
+      "width": 525,
+      "height": 721
+    }
+  ]
+}

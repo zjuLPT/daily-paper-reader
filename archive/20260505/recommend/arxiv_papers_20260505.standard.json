@@ -1,0 +1,214 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-05-05T20:30:08.512181+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 5,
+    "quick_skim_target": 11,
+    "quick_selected": 5
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2604.27603v1",
+      "source": "arxiv",
+      "title": "Martingale Posteriors for Discretely Observed Diffusions",
+      "abstract": "In this paper we consider parameter estimation for discretely observed diffusion processes. In particular, we focus on data that are observed at low frequency and methodology that can estimate parameters with uncertainty quantification. Most statistical work in this domain develops advanced Markov chain Monte Carlo (MCMC) algorithms for sampling from the posterior of the parameters, a task which is often complicated by the fact that one seldom has access to the transition density of the diffusion process; one has to combine sophisticated MCMC methods which are robust to the required time discretization of the diffusion, which can yield expensive algorithms. We focus on developing the martingale posterior method for the context of interest, when one can only numerically approximate the transition density of the diffusion. Based on using types of diffusion bridges we introduce a new martingale posterior method for parameter estimation for discretely observed diffusion processes. We prove that this algorithm approximates, in some sense, the martingale posterior which has no time-discretization bias up-to $\\mathcal{O}(Δ)$ if $Δ$ is the time discretization step. Our approach is illustrated on several examples, showing orders of magnitude speed up versus state-of-the-art MCMC algorithms.",
+      "authors": [
+        "Jingning Yao",
+        "Ajay Jasra",
+        "Sheng Jiang"
+      ],
+      "primary_category": "stat.CO",
+      "categories": [
+        "stat.CO"
+      ],
+      "published": "2026-04-30T08:54:15+00:00",
+      "link": "https://arxiv.org/pdf/2604.27603v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Parameter estimation for discretely observed diffusion processes",
+      "llm_evidence_cn": "离散观测扩散过程的参数估计",
+      "llm_evidence": "离散观测扩散过程的参数估计",
+      "canonical_evidence": "离散观测扩散过程的参数估计",
+      "llm_tldr_en": "Develops martingale posterior methods for parameter estimation in discretely observed diffusion processes.",
+      "llm_tldr_cn": "开发了用于离散观测扩散过程参数估计的鞅后验方法。",
+      "llm_tldr": "开发了用于离散观测扩散过程参数估计的鞅后验方法。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "sequence modeling with diffusion processes for time-dependent data",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.00229v1",
+      "source": "arxiv",
+      "title": "A unified perspective on fine-tuning and sampling with diffusion and flow models",
+      "abstract": "We study the problem of training diffusion and flow generative models to sample from target distributions defined by an exponential tilting of a base density; a formulation that subsumes both sampling from unnormalized densities and reward fine-tuning of pre-trained models. This problem can be approached from a stochastic optimal control (SOC) perspective, using adjoint-based or score matching methods, or from a non-equilibrium thermodynamics perspective. We provide a unified framework encompassing these approaches and make three main contributions: (i) bias-variance decompositions revealing that Adjoint Matching/Sampling and Novel Score Matching have finite gradient variance, while Target and Conditional Score Matching do not; (ii) norm bounds on the lean adjoint ODE that theoretically support the effectiveness of adjoint-based methods; and (iii) adaptations of the CMCD and NETS loss functions, along with novel Crooks and Jarzynski identities, to the exponential tilting setting. We validate our analysis with reward fine-tuning experiments on Stable Diffusion 1.5 and 3.",
+      "authors": [
+        "Carles Domingo-Enrich",
+        "Yuanqi Du",
+        "Michael S. Albergo"
+      ],
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.LG",
+        "math.OC"
+      ],
+      "published": "2026-04-30T21:06:46+00:00",
+      "link": "https://arxiv.org/pdf/2605.00229v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Unified perspective on fine-tuning and sampling with diffusion models",
+      "llm_evidence_cn": "扩散模型微调与采样的统一视角",
+      "llm_evidence": "扩散模型微调与采样的统一视角",
+      "canonical_evidence": "扩散模型微调与采样的统一视角",
+      "llm_tldr_en": "Provides a unified framework for training and sampling diffusion models using stochastic optimal control.",
+      "llm_tldr_cn": "提供了一个使用随机最优控制训练和采样扩散模型的统一框架。",
+      "llm_tldr": "提供了一个使用随机最优控制训练和采样扩散模型的统一框架。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "research papers on diffusion models applied to time series tasks",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.01418v1",
+      "source": "arxiv",
+      "title": "TimeTok: Granularity-Controllable Time-Series Generation via Hierarchical Tokenization",
+      "abstract": "Time-series generative models often lack control over temporal granularity, forcing users to accept whatever granularity the model produces. To enable truly user-driven generation, we introduce TimeTok, a unified framework for Granularity-Controllable Time-Series Generation (GC-TSG), which generates time series at any target granularity from any coarser input (e.g., rough sketches) or from scratch. At the core of TimeTok is a hierarchical tokenization strategy that maps time series into an ordered sequence of tokens, from coarse to fine temporal granularity. Our autoregressive generation process operates across these granularity levels, producing token blocks that are decoded back into continuous time series. This design naturally enables GC-TSG - including standard generation - within a single framework, where controlling the number of token blocks provides explicit control over output detail. Experiments show that TimeTok excels at GC-TSG tasks while achieving state-of-the-art performance in standard generation. Furthermore, we showcase TimeTok's potential as a foundational tokenizer by training on multiple datasets with heterogeneous temporal granularities, verifying strong transferability that consistently outperforms models trained on individual datasets. To our knowledge, this is the first unified framework that covers the full generative spectrum for time series, offering a valuable foundation for models that benefit from diverse temporal granularities.",
+      "authors": [
+        "Seokhyun Lee",
+        "Jaeho Kim",
+        "Changjun Oh",
+        "Mihaela van der Schaar",
+        "Changhee Lee"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-05-02T12:30:52+00:00",
+      "link": "https://arxiv.org/pdf/2605.01418v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "time-series generation framework",
+      "llm_evidence_cn": "时间序列生成框架",
+      "llm_evidence": "时间序列生成框架",
+      "canonical_evidence": "时间序列生成框架",
+      "llm_tldr_en": "Introduces TimeTok, a hierarchical tokenization framework for controllable time-series generation across granularities.",
+      "llm_tldr_cn": "引入 TimeTok，一个通过分层标记化实现跨粒度可控时间序列生成的框架。",
+      "llm_tldr": "引入 TimeTok，一个通过分层标记化实现跨粒度可控时间序列生成的框架。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.00250v1",
+      "source": "arxiv",
+      "title": "Information-geometric adaptive sampling for graph diffusion",
+      "abstract": "Standard diffusion models for graph generation typically rely on uniform time-stepping, an approach that overlooks the non-homogeneous dynamics of distributional evolution on complex manifolds. In this paper, we present an information-geometric framework that reinterprets the diffusion sampling trajectory as a parametric curve on a Riemannian manifold. Our key observation is that the Fisher-Rao metric provides a principled measure of the intrinsic distance. By analyzing this metric, we derive the Drift Variation Score (DVS), a geometry-aware indicator that quantifies the instantaneous rate of distributional change. Unlike prior heuristic-based adaptive samplers, our DVS solver enforces a constant informational speed on the statistical manifold, automatically maintaining a uniform rate of distributional change along the sampling trajectory. This equal arc-length strategy ensures that each discretization step contributes equally to the information speed. Theoretical analysis verifies that DVS characterizes the local stiffness of the sampling dynamics in the Fisher-Rao sense. Experimental results on molecule and social network generation show that DVS significantly improves structural fidelity and sampling efficiency. Code is at https://github.com/kunzhan/DVS",
+      "authors": [
+        "Yuhui Lu",
+        "Wenjing Liu",
+        "Kun Zhan"
+      ],
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-04-30T21:32:35+00:00",
+      "link": "https://arxiv.org/pdf/2605.00250v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Adaptive sampling for graph diffusion models",
+      "llm_evidence_cn": "图扩散模型的自适应采样",
+      "llm_evidence": "图扩散模型的自适应采样",
+      "canonical_evidence": "图扩散模型的自适应采样",
+      "llm_tldr_en": "Develops an information-geometric adaptive sampler for graph diffusion models to improve sampling efficiency.",
+      "llm_tldr_cn": "为图扩散模型开发了一种信息几何自适应采样器，以提高采样效率。",
+      "llm_tldr": "为图扩散模型开发了一种信息几何自适应采样器，以提高采样效率。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "research papers on diffusion models applied to time series tasks",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.01817v1",
+      "source": "arxiv",
+      "title": "Skipping the Zeros in Diffusion Models for Sparse Data Generation",
+      "abstract": "Diffusion models (DMs) excel on dense continuous data, but are not designed for sparse continuous data. They do not model exact zeros that represent the deliberate absence of a signal. As a result, they erase sparsity patterns and perform unnecessary computation on mostly zero entries. With Sparsity-Exploiting Diffusion (SED), we model only non-zero values, preserving sparsity. SED delivers computational savings while maintaining or improving generation quality by skipping zeros during training and inference. Across physics and biology benchmarks, SED matches or surpasses conventional DMs and domain-specific baselines, while vision experiments provide intuitive insights into the limitations of dense DMs and the benefits of SED.",
+      "authors": [
+        "Phil Sidney Ostheimer",
+        "Mayank Nagda",
+        "Andriy Balinskyy",
+        "Gabriel Vicente Rodrigues",
+        "Jean Radig",
+        "Carl Herrmann",
+        "Stephan Mandt",
+        "Marius Kloft",
+        "Sophie Fellenz"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-05-03T10:51:25+00:00",
+      "link": "https://arxiv.org/pdf/2605.01817v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Diffusion models for sparse data generation",
+      "llm_evidence_cn": "用于稀疏数据生成的扩散模型",
+      "llm_evidence": "用于稀疏数据生成的扩散模型",
+      "canonical_evidence": "用于稀疏数据生成的扩散模型",
+      "llm_tldr_en": "Proposes Sparsity-Exploiting Diffusion (SED) to efficiently model and generate sparse continuous data.",
+      "llm_tldr_cn": "提出稀疏利用扩散 (SED)，以高效建模和生成稀疏连续数据。",
+      "llm_tldr": "提出稀疏利用扩散 (SED)，以高效建模和生成稀疏连续数据。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "research papers on diffusion models applied to time series tasks",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

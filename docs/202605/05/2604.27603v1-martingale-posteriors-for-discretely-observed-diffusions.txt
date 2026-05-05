@@ -1,0 +1,1969 @@
+Title: Martingale Posteriors for Discretely Observed Diffusions
+
+URL Source: https://arxiv.org/pdf/2604.27603v1
+
+Published Time: Fri, 01 May 2026 00:40:52 GMT
+
+Number of Pages: 20
+
+Markdown Content:
+# Martingale Posteriors for Discretely Observed Diffusions 
+
+BY JINGNING YAO, AJAY JASRA & SHENG JIANG  
+
+> School of Data Science, The Chinese University of Hong Kong, Shenzhen, Shenzhen, CN. E-Mail: jingningyao@link.cuhk.edu.cn; ajayjasra@cuhk.edu.cn; jiangsheng@cuhk.edu.cn
+
+Abstract 
+
+In this paper we consider parameter estimation for discretely observed diffusion processes. In particular, we focus on data that are observed at low frequency and methodology that can estimate parameters with uncertainty quantification. Most statistical work in this domain develops advanced Markov chain Monte Carlo (MCMC) algorithms for sampling from the posterior of the parameters, a task which is often complicated by the fact that one seldom has access to the transition density of the diffusion process; one has to combine sophisticated MCMC methods which are robust to the required time discretization of the diffusion, which can yield expensive algorithms. We focus on developing the martingale posterior method [8] for the context of interest, when one can only numerically approximate the transition density of the diffusion. Based on using types of diffusion bridges (e.g. [26, 27]) we introduce a new martingale posterior method for parameter estimation for discretely observed diffusion processes. We prove that this algorithm approximates, in some sense, the martingale posterior which has no time-discretization bias up-to O(∆) if ∆ is the time discretization step. Our approach is illustrated on several examples, showing orders of magnitude speed up versus state-of-the-art MCMC algorithms. 
+
+Keywords : Uncertainty Quantification, Diffusion Processes, High and Low Frequency Observations. 
+
+# 1 Introduction 
+
+We are given a diffusion process for X0 ∈ Rd given: 
+
+dX t = μθ (Xt)dt + σθ (Xt)dW t (1.1) where Xt ∈ Rd, θ ∈ Θ = Rdθ , μθ : Rd → Rd, σθ : Rd → Rd and {Wt}t≥0 is standard Brownian motion. We are given access to regularly observed data associated to the diffusion (e.g. x1, . . . , x T ) and we want to estimate θ with access to uncertainty quantification, for example in a Bayesian manner. We assume the model is uniformly elliptic and that there exists a Lebesgue transition density whose gradient in 
+
+θ also exists. Diffusion models find numerous applications in real scientific problems such as finance, econometrics, biology and physics; we refer the reader to the works [1, 2, 3, 13, 18, 25] and the references therein for further descriptions. When one seeks to estimate the parameters θ, with some measure of uncertainty quantification, it is often the case that many researchers use a Bayesian perspective. That is, to place a prior on θ and seek to compute expectations w.r.t. the posterior distribution of the parameters conditional upon the observed data. In most cases of practical interest this has two major issues, which are that (1) the posterior density is known, at best, up-to a normalizing constant and (2) indeed the un-normalized posterior is only known up-to an approximation of the posterior density. The latter is that whilst under fairly mild conditions (1.1) admits an almost sure unique solution and under further assumptions a Lebesgue transition density, this density is not known and can (often) only be approximated, in some way, using numerical time-discretization methods, such as Euler-Maruyama (e.g. [19]). Then one uses the approximated transition density to compute an un-normalized (approximation) of the posterior density and this is used as part of a Markov chain Monte Carlo (MCMC) algorithm. By now there are numerous examples of such MCMC algorithms of which a non-exhaustive list includes [1, 13, 16, 18, 25, 26, 27]. These MCMC algorithms can be quite sophisticated, using a combination of MCMC, sequential Monte Carlo and sometimes even multilevel Monte Carlo [12, 17]. In terms of application, the afore-mentioned MCMC algorithms can be quite expensive, in that they constitute many complicated approaches and hence require specific codes that can be challenging to 1
+
+> arXiv:2604.27603v1 [stat.CO] 30 Apr 2026
+
+develop, even with AI tools. The methods also require long training and run periods which can be prohi-bative, especially when the observed time series is quite long. The objective of this work is to investigate faster methods for parameter estimation for diffusions with uncertainty quantification and specifically how they can be developed and implemented in a coherent manner. The particular methodology that we focus upon is that of the martingale posterior [5, 8, 23], see also later work [9, 20, 24], who present an approach for uncertainty quantification based upon constructing an appropriate martingale. This martingale can be quickly simulated forwards in time (based on model assumptions) and relying on the well-known mar-tingale convergence theorem: there exists a limiting (in time) random variable. This limiting random variable can be simulated using the afore-mentioned forward simulations. In many experiments the au-thors [5, 8, 23] show promising results in terms of fast simulation, especially relative to MCMC. The perspective of this paper is to focus on the score-based martingale methodology of [5] and develop new and novel approaches to implement it for diffusions. This latter method focusses upon the θ−gradient of log of the observation density (the score). We remark that this paper is not a philosophical one from the statistical perspective; we assume that the reader is convinced at the utility of the martingale posterior method and we then proceed to develop the said ideas for diffusion models. In this article we focus on low frequency observations, that is, that are separated by O(1) time. In such a scenario, it is known that, if one needs access to the transition density of the diffusion as we do, one must carefully construct an approximation of the density as we now explain. If one considers the Euler-Maruyama time discretization, then one can show that (for example) the approximated transition density over unit time is an integral over the time-steps of the diffusion between observation times. It is well known that if say the time step is ∆l = 2 −l it can often be the case that an estimate of the transition density explodes exponentially fast in l; see for example [7] and we explain this point carefully in Section 3. In this paper the problem is even more accute as one needs access to the score function. In this paper, based on the works in [26, 27] and its extensions [1, 2, 18] we develop a new score-based martingale posterior method for diffusions that are observed at low frequencies. The main reason why one can escape the exponential variance explosion alluded to above, is that one can, in principle, define a martingale posterior in true continuous time. Of course, in practice, this martingale posterior cannot be simulated and must be time discretized. We then prove, under mathematical assumptions that the expected square L2−distance between the martingale posterior in continuous and discrete time is O(∆ l)
+
+hence confirming that the exponential variance in l is avoided. Finally we illustrate our methodology in several examples, showing the improvement in terms of computational time versus some state-of-the-art MCMC algorithms. This article is structured as follows. In Section 2 we give a short review of the score-based martingale methodology which we shall adapt for diffusions. In Section 3 we describe our methodology. In Section 4 our theoretical result are presented. In Section 5 we investigate our methodology for several diffusions. In Section 6 the article is concluded and several avenues for future work are discussed. The mathematical proof of our main result and its assumptions are housed in Appendix A. 
+
+# 2 Review 
+
+2.1 Basic Score-Based Martingale Posterior Approach 
+
+Our approach is based on the ideas in [5] which we now recapitulate for completeness. For each parameter 
+
+θ ∈ Θ = Rdθ , let Fθ be a distribution on (Rd, B(Rd)) with θ−differentiable Lebesgue density fθ . Let 
+
+θ0 ∈ Θ be given and define the recursion 
+
+θk = θk−1 + γk∇ log fθk−1 (Xk) (2.1) where for each k ≥ 1:
+
+Xk|θ0, θ 1, x 1, . . . , θ k−1, x k−1 ∼ Fθk−1
+
+with x0 the null vector, γk ∈ R+ and P 
+
+> k≥1
+
+γk = ∞, P 
+
+> k≥1
+
+γ2 
+
+> k
+
+< ∞ is the step-size. We remark that in this paper we only consider parameters on Rdθ , that is, on unconstrained spaces. 2Denote by E the expectation operator associated to the afore-mentioned process θ0, θ 1, X 1, . . . . Set 
+
+F0 as the trivial sigma field and for k ≥ 1, Fk as the σ−field generated by (θ0, θ 1, X 1, . . . , θ k, X k) if one can establish that sup k≥0 E[|θk|] < +∞ (| · | is the L1−norm for vectors) and that 
+
+E
+
+
+
+sup 
+
+> θ∈Θ
+
+|∇ log {fθ (Xk)}| 
+
+
+
+< +∞
+
+then one has that for any k ≥ 1
+
+E [θk|Fk−1] = θk−1 + γkE ∇ log fθk−1 (Xk) |Fk−1
+
+
+
+= θk−1
+
+where we have assumed that it is legitimate to reverse the order of integration and differentiation and used the well-known property of the expectation of the score function. We have thus established that (θk)k≥0
+
+is a martingale relative to (Fk)k≥0. Then by the martingale convergence theorem (e.g. [14, Section 1.3]) there exists a random variable θ⋆ that is integrable (i.e. E[|θ⋆|] < +∞) such that we have, almost surely 
+
+lim  
+
+> k→∞
+
+θk = θ⋆. (2.2) We note that, writing the jth −element of a dθ −vector x as x(j) j ∈ { 1, . . . , d θ } and supposing E[( θ(j)0 )2] <
+
++∞
+
+E
+
+
+
+θ⋆, (j)2 12
+
+= E
+
+ θ(j)0 +
+
+> ∞
+
+X
+
+> p=1
+
+γk∇ log fθk−1 (Xk) (j)
+
+!2
+
+> 12
+
+≤ C
+
+1 + E
+
+" ∞X
+
+> p=1
+
+γ2
+
+> p
+
+
+
+∇ log fθk−1 (Xk) (j)2
+
+# 12
+
+
+
+where C < +∞ is a finite constant. Then if 
+
+E
+
+
+
+sup 
+
+> θ∈Θ
+
+
+
+∇ log {fθ (Xk)}(j)2
+
+< C 
+
+for each j ∈ { 1, . . . , d θ } and some C < +∞ one has that 
+
+E
+
+
+
+θ⋆, (j)2 12
+
+< +∞
+
+as P 
+
+> k≥1
+
+γ2 
+
+> k
+
+< +∞. This is enough to show that θ⋆ has finite variance. We can interpret (2.2) as follows: if one runs the recursion (2.1) indefinitely, then under the stated assumptions, there is a limiting random variable which can be used to represent an uncertainty about the model parameter. In practice one does not know this random variable, but for many interesting models, one can sample (2.1) for a long time horizon and many times; the resulting collection of samples can be used an approximation of θ⋆. As has been discussed in [5, 8] this is not only an embarrassingly parallel sampling method, but is cheaper than many modern simulation techniques such as MCMC. We refer the reader to the afore-mentioned references for the justification method, beyond the mathematical rationale that we have given. 
+
+2.2 Initializing the Process 
+
+The approach just discussed does not leverage any observed data in any way, which is clearly not a sensible idea in practice. In this article we consider an initial training phase, which can also be used to set the 3step-size (see below) by running the recursion (2.1), except one does not sample the data and uses the observed data in its place; this was adopted by [5]. We note that a sequence of parameters generated in such a manner would not necessarily produce a martingale sequence as we now explain. We remark however, neither does this matter as the proposed idea is simply used to obtain θ0; the martingale property can be gained from the susbequent simulation of the recursion (2.1). Suppose, for exposition purposes, the data have been generated from model with the parameter also generated from some model, say the generated value is θ∗; write the associated expectation operator as 
+
+Eθ∗ and the σ−field that has been generated by the data and parameter up-to data-point k as Gk (set 
+
+G0 = F0). Now if one considers the conditonal expection 
+
+Eθ∗ [θk|Gk−1] = θk−1 + γkEθ∗
+
+∇ log fθk−1 (Xk) |Gk−1
+
+
+
+= θk−1 +
+
+Z
+
+> Rd
+
+∇ log fθk−1 (xk) fθ∗ (xk)dx k (2.3) one would not have a martingale in general, even if the second term on the right hand side of (2.3) is finite. It may be possible to obtain a super or sub martingale, depending on the properties of ∇ log fθk−1 (xk)
+
+but this is not useful here. As stated above this lack of martingale property is not necessarily an issue as we initialize the algorithm using this scheme and moreover one can use this phase to train the step-size adaptively as is often used in stochastic gradient/ascent methods. It should be stated if the realized data are assumed to be generated from the process described in (2.1) one would of course obtain the martingale property, but as we have stated it is not needed and is computationally prohibitive. 
+
+2.3 On the Step-Size and Pre-Conditioners 
+
+In much of our preliminary investigations we have found that the step-size is an important determining factor in the associated limiting random variable θ⋆. The link between stochastic gradient ascent and (2.1) is relatively clear, so it makes sense that one should try and utilize ideas from that literature to enhance the score-based martingale approach. One method is the notion of using a pre-conditioner (e.g. [21, 22]): 
+
+θk = θk−1 + γkPk∇ log fθk−1 (Xk)
+
+for some dθ × dθ matrix Pk. When available, at least in convex optimization, one often uses Pk = H−1
+
+> θk−1
+
+where Hθ = ∇2 log {fθ (x)}. This choice is unavailable to us, in the sense that even if the hessian Hθ is available, it would destroy the martingale property. We note that [5] suggest using the square root of the Fisher information matrix as a pre-conditioner, but again this is seldom available. In some contexts e.g. [22], one can try adaptively learn a pre-conditioner and this could be used in the data learning phase of the algorithm. In this article we focus on learning a ‘good’ step-size in the afore-mentioned phase and this is discussed in our numerical examples. We note the parallel with stochastic optimization also suggests a wide variety of strategies (such as sample averaging) that could be investigated for the score-based martingale approach, but our focus is on deriving new algorithms for diffusions and this is what we describe now. 
+
+# 3 Score-Based Martingales for Diffusions 
+
+3.1 Assumptions 
+
+We now return to the diffusion process (1.1) and we will assume the following. (i) For each θ ∈ Θ,
+
+– each element of σθ , is twice continuously differentiable with bounded derivatives and globally Lipschitz 
+
+– Σθ (x) = σθ (x)σθ (x)⊤ is uniformly elliptic. 4(ii) For each θ, each element of μθ is twice continuously differentiable with bounded derivatives and globally Lipschitz. We note that one could relax several assumptions, but for ease of exposition we do not do this. Assump-tions of these type have been used for several MCMC methods such as [1, 15, 18] and some discussion is given there. We remark that the uniformly elliptic assumption allows us to use fairly simple diffusion approximations (such as the Euler-Maruyama method) and in general most of the approximation meth-ods would work well. The assumptions also ensure the existence of Lebesgue transition density which, between two times 0 < s < t and for any fixed (xs, x t) ∈ R2d is denoted as as fθ,s,t (xt|xs). Without further discussion it is assumed that the gradient vector in θ of log {fθ,s,t (xt|xs)} is well-defined. 
+
+3.2 Exact Method 
+
+We will now consider a type of score-based martingale method in the following context. We shall suppose access to observations x0, x 1, . . . , x T of the diffusion process. The notation is such that the data are observed at regular and unit times, however, this convention is made for presentational purposes only. The approaches to be detailed can handle data at a collection of observation times t0, t 1, . . . , t T say with 
+
+0 ≤ t0 < t 1 < · · · < T T , which includes irregular observation times and in principle high-frequency observation times. We note, however, that the subsequent ideas are developed precisley for the case of low-frequency data, i.e. O(1) time between each data point; the high frequency case is discussed in Section 6 as part of future work. As we now consider a time dependent process, as opposed to an i.i.d. type process in the previous section, one must be more careful in order to construct a martingale. The initial phase of our approach is as follows: 1. Set θ0 ∈ Θ.2. For k ∈ { 1, . . . , T }, set 
+
+θk = θk−1 + γk∇ log {fθ,k −1,k (xk|xk−1)} .
+
+In practice, within this phase, one could use pre-conditioners or adaptive methods to learn the step-size. As we intend to analyze this ‘vanilla’ method mathematically, this is not added to the exposition here. In terms of random variables, implicitly, there is some data generating process for X0, . . . , X T , for instance the exact diffusion process with some given θ∗ ∈ Θ. We do not make any assumption about this process other than what will be needed below. Let (θ, x ) ∈ Θ × Rd, 0 < s < t be given and denote by Fθ,s,t (·| x) as the distribution associated to 
+
+fθ,s,t (·| x). The next phase is run for ‘long-time’, so that we do not specify a stopping time, is generated as follows. 1. Input θT and XT from the first phase. Set k = T + 1 .2. Sample Xk|xk−1, θ k−1 ∼ Fθk−1,k −1,k (·| xk−1).3. Update 
+
+θk = θk−1 + γk∇ log {fθ,k −1,k (xk|xk−1)}
+
+and k = k + 1 . Go to the start of 2.. To construct our martingale, we specify that FT is the σ−field that is generated by (θ0, X 0, . . . , θ T , X T )
+
+and for any t ≥ T + 1 we set Ft as the σ−field that is generated by (θ0, X 0, . . . , θ t, X t). Write the expectation associated to the law of the process described in phases 1 and 2 as E and suppose that 
+
+sup 
+
+> k≥0
+
+E[|θk|] < +∞
+
+sup 
+
+> k≥1
+
+E
+
+
+
+sup 
+
+> θ∈Θ
+
+|∇ log {fθ,k −1,k (Xk|Xk−1)}| 
+
+
+
+< +∞
+
+5then we have that (θk)k≥T is a martingale relative to (Fk)k≥T . One is then in a position to consider uncertainty quantification associated to the parameters of the diffusion. 
+
+3.2.1 Problems with the Exact Method 
+
+The main problem of using the exact method is the fact that one needs to be able to evaluate ∇ log {fθ,s,t (xt|xs)}
+
+and sample from the exact transition law of the diffusion process. This is only possible for a very small class of diffusions such as the Ornstein-Uhlenbeck process. In terms of exact simulation of diffusions there are several methods in the literature (e.g. [3, 4]) but typically these are only useful if d (the dimension of the diffusion) is small or one does not need to repeatedly simulate the diffusion. One could also seek to use the exact simulation methods to produce unbiased estimates of ∇ log {fθ,s,t (xt|xs)}, but this would again suffer the same problem as just mentioned. One of the main approaches to deal with the main issues of the exact method is to adopt time-discretizations, to approximate the law of the diffusion process. Let l ∈ N be given and set ∆l = 2 −l
+
+then one of the most simple time discretization methods is the Euler-Maruyama approach for (k, j ) ∈
+
+N × { 0, . . . , ∆−1 
+
+> l
+
+− 1}:
+
+Xk−1+( j+1)∆ l = Xk−1+ j∆l + μθ (Xk−1+ j∆l )∆ l + σθ (Xk−1+ j∆l ) Wk−1+( j+1)∆ l − Wk−1+ j∆l
+
+ . (3.1) In such a scenario, one can sample this process, assuming one can evaluate the drift and diffusion coeffi-cients and the transition density over time unit ∆l is known. Moreover, the convergence of the scheme as 
+
+l → +∞ has been well studied and we refer the reader to [19] and the references therein. The basic idea is then to replace the exact simulation of the diffusion with the Euler-Maruyama simulation. However, whilst the transition density over time unit ∆l is known, it is typically the case that the transition density over time 1 (say) is unknown, due to the fact that it is written in terms of an integral over the path xk−1+∆ l , . . . , x k−∆l . Moreover, if one tries to obtain the gradient of the log of the transition density obtaining (say) an unbiased estimate, the variance can explode as l grows. Note that conditional on xk−1, x k unbiasedness is needed so as to obtain the martingale property. To understand the point on variance explosion, denote the transition density associated to (3.1) as fθ, ∆l (x′|x) then the transition density over unit time is 
+
+f lθ,k −1,k (xk|xk−1) := 
+
+Z 
+
+> Rd(∆ −1
+> l−1)
+
+ 
+
+> ∆−1
+> l−1
+
+Y
+
+> j=0
+
+fθ, ∆l (xk−1+( j+1)∆ l |xk−1+ j∆l )
+
+ dx k−1+∆ l . . . dx k−∆l .
+
+Then under standard regularity assumptions, which are omitted for brevity, one has that 
+
+∇ log f lθ,k −1,k (xk|xk−1) =
+
+Z 
+
+> Rd(∆ −1
+> l−1)
+
+∇ log 
+
+ 
+
+> ∆−1
+> l−1
+
+Y
+
+> j=0
+
+fθ, ∆l (xk−1+( j+1)∆ l |xk−1+ j∆l )
+
+ πlθ (xk−1+∆ l , . . . , x k−∆l |xk−1, x k)dx k−1+∆ l . . . dx k−∆l
+
+where 
+
+πlθ (xk−1+∆ l , . . . , x k−∆l |xk−1, x k) = 
+
+Q∆−1  
+
+> l−1
+> j=0
+
+fθ, ∆l (xk−1+( j+1)∆ l |xk−1+ j∆l )
+
+f lθ,k −1,k (xk|xk−1) .
+
+So if one can sample from πlθ one could produce an unbiased estimate of ∇ log 
+
+n
+
+f lθ,k −1,k (xk|xk−1)
+
+o
+
+and use this as part of an approximation of the exact method. However, estimates based on the mentioned idea often have a variance that will explode as l grows and this is well understood in the MCMC and importance sampling literature; see for example [7]. Intuitively this is because as l grows the number of terms in the product grows and one does not have a convergence of this term (at least not fast enough). This variance explosion is an issue as one would like to run an algorithm which has l large so as to approximate as closely as possible the θ⋆ that is produced from the exact method. 6As has been realized in several works [1, 2, 15, 18] if one seeks to estimate ∇ log {fθ,k −1,k (x′|x)} one must start with a formula in continuous time and then seek a time discretized approximation of the formula. In [15] the authors focus on using the Girsanov change of measure, but this is overly restrictive as it does not allow dependence of θ in the diffusion coefficient. The approaches in [1, 2, 18] use an adaptation of a type of diffusion bridge method that has been considered in [26, 27] and we now review that idea, so that it can be utiltized for our score-based martingale method. 
+
+3.3 Approximating ∇ log {fθ,k −1,k (x′|x)}
+
+The following exposition follows the reviews in [1, 2, 18]. Consider the case t ∈ [s1, s 2], 0 ≤ s1, s 2 ≤ T and let X[s1,s 2] := {Xt}t∈[s1,s 2], and W[s1,s 2] := {Wt}t∈[s1,s 2]. Set fθ,t,s 2 (x′|x) denote the unknown transition density from time t to s2 associated to (1.1). If one could sample from fθ,s 1,s 2 to obtain (x, x ′) ∈ R2d,we will explain that we can interpolate these points by using a bridge process. This process will have a drift given by μθ (x) + Σ θ (x)∇x log fθ,t,s 2 (x′|x). Let Pθ,x,x ′ denote the law of the solution of the stochastic differential equation (SDE) (1.1), on [s1, s 2], started at x and conditioned to hit x′ at time s2.We introduce a user-specified auxiliary process { ˜Xt}t∈[s1,s 2] following: 
+
+d ˜Xt = ˜ μθ (t, ˜Xt)dt + ˜ σθ (t, ˜Xt)dW t, t ∈ [s1, s 2], ˜Xs1 = x, (3.2) where for each θ ∈ Θ, ˜μθ : [ s1, s 2] × Rd → Rd and ˜σθ : Rd → Rd×d is such that for each θ ∈ Θ˜Σθ (s2, x ′) := ˜ σθ (s2, x ′)˜ σθ (s2, x ′)⊤ ≡ Σθ (x′).
+
+(3.2) is specified so that its transition density ˜fθ is available; see [26, Section 2.2] for the technical conditions on ˜μθ , ˜Σθ , ˜fθ . The main purpose of { ˜Xt}t∈[s1,s 2] is to sample x′ and use its transition density to construct another process {X◦ 
+
+> t
+
+}t∈[s1,s 2] conditioned to hit x′ at t = s2; which in turn will be an importance proposal for {Xt}t∈[s1,s 2]. Set: 
+
+dX ◦ 
+
+> t
+
+= μ◦ 
+
+> θ,s 2
+
+(t, X ◦ 
+
+> t
+
+; x′)dt + σθ (X◦ 
+
+> t
+
+)dW t, t ∈ [s1, s 2], X◦ 
+
+> s1
+
+= x, (3.3) where: 
+
+μ◦ 
+
+> θ,s 2
+
+(t, x ; x′) = μθ (x) + Σ θ (x)∇x log ˜fθ,t,s 2 (x′|x),
+
+and denote by P◦ 
+
+> θ,x,x ′
+
+the probability law of the solution of (3.3). The SDE in (3.3) yields: 
+
+W → Cθ,s 1,s 2 (x, W[s1,s 2], x ′), (3.4) mapping the driving Wiener noise W to the solution of (3.3), reparametering the problem from X to 
+
+(W, x ′).[26] prove that Pθ,x,x ′ and P◦ 
+
+> θ,x,x ′
+
+are absolutely continuous w.r.t. each other, with Radon-Nikodym derivative: 
+
+dPθ,x,x ′
+
+dP◦
+
+> θ,x,x ′
+
+(X[s1,s 2]) = exp 
+
+n Z s2
+
+> s1
+
+Lθ,s 2 (t, X t)dt 
+
+o
+
+× ˜fθ,s 1,s 2 (x′|x)
+
+fθ,s 1,s 2 (x′|x) , (3.5) where: 
+
+Lθ,s 2 (t, x ) := ( μθ (x) − ˜μθ (t, x )) ⊤ ∇x log ˜fθ,t,s 2 (x′|x)
+
+− 12 Tr 
+
+n Σθ (x) − ˜Σθ (t, x ) − ∇ 2 
+
+> x
+
+log ˜fθ,t,s 2 (x′|x) − ∇ x log ˜fθ,t,s 2 (x′|x)∇x log ˜fθ,t,s 2 (x′|x)⊤ o
+
+,
+
+with Tr (·) denoting the trace of a squared matrix. Set 
+
+Rθ,s 1,s 2 (X[s1,s 2]) := dPθ,x,x ′
+
+dP◦
+
+> θ,x,x ′
+
+(X[s1,s 2])fθ,s 1,s 2 (x′|x)
+
+Let W be the law of Brownian motion with associated expectation operator E then 
+
+fθ,k −1,k (x′|x) = E Rθ,k −1,k 
+
+ Cθ,k −1,k (x, W[k−1,k ], x ′) .
+
+73.4 Time Discretization 
+
+We first give the standard Euler-Maruyama time discretization of the solution to (3.3) (associated to a time interval [k − 1, k ], k ∈ { 1, . . . , T }) on a regular grid of spacing ∆l = 2 −l, with starting point x◦
+
+> k−1
+
+and ending point x◦
+
+> k
+
+. That is for j ∈ { 0, 1 . . . , ∆−1 
+
+> l
+
+− 2}:
+
+X◦ 
+
+> k−1+( j+1)∆ l
+
+= X◦ 
+
+> k−1+ j∆l
+
++ μ◦
+
+> θ,k
+
+(k − 1 + j∆l, X ◦ 
+
+> k−1+ j∆l
+
+; x◦
+
+> k
+
+)∆ l+
+
+σθ (X◦ 
+
+> k−1+ j∆l
+
+) Wk−1+( j+1)∆ l − Wk−1+ j∆l
+
+ . (3.6) Given (x◦
+
+> k−1
+
+, x ◦
+
+> k
+
+) and Wl 
+
+> [k−1,k ]
+
+= ( Wk−1+∆ l − Wk−1, . . . , W k−∆l − Wk−2∆ l ), the recursion (3.6) induces a discretized path X◦ 
+
+> k−1+∆ l
+
+, . . . , X ◦ 
+
+> k−∆l
+
+and we write such a path, including the starting and ending points with the notation 
+
+Clθ,k −1,k (x◦
+
+> k−1
+
+, Wl
+
+> [k−1,k ]
+
+, x ◦
+
+> k
+
+).
+
+We also need a discretization of the Radon-Nikodym derivative. Consider 
+
+Xl 
+
+> [k−1,k ]
+
+= ( Xk−1, X k−1+∆ l , . . . , X k)
+
+then we set 
+
+Rlθ,k −1,k (Xl
+
+> [k−1,k ]
+
+) := exp 
+
+n ∆−1 
+
+> l−1
+
+X
+
+> j=0
+
+Lθ,k (t, X k−1+ j∆l )∆ l
+
+o ˜fθ,k −1,k (Xk|Xk−1).
+
+We will work with 
+
+f lθ,k −1,k (x′|x) ∝ E
+
+h
+
+Rlθ,k −1,k 
+
+
+
+Clθ,k −1,k (x, Wl
+
+> [k−1,k ]
+
+, x ′)
+
+i 
+
+.
+
+3.5 Time Discretized Method 
+
+We propose the following scheme to estimate the parameters. The initial iterate θl 
+
+> 0
+
+is given. The following method is called MPD in the subsequent discussion, for martingale posterior for diffusions. The first phase is as follows. 1. Set k = 1 and go to 2.. 2. Iterate: 
+
+• Sample Wl
+
+> [k−1,k ]
+
+|xk, x k−1 from 
+
+πlθlk−1
+
+(dwl
+
+> [k−1,k ]
+
+|xk, x k−1) ∝ Rlθlk−1,k −1,k 
+
+
+
+Clθlk−1,k −1,k (xk−1, wl
+
+> [k−1,k ]
+
+, x k)
+
+
+
+W(dwl
+
+> [k−1,k ]
+
+)
+
+compute ∇ log 
+
+
+
+Rlθlk−1,k −1,k 
+
+
+
+Clθlk−1,k −1,k (xk−1, wl
+
+> [k−1,k ]
+
+, x k)
+
+ 
+
+.
+
+• Sample Vl
+
+> [k−1,k ]
+
+, u k|xk−1
+
+πlθlk−1
+
+(dvl
+
+> [k−1,k ]
+
+, u k|xk−1) ∝ Rlθlk−1,k −1,k 
+
+
+
+Clθlk−1,k −1,k (xk−1, vl
+
+> [k−1,k ]
+
+, u k)
+
+
+
+W(dvl
+
+> [k−1,k ]
+
+)
+
+and compute ∇ log 
+
+
+
+Rlθlk−1,k −1,k 
+
+
+
+Clθlk−1,k −1,k (xk−1, vl
+
+> [k−1,k ]
+
+, u k)
+
+ 
+
+.
+
+• Update: 
+
+θlk = θlk−1 + γk
+
+n
+
+∇ log( Rlθlk−1,k −1,k 
+
+
+
+Clθlk−1,k −1,k (xk−1, wl
+
+> [k−1,k ]
+
+, x k)
+
+
+
+)−∇ log( Rlθlk−1,k −1,k 
+
+
+
+Clθlk−1,k −1,k (xk−1, vl
+
+> [k−1,k ]
+
+, u k)
+
+
+
+)
+
+o
+
+.
+
+8Go to 3.. 3. Set k = k + 1 and if k = T + 1 stop otherwise go to 2.. The second phase is as follows. 1. Input θlT and XT from the first phase, set k = T + 1 . Sample Xk|xk−1 using 
+
+f lθlk−1,k −1,k (xk|xk−1) ∝
+
+Z
+
+Rlθlk−1,k −1,k 
+
+
+
+Clθlk−1,k −1,k (xk−1, wl
+
+[k−1,k ], x k)
+
+
+
+W(dwl
+
+[k−1,k ])
+
+Go to 2.. 2. Iterate: 
+
+• Sample Wl
+
+[k−1,k ]|xk, x k−1 from 
+
+πlθlk−1
+
+(dwl
+
+[k−1,k ]|xk, x k−1) ∝ Rlθlk−1,k −1,k 
+
+
+
+Clθlk−1,k −1,k (xk−1, wl
+
+[k−1,k ], x k)
+
+
+
+W(dwl
+
+[k−1,k ])
+
+compute ∇ log 
+
+
+
+Rlθlk−1,k −1,k 
+
+
+
+Clθlk−1,k −1,k (xk−1, wl
+
+[k−1,k ], x k)
+
+ 
+
+.
+
+• Sample Vl
+
+[k−1,k ], u k|xk−1
+
+πlθlk−1
+
+(dvl
+
+[k−1,k ], u k|xk−1) ∝ Rlθlk−1,k −1,k 
+
+
+
+Clθlk−1,k −1,k (xk−1, vl
+
+[k−1,k ], u k)
+
+
+
+W(dvl
+
+[k−1,k ])
+
+and compute ∇ log 
+
+
+
+Rlθlk−1,k −1,k 
+
+
+
+Clθlk−1,k −1,k (xk−1, vl
+
+[k−1,k ], u k)
+
+ 
+
+.
+
+• Update: 
+
+θlk = θlk−1 + γk
+
+n
+
+∇ log( Rlθlk−1,k −1,k 
+
+
+
+Clθlk−1,k −1,k (xk−1, wl
+
+[k−1,k ], x k)
+
+
+
+)−∇ log( Rlθlk−1,k −1,k 
+
+
+
+Clθlk−1,k −1,k (xk−1, vl
+
+[k−1,k ], u k)
+
+
+
+)
+
+o
+
+.
+
+Go to 3.. 3. Set k = k + 1 and sample Xk|xk−1 using 
+
+fθlk ,k −1,k (xk|xk−1) ∝
+
+Z
+
+Rlθlk ,k −1,k 
+
+
+
+Clθlk ,k −1,k (xk−1, wl
+
+[k−1,k ], x k)
+
+
+
+W(dwl
+
+[k−1,k ]) (3.7) Go to 2.. 
+
+3.5.1 On the Martingale Property 
+
+To construct our martingale, we specify that FT is the σ−field that is generated by 
+
+RlT := 
+
+
+
+θ0, X 0, . . . , θ lT , X T , Wl
+
+[0 ,1] , . . . , Wl
+
+[T −1,T ], Vl
+
+[0 ,1] , . . . , Vl
+
+[T −1,T ], U 1, . . . , U T
+
+
+
+.
+
+For any t ≥ T + 1 we set Ft as the σ−field that is generated by 
+
+
+
+RlT , θ lT +1 , X T +1 , . . . , θ lt, X t, Wl
+
+[T,T +1] , . . . , Wl
+
+[t−1,t ], Vl
+
+[T,T +1] , . . . , Vl
+
+[t−1,t ], U T +1 , . . . , U t
+
+
+
+.
+
+Set 
+
+Slk−1,k (xk−1: k, u k, θ, wl
+
+[k−1,k ], vl
+
+[k−1,k ]) = 
+
+9∇ log( Rlθ,k −1,k 
+
+
+
+Clθ,k −1,k (xk−1, wl
+
+> [k−1,k ]
+
+, x k)
+
+
+
+) − ∇ log( Rlθ,k −1,k 
+
+
+
+Clθ,k −1,k (xk−1, vl
+
+> [k−1,k ]
+
+, u k)
+
+
+
+). (3.8) Write the expectation associated to the law of the process described in phases 1 and 2 as E and suppose that 
+
+sup 
+
+> k≥0
+
+E[|θk|] < +∞
+
+sup 
+
+> k≥1
+
+E
+
+
+
+sup 
+
+> θ∈Θ
+
+Slk−1,k (Xk−1: k, U k, θ, , Wl
+
+> [k−1,k ]
+
+, Vl
+
+> [k−1,k ]
+
+)
+
+
+
+< +∞
+
+then we have that (θlk)k≥T is a martingale relative to (Fk)k≥T . We suppose that the martingale property holds, without further technical discussion. 
+
+3.5.2 Comments on the Method and Practical Considerations 
+
+One may wander why the expression Slk−1,k (xk−1: k, u k, θ, wl
+
+> [k−1,k ]
+
+, vl
+
+> [k−1,k ]
+
+) in (3.8) is used in step 2, the update of the parameter. This is because the normalizing constant of fθlk ,k −1,k (xk|xk−1) in (3.7) is not typically one, so must modify the score that one uses in the standard approach. In practice to compute ∇ log 
+
+
+
+Rlθ,k −1,k 
+
+
+
+Clθ,k −1,k (xk−1, w[k−1,k ], x k)
+
+ 
+
+one would need to use auto-matic differentiation as one does not have access to exact expressions. This is what is done in all of our numerical simulations. We also note that the simulation from πlθlk−1
+
+(dwl
+
+> [k−1,k ]
+
+|xk, x k−1) and 
+
+πlθlk−1
+
+(dvl
+
+> [k−1,k ]
+
+, u k|xk−1) is not standard and we have used rejection sampling in our examples. As rejec-tion sampling often only works well in low or moderate dimensions, this suggests that the approach that we have outlined is useful, relative to MCMC, when d (the dimension of the diffusion) is small and the length of the time series T is large. The cost of each update step is O(∆ −1 
+
+> l
+
+), but this does not incorporate the cost of rejection sampling. In our examples we have not found that the latter cost dominates the simulation. 
+
+# 4 Theoretical Result 
+
+We now present our main theoretical result. The objective is to compare the iterate θlk from MPD to the one that is produced by the ‘perfect’ version of MPD (θk), that is the one as l → ∞ ; for completeness this is detailed in Appendix A, but it should be clear what that means on just reading MPD . We note of course that the perfect version of MPD can never be implemented, but would produce a martingale posterior that does not possess any time-discretization bias. The objective of the following result is to understand the cost we pay versus this perfect MPD in terms of the time-discretization parameter. We have the following result whose assumptions, (A1) and (A2), are stated in Appendix A.3 and proved in Appendix A.4. We denote by ∥ · ∥ denotes the L2−norm for vectors and the meaning of the expectation operator ˇE below is clarified in Appendix A.3. 
+
+Theorem 4.1. Assume (A1-2). Then there exists a C < +∞ such that for any l ∈ N we have 
+
+sup 
+
+> n≥1
+
+ˇE
+
+h
+
+θln − θn
+
+> 2
+
+i
+
+≤ C∆l.
+
+The implication of this result is simply this. We have shown that, under assumptions, in terms of the expected square L2−norm, that the MPD method maintains a O(∆ l) distance to the martingale posterior that has no time discretization bias. In other words, we avoid any possible exponential variance explosion in terms of the time discretization parameter l, which as remarked in Section 3.2.1 is a possibility if one does not carefully construct the approximation of the transitition density of the diffusion. The main reason for this control is the fact that there is a martingale posterior in true continuous time and, indeed, that using Euler-Maruyama time discretizations one has a consistent, in terms of l, approximation of the said martingale posterior. From a computational perspective this is rather reassuring in that one does not have to deal with exponential variances when improving the accuracy of the time discretization. 10 5 Numerical Simulations 
+
+5.1 Example 1 
+
+We consider the Ornstein-Uhlenbeck (OU) process defined by the stochastic differential equation 
+
+dXt = θ(μ − Xt) d t + σ dWt,
+
+where θ ∈ R+ is the parameter of interest and μ, σ fixed. We note that of course one could run an exact method for this diffusion, but it is used as a test case. For the auxiliary process we use another OU process except with θ fixed at some reference value, and we call this parameter θaux .We will simulate 100 data points, x0 = 10 , with the true parameters θ = 3 , μ = 10 , and σ = 0 .5, with only θ treated as unknown. The data are generated at equally spaced times with gap 0.2. The auxiliary process uses θaux = 5 , and each observation interval is subdivided into 16 Euler–Maruyama sub-steps of size ∆l = 0 .0125 . The algorithm is initialised at θ0 = 5 . The stochastic gradient update uses base learning rate η = 30 and offset c = 50 ,
+
+γk = 30 
+
+k + 50 . (5.1) After the Phase 1 processes all 100 observed data points Phase 2 extends the trajectory by 300 generative steps with the iteration counter continuing from k = 100 . The entire procedure is repeated 100 times with independent random seeds, all sharing the same observed dataset. Figure 1 displays the estimation trajectories from all 100 independent repetitions. The blue curves correspond to Phase 1 (iterations 0–100 ), where the estimator is driven by the observed data; the red curves correspond to Phase 2 (iterations 100 –400 ), where it continues with generatively sampled observations. During Phase 1, the trajectories descend rapidly from θ0 = 5 toward the true value θ = 3 . Despite a large initial spread, most runs have converged close to the true value by iteration 100 . The middle panel confirms this: the distribution of ˆθ across repetitions after Phase 1 is concentrated near θ∗ = 3 . The final mean estimate across all repetitions is ˆθ ≈ 2.844 (orange dotted line), after Phase 2. 0 50 100 150 200 250 300 350 400         
+
+> Iteration
+> 0
+> 2
+> 4
+> 6
+> 8
+> Theta
+> Phase 1: Observed Data (Blue) -> Phase 2: Generative (Red)
+> Phase transition (iter 100)
+> True theta = 3
+> Initial theta = 5.0
+> Mean Final = 2.844
+> Density
+> After
+> Phase 1
+> Density
+> After
+> Phase 2
+> OU Process Theta Sampling |theta_true=3, n_pilot=50, delta_l=dt/16, n_repeats=100
+
+Figure 1: Parameter estimation trajectories over 100 independent repetitions. Left : blue curves show Phase 1 (observed data, iterations 0–100 ); red curves show Phase 2 (generative continuation, iterations 
+
+100 –400 ). The purple line marks the true value θ∗ = 3 , the green dashed line the initial value θ0 = 5 , and the orange dotted line the final mean ˆθ ≈ 2.844 . Middle and right : distribution of ˆθ across repetitions at the end of Phase 1 and Phase 2, respectively. 11 5.2 Example 2 
+
+The stochastic Lotka–Volterra (SLV) system for prey X1 
+
+> t
+
+and predator X2 
+
+> t
+
+is 
+
+dX1 
+
+> t
+
+= X1
+
+> t
+
+ α − βX 2
+
+> t
+
+ dt + σ1X1 
+
+> t
+
+dW 1 
+
+> t
+
+,
+
+dX2 
+
+> t
+
+= X2
+
+> t
+
+ ζX 1 
+
+> t
+
+− γ dt + σ2X2 
+
+> t
+
+dW 2 
+
+> t
+
+,
+
+with independent Brownian motions W 1, W 2 and unknown parameter θ = ( α, β, ζ, γ ) ∈ (R+)4. The multiplicative noise and nonlinear cross-coupling make the transition density intractable. We will use the following auxiliary process. 
+
+d ˜X1 
+
+> t
+
+= ˜X1
+
+> t
+
+h
+
+(α − βx 2)
+
+
+
+1 − tt1
+
+
+
++ ( α − βx ′2) tt1
+
+i
+
+dt + σ1 ˜X1 
+
+> t
+
+dW 1 
+
+> t
+
+,
+
+d ˜X2 
+
+> t
+
+= ˜X2
+
+> t
+
+h
+
+(ζx 1 − γ)
+
+
+
+1 − tt1
+
+
+
++ ( ζx ′1 − γ) tt1
+
+i
+
+dt + σ2 ˜X2 
+
+> t
+
+dW 2 
+
+> t
+
+.
+
+We generate 100 data points with time spacing 0.1 with true parameters α∗ = 1 .0, β∗ = 0 .5, ζ∗ = 0 .3,
+
+γ∗ = 0 .8, with diffusion coefficients σ1 = 0 .2 and σ2 = 0 .15 . All four drift parameters are treated as unknown and estimated jointly; σ1 and σ2 are assumed known. Each observation interval is further subdivided into 8 Euler–Maruyama sub-steps of size ∆l = 0 .0125 . The algorithm is initialized at θ0 =(0 .5, 1.0, 0.5, 0.5) . The step size γk = 0 .5/(k + 100) . After the Phase 1 process, Phase 2 extends the trajectory by 100 generative steps with the iteration counter continuing seamlessly. The entire procedure is repeated 50 times with independent random seeds, all sharing the same observed dataset. Figure 2 shows the estimation trajectories for all four parameters across 50 independent repetitions. Each row corresponds to one parameter; the blue curves cover Phase 1 (iterations 0–100 ) and the red curves cover Phase 2 (iterations 100 –200 ). For α and β, Phase 1 achieves rapid and reliable convergence. The trajectories for α rise from the initial value 0.5 toward the true value 1.0, and by iteration 100 the estimates are tightly concentrated near 1.0. Similarly, β descends from 1.0 toward 0.5 and converges well within Phase 1. The final mean estimates, ˆα ≈ 0.971 and ˆβ ≈ 0.498 , are close to their respective true values with small bias. Convergence is slower for ζ and γ. The ζ trajectories descend from 0.5 toward 0.3 but with noticeably more spread across runs, and some trajectories dip below zero during Phase 1. The final mean ˆζ ≈ 0.333 
+
+lies slightly above the true value 0.3. For γ, the estimates rise from 0.5 but do not fully reach the true value 0.8 by the end of Phase 1. In Phase 2, the distributions of all four parameters widen relative to the end of Phase 1, consistent with the behaviour observed in the OU experiment: once real observations are no longer available, the generative continuation introduces additional variance without the anchoring effect of data. 
+
+5.2.1 Comparison with MCMC 
+
+We compare our approach with the state-of-the-art MCMC method in [18]. This approach is based upon multilevel Monte Carlo [12] and also uses the bridge method adopted in this paper. Although it is designed for non-snychronous observations it is easily adapted to the problem in this paper. We compare the scenario of Figure 2 to using MCMC in this section. The MCMC is the multilevel approach in [18] with the priors used in that paper for the unknown parameters we consider. Figure 3 compares the empirical marginal distributions produced by the two methods on the same observed trajectory. The martingale-score density (blue) is obtained as a kernel density estimate over 100 
+
+independent repetitions; the MCMC density (red) is a kernel density estimate over 119 thinned draws extracted from a chain of length 22000 at the finest discretization level. We note that the comparison here is mainly for the purposes of computational time/efficiency. The Bayesian approach in [18] samples from an approximate version of the posterior of the parameters and corrects via importance sampling, so intrinsically the samples are displayed just to provide idea of the spread, rather than for inference per-se. The total wall-clock time is 25 .5 minutes for the martingale-score method and 181 .4 minutes for MCMC. The per-co-ordinate effective sample sizes (computed via the method of [10, 11]) of the MCMC 12 0 25 50 75 100 125 150 175 200 
+
+Iteration 
+
+0.6 
+
+0.8 
+
+1.0 
+
+1.2 
+
+Evolution: Phase 1 (Blue) -> Phase 2 (Red) 
+
+True = 1.0 
+
+Initial = 0.50 
+
+Mean Final = 0.971 
+
+Density 
+
+After 
+
+Phase 1 
+
+Density 
+
+After 
+
+Phase 2 
+
+0 25 50 75 100 125 150 175 200 
+
+Iteration 
+
+0.0 
+
+0.2 
+
+0.4 
+
+0.6 
+
+0.8 
+
+1.0 
+
+Evolution: Phase 1 (Blue) -> Phase 2 (Red) 
+
+True = 0.5 
+
+Initial = 1.00 
+
+Mean Final = 0.498 
+
+Density 
+
+After 
+
+Phase 1 
+
+Density 
+
+After 
+
+Phase 2 
+
+0 25 50 75 100 125 150 175 200 
+
+Iteration 
+
+0.2 
+
+0.0 
+
+0.2 
+
+0.4 
+
+0.6 
+
+Evolution: Phase 1 (Blue) -> Phase 2 (Red) 
+
+True = 0.3 
+
+Initial = 0.50 
+
+Mean Final = 0.333 
+
+Density 
+
+After 
+
+Phase 1 
+
+Density 
+
+After 
+
+Phase 2 
+
+0 25 50 75 100 125 150 175 200 
+
+Iteration 
+
+0.4 
+
+0.6 
+
+0.8 
+
+1.0 
+
+Evolution: Phase 1 (Blue) -> Phase 2 (Red) 
+
+True = 0.8 
+
+Initial = 0.50 
+
+Mean Final = 0.729 
+
+Density 
+
+After 
+
+Phase 1 
+
+Density 
+
+After 
+
+Phase 2 
+
+Lotka-Volterra Model 4-Parameter Estimation (alpha, beta, zeta, gamma) 
+
+Total Time: 256.2s (4.3min) | Avg: 5.12s/run | n_pilot=10, delta_l=dt/8, n=50 runs Figure 2: Four-parameter estimation trajectories over 50 independent repetitions. Each row shows one parameter ( α, β, ζ, γ); blue curves are Phase 1 (observed data, iterations 0–100 ) and red curves are Phase 2 (generative continuation, iterations 100 –200 ). Purple lines mark true values; green dashed lines mark initial values; orange dotted lines mark final mean estimates. Side panels show the distribution of estimates across repetitions at the end of each phase. 13 chain are 135 .7, 132 .9, 122 .3, and 118 .9 for α, β, ζ, and γ respectively, all of which exceed 100 ; the worst-case integrated autocorrelation time, 185 .1 on γ, sets the thinning step. Translated to cost per independent sample, is 15 .3 seconds for the martingale-score method and 91 .5 seconds for MCMC, a factor of approximately 6.0.2 0.4 0.6 0.8 1.0 1.2 1.4 1.6                              
+
+> 0
+> 1
+> 2
+> 3
+> 4
+> 5
+> 6
+> density
+> :Martingale=0.977±0.063 MCMC=0.791±0.225 truth=1.00
+> Martingale score (N=100 indep)
+> MCMC (22000 iterations, ESS=136)
+> truth
+> 0.0 0.2 0.4 0.6 0.8
+> 0
+> 1
+> 2
+> 3
+> 4
+> density
+> :Martingale=0.444±0.102 MCMC=0.398±0.113 truth=0.50
+> Martingale score (N=100 indep)
+> MCMC (22000 iterations, ESS=133)
+> truth
+> 0.0 0.1 0.2 0.3 0.4 0.5 0.6
+> 0
+> 1
+> 2
+> 3
+> 4
+> 5
+> 6
+> density
+> :Martingale=0.311±0.121 MCMC=0.221±0.068 truth=0.30
+> Martingale score (N=100 indep)
+> MCMC (22000 iterations, ESS=122)
+> truth
+> 0.2 0.4 0.6 0.8 1.0
+> 0.0
+> 0.5
+> 1.0
+> 1.5
+> 2.0
+> 2.5
+> 3.0
+> density
+> :Martingale=0.688±0.108 MCMC=0.541±0.158 truth=0.80
+> Martingale score (N=100 indep)
+> MCMC (22000 iterations, ESS=119)
+> truth
+> Martingale score method vs MCMC method same data, same task
+> Martingale score: 1532.1s total = 15.3s/indep |MCMC: 10884.4s total = 91.5s/indep
+
+Figure 3: Marginal densities of the four drift parameters (α, β, ζ, γ ) on the same observed SLV trajec-tory used in Figure 2, comparing the martingale-score gradient method (blue, kernel density over 100 
+
+independent repetitions) with the MLPMMH sampler of [18] (red, kernel density over 119 approximately independent draws thinned from a chain of 22000 iterations at discretization level 8). Solid black lines mark the true parameter values; dotted vertical lines mark the empirical posterior means. The header reports total wall time and cost per independent sample for each method. 
+
+# 6 Summary and Future Work 
+
+In this article we have developed a new score-based martingale method for diffusions that are observed with low frequency. We have proved, under assumptions, that the estimator is close to a continuous-time version of the algorithm uniformly in time. We implemented our method in several examples and have established that it can produce statistically meaningful inferences at computational times which are far less than state-of-the-art MCMC algorithms. There are several avenues for future research. The first is to consider an extension to use the multilevel Monte Carlo method. The idea would be to consider expectations of functions associated to a hierarchy 14 of martingale posteriors with falling levels of time-discretization. Then one can attempt to utilize the multilevel identity to reduce the computational effort as is typical in that literature. A second important area is that of high-frequency observations. In such cases one could envisage time steps of the martingale posterior at the level of frequency of the observation, as was done here, except simple approximations, such as Euler-Maruyama densities could work rather well, leading to a fast method, albeit at high frequency. Thirdly is to consider extensions to other models, such as partially observed diffusions (e.g. [16]) and an investigation in that case may well be warranted as existing (exact) computational methods can be notoriously slow. 
+
+# A Theoretical Exposition 
+
+A.1 Perfect MPD 
+
+The following is the MPD with l → ∞ ; for brevity we omit the first phase, but inspection of this second phase, it should be clear what the first phase would be. This is the reference method we will compare the iterates of MPD to. In the below and throughout we suppose θ0 = θl 
+
+> 0
+
+which is the initialization used for 
+
+MPD .1. Input θT and XT from the first phase, set k = T + 1 . Sample Xk|xk−1 using 
+
+fθk−1,k −1,k (xk|xk−1) ∝
+
+Z
+
+Rθk−1,k −1,k 
+
+ Cθk−1,k −1,k (xk−1, w[k−1,k ], x k) W(dw[k−1,k ])
+
+Go to 2.. 2. Iterate: 
+
+• Sample W[k−1,k ]|xk, x k−1 from 
+
+πθk−1 (dw[k−1,k ]|xk, x k−1) ∝ Rθk−1,k −1,k 
+
+ Cθk−1,k −1,k (xk−1, w[k−1,k ], x k) W(dw[k−1,k ])
+
+compute ∇ log  Rθk−1,k −1,k 
+
+ Cθk−1,k −1,k (xk−1, w[k−1,k ], x k) .
+
+• Sample V[k−1,k ], u k|xk−1
+
+πθk−1 (dv[k−1,k ], u k|xk−1) ∝ Rθk−1,k −1,k 
+
+ Cθk−1,k −1,k (xk−1, v[k−1,k ], u k) W(dv[k−1,k ])
+
+and compute ∇ log  Rθk−1,k −1,k 
+
+ Cθk−1,k −1,k (xk−1, v[k−1,k ], u k) .
+
+• Update: 
+
+θk = θk−1 + γk
+
+n
+
+∇ log( Rθk−1,k −1,k 
+
+ Cθk−1,k −1,k (xk−1, w[k−1,k ], x k))−∇ log( Rθk−1,k −1,k 
+
+ Cθk−1,k −1,k (xk−1, v[k−1,k ], u k))
+
+o
+
+.
+
+Go to 3.. 3. Set k = k + 1 and sample Xk|xk−1 using 
+
+fθk ,k −1,k (xk|xk−1) ∝
+
+Z
+
+Rθk ,k −1,k 
+
+ Cθk ,k −1,k (xk−1, w[k−1,k ], x k) W(dw[k−1,k ])
+
+Go to 2.. 15 A.2 Notations and Conventions 
+
+The basic idea of the proof of Theorem 4.1 is based upon an interpolation type argument which is used in the analysis of the stability of the filter and numerical methods for ordinary differential equations; see for example [6, Chapter 7] and the references therein. To that end let s ∈ {∅ , l } be a subscript where l ∈ N is given and fixed and if s = ∅ then there is no subscript (i.e. it is null) and define the recursion for m ≥ 0
+
+fixed, k ≥ mθsk+1 (m, θ sm, X sm) = θsk(m, θ sm, X sm) + γkSsk,k +1 
+
+
+
+Xsk:k+1 , U sk+1 , θ sk(m, θ sm, X sm), ws
+
+> [k,k +1]
+
+, vs
+
+> [k,k +1]
+
+
+
+with θsm(m, θ sm, X sm) = θsm and where 
+
+Ssk,k +1 
+
+
+
+Xsk:k+1 , U sk+1 , θ sk(m, θ sm, X sm), ws
+
+> [k,k +1]
+
+, vs
+
+> [k,k +1]
+
+
+
+=
+
+∇ log( Rsθsk (m,θ sm,X sm),k,k +1 
+
+
+
+Csθsk (m,θ sm,X sm),k,k +1 (xsk, ws
+
+> [k,k +1]
+
+, x sk+1 )
+
+
+
+)−∇ log( Rsθsk (m,θ sm,X sm),k,k +1 
+
+
+
+Csθsk (m,θ sm,X sm),k,k +1 (xsk, vs
+
+> [k,k +1]
+
+, u sk+1 )
+
+
+
+)
+
+and we use the s subscripts for X and U to denote whether they have been generated by MPD or the perfect version; note that in the first phase, of course, the X are the same in both MPD and the perfect one. We note that θn(0 , θ 0, x 0) represents the perfect MPD recursion and θln(0 , θ 0, x 0) the MPD one can actually implement in practice (i.e. up-to time discretization). Our proof will focus on the decomposition 
+
+θn(0 , θ 0, x 0) − θln(0 , θ 0, x 0) = 
+
+> n−1
+
+X
+
+> j=0
+
+θn
+
+ j, θ lj (0 , θ 0, X 0), X lj
+
+ − θn
+
+ j + 1 , θ lj+1 (0 , θ 0, X 0), X lj+1 ) . (A.1) 
+
+A.3 Assumptions 
+
+Our objective is leverage the identity that is given in (A.1). To that end we can construct a process that is equal in distribution to the random variables that are given in (A.1). The reason why this will be useful will be clarified once the process and assumptions are detailed. We consider each summand of (A.1), denote it Sj , individually and suppose that one can simulate each difference independently across the summands. On inspection of the summand, θn
+
+ j, θ lj (0 , θ 0, X 0), X lj
+
+ (resp. θn
+
+ j + 1 , θ lj+1 (0 , θ 0, X 0), X lj+1 ) consists of running the MPD up-to iterative time j (resp. time j + 1 ) and then generating the perfect MPD starting at θlj (0 , θ 0, X 0) and Xlj at time j (resp. θlj+1 (0 , θ 0, X 0) and Xlj+1 at time j + 1 ) up-to time n (resp. n). We suppose that we can construct a coupling of the laws associated to the sequences of random variables as just described, with expectation operator ˇE, such that the to be described assumptions are satisfied. We discuss the extent to which these assumptions have previously been investigated, below. To minimize any notational issues, we write, for example Xj , Xlj without reference to the index j in Sj , but it should be understood that the assumption holds for every (independent) process Sj . The constants below are assumed j independent. To shorten the notation set 
+
+Dlj := Sj,j +1 
+
+ Xlj , X j+1 , U j , θ lj (0 , θ 0, X 0), W[j,j +1] , Vj,j +1] 
+
+ −
+
+Slj,j +1 
+
+
+
+Xlj:j+1 , U lj , θ lj (0 , θ 0, X 0), Wl
+
+> [j,j +1]
+
+, Vlj,j +1] 
+
+
+
+.
+
+(A1 ) There exists a C < +∞ such that for any l ∈ N
+
+max 
+
+
+
+ˇE
+
+h
+
+Dlj
+
+> 2
+
+i
+
+, ˇE Dlj
+
+ , ˇE
+
+h
+
+Xj+1 − Xlj+1 
+
+> 2
+
+i
+
+≤ C∆l.
+
+(A2 ) There exists a non-negative sequence (αn)n≥0, such that sup n≥1,j ≥1,j<n 
+
+Pni=j αn−i < +∞ and 
+
+C < +∞ such that for any (n, j, x, x ′, θ, θ ′) ∈ N × { 1, . . . , n − 1} × R2d × Θ2
+
+ˇE ∥θn(j + 1 , θ, x ) − θn(j + 1 , θ ′, x ′)∥2 ≤ Cα n−j
+
+∥x − x′∥2 + ∥θ − θ′∥2
+
+|ˇE [θn(j + 1 , θ, x ) − θn(j + 1 , θ ′, x ′)] | ≤ Cα n−j {| x − x′| + |θ − θ′|} .
+
+16 The assumptions deserve a discussion to understand their implication and whether they can be verified. (A1) concerns the accuracy of the time-discretization, interplayed with the updates of the parameter up-to time j + 1 . In essence, one considers the time-discretized updates of the parameter at a given l up-to time 
+
+j, which could be identical for both θn
+
+ j, θ lj (0 , θ 0, X 0), X lj
+
+ and θn
+
+ j + 1 , θ lj+1 (0 , θ 0, X 0), X lj+1 ) (this would be a valid coupling) and then in one step θn
+
+ j, θ lj (0 , θ 0, X 0), X lj
+
+ transitions to the perfect MPD 
+
+and the other stays in the discretized one. The assumption states that in this transition, one can couple the simulation so that the standard Euler-Maruyama rate e.g. [19] (which holds for sufficiently regular diffusions as assumed in this paper) is maintained. This seems intutively possible and has been studied numerically in the context of diffusion bridges in [1, 18] who develop MCMC methods to achieve these rates. In those articles the technical barrier to proving these rates are discussed in details and we refer the reader to those papers. (A2) is a type of forgetting property of the update of the parameters and the intermediate simulation, when considering the perfect MPD . Essentially, it says that for long-time the expected square L2−distance between two perfect MPD will disappear. Normally these type of properties can be verified for Markov chains (of which our process is) with sufficiently fast mixing; see [6] for example. Ultimately one would like to prove (A1-2) but we expect that this a particularly arduous challenge which is well out of the scope of the current article, but despite this, we believe that these assumptions can hold under appropriate conditions. 
+
+A.4 Proof of Theorem 4.1 
+
+Proof. Throughout C is a constant that depends on dθ only and whose value may change from line-to-line. We begin by considering (A.1), of which one has the bound: 
+
+ˇE
+
+∥
+
+> n−1
+
+X
+
+> j=0
+
+Sj ∥2
+
+ ≤
+
+> n−1
+
+X
+
+> j=0
+
+ˇE ∥S j ∥2 + C X
+
+> j<k
+
+|ˇE [Sj ] || ˇE [Sk] | (A.2) where we have used the independence of Sj and Sk, and we have used basic properties of L1−norms. We consider a summand of (A.1) which is equal to 
+
+Sj =
+
+> 3
+
+X
+
+> i=1
+
+Sj (i) (A.3) where 
+
+Sj (1) = θ0 +
+
+> j
+
+X
+
+> i=1
+
+γiSli−1,i 
+
+
+
+Xli−1: i, U li , θ li−1(0 , θ 0, X 0), wl
+
+> [i−1,i ]
+
+, vl
+
+> [i−1,i ]
+
+
+
+−
+
+(
+
+θ0 +
+
+> j
+
+X
+
+> i=1
+
+γiSli−1,i 
+
+
+
+Xli−1: i, U li , θ li−1(0 , θ 0, X 0), wl
+
+> [i−1,i ]
+
+, vl
+
+> [i−1,i ]
+
+)
+
+Sj (2) = γj+1 Sj,j +1 
+
+ Xlj , X j+1 , U j , θ lj (0 , θ 0, X 0), w[j,j +1] , vj,j +1] 
+
+ −
+
+γj+1 Slj,j +1 
+
+
+
+Xlj:j+1 , U lj , θ lj (0 , θ 0, X 0), wl
+
+> [j,j +1]
+
+, vlj,j +1] 
+
+
+
+Sj (3) =
+
+> n
+
+X
+
+> i=j+2
+
+γiSi−1,i 
+
+ Xi−1: i, U i, θ i−1(j, θ lj (0 , θ 0, X 0), X lj ), w[i−1,i ], v[i−1,i ]
+
+ −
+
+n
+
+γj+2 Sj+1 ,j +2 
+
+ Xlj+1 , X j+2 , U j+2 , θ lj+1 (0 , θ 0, X 0), w[j+1 ,j +2] , vj+1 ,j +2] 
+
+
+
+> n
+
+X
+
+> i=j+3
+
+γiSi−1,i 
+
+ Xi−1: i, U i, θ i−1(j + 1 , θ lj+1 (0 , θ 0, X 0), X lj+1 ), w[i−1,i ], v[i−1,i ]
+
+ o
+
+where we use the convention that the sum over an empty set is zero and note that Sj (1) = 0 ; it is just included for clarity of exposition. As a result, to bound (A.2) we will use the decomposition that is given in (A.3) which consistutes dealing with terms of the type ˇE ∥S j ∥2 and |ˇE [Sj ] |; we begin with the former. 17 We have that ˇE ∥S j ∥2 ≤ C  ˇE ∥S j (2) ∥2 + ˇE ∥S j (3) ∥2 .
+
+Then applying (A1) to the first term on the R.H.S. and (A2) to the second term on the R.H.S. we have that 
+
+ˇE ∥S j ∥2 ≤ C  γ2
+
+> j+1
+
+∆l + αn−j
+
+ˇE ∥Xj+1 − Xlj+1 ∥2 + ˇE ∥θj+1 (j, θ lj (0 , θ 0, X 0), X lj+1 ) − θlj+1 (0 , θ 0, X 0)∥2  .
+
+Then applying (A1) to ˇE ∥Xj+1 − Xlj+1 ∥2 we obtain 
+
+ˇE ∥S j ∥2 ≤ C  γ2
+
+> j+1
+
+∆l + αn−j
+
+∆l + ˇE ∥θj+1 (j, θ lj (0 , θ 0, X 0), X lj+1 ) − θlj+1 (0 , θ 0, X 0)∥2  
+
+so to upper-bound ˇE ∥S j ∥2 we now consider ˇE ∥θj+1 (j, θ lj (0 , θ 0, X 0), X lj+1 ) − θlj+1 (0 , θ 0, X 0)∥2. Using the iterative update formula of the MPD we have 
+
+θj+1 (j, θ lj (0 , θ 0, X 0), X lj+1 ) − θlj+1 (0 , θ 0, X 0) = γj+1 Dlj
+
+so that by using (A1) we have that 
+
+ˇE ∥θj+1 (j, θ lj (0 , θ 0, X 0), X lj+1 ) − θlj+1 (0 , θ 0, X 0)∥2 ≤ Cγ 2
+
+> j+1
+
+∆l. (A.4) Thus we have shown that ˇE ∥S j ∥2 ≤ C∆l
+
+ γ2 
+
+> j+1
+
++ αn−j
+
+1 + γ2
+
+> j+1
+
+ . (A.5) For |ˇE [Sj ] |, we note that if j ≥ T this term is exactly zero by the martingale property, so we suppose that j < T . We have that 
+
+|ˇE [Sj ] | ≤ C  |ˇE [Sj (2)] | + |ˇE [Sj (3)] | .
+
+Then applying (A1) to the first term on the R.H.S. and (A2) to the second term on the R.H.S. we have that 
+
+|ˇE [Sj ] | ≤ C  γj+1 ∆l + αn−j
+
+ˇE |Xj+1 − Xlj+1 | + ˇE |θj+1 (j, θ lj (0 , θ 0, X 0), X lj+1 ) − θlj+1 (0 , θ 0, X 0)|  .
+
+Then as 
+
+ˇE |Xj+1 − Xlj+1 | ≤ C ˇE ∥Xj+1 − Xlj+1 ∥21/2
+
+≤ C∆1/2
+
+> l
+
+where we have used (A1 and similarly 
+
+ˇE |θj+1 (j, θ lj (0 , θ 0, X 0), X lj+1 ) − θlj+1 (0 , θ 0, X 0)| ≤ C ˇE ∥θj+1 (j, θ lj (0 , θ 0, X 0), X lj+1 ) − θlj+1 (0 , θ 0, X 0)∥21/2
+
+≤ Cγ j+1 ∆1/2
+
+> l
+
+where we have used (A.4), one obtains 
+
+|ˇE [Sj ] | ≤ C
+
+
+
+γj+1 ∆l + αn−j
+
+n
+
+∆1/2 
+
+> l
+
++ γj+1 ∆1/2
+
+> l
+
+o 
+
+≤ C∆1/2 
+
+> l
+
+(γj+1 + αn−j {1 + γj+1 }) . (A.6) Now, combining (A.2) with (A.5) and (A.6) one has that 
+
+ˇE
+
+∥
+
+> n−1
+
+X
+
+> j=0
+
+Sj ∥2
+
+ ≤ C
+
+
+
+> n−1
+
+X
+
+> j=0
+
+∆l
+
+ γ2 
+
+> j+1
+
++ αn−j
+
+1 + γ2
+
+> j+1
+
+ +
+
+ 
+
+> T−1
+
+X
+
+> j=0
+
+∆1/2 
+
+> l
+
+(γj+1 + αn−j {1 + γj+1 })
+
+
+
+> 2
+
+ .
+
+As all the sums are upper-bounded uniformly in n we have obtained that 
+
+sup 
+
+> n≥1
+
+ˇE
+
+h
+
+θln − θln
+
+> 2
+
+i
+
+≤ C∆l.
+
+as was to be proved. 18 References 
+
+[1] Alvarez , M. & Jasra , A. (2025). Unbiased Parameter Estimation of Partially Observed Diffusions using Diffusion Bridges. arXiv preprint. [2] Beskos , A., Crisan , D., Jasra , A., Kantas , N. & Ruzayqat , H. (2021). Score-Based parameter estimation for a class of continuous-time state space models. SIAM J. Sci. Comp. , 43 , A2555-A2580. [3] Beskos , A., Papaspiliopoulos , O., Roberts , G. O. & Fearnhead , P. (2006) Exact and compu-tationally efficient likelihood-based estimation for discretely observed diffusion processes. J. R. Stat. Soc. Ser. B , 68 , pp. 333–382. [4] Blanchet , J. & Zhang , F. (2020). Exact simulation for multivariate Ito diffusions. Adv. Appl. Probab. , 52 , 1003–1034. [5] Cui , F. & Walker , S. G. (2025). Martingale posteriors from score functions. arXiv preprint. [6] Del Moral , P. (2004). Feynman-Kac Formulae: Genealogical and Interacting Particle Systems with Applications . Springer: New York. [7] Durham , G. & Gallant , A. (2002). Numerical techniques for maximum likelihood estimation of continuous-time diffusion processes. J. B. Econ. Stat. 20 , 297-316. [8] Fong , E., Holmes , C. C. , & Walker , S. G. (2024). Martingale posterior distributions. J. R. Stat. Soc. Ser. B , 85 , 1357–1391. [9] Fong , E., & Yiu , A. (2026). Asymptotics for a class of parametric martingale posteriors. Biometrika ,(to appear). [10] Geyer , C.J. (2011). ntroduction to Markov Chain Monte Carlo. In Handbook of Markov Chain Monte Carlo , edited by Steve Brooks, Andrew Gelman, Galin L. Jones, and Xiao-Li Meng, 3–48. Chapman & Hall: London. [11] Geyer , C.J. (1992). Practical Markov Chain Monte Carlo. Stat. Sci. , 7, 473-483. [12] Giles , M. B. (2008). Multilevel Monte Carlo path simulation. Op. Res. , 56 , 607-617. [13] Golightly , A. & Wilkinson , D. (2008). Bayesian inference for nonlinear multivariate diffusion models observed with error. Comp. Stat. Data Anal. , 52 , 1674-1693. [14] Hall , P. & Hyde , C. C. (1980). Martingale Limit Theory and its Application . Academic Press: New York. [15] Heng , J., Houssineau , J. & Jasra , A. (2024). On unbiased score estimation for partially observed diffusions. J. Mach. Learn. Res. , 25 , 1-66. [16] Jasra , A., Kamatani , K. , Law , K. J. H. & Zhou , Y. (2018). Bayesian static parameter estimation for partially observed diffusions via multilevel Monte Carlo. SIAM J. Sci. Comp. , 40 , A887-A902. [17] Jasra , A., Law K. J. H. & Suciu , C. (2020). Advanced Multilevel Monte Carlo. Intl. Stat. Rev. , 88 ,548-579. [18] Jasra , A., Kamatani , K. & Wu , A. (2026). Bayesian Inference for non-synchronously observed diffusions. SIAM/ASA J. Uncert. Quant. (to appear). [19] Kloeden , P. E. & Platen , E. (1992). Numerical Solution of Stochastic Differential Equations .Springer: New York. 19 [20] Lee , H., Yun , E., Nam , G., Fong , E., & Lee , J. (2023). Martingale Posterior Neural Processes. 
+
+11th Intl. Conf. Learn. Rep. 
+
+[21] Li , C., Chen , C., Carlson , D. & Carin , L. (2016). Preconditioned Stochastic Gradient Langevin Dynamics for Deep Neural Networks. Proc. AAAI , 30(1) .[22] Li , X. L. (2018). Preconditioned stochastic gradient descent. IEEE Trans. Neur. Net. Learn. Sys. ,
+
+29 , 1454-1466. [23] Moya , B. & Walker , S. G. (2025). Martingale Posterior Distributions for Time-Series Models. 
+
+Statist. Sci. , 40 , 68–80. [24] Ng , K., Fong , E. Frazier , D. T., Knoblauch , J. & Wei , S. (2025). TabMGP: Martingale Posterior with TabPFN. arXiv preprint. [25] Roberts , G. O. & Stramer , O. (2001). On inference for partially observed nonlinear diffusion models using the Metropolis-Hastings algorithm. Biometrika , 88 , 603-621. [26] Schauer , M., van der Meulen , F. & van Zanten , H. (2017). Guided proposals for simulating multi-dimensional diffusion bridges. Bernoulli , 23 , 2917–2950. [27] van der Meulen , F., & Schauer , M. (2017). Bayesian estimation of discretely observed multi-dimensional diffusion processes using guided proposals. Elec. J. Stat. , 11 , 2358-2396. 20

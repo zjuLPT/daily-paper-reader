@@ -1,0 +1,86 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2605.00250v1/fig-001.webp",
+      "caption": "Table 1. Generation results on 2D molecule datasets using the GRUM model. Best results are highlighted in bold. The DVS rows (Ours) consistently show superior fidelity across distributional (FCD) metric.",
+      "page": 6,
+      "index": 1,
+      "width": 1017,
+      "height": 213
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00250v1/fig-002.webp",
+      "caption": "Figure 2. Convergence behavior of FCD during sampling on QM9 using GRUM. By dynamically sensing the drift variation, our method converges 21.3% faster than the fixed-step baseline while attaining a higher distributional fidelity (lower FCD). The inset confirms that the DVS-driven trajectory maintains smoother convergence during the final phase of molecule generation.",
+      "page": 7,
+      "index": 2,
+      "width": 429,
+      "height": 348
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00250v1/fig-003.webp",
+      "caption": "Figure 3. Evolution of the information-geometric increment (∆s2) on QM9 using GRUM. We compare the information progress of the fixed-step Euler-Maruyama sampler and the DVSdriven Euler-Maruyama sampler. For the fixed-step sampler, the information increment remains small at early stages and increases sharply near the end, whereas the adaptive sampler maintains an approximately equal arc-length progression throughout sampling.",
+      "page": 7,
+      "index": 3,
+      "width": 479,
+      "height": 346
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00250v1/fig-004.webp",
+      "caption": "Table 8. Comparison of Full-Trajectory DVS and Active-Range DVS. Full-trajectory DVS already outperforms the fixed-step baseline, demonstrating the robustness of the information-geometric criterion without manual range restriction.",
+      "page": 14,
+      "index": 4,
+      "width": 995,
+      "height": 211
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00250v1/fig-005.webp",
+      "caption": "Figure 4. Numerical scale analysis of information variation components on QM9 using the GruM model. The drift component Vf (red solid line) represents the data-dependent variation of the transition distribution, which dominates the noise component Vg (blue dashed line) by over six orders of magnitude on average. The explosive growth of Vf near t = 1 highlights the intense structural transitions (crystallization) that necessitate adaptive step-size control.",
+      "page": 13,
+      "index": 5,
+      "width": 613,
+      "height": 406
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00250v1/fig-006.webp",
+      "caption": "Table 6. Common hyperparameters and numerical constants for the DVS-driven adaptive sampler.",
+      "page": 13,
+      "index": 6,
+      "width": 1017,
+      "height": 210
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00250v1/fig-007.webp",
+      "caption": "Table 3. Generation results on the general graph datasets using the GruM model. The best results are highlighted in bold. Our DVS sampler consistently achieves lower MMD values across most structural properties, demonstrating its superior ability to preserve complex topological characteristics compared to non-adaptive baselines.",
+      "page": 8,
+      "index": 7,
+      "width": 1017,
+      "height": 213
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00250v1/fig-008.webp",
+      "caption": "Figure 5. Visualizations of generated molecules on QM9 (top row) and ZINC250k (bottom row). The samples are generated using the GruM model with the DVS-Euler–Maruyama sampler. The top row shows organic molecules from QM9 with realistic geometric configurations. The bottom row displays complex drug-like molecules from ZINC250k, successfully capturing multi-ring systems and diverse heteroatoms (e.g., O, N, S, Cl).",
+      "page": 17,
+      "index": 8,
+      "width": 954,
+      "height": 338
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00250v1/fig-009.webp",
+      "caption": "Figure 6. Snapshots of structural evolution on the Planar dataset. The top row represents the standard fixed-step Euler sampler, while the bottom row represents our DVS-Euler–Maruyama sampler. As t increases, the DVS-driven sampler resolves the sparse planar skeleton more cleanly, especially in the late stages (t ≥ 0.6).",
+      "page": 17,
+      "index": 9,
+      "width": 954,
+      "height": 340
+    },
+    {
+      "url": "assets/figures/arxiv/2605.00250v1/fig-010.webp",
+      "caption": "Figure 7. Snapshots of structural evolution on the SBM dataset. The top row (fixed-step) and bottom row (DVS-Euler–Maruyama) both start from a dense noise state. However, the DVS-driven sampler achieves clearer community separation and fewer spurious inter-cluster edges by the final step (t = 1.0).",
+      "page": 17,
+      "index": 10,
+      "width": 954,
+      "height": 337
+    }
+  ]
+}

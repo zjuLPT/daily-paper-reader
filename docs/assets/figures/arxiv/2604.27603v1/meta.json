@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2604.27603v1/fig-001.webp",
+      "caption": "Figure 1: Parameter estimation trajectories over 100 independent repetitions. Left: blue curves show Phase 1 (observed data, iterations 0–100); red curves show Phase 2 (generative continuation, iterations 100–400). The purple line marks the true value θ∗ = 3, the green dashed line the initial value θ0 = 5, and the orange dotted line the final mean θ̂ ≈ 2.844. Middle and right: distribution of θ̂ across repetitions at the end of Phase 1 and Phase 2, respectively.",
+      "page": 11,
+      "index": 1,
+      "width": 765,
+      "height": 367
+    },
+    {
+      "url": "assets/figures/arxiv/2604.27603v1/fig-002.webp",
+      "caption": "Figure 2: Four-parameter estimation trajectories over 50 independent repetitions. Each row shows one parameter (α, β, ζ, γ); blue curves are Phase 1 (observed data, iterations 0–100) and red curves are Phase 2 (generative continuation, iterations 100–200). Purple lines mark true values; green dashed lines mark initial values; orange dotted lines mark final mean estimates. Side panels show the distribution of estimates across repetitions at the end of each phase.",
+      "page": 13,
+      "index": 2,
+      "width": 764,
+      "height": 587
+    },
+    {
+      "url": "assets/figures/arxiv/2604.27603v1/fig-003.webp",
+      "caption": "Figure 3: Marginal densities of the four drift parameters (α, β, ζ, γ) on the same observed SLV trajectory used in Figure 2, comparing the martingale-score gradient method (blue, kernel density over 100 independent repetitions) with the MLPMMH sampler of [18] (red, kernel density over 119 approximately independent draws thinned from a chain of 22000 iterations at discretization level 8). Solid black lines mark the true parameter values; dotted vertical lines mark the empirical posterior means. The header reports total wall time and cost per independent sample for each method.",
+      "page": 14,
+      "index": 3,
+      "width": 939,
+      "height": 637
+    }
+  ]
+}
