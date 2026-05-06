@@ -1,0 +1,39 @@
+{
+  "label": "2026-05-06",
+  "date": "2026-05-06",
+  "generated_at": "2026-05-06T20:37:46",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202605/06/2604.27443v2-abc-any-subset-autoregression-via-non-markovian-diffusion-bridges-in-continuous-time-and-space",
+      "section": "deep",
+      "title_en": "ABC: Any-Subset Autoregression via Non-Markovian Diffusion Bridges in Continuous Time and Space",
+      "authors": "Gabe Guo, Thanawat Sornwanee, Lutong Hao, Elon Litman, Stefano Ermon, Jose Blanchet",
+      "date": "2026-04-30",
+      "pdf": "https://arxiv.org/pdf/2604.27443v2",
+      "score": "9.0",
+      "evidence": "用于天气预报的非马尔可夫扩散桥",
+      "tldr": "本文提出了ABC模型，通过非马尔可夫扩散桥在连续时间与空间中实现任意子集条件的随机过程生成，该模型可根据实际物理时间和状态变化自适应噪声注入，显著提升视频生成与天气预测等任务的稳定性和物理合理性。",
+      "tags": "query:diffts",
+      "abstract_en": "Generating continuous-time, continuous-space stochastic processes (e.g., videos, weather forecasts) conditioned on partial observations (e.g., first and last frames) is a fundamental challenge. Existing approaches, (e.g., diffusion models), suffer from key limitations: (1) noise-to-data evolution fails to capture structural similarity between states close in physical time and has unstable integration in low-step regimes; (2) random noise injected is insensitive to the physical process's time elapsed, resulting in incorrect dynamics; (3) they overlook conditioning on arbitrary subsets of states (e.g., irregularly sampled timesteps, future observations). We propose ABC: Any-Subset Autoregressive Models via Non-Markovian Diffusion Bridges in Continuous Time and Space. Crucially, we model the process with one continual SDE whose time variable and intermediate states track the real time and process states. This has provable advantages: (1) the starting point for generating future states is the already-close previous state, rather than uninformative noise; (2) random noise injection scales with physical time elapsed, encouraging physically plausible dynamics with similar time-adjacent states. We derive SDE dynamics via changes-of-measure on path space, yielding another advantage: (3) path-dependent conditioning on arbitrary subsets of the state history and/or future. To learn these dynamics, we derive a path- and time-dependent extension of denoising score matching. Our experiments show ABC's superiority to competing methods on multiple domains, including video generation and weather forecasting.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202605/06/2605.03802v1-towards-accurate-extreme-event-likelihoods-from-diffusion-model-climate-emulators",
+      "section": "quick",
+      "title_en": "Towards accurate extreme event likelihoods from diffusion model climate emulators",
+      "authors": "Peter Manshausen, Noah Brenowitz, Julius Berner, Karthik Kashinath, Mike Pritchard",
+      "date": "2026-05-05",
+      "pdf": "https://arxiv.org/pdf/2605.03802v1",
+      "score": "7.0",
+      "evidence": "用于大气状态和气候模拟的扩散模型",
+      "tldr": "本文利用扩散模型气候模拟器cBottle，通过计算大气状态的概率密度来估算极端事件的发生概率。研究展示了引导模型生成热带气旋时的概率倍增效应，并提出基于概率密度的加权采样方法以降低误差，为更准确的气候极端事件模拟与归因研究提供了新思路。",
+      "tags": "query:diffts",
+      "abstract_en": "ML climate model emulators are useful for scenario planning and adaptation, allowing for cost-efficient experimentation. Recently, the diffusion model Climate in a Bottle (cBottle) has been proposed for generation of atmospheric states compatible with boundary conditions of solar position and sea surface temperatures. Crucially, cBottle can be guided to generate extreme events such as Tropical Cyclones (TCs) over locations of interest. Diffusion models such as cBottle work by approximating the probability density of the training data. Here, we show use cases of the probability density estimates of atmospheric states obtained from this climate emulator. Most importantly, these estimates allow us to calculate likelihoods of extreme events under guidance. When guiding the model towards states including TCs, comparing the probability density under the guided and unguided model enables us to quantify how much more likely the guidance has made the TC. We show how these odds ratios allow us to importance-sample from the TC distribution, reducing the standard error of the probability estimate compared to simple Monte Carlo sampling. Furthermore, we discuss results and limitations of the application of model probability densities to extreme event attribution-like experiments. We present these early but encouraging results hoping they will spur more research into probabilistic information that can be gained from diffusion models of the atmosphere.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

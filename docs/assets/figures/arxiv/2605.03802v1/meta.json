@@ -1,0 +1,46 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2605.03802v1/fig-001.webp",
+      "caption": "Figure 1. Visualization of the PF ODE. To sample from the data distribution, we would draw a latent from the prior on the right and flow along the ODE velocity to the left. For calculating the probability of a sample, we do the opposite: flowing from the sample back to noise, and integrating the divergence of the velocity along the path. When doing this under two models’ (guided and unguided) velocity fields, the difference in log probabilities gives the odds ratio.",
+      "page": 6,
+      "index": 1,
+      "width": 744,
+      "height": 392
+    },
+    {
+      "url": "assets/figures/arxiv/2605.03802v1/fig-002.webp",
+      "caption": "Figure 4. Comparison of ERA5 and cBottle TC climatology and importance-sampled TC likelihoods. Panel a) shows the estimates of the exceedance frequency of different detection thresholds. We are counting a detection when the TC classifier returns a probability above the threshold in the location of interest. The frequency of detection is computed from different data sets: The guided cBottle model (oversampled), the importance sampling estimate (guided, but downweighted by odds ratios), the control cBottle (unguided), and the historic record from ERA5. The frequencies are for occurrence in a specific location, chosen here to be the HPX3 pixel including Miami, Florida. We evaluate on the September months of the years 1980-2018 inclusive (4797 samples). Panel b) shows the climatology of September TC detection probabilities (average) over the global ERA5 record of the same period. c) shows the same for the control inference.",
+      "page": 11,
+      "index": 2,
+      "width": 931,
+      "height": 426
+    },
+    {
+      "url": "assets/figures/arxiv/2605.03802v1/fig-003.webp",
+      "caption": "Figure 3. Distribution of TC probabilities and log ORs from different guidance strengths, motivating the use of small guidance. Shown are distributions of a) the classifier evaluated on the final sample, i.e. the detection probability of a TC at the location where guidance was applied, b) the log odds ratio logo(x) of the final sample, which is the sum of c) the difference of final log probabilities ∆latent d) the (integrated) difference of score divergences ∆denoiser , and e) the (integrated) divergence of the guidance term ∆guidance from eq. 22. Guidance scale on the x-axis is given as a fraction of the full guidance of γ = 20 · 64. Inference is performed over 2880 samples with boundary conditions of September 1995-2018, 6-hourly, guidance towards a TC off the coast of Florida as in Fig. 2.",
+      "page": 10,
+      "index": 3,
+      "width": 1038,
+      "height": 193
+    },
+    {
+      "url": "assets/figures/arxiv/2605.03802v1/fig-004.webp",
+      "caption": "Figure 5. Calculating likelihoods for ERA5 reanalysis samples, here for heat events in the Antarctic. Panel a) shows a visualization of the heatwave surface temperature anomaly, on 17 March 2022 at 00:00 UTC from ERA5. The red circle shows the unmasked region of interest. Panel b) shows the seasonal cycle of sample probabilities over the entire train set, with the shaded area showing the standard deviation. Panel c) plots the sample probability as a function of the z-score of the average tas anomaly over the region, as well as binned means of the probability for the data as-is, and with SST inputs to the model perturbed by ±2K. Panel d) shows the difference between the +2K and the -2K perturbation, as well as the binned mean and a linear regression (difference between the red and blue line in panel c)).",
+      "page": 13,
+      "index": 4,
+      "width": 927,
+      "height": 690
+    },
+    {
+      "url": "assets/figures/arxiv/2605.03802v1/fig-005.webp",
+      "caption": "Figure 2. Impact of guidance interval on guidance divergence and samples. Shown is a guided sample using fixed SST and starting noise, denoised with guidance that is switched on in the interval given in each column’s title. The top row plots the instantaneous divergence of the guidance term at each noise level, which integrated over the denoising time gives −∆guidance. The bottom row shows the resulting zonal wind in the region where guidance is applied.",
+      "page": 9,
+      "index": 5,
+      "width": 776,
+      "height": 423
+    }
+  ]
+}

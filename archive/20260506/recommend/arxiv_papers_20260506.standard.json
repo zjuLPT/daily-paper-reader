@@ -1,0 +1,97 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-05-06T20:36:36.803290+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2604.27443v2",
+      "source": "arxiv",
+      "title": "ABC: Any-Subset Autoregression via Non-Markovian Diffusion Bridges in Continuous Time and Space",
+      "abstract": "Generating continuous-time, continuous-space stochastic processes (e.g., videos, weather forecasts) conditioned on partial observations (e.g., first and last frames) is a fundamental challenge. Existing approaches, (e.g., diffusion models), suffer from key limitations: (1) noise-to-data evolution fails to capture structural similarity between states close in physical time and has unstable integration in low-step regimes; (2) random noise injected is insensitive to the physical process's time elapsed, resulting in incorrect dynamics; (3) they overlook conditioning on arbitrary subsets of states (e.g., irregularly sampled timesteps, future observations). We propose ABC: Any-Subset Autoregressive Models via Non-Markovian Diffusion Bridges in Continuous Time and Space. Crucially, we model the process with one continual SDE whose time variable and intermediate states track the real time and process states. This has provable advantages: (1) the starting point for generating future states is the already-close previous state, rather than uninformative noise; (2) random noise injection scales with physical time elapsed, encouraging physically plausible dynamics with similar time-adjacent states. We derive SDE dynamics via changes-of-measure on path space, yielding another advantage: (3) path-dependent conditioning on arbitrary subsets of the state history and/or future. To learn these dynamics, we derive a path- and time-dependent extension of denoising score matching. Our experiments show ABC's superiority to competing methods on multiple domains, including video generation and weather forecasting.",
+      "authors": [
+        "Gabe Guo",
+        "Thanawat Sornwanee",
+        "Lutong Hao",
+        "Elon Litman",
+        "Stefano Ermon",
+        "Jose Blanchet"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-04-30T05:29:06+00:00",
+      "link": "https://arxiv.org/pdf/2604.27443v2",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Non-Markovian diffusion bridges for weather forecasts",
+      "llm_evidence_cn": "用于天气预报的非马尔可夫扩散桥",
+      "llm_evidence": "用于天气预报的非马尔可夫扩散桥",
+      "canonical_evidence": "用于天气预报的非马尔可夫扩散桥",
+      "llm_tldr_en": "Proposes ABC, using non-Markovian diffusion bridges for continuous-time stochastic processes like weather forecasting.",
+      "llm_tldr_cn": "提出 ABC，利用非马尔可夫扩散桥处理天气预报等连续时间随机过程。",
+      "llm_tldr": "提出 ABC，利用非马尔可夫扩散桥处理天气预报等连续时间随机过程。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "sequence modeling with diffusion processes for time-dependent data",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2605.03802v1",
+      "source": "arxiv",
+      "title": "Towards accurate extreme event likelihoods from diffusion model climate emulators",
+      "abstract": "ML climate model emulators are useful for scenario planning and adaptation, allowing for cost-efficient experimentation. Recently, the diffusion model Climate in a Bottle (cBottle) has been proposed for generation of atmospheric states compatible with boundary conditions of solar position and sea surface temperatures. Crucially, cBottle can be guided to generate extreme events such as Tropical Cyclones (TCs) over locations of interest. Diffusion models such as cBottle work by approximating the probability density of the training data. Here, we show use cases of the probability density estimates of atmospheric states obtained from this climate emulator. Most importantly, these estimates allow us to calculate likelihoods of extreme events under guidance. When guiding the model towards states including TCs, comparing the probability density under the guided and unguided model enables us to quantify how much more likely the guidance has made the TC. We show how these odds ratios allow us to importance-sample from the TC distribution, reducing the standard error of the probability estimate compared to simple Monte Carlo sampling. Furthermore, we discuss results and limitations of the application of model probability densities to extreme event attribution-like experiments. We present these early but encouraging results hoping they will spur more research into probabilistic information that can be gained from diffusion models of the atmosphere.",
+      "authors": [
+        "Peter Manshausen",
+        "Noah Brenowitz",
+        "Julius Berner",
+        "Karthik Kashinath",
+        "Mike Pritchard"
+      ],
+      "primary_category": "physics.ao-ph",
+      "categories": [
+        "physics.ao-ph",
+        "cs.LG"
+      ],
+      "published": "2026-05-05T14:28:20+00:00",
+      "link": "https://arxiv.org/pdf/2605.03802v1",
+      "tags": [
+        "keyword:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "diffusion model for atmospheric states and climate emulation",
+      "llm_evidence_cn": "用于大气状态和气候模拟的扩散模型",
+      "llm_evidence": "用于大气状态和气候模拟的扩散模型",
+      "canonical_evidence": "用于大气状态和气候模拟的扩散模型",
+      "llm_tldr_en": "Uses diffusion models to emulate climate states and estimate likelihoods of extreme weather events.",
+      "llm_tldr_cn": "利用扩散模型模拟气候状态并估算极端天气事件的可能性。",
+      "llm_tldr": "利用扩散模型模拟气候状态并估算极端天气事件的可能性。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "research papers on diffusion models applied to time series tasks",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
