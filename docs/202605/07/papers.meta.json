@@ -1,0 +1,54 @@
+{
+  "label": "2026-05-07",
+  "date": "2026-05-07",
+  "generated_at": "2026-05-07T20:07:33",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202605/07/2604.27814v2-probabilistic-circuits-for-irregular-multivariate-time-series-forecasting",
+      "section": "quick",
+      "title_en": "Probabilistic Circuits for Irregular Multivariate Time Series Forecasting",
+      "authors": "Christian Klötergens, Vijaya Krishna Yalavarthi, Lars Schmidt-Thieme",
+      "date": "2026-04-30",
+      "pdf": "https://arxiv.org/pdf/2604.27814v2",
+      "score": "7.0",
+      "evidence": "不规则多变量时间序列预测的概率架构",
+      "tldr": "本文针对不规则多变量时间序列预测中模型难以兼顾表达能力与边缘一致性的问题，提出了基于概率电路的CircuITS模型。该模型在结构上保证联合分布有效，并能灵活捕捉时间序列通道间复杂依赖。实验证明其在多个真实数据集上的密度估计性能优于现有方法，提升了预测的可靠性和精确度。",
+      "tags": "query:diffts",
+      "abstract_en": "Joint probabilistic modeling is essential for forecasting irregular multivariate time series (IMTS) to accurately quantify uncertainty. Existing approaches often struggle to balance model expressivity with consistent marginalization, frequently leading to unreliable or contradictory forecasts. To address this, we propose CircuITS, a novel architecture for probabilistic IMTS forecasting based on probabilistic circuits. Our model is flexible in capturing intricate dependencies between time series channels while structurally guaranteeing valid joint distributions. Experiments on four real world datasets demonstrate that CircuITS achieves superior joint and marginal density estimation compared to state of the art baselines.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202605/07/2605.01231v1-combinationts-a-modular-framework-for-understanding-time-series-forecasting-models",
+      "section": "quick",
+      "title_en": "CombinationTS: A Modular Framework for Understanding Time-Series Forecasting Models",
+      "authors": "Xiaorui Wang, Fanda Fan, Chenxi Wang, Yuxuan Yang, Rui Tang, Kuoyu Gao, Simiao Pang, Yuanfeng Shang, Zhipeng Liu, Wanling Gao, Lei Wang, Jianfeng Zhan",
+      "date": "2026-05-02",
+      "pdf": "https://arxiv.org/pdf/2605.01231v1",
+      "score": "6.0",
+      "evidence": "评估时间序列预测模型的模块化框架",
+      "tldr": "本文针对时间序列预测模型复杂化与性能归因不明的问题，提出了模块化概率评估框架CombinationTS，将模型拆分为多个功能模块并在统一条件下比较，定量评估各部分的贡献与稳定性。结果显示，当嵌入设计合理时，简单的编码器能与复杂模型相媲美，且引入结构先验比提升编码复杂度更具稳健性。",
+      "tags": "query:diffts",
+      "abstract_en": "Recent progress in time-series forecasting has led to rapidly increasing architectural complexity, yet many reported State-of-the-Art gains are statistically fragile or misattributed. We argue that progress requires a shift from model selection to modular attribution, identifying which components truly drive performance. We propose CombinationTS, a self-contained probabilistic evaluation framework that decomposes forecasting models into orthogonal modules--Input Transformation, Embedding, Encoder, Decoder, and Output Transformation--and evaluates them under a shared evaluation condition space. By quantifying each component via marginalized performance ($μ$) and stability ($σ$), CombinationTS enables robust attribution beyond fragile point estimates. Through large-scale paired evaluation, we uncover the Identity Paradox: once the data view (Embedding) is well-designed, a parameter-free Identity Encoder often matches or outperforms complex backbones. We further show that explicit structural priors introduced via Input Transformations yield a more favorable performance-stability trade-off than increasing Encoder complexity, establishing a principled baseline for architectural necessity.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202605/07/2605.03712v1-tempered-guided-diffusion",
+      "section": "quick",
+      "title_en": "Tempered Guided Diffusion",
+      "authors": "Andreas Makris, Paul Fearnhead, Chris Nemeth",
+      "date": "2026-05-05",
+      "pdf": "https://arxiv.org/pdf/2605.03712v1",
+      "score": "6.0",
+      "evidence": "免训练的条件扩散采样框架",
+      "tldr": "本文提出了Tempered Guided Diffusion (TGD)，一种无需训练的条件采样框架，通过退火的序列蒙特卡洛方法，在不同噪声水平下加权并重采样粒子，以提高扩散模型中后验近似的效率和质量，并在图像及逆问题实验中显示出更优性能。",
+      "tags": "query:diffts",
+      "abstract_en": "Training-free conditional diffusion provides a flexible alternative to task-specific conditional model training, but existing samplers often allocate computation inefficiently: independent guided trajectories can vary widely in quality, and additional function evaluations along a single trajectory may not recover from poor early decisions. We propose Tempered Guided Diffusion (TGD), an annealed sequential Monte Carlo framework for training-free conditional sampling with diffusion priors. TGD targets tempered posterior distributions over the clean signal, using noisy diffusion states only as auxiliary variables for proposing reconstructions and propagating particles. Particles are reweighted by incremental likelihood ratios, resampled, and propagated across noise levels, concentrating computation on trajectories plausible under both the prior and observation. Under idealized exact-reconstruction assumptions, full TGD yields a consistent particle approximation to the posterior as the number of particles grows. For expensive reconstruction tasks, Accelerated TGD (A-TGD) retains early particle exploration but prunes to a single high-likelihood trajectory partway through sampling. Experiments on a controlled two-dimensional inverse problem and image inverse problems show improved posterior approximation and favorable wall-clock speed-quality tradeoffs over independent multi-trajectory baselines.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

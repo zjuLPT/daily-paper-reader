@@ -6,28 +6,32 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-05-06
-- 运行时间：2026-05-06 20:37:42 UTC
+- 最新运行日期：2026-05-07
+- 运行时间：2026-05-07 20:07:26 UTC
 - 运行状态：成功
-- 本次总论文数：2
-- 精读区：1
-- 速读区：1
+- 本次总论文数：3
+- 精读区：0
+- 速读区：3
 
 ### 今日简报（AI）
-今天聚焦扩散模型新进展，从生成建模到气候极端事件模拟皆有涉猎。  
-重点论文提出非马尔可夫连续时空扩散桥方法，显著拓展任意子集自回归建模能力。  
-建议继续关注扩散模型在科学模拟与不确定性量化中的交叉应用潜力。
-- 详情：[/202605/06/README](/202605/06/README)
+今天速读了三篇时间序列与扩散模型相关论文，聚焦预测与生成新方法。  
+最值得关注的是概率化电路在非规整时间序列上的应用，以及模块化组合框架对预测模型的可解释性提升。  
+建议继续跟进时间序列模型的融合与生成式方法，观察它们在多领域预测中的实用表现。
+- 详情：[/202605/07/README](/202605/07/README)
 
 ### 精读区论文标签
-1. [ABC: Any-Subset Autoregression via Non-Markovian Diffusion Bridges in Continuous Time and Space](/202605/06/2604.27443v2-abc-any-subset-autoregression-via-non-markovian-diffusion-bridges-in-continuous-time-and-space)  
-   标签：评分：9.0/10、query:diffts
-   evidence：用于天气预报的非马尔可夫扩散桥
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [Towards accurate extreme event likelihoods from diffusion model climate emulators](/202605/06/2605.03802v1-towards-accurate-extreme-event-likelihoods-from-diffusion-model-climate-emulators)  
+1. [Probabilistic Circuits for Irregular Multivariate Time Series Forecasting](/202605/07/2604.27814v2-probabilistic-circuits-for-irregular-multivariate-time-series-forecasting)  
    标签：评分：7.0/10、query:diffts
-   evidence：用于大气状态和气候模拟的扩散模型
+   evidence：不规则多变量时间序列预测的概率架构
+2. [CombinationTS: A Modular Framework for Understanding Time-Series Forecasting Models](/202605/07/2605.01231v1-combinationts-a-modular-framework-for-understanding-time-series-forecasting-models)  
+   标签：评分：6.0/10、query:diffts
+   evidence：评估时间序列预测模型的模块化框架
+3. [Tempered Guided Diffusion](/202605/07/2605.03712v1-tempered-guided-diffusion)  
+   标签：评分：6.0/10、query:diffts
+   evidence：免训练的条件扩散采样框架
 
 
 <div class="dpr-home-promo-card">
