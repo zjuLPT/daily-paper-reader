@@ -6,32 +6,28 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-05-07
-- 运行时间：2026-05-07 20:07:26 UTC
+- 最新运行日期：2026-05-08
+- 运行时间：2026-05-08 20:23:55 UTC
 - 运行状态：成功
-- 本次总论文数：3
-- 精读区：0
-- 速读区：3
+- 本次总论文数：2
+- 精读区：1
+- 速读区：1
 
 ### 今日简报（AI）
-今天速读了三篇时间序列与扩散模型相关论文，聚焦预测与生成新方法。  
-最值得关注的是概率化电路在非规整时间序列上的应用，以及模块化组合框架对预测模型的可解释性提升。  
-建议继续跟进时间序列模型的融合与生成式方法，观察它们在多领域预测中的实用表现。
-- 详情：[/202605/07/README](/202605/07/README)
+今天聚焦时间序列生成与自回归动态系统的高效建模研究。  
+重点是SDFlow提出相似度驱动的流匹配方法，在生成质量与可控性上显著提升。  
+建议关注生成式时间序列模型在真实场景预测和快速采样上的落地潜力。
+- 详情：[/202605/08/README](/202605/08/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [SDFlow: Similarity-Driven Flow Matching for Time Series Generation](/202605/08/2605.05736v1-sdflow-similarity-driven-flow-matching-for-time-series-generation)  
+   标签：评分：9.0/10、query:diffts
+   evidence：用于并行时间序列生成的流匹配
 
 ### 速读区论文标签
-1. [Probabilistic Circuits for Irregular Multivariate Time Series Forecasting](/202605/07/2604.27814v2-probabilistic-circuits-for-irregular-multivariate-time-series-forecasting)  
+1. [Towards Scalable One-Step Generative Modeling for Autoregressive Dynamical System Forecasting](/202605/08/2605.05540v1-towards-scalable-one-step-generative-modeling-for-autoregressive-dynamical-system-forecasting)  
    标签：评分：7.0/10、query:diffts
-   evidence：不规则多变量时间序列预测的概率架构
-2. [CombinationTS: A Modular Framework for Understanding Time-Series Forecasting Models](/202605/07/2605.01231v1-combinationts-a-modular-framework-for-understanding-time-series-forecasting-models)  
-   标签：评分：6.0/10、query:diffts
-   evidence：评估时间序列预测模型的模块化框架
-3. [Tempered Guided Diffusion](/202605/07/2605.03712v1-tempered-guided-diffusion)  
-   标签：评分：6.0/10、query:diffts
-   evidence：免训练的条件扩散采样框架
+   evidence：自回归动力系统预测的生成建模
 
 
 <div class="dpr-home-promo-card">

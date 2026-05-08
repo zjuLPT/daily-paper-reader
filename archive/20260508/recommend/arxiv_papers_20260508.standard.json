@@ -1,0 +1,93 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-05-08T20:22:07.057750+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2605.05736v1",
+      "source": "arxiv",
+      "title": "SDFlow: Similarity-Driven Flow Matching for Time Series Generation",
+      "abstract": "Vector quantization (VQ) with autoregressive (AR) token modeling is a widely adopted and highly competitive paradigm for time-series generation. However, such models are fundamentally limited by exposure bias: during inference, errors can accumulate across sequential predictions, leading to pronounced quality degradation in long-horizon generation. To address this, we propose SDFlow ($\\textbf{S}$imilarity-$\\textbf{D}$riven $\\textbf{Flow}$ Matching), a non-autoregressive framework that operates entirely in the frozen VQ latent space and enables parallel sequence generation via flow matching. We tackle three key challenges in making this transition: (1) eliminating exposure bias by replacing step-wise token prediction with a global transport map; (2) mitigating the high-dimensionality of VQ token spaces via a low-rank manifold decomposition with a learned anchor prior over the latent manifold; and (3) incorporating discrete supervision into continuous transport dynamics by introducing a categorical posterior over codebook indices within a variational flow-matching formulation. Extensive experiments show that SDFlow achieves state-of-the-art performance, improving Discriminative Score and substantially reducing Context-FID, particularly for challenging long-sequence generation. Moreover, SDFlow provides significant inference speedups over autoregressive baselines, offering both high fidelity and computational efficiency. Code is available at https://anonymous.4open.science/r/SDFlow-D6F3/",
+      "authors": [
+        "Wei Li",
+        "Shibo Feng",
+        "Pengcheng Wu",
+        "Min Wu",
+        "Peilin Zhao"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-05-07T06:28:18+00:00",
+      "link": "https://arxiv.org/pdf/2605.05736v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "flow matching for parallel time series generation",
+      "llm_evidence_cn": "用于并行时间序列生成的流匹配",
+      "llm_evidence": "用于并行时间序列生成的流匹配",
+      "canonical_evidence": "用于并行时间序列生成的流匹配",
+      "llm_tldr_en": "Proposes SDFlow, a non-autoregressive flow matching framework for high-quality time series generation.",
+      "llm_tldr_cn": "提出了SDFlow，一种用于高质量时间序列生成的非自回归流匹配框架。",
+      "llm_tldr": "提出了SDFlow，一种用于高质量时间序列生成的非自回归流匹配框架。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "conditional diffusion frameworks for time series generation",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2605.05540v1",
+      "source": "arxiv",
+      "title": "Towards Scalable One-Step Generative Modeling for Autoregressive Dynamical System Forecasting",
+      "abstract": "Fast surrogate modeling for high-dimensional physical dynamics requires more than low short-term error: useful models must roll out efficiently while preserving the statistical structure of long trajectories. Neural operators provide inexpensive autoregressive forecasts but can drift in turbulent regimes, whereas rolling diffusion and latent generative surrogates can represent stochastic transitions at the cost of multi-step denoising, noise-schedule design, or auxiliary compression models. We propose MeanFlow Long-term Invariant Spatiotemporal Consistency Autoregressive Models (MeLISA), a latent-free autoregressive generative surrogate built on pixel-space MeanFlow. MeLISA defines a blockwise stochastic transition kernel that generates each forecast block with a single model evaluation, avoiding latent encoders and iterative diffusion solvers at inference time. To stabilize long-horizon rollouts, MeLISA combines a Window-Consistency MeanFlow objective that learns conditional spatiotemporal generation from partially observed temporal windows with a Time Increment Consistency loss that constrains multi-lag finite increments and targets temporal-correlation structure. We evaluate MeLISA with compact UNet and scalable DiT backbones on two high-resolution benchmarks, extended 2D Kolmogorov flow at $256 \\times 256$ and turbulent channel-flow slice at $192 \\times 192$. MeLISA outperforms neural-operator baselines on short-term forecasting accuracy and long-horizon statistical metrics, including energy spectra, turbulent kinetic energy, and mixing-rate-related dynamics, while achieving inference speeds comparable to, and in some cases faster than, neural operators. Compact 3.7-5.7M-parameter variants already deliver strong parameter efficiency, and DiT variants provide a scalable path up to 150M parameters. Overall, MeLISA benefits both rollout efficiency and long-horizon statistical accuracy.",
+      "authors": [
+        "Tianyue Yang",
+        "Xiao Xue"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "physics.flu-dyn"
+      ],
+      "published": "2026-05-07T00:41:47+00:00",
+      "link": "https://arxiv.org/pdf/2605.05540v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "generative modeling for autoregressive dynamical system forecasting",
+      "llm_evidence_cn": "自回归动力系统预测的生成建模",
+      "llm_evidence": "自回归动力系统预测的生成建模",
+      "canonical_evidence": "自回归动力系统预测的生成建模",
+      "llm_tldr_en": "Proposes MeLISA, a latent-free autoregressive generative surrogate for physical dynamics forecasting.",
+      "llm_tldr_cn": "提出了MeLISA，一种用于物理动力学预测的无潜变量自回归生成代理模型。",
+      "llm_tldr": "提出了MeLISA，一种用于物理动力学预测的无潜变量自回归生成代理模型。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "methods using diffusion models for time series forecasting",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

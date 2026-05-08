@@ -1,0 +1,39 @@
+{
+  "label": "2026-05-08",
+  "date": "2026-05-08",
+  "generated_at": "2026-05-08T20:24:02",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202605/08/2605.05736v1-sdflow-similarity-driven-flow-matching-for-time-series-generation",
+      "section": "deep",
+      "title_en": "SDFlow: Similarity-Driven Flow Matching for Time Series Generation",
+      "authors": "Wei Li, Shibo Feng, Pengcheng Wu, Min Wu, Peilin Zhao",
+      "date": "2026-05-07",
+      "pdf": "https://arxiv.org/pdf/2605.05736v1",
+      "score": "9.0",
+      "evidence": "用于并行时间序列生成的流匹配",
+      "tldr": "本文提出SDFlow，一种基于相似性驱动的流匹配非自回归时间序列生成框架，旨在消除自回归模型中的暴露偏差。方法通过在VQ潜空间中进行全局传输映射、低秩流形分解和变分流匹配实现高保真并行生成，在长序列任务上取得业内领先性能并显著加速推理。",
+      "tags": "query:diffts",
+      "abstract_en": "Vector quantization (VQ) with autoregressive (AR) token modeling is a widely adopted and highly competitive paradigm for time-series generation. However, such models are fundamentally limited by exposure bias: during inference, errors can accumulate across sequential predictions, leading to pronounced quality degradation in long-horizon generation. To address this, we propose SDFlow ($\\textbf{S}$imilarity-$\\textbf{D}$riven $\\textbf{Flow}$ Matching), a non-autoregressive framework that operates entirely in the frozen VQ latent space and enables parallel sequence generation via flow matching. We tackle three key challenges in making this transition: (1) eliminating exposure bias by replacing step-wise token prediction with a global transport map; (2) mitigating the high-dimensionality of VQ token spaces via a low-rank manifold decomposition with a learned anchor prior over the latent manifold; and (3) incorporating discrete supervision into continuous transport dynamics by introducing a categorical posterior over codebook indices within a variational flow-matching formulation. Extensive experiments show that SDFlow achieves state-of-the-art performance, improving Discriminative Score and substantially reducing Context-FID, particularly for challenging long-sequence generation. Moreover, SDFlow provides significant inference speedups over autoregressive baselines, offering both high fidelity and computational efficiency. Code is available at https://anonymous.4open.science/r/SDFlow-D6F3/",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202605/08/2605.05540v1-towards-scalable-one-step-generative-modeling-for-autoregressive-dynamical-system-forecasting",
+      "section": "quick",
+      "title_en": "Towards Scalable One-Step Generative Modeling for Autoregressive Dynamical System Forecasting",
+      "authors": "Tianyue Yang, Xiao Xue",
+      "date": "2026-05-07",
+      "pdf": "https://arxiv.org/pdf/2605.05540v1",
+      "score": "7.0",
+      "evidence": "自回归动力系统预测的生成建模",
+      "tldr": "本文提出MeLISA模型，一种基于MeanFlow的无潜变量单步生成自回归方法，用于高维动态系统预测。该模型通过窗口一致性和时间增量一致性损失实现稳定长时滚动，兼具高效推理和统计准确性，在湍流流动预测中显著优于现有神经算子方法。",
+      "tags": "query:diffts",
+      "abstract_en": "Fast surrogate modeling for high-dimensional physical dynamics requires more than low short-term error: useful models must roll out efficiently while preserving the statistical structure of long trajectories. Neural operators provide inexpensive autoregressive forecasts but can drift in turbulent regimes, whereas rolling diffusion and latent generative surrogates can represent stochastic transitions at the cost of multi-step denoising, noise-schedule design, or auxiliary compression models. We propose MeanFlow Long-term Invariant Spatiotemporal Consistency Autoregressive Models (MeLISA), a latent-free autoregressive generative surrogate built on pixel-space MeanFlow. MeLISA defines a blockwise stochastic transition kernel that generates each forecast block with a single model evaluation, avoiding latent encoders and iterative diffusion solvers at inference time. To stabilize long-horizon rollouts, MeLISA combines a Window-Consistency MeanFlow objective that learns conditional spatiotemporal generation from partially observed temporal windows with a Time Increment Consistency loss that constrains multi-lag finite increments and targets temporal-correlation structure. We evaluate MeLISA with compact UNet and scalable DiT backbones on two high-resolution benchmarks, extended 2D Kolmogorov flow at $256 \\times 256$ and turbulent channel-flow slice at $192 \\times 192$. MeLISA outperforms neural-operator baselines on short-term forecasting accuracy and long-horizon statistical metrics, including energy spectra, turbulent kinetic energy, and mixing-rate-related dynamics, while achieving inference speeds comparable to, and in some cases faster than, neural operators. Compact 3.7-5.7M-parameter variants already deliver strong parameter efficiency, and DiT variants provide a scalable path up to 150M parameters. Overall, MeLISA benefits both rollout efficiency and long-horizon statistical accuracy.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
