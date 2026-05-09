@@ -6,28 +6,35 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-05-08
-- 运行时间：2026-05-08 20:23:55 UTC
+- 最新运行日期：2026-05-09
+- 运行时间：2026-05-09 20:10:23 UTC
 - 运行状态：成功
-- 本次总论文数：2
-- 精读区：1
-- 速读区：1
+- 本次总论文数：4
+- 精读区：0
+- 速读区：4
 
 ### 今日简报（AI）
-今天聚焦时间序列生成与自回归动态系统的高效建模研究。  
-重点是SDFlow提出相似度驱动的流匹配方法，在生成质量与可控性上显著提升。  
-建议关注生成式时间序列模型在真实场景预测和快速采样上的落地潜力。
-- 详情：[/202605/08/README](/202605/08/README)
+今天集中速读了4篇有关扩散模型采样与约束生成的论文，聚焦算法结构与效率改进。  
+值得关注的是在条件采样与未归一化密度学习方面的理论进展，为复杂分布建模提供新途径。  
+建议继续跟进扩散过程在结构约束与信息论评估下的最新实验成果。
+- 详情：[/202605/09/README](/202605/09/README)
 
 ### 精读区论文标签
-1. [SDFlow: Similarity-Driven Flow Matching for Time Series Generation](/202605/08/2605.05736v1-sdflow-similarity-driven-flow-matching-for-time-series-generation)  
-   标签：评分：9.0/10、query:diffts
-   evidence：用于并行时间序列生成的流匹配
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [Towards Scalable One-Step Generative Modeling for Autoregressive Dynamical System Forecasting](/202605/08/2605.05540v1-towards-scalable-one-step-generative-modeling-for-autoregressive-dynamical-system-forecasting)  
-   标签：评分：7.0/10、query:diffts
-   evidence：自回归动力系统预测的生成建模
+1. [Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges](/202605/09/2605.02973v2-structured-diffusion-bridges-inductive-bias-for-denoising-diffusion-bridges)  
+   标签：评分：6.0/10、query:diffts
+   evidence：用于模态转换的扩散桥框架
+2. [Flow Sampling: Learning to Sample from Unnormalized Densities via Denoising Conditional Processes](/202605/09/2605.03984v1-flow-sampling-learning-to-sample-from-unnormalized-densities-via-denoising-conditional-processes)  
+   标签：评分：6.0/10、query:diffts
+   evidence：用于采样的去噪条件过程
+3. [Conditional Diffusion Under Linear Constraints: Langevin Mixing and Information-Theoretic Guarantees](/202605/09/2605.05387v1-conditional-diffusion-under-linear-constraints-langevin-mixing-and-information-theoretic-guarantees)  
+   标签：评分：6.0/10、query:diffts
+   evidence：用于信号恢复的条件扩散采样
+4. [The Interplay of Data Structure and Imbalance in the Learning Dynamics of Diffusion Models](/202605/09/2605.06367v1-the-interplay-of-data-structure-and-imbalance-in-the-learning-dynamics-of-diffusion-models)  
+   标签：评分：6.0/10、query:diffts
+   evidence：基于评分的扩散模型的学习动力学
 
 
 <div class="dpr-home-promo-card">

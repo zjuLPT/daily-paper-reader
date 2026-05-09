@@ -1,0 +1,172 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-05-09T20:09:49.157382+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 4,
+    "quick_skim_target": 11,
+    "quick_selected": 4
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2605.02973v2",
+      "source": "arxiv",
+      "title": "Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges",
+      "abstract": "Modality translation is inherently under-constrained, as multiple cross-modal mappings may yield the same marginals. Recent work has shown that diffusion bridges are effective for this task. However, most existing approaches rely on fully paired datasets, thereby imposing a single data-driven constraint. We propose a diffusion-bridge framework that characterizes the space of admissible solutions and restricts it via alignment constraints, treating paired supervision as an optional heuristic rather than a prerequisite. We validate our method on synthetic and real modality translation benchmarks across unpaired, semi-paired, and paired regimes, showing consistent performance across supervision levels. Notably, \\textbf{it achieves near fully-paired quality with a substantial relaxation in pairing requirements, and remaining applicable in the unpaired regime}. These results highlight diffusion bridges as a flexible foundation for modality translation beyond fully paired data.",
+      "authors": [
+        "Eitan Kosman",
+        "Gabriele Serussi",
+        "Chaim Baskin"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-05-03T16:17:38+00:00",
+      "link": "https://arxiv.org/pdf/2605.02973v2",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion bridge framework for modality translation",
+      "llm_evidence_cn": "用于模态转换的扩散桥框架",
+      "llm_evidence": "用于模态转换的扩散桥框架",
+      "canonical_evidence": "用于模态转换的扩散桥框架",
+      "llm_tldr_en": "Introduces a structured diffusion bridge framework for cross-modal translation with alignment constraints.",
+      "llm_tldr_cn": "引入了一种结构化扩散桥框架，用于带有对齐约束的跨模态转换。",
+      "llm_tldr": "引入了一种结构化扩散桥框架，用于带有对齐约束的跨模态转换。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "denoising diffusion probabilistic models applied to time series",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.03984v1",
+      "source": "arxiv",
+      "title": "Flow Sampling: Learning to Sample from Unnormalized Densities via Denoising Conditional Processes",
+      "abstract": "Sampling from unnormalized densities is analogous to the generative modeling problem, but the target distribution is defined by a known energy function instead of data samples. Because evaluating the energy function is often costly, a primary challenge is to learn an efficient sampler. We introduce Flow Sampling, a framework built on diffusion models and flow matching for the data-free setting. Our training objective is conditioned on a noise sample and regresses onto a denoising diffusion drift constructed from the energy function. In contrast, diffusion models' objective is conditioned on a data sample and regresses onto a noising diffusion drift. We utilize the interpolant process to minimize the number of energy function evaluations during training, resulting in an efficient and scalable method for sampling unnormalized densities. Furthermore, our formulation naturally extends to Riemannian manifolds, enabling diffusion-based sampling in geometries beyond Euclidean space. We derive a closed-form formula for the conditional drift on constant curvature manifolds, including hyperspheres and hyperbolic spaces. We evaluate Flow Sampling on synthetic energy benchmarks, small peptides, large-scale amortized molecular conformer generation, and distributions supported on the sphere, demonstrating strong empirical performance.",
+      "authors": [
+        "Aaron Havens",
+        "Brian Karrer",
+        "Neta Shaul"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-05-05T17:07:37+00:00",
+      "link": "https://arxiv.org/pdf/2605.03984v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "denoising conditional processes for sampling",
+      "llm_evidence_cn": "用于采样的去噪条件过程",
+      "llm_evidence": "用于采样的去噪条件过程",
+      "canonical_evidence": "用于采样的去噪条件过程",
+      "llm_tldr_en": "Proposes Flow Sampling, a framework using denoising conditional processes to sample from unnormalized densities.",
+      "llm_tldr_cn": "提出了流采样框架，利用去噪条件过程从非归一化密度中采样。",
+      "llm_tldr": "提出了流采样框架，利用去噪条件过程从非归一化密度中采样。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "denoising diffusion probabilistic models applied to time series",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.05387v1",
+      "source": "arxiv",
+      "title": "Conditional Diffusion Under Linear Constraints: Langevin Mixing and Information-Theoretic Guarantees",
+      "abstract": "We study zero-shot conditional sampling with pretrained diffusion models for linear inverse problems, including inpainting and super-resolution. In these problems, the observation determines only part of the unknown signal. The remaining degrees of freedom must be sampled according to the correct conditional data distribution. Existing projection-based samplers enforce measurement consistency by correcting the observed component during reverse diffusion. However, measurement consistency alone does not determine how probability mass should be distributed along the feasible set, and this can lead to biased conditional samples.   We analyze this issue through a normal--tangent decomposition of the score function. For Gaussian noising, the observed-direction score is exactly determined by the measurement; only the tangent conditional score is unknown. We prove that the error from replacing this score by the unconditional tangent score is upper bounded by a dimension-free conditional mutual information between observed and unobserved components. This gives an information-theoretic decomposition into initialization and pathwise score-mismatch errors. Motivated by the theory, we propose a projected-Langevin initialization followed by guided reverse denoising, which outperforms a strong projection-based baseline in inpainting and super-resolution experiments.",
+      "authors": [
+        "Ahmad Aghapour",
+        "Erhan Bayraktar",
+        "Asaf Cohen"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.IT"
+      ],
+      "published": "2026-05-06T19:19:54+00:00",
+      "link": "https://arxiv.org/pdf/2605.05387v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "conditional diffusion sampling for signal recovery",
+      "llm_evidence_cn": "用于信号恢复的条件扩散采样",
+      "llm_evidence": "用于信号恢复的条件扩散采样",
+      "canonical_evidence": "用于信号恢复的条件扩散采样",
+      "llm_tldr_en": "Analyzes conditional sampling in diffusion models for linear inverse problems like inpainting and super-resolution.",
+      "llm_tldr_cn": "分析了扩散模型在修复和超分辨率等线性逆问题中的条件采样。",
+      "llm_tldr": "分析了扩散模型在修复和超分辨率等线性逆问题中的条件采样。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "conditional diffusion frameworks for time series generation",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.06367v1",
+      "source": "arxiv",
+      "title": "The Interplay of Data Structure and Imbalance in the Learning Dynamics of Diffusion Models",
+      "abstract": "Real-world datasets are inherently heterogeneous, yet how per-class structural differences and sampling imbalance shape the training dynamics of diffusion models-and potentially exacerbate disparities-remains poorly understood. While models typically transition from an initial phase of generalization to memorizing the training set, existing theory assumes homogeneous data, leaving open how class imbalance and heterogeneity reshape these dynamics. In this work, we develop a high-dimensional analytical framework to study class-dependent learning in score-based diffusion models. Analyzing a random-features model trained on Gaussian mixtures, we derive the feature-covariance spectrum to characterize per-class generalization and memorization times. We reveal the explicit hierarchy governing these dynamics: class variance is the primary determinant of learning order-consistently favoring higher-variance classes-while centroid geometry plays a secondary role. Sampling imbalance acts as a modulator that can reverse this ordering and, under strong imbalance, forces minority classes to acquire distinct, delayed speciation times during backward diffusion. Together, these results suggest that diffusion models can memorize some classes while others remain insufficiently learned. We validate our theoretical predictions empirically using U-Net models trained on Fashion MNIST.",
+      "authors": [
+        "Flavio Nicoletti",
+        "Chenxiao Ma",
+        "Enrico Ventura",
+        "Luca Saglietti",
+        "Stefano Sarao Mannelli"
+      ],
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cond-mat.dis-nn",
+        "cs.LG"
+      ],
+      "published": "2026-05-07T14:44:53+00:00",
+      "link": "https://arxiv.org/pdf/2605.06367v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "learning dynamics of score-based diffusion models",
+      "llm_evidence_cn": "基于评分的扩散模型的学习动力学",
+      "llm_evidence": "基于评分的扩散模型的学习动力学",
+      "canonical_evidence": "基于评分的扩散模型的学习动力学",
+      "llm_tldr_en": "Provides an analytical framework to study how data structure and imbalance affect diffusion model training.",
+      "llm_tldr_cn": "提供了一个分析框架，研究数据结构和不平衡如何影响扩散模型的训练。",
+      "llm_tldr": "提供了一个分析框架，研究数据结构和不平衡如何影响扩散模型的训练。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "research papers on diffusion models applied to time series tasks",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
