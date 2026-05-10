@@ -6,35 +6,38 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-05-09
-- 运行时间：2026-05-09 20:10:23 UTC
+- 最新运行日期：2026-05-10
+- 运行时间：2026-05-10 20:11:46 UTC
 - 运行状态：成功
-- 本次总论文数：4
-- 精读区：0
-- 速读区：4
+- 本次总论文数：6
+- 精读区：1
+- 速读区：5
 
 ### 今日简报（AI）
-今天集中速读了4篇有关扩散模型采样与约束生成的论文，聚焦算法结构与效率改进。  
-值得关注的是在条件采样与未归一化密度学习方面的理论进展，为复杂分布建模提供新途径。  
-建议继续跟进扩散过程在结构约束与信息论评估下的最新实验成果。
-- 详情：[/202605/09/README](/202605/09/README)
+聚焦深度学习与时间序列预测的最新实证研究，共阅读 6 篇论文。最值得关注的是合成数据在提升预测性能上的有限但可量化作用，以及长序列混合结构的持续优化趋势。建议普通读者关注数据质量与模型稳定性对真实业务预测结果的影响。
+- 详情：[/202605/10/README](/202605/10/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [Does Synthetic Data Help? Empirical Evidence from Deep Learning Time Series Forecasters](/202605/10/2605.06032v1-does-synthetic-data-help-empirical-evidence-from-deep-learning-time-series-forecasters)  
+   标签：评分：8.0/10、query:diffts
+   evidence：用于预测的合成时间序列增强
 
 ### 速读区论文标签
-1. [Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges](/202605/09/2605.02973v2-structured-diffusion-bridges-inductive-bias-for-denoising-diffusion-bridges)  
+1. [MSMixer: Learned Multi-Scale Temporal Mixing with Complementary Linear Shortcut for Long-Term Time Series Forecasting](/202605/10/2605.02689v1-msmixer-learned-multi-scale-temporal-mixing-with-complementary-linear-shortcut-for-long-term-time-series-forecasting)  
+   标签：评分：7.0/10、query:diffts
+   evidence：长期时间序列预测
+2. [Perceive, Route and Modulate: Dynamic Pattern Recalibration for Time Series Forecasting](/202605/10/2605.06310v1-perceive-route-and-modulate-dynamic-pattern-recalibration-for-time-series-forecasting)  
+   标签：评分：7.0/10、query:diffts
+   evidence：时间序列预测的动态模式重校准
+3. [Why Model Selection Fails in Time Series Forecasting: An Empirical Study of Instability Across Data Regimes](/202605/10/2605.01608v1-why-model-selection-fails-in-time-series-forecasting-an-empirical-study-of-instability-across-data-regimes)  
    标签：评分：6.0/10、query:diffts
-   evidence：用于模态转换的扩散桥框架
-2. [Flow Sampling: Learning to Sample from Unnormalized Densities via Denoising Conditional Processes](/202605/09/2605.03984v1-flow-sampling-learning-to-sample-from-unnormalized-densities-via-denoising-conditional-processes)  
+   evidence：时间序列预测的实证研究
+4. [Densification and forecasting of Sentinel-2 time series from multimodal SAR and Optical satellite data using deep generative models](/202605/10/2605.04239v1-densification-and-forecasting-of-sentinel-2-time-series-from-multimodal-sar-and-optical-satellite-data-using-deep-generative-models)  
    标签：评分：6.0/10、query:diffts
-   evidence：用于采样的去噪条件过程
-3. [Conditional Diffusion Under Linear Constraints: Langevin Mixing and Information-Theoretic Guarantees](/202605/09/2605.05387v1-conditional-diffusion-under-linear-constraints-langevin-mixing-and-information-theoretic-guarantees)  
+   evidence：使用深度生成模型进行卫星图像时间序列预测
+5. [Diverse Sampling in Diffusion Models with Marginal Preserving Particle Guidance](/202605/10/2605.06553v1-diverse-sampling-in-diffusion-models-with-marginal-preserving-particle-guidance)  
    标签：评分：6.0/10、query:diffts
-   evidence：用于信号恢复的条件扩散采样
-4. [The Interplay of Data Structure and Imbalance in the Learning Dynamics of Diffusion Models](/202605/09/2605.06367v1-the-interplay-of-data-structure-and-imbalance-in-the-learning-dynamics-of-diffusion-models)  
-   标签：评分：6.0/10、query:diffts
-   evidence：基于评分的扩散模型的学习动力学
+   evidence：扩散模型的引导机制
 
 
 <div class="dpr-home-promo-card">

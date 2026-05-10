@@ -1,0 +1,242 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-05-10T20:10:35.952350+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 5,
+    "quick_skim_target": 11,
+    "quick_selected": 5
+  },
+  "deep_dive": [
+    {
+      "id": "2605.06032v1",
+      "source": "arxiv",
+      "title": "Does Synthetic Data Help? Empirical Evidence from Deep Learning Time Series Forecasters",
+      "abstract": "Synthetic data has transformed language model training, yet its role in time series forecasting remains poorly understood. We present a large-scale empirical study: nine experiment groups, 4,218 runs systematically evaluating synthetic time series augmentation across five architectures, four synthetic signals and seven datasets. The effect is sharply architecture-conditional: channel-mixing models (TimesNet, iTransformer) benefit in the majority of trials, while channel-independent models (DLinear, PatchTST) are consistently degraded. In selected low-resource settings the gains are striking: TimesNet trained on only 10\\% of Weather data with synthetic augmentation surpasses the full-data baseline (4 of 16 sparsity-dataset combinations). Averaged across all architectures, augmentation hurts in 67\\% of trials. We further find that only the Seasonal-Trend generator reliably helps across the tested benchmarks, and that hard curriculum switching is actively harmful (+24\\% MSE degradation). These results provide concrete, actionable guidelines on how to use synthetic data: use synthetic augmentation with channel-mixing architectures, use gradual annealing schedules, and treat low-resource augmentation as architecture- and dataset-dependent. Code is available at \\href{https://github.com/hugoiscracked/synthetic-ts/tree/main}",
+      "authors": [
+        "Hugo Cazaux",
+        "Eyjólfur Ingi Ásgeirsson",
+        "Hlynur Stefánsson"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-05-07T11:22:45+00:00",
+      "link": "https://arxiv.org/pdf/2605.06032v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "synthetic time series augmentation for forecasting",
+      "llm_evidence_cn": "用于预测的合成时间序列增强",
+      "llm_evidence": "用于预测的合成时间序列增强",
+      "canonical_evidence": "用于预测的合成时间序列增强",
+      "llm_tldr_en": "Evaluates the impact of synthetic data augmentation on various time series forecasting architectures.",
+      "llm_tldr_cn": "评估了合成数据增强对多种时间序列预测模型架构的影响。",
+      "llm_tldr": "评估了合成数据增强对多种时间序列预测模型架构的影响。",
+      "llm_tags": [
+        "query:diffts:composite"
+      ],
+      "matched_query_tag": "query:diffts:composite",
+      "matched_query_text": "Papers central to 查询将扩散模型应用于时间序列任务的相关论文, especially work that connects or combines: Time Series; research on diffusion models for time-series data; methods using diffusion models for time series forecasting; denoising diffusion probabilistic models applied to time series; sequence modeling with diffusion processes for time-dependent data; conditional diffusion frameworks for time series generation; research papers on diffusion models applied to time series tasks.",
+      "matched_requirement_id": "req-composite-diffts",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2605.02689v1",
+      "source": "arxiv",
+      "title": "MSMixer: Learned Multi-Scale Temporal Mixing with Complementary Linear Shortcut for Long-Term Time Series Forecasting",
+      "abstract": "Long-term time series forecasting requires models that simultaneously capture rapid oscillations, medium-range periodicities, and slowly evolving macro-trends from a fixed look-back window. Existing lightweight MLP-based models typically operate on a single temporal resolution, limiting their ability to explicitly model patterns at multiple scales. We propose MSMixer, a channel-independent multi-scale MLP architecture that addresses this limitation through three complementary innovations: (i) three parallel scale branches at down-sample factors {1x, 4x, 16x} with independent MLP blocks, (ii) a learnable softmax gate that dynamically weighs branch outputs, and (iii) a DLinear complementary shortcut that provides full-window trend and seasonality context. MSMixer contains only 112K parameters at H=96 and runs at O(T) complexity. Evaluated on four ETT benchmarks with standard chronological splits and three random seeds, MSMixer achieves the lowest average MSE (0.357) among lightweight models, outperforming DLinear (0.386, -7.4%) and NLinear (0.365, -2.1%), winning 12 of 16 configurations. Against five Transformer-based baselines from the literature, MSMixer achieves best or second-best MSE in 9 of 16 configurations while using 5x fewer parameters than PatchTST. Ablation and sensitivity analyses confirm the complementary contributions of the multi-scale branches and the DLinear shortcut.",
+      "authors": [
+        "Ahmed Cherif"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-05-04T15:03:46+00:00",
+      "link": "https://arxiv.org/pdf/2605.02689v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "long-term time series forecasting",
+      "llm_evidence_cn": "长期时间序列预测",
+      "llm_evidence": "长期时间序列预测",
+      "canonical_evidence": "长期时间序列预测",
+      "llm_tldr_en": "Proposes MSMixer, a multi-scale MLP architecture for capturing diverse temporal patterns in forecasting.",
+      "llm_tldr_cn": "提出MSMixer，一种多尺度MLP架构，用于捕捉时间序列预测中的多样化时间模式。",
+      "llm_tldr": "提出MSMixer，一种多尺度MLP架构，用于捕捉时间序列预测中的多样化时间模式。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.01608v1",
+      "source": "arxiv",
+      "title": "Why Model Selection Fails in Time Series Forecasting: An Empirical Study of Instability Across Data Regimes",
+      "abstract": "Time series forecasting models often exhibit inconsistent performance across datasets with varying statistical and structural properties. Despite the wide range of available forecasting techniques, it remains unclear whether model selection can be reliably guided by simple data characteristics. This paper investigates why rule-based model selection fails in time series forecasting by analyzing the relationship between data-regime descriptors and model performance. A descriptor-based framework is introduced to characterize time series using measurable properties, including trend strength, seasonality, noise level, and temporal dependence. Based on these descriptors, a rule-based selection mechanism is formulated to map data regimes to candidate forecasting models. The approach is evaluated on multiple real-world datasets across different domains and forecasting horizons. The results show that rule-based model selection achieves low accuracy, with correct model identification occurring in only a small fraction of cases. Significant discrepancies are observed between recommended and empirically optimal models, particularly in noisy and mixed regimes. Further analysis reveals that model performance is highly sensitive to both dataset characteristics and forecasting horizon, resulting in substantial ranking instability across scenarios. These findings explain why simple heuristic rules fail to generalize and demonstrate that forecasting performance cannot be reliably predicted using static, descriptor-based approaches. This study provides empirical evidence that model selection in time series forecasting is inherently context-dependent and highlights the need for more adaptive, data-driven strategies.",
+      "authors": [
+        "Tahir Cetin Akinci",
+        "Alfredo A. Martinez-Morales"
+      ],
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP",
+        "stat.ME",
+        "stat.ML"
+      ],
+      "published": "2026-05-02T21:19:29+00:00",
+      "link": "https://arxiv.org/pdf/2605.01608v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "empirical study of time series forecasting",
+      "llm_evidence_cn": "时间序列预测的实证研究",
+      "llm_evidence": "时间序列预测的实证研究",
+      "canonical_evidence": "时间序列预测的实证研究",
+      "llm_tldr_en": "Investigates why model selection fails in time series forecasting based on data-regime descriptors.",
+      "llm_tldr_cn": "基于数据机制描述符研究了时间序列预测中模型选择失效的原因。",
+      "llm_tldr": "基于数据机制描述符研究了时间序列预测中模型选择失效的原因。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.06310v1",
+      "source": "arxiv",
+      "title": "Perceive, Route and Modulate: Dynamic Pattern Recalibration for Time Series Forecasting",
+      "abstract": "Local temporal patterns in real-world time series continuously shift, rendering globally shared transformations suboptimal. Current deep forecasting models, despite their scale and complexity, rely on fixed weight matrices applied uniformly to all temporal tokens. This creates a static pattern response: models settle into a compromised average, unable to adapt to changing local dynamics. We introduce Dynamic Pattern Recalibration (DPR), a backbone-agnostic mechanism that resolves this via token-level recalibration. Through a lightweight \"Perceive-Route-Modulate\" pipeline, DPR computes a soft-routing distribution over a learned basis of adaptive response patterns, generating a time-aware modulation vector that recalibrates hidden states via a residual Hadamard product. As a backbone-agnostic adapter, DPR enhances forecasting across diverse architectures with minimal overhead, confirming it addresses a general bottleneck. As a minimalist standalone model, DPRNet achieves competitive performance across 12 benchmarks, validating dynamic recalibration against macroscopic parameter scaling.",
+      "authors": [
+        "Siru Zhong",
+        "Zhao Meng",
+        "Haohuan Fu",
+        "Haoyang Li",
+        "Qingsong Wen",
+        "Yuxuan Liang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-05-07T14:12:47+00:00",
+      "link": "https://arxiv.org/pdf/2605.06310v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "dynamic pattern recalibration for time series forecasting",
+      "llm_evidence_cn": "时间序列预测的动态模式重校准",
+      "llm_evidence": "时间序列预测的动态模式重校准",
+      "canonical_evidence": "时间序列预测的动态模式重校准",
+      "llm_tldr_en": "Introduces a backbone-agnostic mechanism to adaptively recalibrate temporal patterns in forecasting models.",
+      "llm_tldr_cn": "引入一种与骨干网络无关的机制，用于自适应重校准预测模型中的时间模式。",
+      "llm_tldr": "引入一种与骨干网络无关的机制，用于自适应重校准预测模型中的时间模式。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.04239v1",
+      "source": "arxiv",
+      "title": "Densification and forecasting of Sentinel-2 time series from multimodal SAR and Optical satellite data using deep generative models",
+      "abstract": "Optical satellite image time series are extensively used in many Earth observation applications, including agriculture, climate monitoring, and land surface analysis. However, clouds and swath edges result in irregular sampling along the temporal dimension, limiting continuous monitoring. To address this issue, a growing body of work has focused on temporal densification and reconstruction of satellite image time series, with the objective of filling missing or cloud-contaminated observations within the temporal extent of the available data. While these approaches improve temporal continuity, they are inherently restricted to the reconstruction of the gaps within the observed time periods, and do not address the prediction of future observations. This work proposes a probabilistic deep learning framework for the densification and forecasting of Sentinel-2 time series by generating optical images at arbitrary past or future dates. The approach leverages multimodal satellite data by jointly exploiting Sentinel-2 optical and Sentinel-1 SAR observations. Unlike most existing works, we propose to focus on the uncertainty of the generated images. Experimental results demonstrate effective densification and forecasting, on sparse and temporally misaligned time series.",
+      "authors": [
+        "Véronique Defonte",
+        "Dawa Derksen",
+        "Alexandre Constantin",
+        "Bastien Nespoulous"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-05T19:27:29+00:00",
+      "link": "https://arxiv.org/pdf/2605.04239v1",
+      "tags": [
+        "keyword:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Forecasting of satellite image time series using deep generative models",
+      "llm_evidence_cn": "使用深度生成模型进行卫星图像时间序列预测",
+      "llm_evidence": "使用深度生成模型进行卫星图像时间序列预测",
+      "canonical_evidence": "使用深度生成模型进行卫星图像时间序列预测",
+      "llm_tldr_en": "Applies deep generative models for densification and forecasting of multimodal satellite image time series.",
+      "llm_tldr_cn": "利用深度生成模型对多模态卫星图像时间序列进行加密和预测。",
+      "llm_tldr": "利用深度生成模型对多模态卫星图像时间序列进行加密和预测。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "methods using diffusion models for time series forecasting",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.06553v1",
+      "source": "arxiv",
+      "title": "Diverse Sampling in Diffusion Models with Marginal Preserving Particle Guidance",
+      "abstract": "We present EDDY (Exact-marginal Diversification via Divergence-free dYnamics), a guidance mechanism for diffusion and flow matching models that promotes diversity among samples generated while maintaining quality. EDDY exploits symmetries of the Fokker-Planck equation, using drift perturbations that change particle trajectories while preserving the evolving marginal distribution. We instantiate this principle through kernel-based anti-symmetric pairwise matrix fields, constructed from the repulsive directions. The resulting divergence-free dynamics promote diversity at the joint particle level while preserving each particle's marginal distribution without any additional training. As computing the guidance can be computationally expensive in cases such as text-to-image generation with perceptual embeddings, we propose practical approximations as an effective and efficient solution. Experiments on synthetic distributions and text-to-image generation show that EDDY improves diversity while maintaining strong distributional fidelity compared to common baselines.",
+      "authors": [
+        "Gal Vinograd",
+        "Idan Achituve",
+        "Ethan Fetaya"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-05-07T16:49:12+00:00",
+      "link": "https://arxiv.org/pdf/2605.06553v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "guidance mechanism for diffusion models",
+      "llm_evidence_cn": "扩散模型的引导机制",
+      "llm_evidence": "扩散模型的引导机制",
+      "canonical_evidence": "扩散模型的引导机制",
+      "llm_tldr_en": "Introduces EDDY, a guidance mechanism to improve sample diversity in diffusion and flow matching models.",
+      "llm_tldr_cn": "引入EDDY引导机制，在保持质量的同时提高扩散和流匹配模型的生成多样性。",
+      "llm_tldr": "引入EDDY引导机制，在保持质量的同时提高扩散和流匹配模型的生成多样性。",
+      "llm_tags": [
+        "query:diffts:composite"
+      ],
+      "matched_query_tag": "query:diffts:composite",
+      "matched_query_text": "Papers central to 查询将扩散模型应用于时间序列任务的相关论文, especially work that connects or combines: Time Series; research on diffusion models for time-series data; methods using diffusion models for time series forecasting; denoising diffusion probabilistic models applied to time series; sequence modeling with diffusion processes for time-dependent data; conditional diffusion frameworks for time series generation; research papers on diffusion models applied to time series tasks.",
+      "matched_requirement_id": "req-composite-diffts",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
