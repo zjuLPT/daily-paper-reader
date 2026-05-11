@@ -1,0 +1,54 @@
+{
+  "label": "2026-05-11",
+  "date": "2026-05-11",
+  "generated_at": "2026-05-11T20:28:18",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202605/11/2605.02973v1-structured-diffusion-bridges-inductive-bias-for-denoising-diffusion-bridges",
+      "section": "quick",
+      "title_en": "Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges",
+      "authors": "Eitan Kosman, Gabriele Serussi, Chaim Basking",
+      "date": "2026-05-03",
+      "pdf": "https://arxiv.org/pdf/2605.02973v1",
+      "score": "6.0",
+      "evidence": "用于模态转换和去噪的扩散桥框架",
+      "tldr": "本文针对多模态翻译任务中成对数据依赖强的问题，提出了结构化扩散桥框架，通过对齐约束来限制可行解空间，从而在无配对或部分配对的情况下取得接近全配对监督的效果，显著提升了扩散模型在弱监督多模态翻译中的适用性。",
+      "tags": "query:diffts",
+      "abstract_en": "Modality translation is inherently under-constrained, as multiple cross-modal mappings may yield the same marginals. Recent work has shown that diffusion bridges are effective for this task. However, most existing approaches rely on fully paired datasets, thereby imposing a single data-driven constraint. We propose a diffusion-bridge framework that characterizes the space of admissible solutions and restricts it via alignment constraints, treating paired supervision as an optional heuristic rather than a prerequisite. We validate our method on synthetic and real modality translation benchmarks across unpaired, semi-paired, and paired regimes, showing consistent performance across supervision levels. Notably, \\textbf{it achieves near fully-paired quality with a substantial relaxation in pairing requirements, and remaining applicable in the unpaired regime}. These results highlight diffusion bridges as a flexible foundation for modality translation beyond fully paired data.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202605/11/2605.07013v1-towards-closing-the-autoregressive-gap-in-language-modeling-via-entropy-gated-continuous-bitstream-diffusion",
+      "section": "quick",
+      "title_en": "Towards Closing the Autoregressive Gap in Language Modeling via Entropy-Gated Continuous Bitstream Diffusion",
+      "authors": "Georgios Batzolis, Mark Girolami, Luca Ambrogioni",
+      "date": "2026-05-07",
+      "pdf": "https://arxiv.org/pdf/2605.07013v1",
+      "score": "6.0",
+      "evidence": "用于序列建模的连续扩散过程",
+      "tldr": "本文提出一种基于连续比特流的扩散语言模型，通过熵门控的随机采样器在高信息区域集中随机性，大幅提升生成质量和效率。实验显示该模型在LM1B和OWT基准上超越先前扩散模型，达到自回归参考水平，并减少计算与内存开销，为可扩展的语言生成提供新范式。",
+      "tags": "query:diffts",
+      "abstract_en": "Diffusion language models (DLMs) promise parallel, order-agnostic generation, but on standard benchmarks they have historically lagged behind autoregressive models in sample quality and diversity. Recent continuous flow and diffusion approaches over token embeddings have narrowed this gap, suggesting continuous state spaces are highly effective for language. In this work, we further close the autoregressive gap by modeling text as a continuous diffusion process over fixed-width binary bitstreams. Our approach represents semantic tokens as analog bit sequences and utilizes a matched-filter residual parameterization to isolate contextual learning from analytic independent-bit posteriors. Crucially, we adopt a stochastic sampler that applies Langevin-type corrections gated by the entropy-rate profile, automatically concentrating stochasticity in high-information regions while remaining nearly deterministic elsewhere. On the One Billion Word Benchmark (LM1B), our 130M-parameter bitstream model reaches a generative perplexity ($\\GenPPL$) of $59.76$ at matched real-data entropy ($4.31$) using 256 neural function evaluations (NFEs), decisively outperforming prior DLM baselines and reaching the autoregressive reference. On OpenWebText (OWT), our stochastic sampler establishes a new continuous-DLM Pareto frontier, achieving $\\GenPPL=27.06$ at an entropy of $5.26$ using $4\\times$ fewer steps than previous 1024-NFE baselines. As an additional architectural benefit, bitstream diffusion removes the $\\mathcal{O}(V)$ vocabulary scaling bottleneck shared by standard DLMs. By predicting $\\mathcal{O}(\\log V)$ bitwise logits via semantic bit-patching, our model yields a reduced memory footprint and higher throughput, demonstrating a scalable paradigm for language generation as vocabulary sizes grow.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202605/11/2605.08078v1-normalizing-trajectory-models",
+      "section": "quick",
+      "title_en": "Normalizing Trajectory Models",
+      "authors": "Jiatao Gu, Tianrong Chen, Ying Shen, David Berthelot, Shuangfei Zhai, Josh Susskind",
+      "date": "2026-05-08",
+      "pdf": "https://arxiv.org/pdf/2605.08078v1",
+      "score": "6.0",
+      "evidence": "在基于扩散的模型中利用条件归一化流对轨迹步骤进行建模",
+      "tldr": "本文提出Normalizing Trajectory Models (NTM)，针对扩散模型在少步采样时高斯假设失效问题，将每个反向步骤建模为条件正规化流，实现精确似然训练。该方法结合浅层可逆模块与深度预测器，可从零训练或基于预训练模型初始化，在文本到图像生成任务中四步即可达到或超越主流方法性能。",
+      "tags": "query:diffts",
+      "abstract_en": "Diffusion-based models decompose sampling into many small Gaussian denoising steps -- an assumption that breaks down when generation is compressed to a few coarse transitions. Existing few-step methods address this through distillation, consistency training, or adversarial objectives, but sacrifice the likelihood framework in the process. We introduce Normalizing Trajectory Models (NTM), which models each reverse step as an expressive conditional normalizing flow with exact likelihood training. Architecturally, NTM combines shallow invertible blocks within each step with a deep parallel predictor across the trajectory, forming an end-to-end network trainable from scratch or initializable from pretrained flow-matching models. Its exact trajectory likelihood further enables self-distillation: a lightweight denoiser trained on the model's own score produces high-quality samples in four steps. On text-to-image benchmarks, NTM matches or outperforms strong image generation baselines in just four sampling steps while uniquely retaining exact likelihood over the generative trajectory.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

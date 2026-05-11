@@ -1,0 +1,126 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2605.02973v1/fig-001.webp",
+      "caption": "Table 1. Effect of structured constraints across supervision regimes. Endpoint and trajectory reversibility consistently improve coupling quality and cycle consistency across ρ = 0, 0.5, 1 settings, while maintaining competitive marginal alignment.",
+      "page": 6,
+      "index": 1,
+      "width": 833,
+      "height": 396
+    },
+    {
+      "url": "assets/figures/arxiv/2605.02973v1/fig-002.webp",
+      "caption": "Figure 3. Synthetic benchmark results across supervision levels (ρ). Semi-paired training consistently improves coupling quality and cycle consistency relative to paired-only baselines, while maintaining competitive target marginal alignment.",
+      "page": 6,
+      "index": 2,
+      "width": 1003,
+      "height": 287
+    },
+    {
+      "url": "assets/figures/arxiv/2605.02973v1/fig-003.webp",
+      "caption": "Figure 14. Qualitative results on samples from the CelebA-HQ dataset. ρ = 0.",
+      "page": 25,
+      "index": 3,
+      "width": 871,
+      "height": 690
+    },
+    {
+      "url": "assets/figures/arxiv/2605.02973v1/fig-004.webp",
+      "caption": "Figure 15. Qualitative results on samples from the CelebA-HQ dataset. ρ = 0.",
+      "page": 26,
+      "index": 4,
+      "width": 871,
+      "height": 690
+    },
+    {
+      "url": "assets/figures/arxiv/2605.02973v1/fig-005.webp",
+      "caption": "Figure 10. Qualitative results on samples from the CelebA-HQ dataset. ρ = 0.5.",
+      "page": 21,
+      "index": 5,
+      "width": 873,
+      "height": 1152
+    },
+    {
+      "url": "assets/figures/arxiv/2605.02973v1/fig-006.webp",
+      "caption": "Figure 11. Qualitative results on samples from the CelebA-HQ dataset. ρ = 0.5.",
+      "page": 22,
+      "index": 6,
+      "width": 873,
+      "height": 1152
+    },
+    {
+      "url": "assets/figures/arxiv/2605.02973v1/fig-007.webp",
+      "caption": "Figure 5. Denoiser architecture for the synthetic benchmark. The noisy latent zt, conditioning endpoint y, and diffusion-time embedding e(t) are represented as a set of tokens of dimensionality d and processed jointly by a stack of L multi-head attention blocks. The output corresponding to the zt token is used directly as the score (or noise) prediction for denoising.",
+      "page": 14,
+      "index": 7,
+      "width": 740,
+      "height": 266
+    },
+    {
+      "url": "assets/figures/arxiv/2605.02973v1/fig-008.webp",
+      "caption": "Figure 7. Qualitative results on samples from the CelebA-HQ dataset. ρ = 1.",
+      "page": 18,
+      "index": 8,
+      "width": 756,
+      "height": 1152
+    },
+    {
+      "url": "assets/figures/arxiv/2605.02973v1/fig-009.webp",
+      "caption": "Figure 12. Qualitative results on samples from the CelebA-HQ dataset. ρ = 0.5.",
+      "page": 23,
+      "index": 9,
+      "width": 873,
+      "height": 1152
+    },
+    {
+      "url": "assets/figures/arxiv/2605.02973v1/fig-010.webp",
+      "caption": "Figure 4. Synthetic 2D benchmark used in our experiments. Left: conditioning marginal pY . Right: target marginal pX . Points are color-coded by the underlying content variable, which is shared across endpoints but not observed during training. Arrows indicate a small subset of true paired correspondences (shown for visualization only). While the two marginals appear broadly similar, the true coupling is highly ambiguous without additional structure, motivating the use of diffusion-bridge constraints beyond marginal matching.",
+      "page": 13,
+      "index": 10,
+      "width": 970,
+      "height": 376
+    },
+    {
+      "url": "assets/figures/arxiv/2605.02973v1/fig-011.webp",
+      "caption": "Figure 2. Top: We model unpaired translation via stochastic latent diffusion bridges: a forward bridge (X → Y , left) and a reverse bridge (Y → X , right). Bottom: Two alignment heuristics. Marginal Matching (MM) enforces the terminal constraint zT ∼ pY . The displayed trajectories illustrate how bridge stochasticity is leveraged to cover the target support, penalizing systematic deviations like mode dropping. Cycle Consistency (CC) enforces reversibility (y → x̂ → ŷ ≈ y) by minimizing both the endpoint error ∥z0 − ẑ0∥ and the trajectory mismatch ∥zX→Y",
+      "page": 4,
+      "index": 11,
+      "width": 967,
+      "height": 361
+    },
+    {
+      "url": "assets/figures/arxiv/2605.02973v1/fig-012.webp",
+      "caption": "Figure 8. Qualitative results on samples from the CelebA-HQ dataset. ρ = 1.",
+      "page": 19,
+      "index": 12,
+      "width": 873,
+      "height": 1152
+    },
+    {
+      "url": "assets/figures/arxiv/2605.02973v1/fig-013.webp",
+      "caption": "Figure 13. Qualitative results on samples from the CelebA-HQ dataset. ρ = 0.",
+      "page": 24,
+      "index": 13,
+      "width": 871,
+      "height": 690
+    },
+    {
+      "url": "assets/figures/arxiv/2605.02973v1/fig-014.webp",
+      "caption": "Figure 9. Qualitative results on samples from the CelebA-HQ dataset. ρ = 1.",
+      "page": 20,
+      "index": 14,
+      "width": 873,
+      "height": 1152
+    },
+    {
+      "url": "assets/figures/arxiv/2605.02973v1/fig-015.webp",
+      "caption": "Figure 6. Synthetic benchmark results across supervision levels (ρ) for varying K. As the number of modes increases (K ∈ {6, 20, 100, 1000}), semi-paired training maintains strong coupling quality and cycle consistency relative to paired-only baselines, while preserving competitive target marginal alignment.",
+      "page": 16,
+      "index": 15,
+      "width": 992,
+      "height": 822
+    }
+  ]
+}

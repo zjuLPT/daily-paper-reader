@@ -1,0 +1,874 @@
+Title: Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges
+
+URL Source: https://arxiv.org/pdf/2605.02973v1
+
+Published Time: Wed, 06 May 2026 00:06:17 GMT
+
+Number of Pages: 28
+
+Markdown Content:
+# Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges 
+
+Eitan Kosman 1 Gabriele Serussi 1 Chaim Baskin 1
+
+# Abstract 
+
+Modality translation is inherently under-constrained, as multiple cross-modal mappings may yield the same marginals. Recent work has shown that diffusion bridges are effective for this task. However, most existing approaches rely on fully paired datasets, thereby imposing a single data-driven constraint. We propose a diffusion-bridge framework that characterizes the space of admissible solutions and restricts it via alignment constraints, treating paired supervision as an optional heuristic rather than a prerequisite. We validate our method on synthetic and real modality translation benchmarks across unpaired, semi-paired, and paired regimes, showing consistent performance across supervision levels. Notably, it achieves near fully-paired quality with a substantial relaxation in pairing requirements, and remaining applicable in the unpaired regime . These results highlight diffusion bridges as a flexible foundation for modality translation beyond fully paired data. 
+
+# 1. Introduction 
+
+Mapping information across heterogeneous domains is a central problem in machine learning. Diffusion models have achieved significant success in generative tasks (Sohl-Dickstein et al., 2015; Ho et al., 2020; Song et al., 2021; Berman et al., 2024), and recent advancements have ex-tended these models to distribution-to-distribution transla-tion using diffusion bridges (De Bortoli et al., 2021; Shi et al., 2023; Zhou et al., 2024; Liu et al., 2023). No-tably, Latent Denoising Diffusion Bridge Models (LD-DBM) (Berman et al., 2025) have achieved state-of-the-art results by leveraging a shared latent space to address dimen-sional mismatches. Despite these advances, many bridge ap-proaches predominantly depend on paired correspondences to define and learn effective translations. 
+
+> 1
+
+Ben-Gurion University of the Negev, Israel. Correspondence to: Eitan Kosman <kosmane@post.bgu.ac.il >.
+
+Proceedings of the 43 rd International Conference on Machine Learning , Seoul, South Korea. PMLR 306, 2026. Copyright 2026 by the author(s). 0.0 0.2 0.4 0.6 0.8 1.0 
+
+> Paired fraction
+> 0.45
+> 0.50
+> 0.55
+> 0.60
+> 0.65
+> 0.70
+> 0.75
+> 0.80
+> IoU
+> LRGT+
+> EDM
+> LDDBM
+> SDB (ours)
+
+Figure 1. Multi-view → 3D (ShapeNet). Reconstruction fidelity (IoU) versus paired fraction ρ when translating four-view images into 32 3 voxel grids. SDB (ours) outperforms diffusion-bridge baselines (EDM (Karras et al., 2022), LDDBM (Berman et al., 2025)) whenever paired supervision is available ( ρ ∈ { 0.5, 1.0}), while remaining applicable in the fully unpaired setting ( ρ = 0 )where paired objectives cannot be trained. LRGT+ (Yang et al., 2023) is an ad-hoc pipeline included as a reference point rather than a principled diffusion-bridge baseline. 
+
+The exclusive reliance on paired supervision presents a significant limitation. In conventional denoising diffusion bridge models (Zhou et al., 2024), training with paired data implicitly enforces three requirements: semantic correspon-dence (mapping the source to the target), distributional va-lidity (ensuring that outputs match the target marginal), and geometric consistency (maintaining invertibility). Relying solely on paired loss to learn transport geometry from the ground up may not fully exploit the problem’s inherent struc-ture. This strategy can be suboptimal even with abundant data, as the model may minimize reconstruction error while failing to adhere to the underlying manifold. Distinguish-ing these constraints enables paired supervision to focus on correspondences, while dedicated objectives enforce distri-butional and geometric properties. To address this, we introduce Structured Diffusion Bridge (SDB ) as a framework that augments LD-DBM (Berman et al., 2025) with composable structural constraints. Instead of relying exclusively on paired data to infer structure, this approach explicitly enforces it: marginal matching anchors the bridge to the target distribution, end-point cycle consistency promotes invertibility ( y → x →
+
+1
+
+> arXiv:2605.02973v1 [cs.LG] 3 May 2026 Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges
+
+ˆy ≈ y), and trajectory-level cycle consistency regularizes the stochastic flow. These constraints are independent of paired supervision, enabling the direct incorporation of in-ductive bias into the transport plan. This formulation ad-vances learning by combining principled geometric enforce-ment with example-based methods. Empirical results demonstrate that explicit structural con-straints enhance both performance and robustness. In the fully paired setting, SDB surpasses state-of-the-art performance, increasing PSNR on super-resolution (FFHQ →CelebA-HQ) from 25 .6 to 25 .9. Importantly, 
+
+SDB maintains strong performance as data availability de-creases. When supervision is reduced to 50% , performance remains competitive with fully supervised baselines. Even in the absence of paired data, structural constraints alone enable meaningful translation ( 19 .0 PSNR on super resolu-tion). This pattern of degradation suggests that geometric constraints effectively capture the essential mechanics of translation, implying that dense pairing is not always neces-sary for semantic alignment. 
+
+We summarize our contributions as follows :• We formulate diffusion bridge training as a composite objective, treating paired supervision as one of several constraints. • We introduce explicit structural regularization through marginal matching and multi-level cycle consistency, demonstrating that geometric enforcement improves fully paired translation. • We demonstrate that SDB retains efficacy as paired data decreases, indicating strong performance in low-resource settings. • We provide a comprehensive ablation analysis that iso-lates the contributions of each constraint, highlighting their roles in shaping the diffusion trajectory. 
+
+# 2. Related Work 
+
+Diffusion bridges for modality translation. Diffusion bridges have become a strong paradigm for distribution-to-distribution translation with diffusion models, including practical instantiations for translation tasks and latent vari-ants such as LDDBM (De Bortoli et al., 2021; Shi et al., 2023; Liu et al., 2023; Zhou et al., 2024; Berman et al., 2025). In most translation-oriented bridge methods, paired 
+
+correspondences are the primary source of identifiability and the main way to enforce semantic alignment, so per-formance is tightly coupled to dense pairing. By contrast, classical unpaired translation methods rely on surrogate alignment signals such as cycle consistency or contrastive objectives (Zhu et al., 2017; Liu et al., 2017; Park et al., 2020). We find LADB (Wang et al., 2025) as a closely re-lated approach. It reduces pairing demands by reusing a pretrained source latent diffusion model to map source sam-ples to latent endpoints and training a target latent diffusion model with a mixture of paired and unpaired latent–target couplings. Rather than aiming to replace unpaired pipelines or relying on dense pairing, we strengthen bridge-based translation even at full supervision via explicit structural constraints, and show they remain informative as pairing becomes scarce, yielding graceful degradation. 
+
+Schr ¨odinger bridges, optimal transport, and unpaired couplings. Schr ¨odinger bridges (SB) connect stochastic transport to entropy-regularized optimal transport and pro-vide a principled view of learning couplings between end-point marginals (De Bortoli et al., 2021; Shi et al., 2023; Tong et al., 2024). This perspective naturally accommo-dates unpaired data, but in modality translation the coupling can remain underdetermined without additional inductive structure. Recent unpaired SB instantiations illustrate com-plementary trade-offs: UNSB (Kim et al., 2024) casts learn-ing as a sequential adversarial procedure, which can be susceptible to GAN-style failure modes (e.g., instability, mode collapse, and hyperparameter sensitivity), particularly in complex modality translation, while simulation-free ap-proximations depend on a chosen ground cost or feature space that may not match semantic correspondence (Tong et al., 2024). We therefore focus on constraints that im-prove bridge-based translation under full pairing and remain informative as pairing diminishes. 
+
+# 3. Background 
+
+3.1. Diffusion Models 
+
+Diffusion models (Sohl-Dickstein et al., 2015; Ho et al., 2020; Song et al., 2021) define a forward noising process that gradually perturbs data into a simple prior distribu-tion, typically an isotropic Gaussian. A neural network learns the corresponding reverse-time denoising process via score matching, enabling generation by sampling from the prior and iteratively denoising. While highly expressive, standard diffusion is inherently prior-to-data : generation is anchored to a fixed simple distribution, making direct translation between two arbitrary and potentially complex data distributions nontrivial without additional structure. 
+
+3.2. Denoising Diffusion Bridge Models 
+
+Denoising Diffusion Bridge Models (DDBMs) (Zhou et al., 2024) extend diffusion to connect two arbitrary endpoint distributions by conditioning on fixed endpoints via Doob’s h-transform (Doob & Doob, 1984). Given marginals p(x0),
+
+p(xT ) and a joint distribution p(x0, x T ), the forward pro-2Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges 
+
+cess starts at x0 and is conditioned to terminate at xT :
+
+dx t = f (xt, t ) dt +g(t)2h(xt, t, x T , T ) dt +g(t) dw t, (1) where f , g, and h are analytically specified under standard noise schedules. DDBM learns the reverse-time process: 
+
+dx t =
+
+h
+
+f (xt, t ) − g2(t)
+
+
+
+∇xt log q(xt | xT )
+
+− h(xt, t, x T , T )
+
+i 
+
+dt + g(t) d ˆwt.
+
+(2) where ∇xt log q(xt|xT ) is the score function, approximated by a neural network sθ (xt, x T , t ). Training minimizes a weighted score matching objective: 
+
+LDDBM = Ext,x 0,x T ,t 
+
+h
+
+w(t) sθ (xt, x T , t )
+
+− ∇ xt log q(xt | x0, x T ) 2i
+
+.
+
+(3) Under the variance-exploding (VE) scheme, 
+
+∇xt log q(xt|x0, x T ) = (xT − xt)/(σ2 
+
+> T
+
+− σ2 
+
+> t
+
+) with 
+
+xt ∼ N (x0, σ 2 
+
+> t
+
+I). Reversing the learned bridge yields an approximate sampler for p(x0|xT ), enabling transla-tion from p(xT ) to p(x0). Critically, training requires samples from the joint p(x0, x T )—i.e., paired correspon-dences—and assumes both endpoints reside in the same ambient space Rd.
+
+3.3. Latent Denoising Diffusion Bridge Models 
+
+Latent Denoising Diffusion Bridge Models (LD-DBM) (Berman et al., 2025) address the dimension-ality constraint by operating in a shared latent space. Modality-specific encoders EX , EY map inputs to latent representations z0 = EX (x) and zT = EY (y), while decoders DX , DY reconstruct outputs. The diffusion bridge is learned between latent endpoints, enabling translation across modalities of different dimensionality. LDDBM combines three losses, each requiring paired sam-ples (x, y ):
+
+LLDDBM = Lbridge + Lpred + LInfoNCE . (4) The bridge loss Lbridge applies score matching in latent space as in DDBM. The predictive loss Lpred = d(DX ◦ B ◦
+
+EY (y), x ) enforces end-to-end reconstruction through the full encode-bridge-decode pipeline, where B denotes the bridge and d is a distance metric. The contrastive loss 
+
+LinfoNCE aligns latent representations using InfoNCE (Oord et al., 2018). All three components rely on paired correspondences: the bridge loss uses (z0, z T ) endpoint pairs, the contrastive loss forms positives from paired samples, and the predic-tive loss matches decoded outputs to paired targets. Paired supervision serves as the sole alignment signal, defining end-point connections, distributional structure, and geometric preservation. This raises the question: can explicit struc-tural constraints enhance pairing to improve translation, and how does performance change when pairing is limited or missing? 
+
+# 4. Heuristic Composition with Latent Denoising Diffusion Bridges 
+
+We model modality translation (MT) as the problem of learning a stochastic diffusion bridge between two marginal distributions pX and pY in a shared latent space (Figure 2). Following the Latent Denoising Diffusion Bridge Model (LDDBM) (Berman et al., 2025), we first encode samples from each modality into a common latent representation, and perform translation by sampling from a denoising dif-fusion process conditioned on the source modality and con-strained to end at the target marginal. When only the marginals pX and pY are provided, modality translation is inherently under-constrained: infinitely many stochastic processes can interpolate between the same end-point distributions. Equivalently, the set of admissible joint distributions is 
+
+P = { p(x, y ) | p(x) = pX , p (y) = pY }, (5) and marginal information alone does not identify a unique coupling between modalities. We therefore view MT as requiring the imposition of heuristics that restrict the geom-etry, stochasticity, and reversibility of the learned diffusion bridge. Under this perspective, the joint distribution p(x, y ) repre-sented by a paired dataset corresponds to one possible data-driven heuristic for identifying a valid bridge via Doob’s 
+
+h-transform (Doob & Doob, 1984), as employed in denois-ing diffusion bridge models (Berman et al., 2025; Zhou et al., 2024), but is not a prerequisite for learning meaningful cross-modal mappings. In contrast, diffusion bridges provide a foundation for the composition of alternative heuristics, as their diffusion-based formulation exposes intermediate states, time-dependent score fields, and stochastic trajecto-ries that can be directly regularized (Figure 2). For gener-ality, we adopt Latent Denoising Diffusion Bridge Models (LDDBMs) (Berman et al., 2025), which are not constrained by endpoint dimensionality and enable evaluation across di-verse modalities and tasks. 
+
+Paired supervision as a heuristic. Our formulation also encompasses the original data-driven heuristic of denois-ing diffusion bridge models (DDBMs) (Zhou et al., 2024; Berman et al., 2025), which constrains the diffusion bridge using paired samples. When the dataset is semi-paired ,meaning that the joint distribution p(x, y ) is known only 3Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges Marginal matching (MM) Cycle consistency (CC)   
+
+> 0.0 0.5 1.0
+> t
+
+p0 p T                            
+
+> X→YY→X
+> mismatch
+> Endpoint cycle: ‖z0−̂ z0‖
+> 0.0 0.5 1.0
+> Trajectory cycle mismatch: || zX→Yt−zY→XT−t|| 22
+> 0.0 0.5 1.0
+> t
+> p0pT
+
+E xX Dy Y    
+
+> 0.0 0.5 1.0
+> tp0pT
+
+Forward Diffusion Bridge (X→Y) D X XE YY   
+
+> 0.0 0.5 1.0
+> t
+> p0pT
+
+Reverse Diffusion Bridge (Y→X) 
+
+Figure 2. Top: We model unpaired translation via stochastic latent diffusion bridges: a forward bridge (X → Y , left) and a reverse bridge (Y → X, right). Bottom: Two alignment heuristics. Marginal Matching (MM) enforces the terminal constraint zT ∼ pY . The displayed trajectories illustrate how bridge stochasticity is leveraged to cover the target support, penalizing systematic deviations like mode dropping. Cycle Consistency (CC) enforces reversibility ( y → ˆx → ˆy ≈ y) by minimizing both the endpoint error ∥z0 − ˆz0∥ and the trajectory mismatch ∥zX→Yt − zY →XT −t ∥, visualized in the time-indexed heatmap. 
+
+for a subset of the data, we can apply paired supervision selectively to that subset. The resulting objective naturally combines paired likelihood-based constraints with unpaired heuristics, which are the focus of the discussion that follows. 
+
+Pretrained representations as structural priors. In ad-dition to the heuristics listed below, pretrained autoencoders and foundation models offer a natural source of inductive bias. By generating a latent parameterization that reflects modality-specific structure, diffusion bridges operate on rep-resentations that already align with intrinsic geometry. This condensed form reduces the need for the bridge to iden-tify low-level regularities independently. As demonstrated in our experiments, constraints such as bridge reversibility become more meaningful when applied in the latent space. 
+
+4.1. Marginal Matching 
+
+Endpoint Marginal Matching (MM) constrains the diffusion bridge to terminate at the target marginal distribution pX .During training, we draw x ∼ pX and y ∼ pY . Target sam-ples are encoded into z0 = EX (x) and corrupted using a known forward noising process. Then, we train the diffu-sion bridge score function sθ (zt, t | y) via denoising score matching (DSM) by minimizing 
+
+LDSM = Ez0, t, z t
+
+h
+
+sθ (zt, t | y) − ∇ zt log q(zt | z0) 22
+
+i
+
+.
+
+To reduce coupling ambiguity, we employ a winner-takes-all (WTA) assignment heuristic. For each target sample 
+
+z0, multiple conditioning candidates {y(k)}Kk=1 ∼ pY are drawn. We evaluate LDSM and propagate gradients only through the candidate 
+
+k⋆ = arg min  
+
+> k
+
+LDSM (z0, y (k)),
+
+which selects the condition yk∗
+
+that best explains the target sample with respect to the learned bridge. Yet, WTA may lead to condition dominance , where a few 
+
+low-information conditioning samples S ⊂ { y(i)}Ni=1 are selected for a relatively large number of target samples. We alleviate this by imposing a capacity constraint Cy = 2 that limits the number of selections of each conditioning sample 
+
+y(i) within an epoch. 
+
+4.2. Cycle Consistency as Bridge Reversibility 
+
+We propose a Cycle-Consistency (CC) heuristic based on a bridge reversibility constraint , which limits admissible diffusion bridges to those that are approximately invert-ible at the level of latent stochastic flows. In unpaired settings, marginal matching alone can lead to degenerate couplings that mix source and target samples in arbitrary ways. Reversibility enforcement helps reduce this ambigu-ity by penalizing irreversible information loss. We formal-ize reversibility at endpoints, but also along intermediate trajectories, thereby imposing a strong constraint on the internal structure of the stochastic process. In contrast to classical cycle consistency methods based on deterministic reconstruction (Zhu et al., 2017), our approach enforces 4Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges 
+
+consistency between forward and reverse diffusion bridges (Berman et al., 2025; Zhou et al., 2024). This adaptation makes the method naturally compatible with LDDBM and more robust to the inherent stochasticity of diffusion models. 
+
+Forward and reverse diffusion bridges. Let sX →Y (z, t )
+
+denote the score function of the diffusion bridge translating from modality X to Y, and sY→X (z, t ) the corresponding reverse bridge. Given a latent source sample z0 ∼ pX , a forward bridge generates 
+
+zT = Φ X →Y (z0), (6) where Φ denotes the stochastic flow induced by the diffusion process. Applying the reverse bridge yields 
+
+ˆz0 = Φ Y→X (zT ). (7) Bridge reversibility requires ˆz0 to be statistically consistent with the original latent z0.
+
+Latent endpoint reversibility. The simplest instantiation of cycle consistency enforces agreement between the origi-nal and reconstructed latent representations: 
+
+Lend cycle = Ez0∼pX
+
+∥ˆz0 − z0∥22
+
+. (8) This constraint ensures approximate invertibility at the end-points of the diffusion bridge, while allowing stochasticity along the trajectory. 
+
+Trajectory-level reversibility. Endpoint consistency alone is insufficient to constrain the internal structure of a diffusion bridge. We therefore extend cycle consistency to intermediate diffusion states along the trajectory. Let 
+
+{zX→Yt }Tt=0 denote the latent states of the forward bridge, and {zY →XT −t }Tt=0 the corresponding states of the reverse bridge. We enforce Trajectory-level reversibility by requir-ing that these forward and reverse latent paths remain ap-proximately consistent at matching diffusion times, via 
+
+Ltraj cycle = Et,z t
+
+h
+
+w(t) ∥zX→Yt −zY →XT −t ∥22
+
+i
+
+, w(t) = 1
+
+σ2 
+
+> t
+
++ ε .
+
+(9) This enforces reversibility across diffusion time while ac-counting for the scale variation. 
+
+4.3. Overall Objective 
+
+The final training objective composes the heuristic con-straints. We assume access to datasets DX = {xi}NX 
+
+> i=1
+
+and 
+
+DY = {yi}NY
+
+> i=1
+
+, which define the empirical marginal distri-butions pX and pY over modalities X and Y, respectively. In the semi-paired regime, we additionally observe a paired subset Dpair ⊆ { (xi, y j ) : xi ∈ D X , y j ∈ D Y }, i.e., a set of samples (x, y ) with x ∼ pX and y ∼ pY for which a cor-respondence is available. We optimize the unified objective 
+
+Ltotal = LDSM + λend Lend cycle + λtraj Ltraj cycle 
+
++ λpair 1(x,y )∈D pair Lpair . (10) where LDSM enforces termination at the target marginal (Sec. 4.1) and Lend cycle , Ltraj cycle impose bridge reversibility at endpoints and along trajectories (Sec. 4.2). The final term recovers the original data-driven heuristic of DDBMs (Zhou et al., 2024; Berman et al., 2025) by applying paired su-pervision Lpair only on Dpair . We use λ = 1 for all ob-jectives, as we have not observed significant improvement with other values. This unified formulation combines mul-tiple heuristics to identify a diffusion-bridge-induced joint 
+
+pθ (x, y ) ∈ P (Eq. 5) that is consistent with the marginals. 
+
+# 5. Experiments 
+
+We validated SDB across a range of translation tasks, in-cluding a controlled synthetic dataset in Section 5.1 and real-world scenarios in Section 5.2 and Section 5.3. The objectives of this empirical study were fourfold: 1. How do the proposed heuristics affect performance within our framework? 2. As we first and foremost target improving general modality translation, how well does SDB perform un-der common evaluation protocols? 3. We further demonstrate the superiority of SDB in un-paired and semi-paired regimes. Can structured bridges learn meaningful coupling via constraining properties of stochastic flows? 4. Can we attribute high-quality coupling to strong pre-trained encoders that induce modality-native latent pa-rameterization We adopt the same tasks and architectural components as in prior works (Berman et al., 2025; Wu et al., 2015; Moser et al., 2024; Rombach et al., 2021; Karras et al., 2022) to enable direct comparison while systematically relaxing the availability of paired data. For all tasks, we implement the diffusion bridge in both directions ( X → Y and Y → X )since cycle-consistency terms require translating outputs back to the source modality. 
+
+5.1. Synthetic Benchmark of Direct Endpoint Bridges 
+
+We begin with a controlled synthetic setting that allows quantitative evaluation of coupling quality at various levels of supervision. Unlike real-data experiments that rely on modality-specific encoders and decoders, we consider direct 5Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges      
+
+> 00.20.40.60.81
+> 0.2
+> 0.4
+> 0.6
+> 0.8
+> 1
+
+ρ
+
+> Content acc.
+> →
+
+Coupling quality      
+
+> 00.20.40.60.81
+> 0.6
+> 0.7
+> 0.8
+> 0.9
+
+ρ
+
+> Cycle MSE
+> ←
+
+Reversibility      
+
+> 00.20.40.60.81
+> 2
+> 2.2
+> ·10 −2
+
+ρ
+
+> SWD
+> ←
+
+Marginal alignment (SWD)      
+
+> 00.20.40.60.81
+> −1.5
+> −1
+> −0.5
+> ·10 −4
+
+ρ
+
+> MMD 2
+> ←
+
+Marginal alignment (MMD 2)
+
+Paired-only Semi-paired (ours)         
+
+> Figure 3. Synthetic benchmark results across supervision levels ( ρ). Semi-paired training consistently improves coupling quality and cycle consistency relative to paired-only baselines, while maintaining competitive target marginal alignment.
+> Table 1. Effect of structured constraints across supervision regimes. Endpoint and trajectory reversibility consistently improve coupling quality and cycle consistency across ρ= 0 ,0.5,1settings, while maintaining competitive marginal alignment.
+
+ρ Method SWD ↓ MMD 2 ↓ Content Acc. ↑ Cycle MSE ↓
+
+0Marginal matching only 0.02021 −1.03 × 10 −4 0.162 0.972 + Endpoint cycle 0.01891 −1.69 × 10 −4 0.662 0.831 + Trajectory cycle 0.019676 −1.11 × 10 −4 0.868333 0.679605 0.5 Marginal matching only 0.02031 −9.5 × 10 −5 0.167 0.991 + Endpoint cycle 0.01918 −1.72 × 10 −4 0.645 0.824 + Trajectory cycle 0.02206 −5.5 × 10 −5 0.789 0.737 Paired-only 0.01951 −1.33 × 10 −4 0.641 0.845 Semi-paired (ours) 0.01930 −1.51 × 10 −4 0.955 0.615 1.0 Marginal matching only 0.01915 −1.47 × 10 −4 0.178 0.976 + Endpoint cycle 0.02289 −2.0 × 10 −6 0.671 0.830 + Trajectory cycle 0.01949 −1.37 × 10 −4 0.768 0.753 Paired-only 0.02316 −1.9 × 10 −5 0.887 0.686 Semi-paired (ours) 0.01937 −1.47 × 10 −4 0.965 0.604 
+
+endpoint bridges and operate in a shared latent space, using a DDBM-style formulation (Zhou et al., 2024). We generate samples z0 ∼ pX and zT ∼ pY from a struc-tured content–style model in which endpoints share a dis-crete content variable and nuisance style factors induce ambiguity in the marginal coupling. We implement the denoiser as a stack of multi-head attention (MHA) blocks, conditioned on y and diffusion time. We refer the reader to Appendix C for a description of the data generation pro-cess, the denoiser architecture, the evaluation metrics, and additional results for various data configurations. 
+
+Effect of structured constraints on coupling. Table 1 presents the effects of incrementally adding structural con-straints across different supervision levels. Figure 3 depicts how these effects evolve as a function of the supervision pa-rameter ρ. In the fully unpaired scenario ( ρ = 0 ), marginal matching alone provides reasonable alignment of endpoint distributions. This is indicated by low SWD and MMD 2
+
+values. However, this approach does not recover meaningful couplings, resulting in poor content accuracy and elevated endpoint cycle error. Introducing endpoint-level cycle con-sistency substantially reduces cycle MSE and significantly improves content accuracy. This suggests that endpoint reversibility partially addresses coupling ambiguity. En-forcing cycle consistency throughout the entire diffusion trajectory further enhances semantic alignment. This under-scores the need to constrain intermediate stochastic flows rather than rely solely on endpoint agreement. The combination of all constraints produces the strongest performance in the unpaired regime, achieving an optimal balance between coupling quality and reversibility while maintaining competitive marginal alignment. This pattern is consistently observed across all ρ values in Figure 3. Compared to paired-only baselines, semi-paired training shows monotonic improvements in coupling quality and re-versibility, while marginal alignment metrics remain stable. Overall, these trends indicate that the observed improve-6Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges           
+
+> Table 2. Zero-shot SR on CelebA-HQ when training on FFHQ, sweeping paired fraction ρ.We report PSNR, SSIM and LPIPS. DiWa (Moser et al., 2024) and LDDBM (Berman et al., 2025) are not applicable at ρ= 0 since their objectives assume paired LR–HR supervision. For ρ= 1 .0, DiWa and LDDBM entries are filled by results from the original works and re-evaluated for ρ= 0 .5.
+
+ρ = 0 ρ = 0 .5 ρ = 1 .0
+
+SDB DiWa LDDBM SDB DiWa LDDBM SDB 
+
+PSNR ↑ 19.0 ±0.6 22.6 ±0.2 24.9 ±0.3 25.2 ±0.3 23.3 25.6 ±0.4 25.9 ±0.3 
+
+SSIM ↑ 0.54 ±0.05 0.62 ±0.02 0.67 ±0.02 0.68 ±0.02 0.65 0.68 ±0.03 0.69 ±0.02 
+
+LPIPS ↓ 0.37 ±0.04 0.40 ±0.01 0.33 ±0.01 0.32 ±0.01 0.39 0.32 ±0.01 0.31 ±0.01 
+
+ments result from enhanced structural alignment between endpoints rather than overfitting to the target distribution. This trend continues in the semi-paired setting ( ρ = 0 .5) and extends to the fully paired regime ( ρ = 1 .0). Semi-paired training with structured constraints consistently outperforms paired-only baselines at all supervision levels, including 
+
+ρ = 1 .0. This demonstrates the complementary nature of partial pairing and heuristic regularization. Additional results for alternative synthetic data generation configura-tions are provided in Appendix C.4. Collectively, these findings support the conclusion that modality translation via diffusion bridges is fundamentally under-constrained by marginals alone. The process benefits from the explicit inte-gration of structural heuristics that influence the geometry and reversibility of the learned stochastic coupling. 
+
+5.2. Image Super-Resolution 
+
+Single-image super-resolution (SR) is formulated as a modality translation problem from low-resolution inputs 
+
+y ∈ Y to high-resolution targets x ∈ X . Within the struc-tured diffusion bridge framework, SR involves learning a conditional stochastic coupling that transports mass from the low-resolution endpoint distribution to the high-resolution endpoint distribution, while preserving the conditioning signal provided by y. The same supervision protocol as described in Section 5.1 is employed, varying the paired fraction ρ ∈ [0 , 1] while maintaining a fixed total number of training samples. Appendix D contains detailed descrip-tions of data construction, model architectures, and training hyperparameters. 
+
+Setup. We map both endpoints to a shared latent space using modality-specific autoencoders. Concretely, we en-code LR observations as zT = ELR (x) and HR targets as 
+
+z0 = EHR (y), and learn a diffusion bridge between these latent endpoints with a denoiser sθ (zt, t | zT ) conditioned on the LR endpoint. We also attempted to bypass autoen-coders and learn the bridge directly in image space using a DDBM-style formulation (Zhou et al., 2024), but this was unsuccessful for SR. In contrast, the approach worked reliably only with sufficiently strong autoencoders, suggest-ing that the learned latent representations reveal a more structured geometry in which the LR–HR correspondence is easier to capture. We refer the reader to Appendix D for further details on the evaluation protocol, autoencoders, denoiser, and sampling/training. 
+
+Results. Table 2 shows zero-shot super-resolution results on CelebA-HQ, using models trained on FFHQ ( 16 ×16 →
+
+128 ×128 ) at different supervision levels ρ. SDB consis-tently delivers the best overall results, improving both pixel-level accuracy and perceptual quality whenever the base-lines can be used ( ρ > 0). In the semi-paired and fully paired settings ( ρ = 0 .5, 1.0), SDB achieves the highest PSNR and SSIM and the lowest LPIPS, which means it reconstructs images more accurately, preserves structure, and looks more realistic under domain shift. SDB also works well in the fully unpaired case ( ρ = 0 ), where DiWa (Moser et al., 2024) and LDDBM (Berman et al., 2025) cannot be used. It achieves competitive perceptual quality, though with more variation between runs. This variability likely comes from the greater uncertainty in unpaired super-resolution, since many high-resolution images can match the same low-resolution input. Still, the strong average per-formance shows that the structured diffusion bridge can find a meaningful mapping from low- to high-resolution images even without paired data. Qualitative results are included in Appendix D.4. 
+
+Connection to the synthetic benchmark. The SR setting serves as a real-data analogue to the synthetic content–style benchmark described in Section 5.1. In that context, trans-lation is under-constrained because multiple couplings can match endpoint marginals without preserving the shared 
+
+discrete content label. Similarly, SR exhibits this ambiguity, but with continuous content distributed over the image man-ifold. Therefore, effective SR requires a coupling that aligns continuous content across LR and HR endpoints while treat-ing high-frequency details as nuisance variables. This per-spective clarifies why pixel-space bridges were ineffective: in raw image space, content and texture are strongly en-tangled, which complicates content alignment. In contrast, sufficiently robust autoencoders produce latent represen-7Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges                                                
+
+> Table 3. Multiview-to-3D generation on ShapeNet. We sweep paired fraction ρ∈[0 ,1] and report 1-NNA to assess distributional similarity between generated and real shapes, and IoU to assess reconstruction fidelity. For ρ= 1 .0, the LRGT+, EDM and LDDBM entries are filled by results reported in the original works (Yang et al., 2023; Karras et al., 2022; Berman et al., 2025). Results for ρ= 0 .5
+> were obtained by running the code 5 times each, and absent for ρ= 0 as they require paired data during training.
+> ρ= 0 ρ= 0 .5ρ= 1 .0
+> SDB LRGT+ EDM LDDBM SDB LRGT+ EDM LDDBM SDB
+> 1-NNA ↓0.657 ±0.008 –0.697 ±0.013 0.660 ±0.008 0.559 ±0.007 –0.532 ±0.013 0.508 ±0.005 0.481 ±0.003
+> IoU ↑0.549 ±0.007 0.704 ±0.10.466 ±0.006 0.512 ±0.004 0.638 ±0.004 0.762 0.631 ±0.006 0.664 ±0.002 0.677 ±0.002
+
+tations in which content is more explicitly organized and easier to match across resolutions. The following experi-ment demonstrates the superiority of SDB on a substantially more challenging benchmark. 
+
+5.3. Multi-view Images to 3D Voxel Grids 
+
+Moving beyond super-resolution, we evaluate SDB on the challenging cross-modal task of generating 3D shapes from 2D multi-view images. In this task, the model receives mul-tiple images of the same object from multiple viewpoints and the corresponding 3D shape during training. The goal at inference time is to generate a 3D sample conditioned on multi-view inputs that follows the distribution of real 3D shapes. We follow the same supervision protocol as in Sec-tion 5.1, varying the paired fraction ρ ∈ [0 , 1] while keeping the total number of training samples fixed. Detailed descrip-tions of the dataset, voxelization, architectures, metrics, and baselines are provided in Appendix E. 
+
+Setup. We follow the ShapeNet protocol established in (Shi et al., 2021). Each object is rendered into four 2D views captured from uniformly spaced azimuth angles around the object, forming the input distribution pY (y), while 3D oc-cupancy grids define the output distribution pX (x). Similar to the methodology described in Section 5.2, we map both endpoints to a shared latent space using modality-specific encoders and decoders. Concretely, we encode the multi-view observation as zT = EMV (y), and encode voxel grids as z0 = EVox (x). We then learn a diffusion bridge between these latent endpoints with a denoiser sθ (zt, t | zT ) con-ditioned on the multi-view endpoint. At inference time, given only the multi-view input y, we sample the condi-tional bridge to obtain ˆz0 and decode a voxel prediction 
+
+ˆx = DVox (ˆ z0). We refer the reader to Appendix E for fur-ther specifications of the evaluation protocol, architectures, and sampling/training details. 
+
+Results. Table 3 reports the results on ShapeNet (Wu et al., 2015) across various supervision levels. SDB consis-tently achieves strong performance in paired or semi-paired regimes, outperforming diffusion-based baselines (Karras et al., 2022; Berman et al., 2025). While the task-specific LRGT+ (Yang et al., 2023) attains the best results for ρ = 1 ,
+
+SDB remains competitive despite being more general. As we limit supervision, performance degrades for all meth-ods; however, SDB exhibits substantially smaller degra-dation, indicating improved robustness to limited paired data. We observe a similar trend for LRGT+, which we attribute to its strong inductive bias. In contrast, EDM (Kar-ras et al., 2022) and LDDBM (Berman et al., 2025) show a pronounced drop in performance as ρ decreases, suggesting that purely data-driven diffusion models struggle to main-tain consistent multiview-to-shape couplings in the absence of explicit regularization or structural constraints. Notably, while baselines are not applicable when ρ = 0 , SDB re-mains applicable. 
+
+# 6. Discussion 
+
+We introduced SDB as a constrained latent diffusion bridg-ing framework that models modality translation as a heuris-tically constrained stochastic process. It induces structure into the bridge learning process, which translates into addi-tional inductive bias that restrict the solution space of valid bridges. In contrast to methods that require paired data, this approach employs pairing as a data-driven heuristic within a broader diffusion-bridge framework. As a by-product, by integrating this heuristic with structural constraints, the framework supports a range of supervision regimes. Ex-perimental results indicate improved performance in fully paired settings, stable outcomes in semi-paired scenarios, and robust unpaired translation. Although modality trans-lation remains under-constrained without full supervision, the findings suggest that latent diffusion bridges offer a principled solution. 
+
+Limitations. Individual heuristics do not completely solve the ambiguity in modality translation. MM (Section 4.1) matches the target marginal but may ignore the conditioning endpoint. Moreover, the WTA increases complexity as K
+
+grows. CC (Section 4.2) preserves content but does not ensure marginal matching. Using these methods together can help find bridge solutions with stronger couplings. Ap-pendix A discusses these failure modes and their effects, and future work may introduce more constraints and inductive biases within the diffusion bridge framework. 8Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges 
+
+# Impact Statement 
+
+We introduced a method that tackles previously addressed tasks that are solved through Modality Translation. With this, we intend to drive the progress of machine learning, specifically in the context of Modality Translation through the application of methods that are commonly used recently, such as Denoising Diffusion Bridge Models and Latent Diffusion Models. Therefore, we neither expect nor intend to create a potential societal consequence that should be mentioned. 9Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges 
+
+# References 
+
+Berman, N., Kosman, E., Castro, D. D., and Azencot, O. Reviving life on the edge: Joint score-based graph gen-eration of rich edge attributes. Trans. Mach. Learn. Res. ,2024, 2024. Berman, N., Joglekar, O., Kosman, E., Di Castro, D., and Azencot, O. Towards general modality translation with contrastive and predictive latent diffusion bridge. arXiv preprint arXiv:2510.20819 , 2025. De Bortoli, V., Thornton, J., Heng, J., and Doucet, A. Diffu-sion schr ¨odinger bridge with applications to score-based generative modeling. Advances in Neural Information Processing Systems , 34:17695–17709, 2021. Doob, J. L. and Doob, J. Classical potential theory and its probabilistic counterpart , volume 262. Springer, 1984. Ho, J., Jain, A., and Abbeel, P. Denoising diffusion proba-bilistic models. Advances in neural information process-ing systems , 33:6840–6851, 2020. Karras, T., Aila, T., Laine, S., and Lehtinen, J. Progres-sive growing of gans for improved quality, stability, and variation. arXiv preprint arXiv:1710.10196 , 2017. Karras, T., Laine, S., and Aila, T. A style-based generator architecture for generative adversarial networks. In Pro-ceedings of the IEEE/CVF conference on computer vision and pattern recognition , pp. 4401–4410, 2019. Karras, T., Aittala, M., Aila, T., and Laine, S. Elucidating the design space of diffusion-based generative models. 
+
+Advances in neural information processing systems , 35: 26565–26577, 2022. Kim, B., Kwon, G., Kim, K., and Ye, J. C. Unpaired image-to-image translation via neural schr ¨odinger bridge. In The Twelfth International Conference on Learning Represen-tations , 2024. URL https://openreview.net/ forum?id=uQBW7ELXfO .Liu, G., Vahdat, A., Huang, D., Theodorou, E. A., Nie, W., and Anandkumar, A. I 2 sb: Image-to-image schr ¨odinger bridge. In International Conference on Machine Learning, ICML , volume 202 of Proceedings of Machine Learning Research , pp. 22042–22062. PMLR, 2023. Liu, M.-Y., Breuel, T., and Kautz, J. Unsupervised image-to-image translation networks. In Proceedings of the 31st International Conference on Neural Information Process-ing Systems , NIPS’17, pp. 700–708, Red Hook, NY, USA, 2017. Curran Associates Inc. ISBN 9781510860964. Moser, B. B., Frolov, S., Raue, F., Palacio, S., and Dengel, A. Waving goodbye to low-res: A diffusion-wavelet ap-proach for image super-resolution. In 2024 International Joint Conference on Neural Networks (IJCNN) , pp. 1–8. IEEE, 2024. Oord, A. v. d., Li, Y., and Vinyals, O. Representation learn-ing with contrastive predictive coding. arXiv preprint arXiv:1807.03748 , 2018. Park, T., Efros, A. A., Zhang, R., and Zhu, J.-Y. Con-trastive learning for unpaired image-to-image transla-tion. In Computer Vision – ECCV 2020: 16th Euro-pean Conference, Glasgow, UK, August 23–28, 2020, Proceedings, Part IX , pp. 319–345, Berlin, Heidelberg, 2020. Springer-Verlag. ISBN 978-3-030-58544-0. doi: 10.1007/978-3-030-58545-7 19. URL https://doi. org/10.1007/978-3-030-58545-7_19 .Rombach, R., Blattmann, A., Lorenz, D., Esser, P., and Ommer, B. High-resolution image synthesis with latent diffusion models, 2021. Ronneberger, O., Fischer, P., and Brox, T. U-net: Con-volutional networks for biomedical image segmenta-tion. In Medical image computing and computer-assisted intervention–MICCAI 2015: 18th international confer-ence, Munich, Germany, October 5-9, 2015, proceedings, part III 18 , pp. 234–241. Springer, 2015. Shi, Y., De Bortoli, V., Campbell, A., and Doucet, A. Diffu-sion schr ¨odinger bridge matching. Advances in Neural Information Processing Systems , 36:62183–62223, 2023. Shi, Z., Meng, Z., Xing, Y., Ma, Y., and Wattenhofer, R. 3d-retr: End-to-end single and multi-view 3d reconstruc-tion with transformers. arXiv preprint arXiv:2110.08861 ,2021. Sohl-Dickstein, J., Weiss, E., Maheswaranathan, N., and Ganguli, S. Deep unsupervised learning using nonequi-librium thermodynamics. In International conference on machine learning , pp. 2256–2265. PMLR, 2015. Song, Y., Sohl-Dickstein, J., Kingma, D. P., Kumar, A., Er-mon, S., and Poole, B. Score-based generative modeling through stochastic differential equations. In 9th Interna-tional Conference on Learning Representations, ICLR ,2021. Tong, A. Y., Malkin, N., Fatras, K., Atanackovic, L., Zhang, Y., Huguet, G., Wolf, G., and Bengio, Y. Simulation-free Schr ¨odinger bridges via score and flow matching. In Das-gupta, S., Mandt, S., and Li, Y. (eds.), Proceedings of The 27th International Conference on Artificial Intelligence and Statistics , volume 238 of Proceedings of Machine Learning Research , pp. 1279–1287. PMLR, 02–04 May 2024. URL https://proceedings.mlr.press/ v238/tong24a.html .10 Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges 
+
+Wang, X., Wu, T., Zhang, Y., Liu, L., Wang, D., Sun, M., Wang, Y., Zeller, N., and Cremers, D. Ladb: Latent aligned diffusion bridges for semi-supervised domain translation. In DAGM German Conference on Pattern Recognition , pp. 221–236. Springer, 2025. Wu, Z., Song, S., Khosla, A., Yu, F., Zhang, L., Tang, X., and Xiao, J. 3d shapenets: A deep representation for volumetric shapes. In Proceedings of the IEEE conference on computer vision and pattern recognition , pp. 1912– 1920, 2015. Yang, G., Huang, X., Hao, Z., Liu, M.-Y., Belongie, S., and Hariharan, B. Pointflow: 3d point cloud generation with continuous normalizing flows. In Proceedings of the IEEE/CVF international conference on computer vision ,pp. 4541–4550, 2019. Yang, L., Zhu, Z., Lin, X., Nong, J., and Liang, Y. Long-range grouping transformer for multi-view 3d reconstruc-tion, 2023. URL https://arxiv.org/abs/2308. 08724 .Zhou, L., Du, Y., and Wu, J. 3d shape generation and completion through point-voxel diffusion. In Proceedings of the IEEE/CVF international conference on computer vision , pp. 5826–5835, 2021. Zhou, L., Lou, A., Khanna, S., and Ermon, S. Denoising diffusion bridge models. In The Twelfth International Conference on Learning Representations, ICLR , 2024. Zhu, J.-Y., Park, T., Isola, P., and Efros, A. A. Unpaired image-to-image translation using cycle-consistent adver-sarial networks. In Proceedings of the IEEE international conference on computer vision , pp. 2223–2232, 2017. 11 Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges 
+
+# A. Limitations and Complementarity of Heuristics 
+
+Unpaired modality translation is non-identifiable in general: many joint distributions are consistent with the same endpoint marginals while inducing different conditional relationships between source and target variables. The heuristics considered in this work restrict the space of admissible couplings by imposing complementary structural constraints on the learned diffusion bridge. A qualitative summary is provided in Table 4. Endpoint marginal matching constrains the distribution of the target variable but leaves the conditional distribution given the source unconstrained. As a result, it does not restrict the dependence between source and target and admits solutions that ignore the conditioning endpoint. Cycle consistency introduces a reversibility constraint on the induced stochastic mapping, limiting many-to-one couplings that discard information about the source. However, enforcing consistency only at the endpoints does not constrain how probability mass is transported between them and can admit stochastic processes that satisfy endpoint reversibility while exhibiting incoherent or highly diffusive dynamics at intermediate times. Enforcing cycle consistency at intermediate diffusion times addresses this limitation by constraining the forward and reverse processes throughout the trajectory, thereby discouraging solutions that rely on endpoint-only cancellations and promoting coherent probability transport. Such endpoint-only solutions do not define stable conditional distributions, as their consistency depends on fragile cancellations rather than structured transport across time. Paired supervision directly specifies a joint distribution and therefore resolves coupling ambiguity by construction, but requires access to paired data. Viewed jointly, marginal constraints restrict admissible endpoint distributions, reversibility-based constraints limit information loss from source to target, and paired supervision selects a specific coupling when available. Their complementary roles explain why combining multiple heuristics is necessary to obtain diffusion bridges that are both distributionally valid and conditionally informative, as summarized in Table 4.             
+
+> Heuristic Target marginal Coupling (uses condition) Flow coherence Exact correspondence
+> Marginal matching ✓
+> Cycle consistency (endpoint) ✓
+> Cycle consistency (trajectory) ✓✓
+> Data-driven (paired) ✓✓✓
+> Table 4. Qualitative comparison of heuristics and the failure modes they address. Marginal matching enforces validity under the target marginal but does not identify a coupling. Cycle constraints reduce coupling degeneracy by enforcing reversibility, with trajectory-level constraints additionally regularizing intermediate diffusion states. Paired supervision provides direct correspondence and can be composed with unpaired heuristics when available.
+
+# B. Additional Training Details 
+
+Sampling and training procedure. All diffusion bridges are trained and sampled using the standard iterative denoising scheme. More precisely, we use the iterative training procedure that alternates between optimizing the bridge and the autoencoders. At test time, translation starts by initializing the diffusion process with a sample from the target noise distribution and iteratively denoising it toward the target endpoint, conditioning on the source modality. We use the same discretization, noise schedule, and iterative update rules as in Latent Denoising Diffusion Bridge Models (LDDBM) (Berman et al., 2025) to ensure a consistent and fair comparison. 
+
+Number of diffusion steps. We inherit the parameter T = 40 denoising steps during inference from LDDBM (Berman et al., 2025) in all experiments. The same number of steps applies to all supervision regimes, allowing for a fair comparison with previous works and across different supervision regimes. 
+
+# C. Synthetic Data Experiments 
+
+C.1. Data Generation 
+
+We construct a synthetic benchmark that enables controlled evaluation of diffusion bridges under unpaired, semi-paired, and fully paired supervision. The dataset is designed to exhibit nontrivial structure: while a ground-truth correspondence exists and is approximately reversible, the marginal distributions alone do not identify a unique coupling. Each sample is generated from latent factors comprising a discrete content variable, a discrete style variable, and a continuous 12 Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges 
+
+latent vector. Specifically, we sample a content label c ∈ { 1, . . . , K }, a style label s ∈ { 1, . . . , S }, and a continuous latent vector u ∼ N (0 , I d). Content-dependent mean vectors μ(Y ) 
+
+> c
+
+, μ (X) 
+
+> c
+
+∈ Rd are fixed for each content class, while style-dependent linear transformations As, B s ∈ Rd×d are sampled once and held fixed. The conditioning endpoint z0 and target endpoint zT are generated as 
+
+˜z0 = μ(Y ) 
+
+> c
+
++ Asu + ϵ0, ˜zT = μ(X) 
+
+> c
+
++ Bsu + ϵT ,
+
+where ϵ0, ϵ T ∼ N (0 , σ 2I). The final endpoints are obtained by applying a fixed elementwise nonlinearity ϕ(·),
+
+z0 = ϕ(˜ z0), zT = ϕ(˜ zT ),
+
+which induces the marginal distributions pY (z0) and pX (zT ) used throughout the paper. In our experiments, we apply a fixed near-identity nonlinear warp 
+
+ϕ(z) = z + αz 3,
+
+with a small coefficient α > 0. This transformation preserves approximate invertibility while introducing sufficient nonlinearity to prevent the coupling from being recovered by linear transport alone. Without this nonlinear warp, the joint distribution remains Gaussian with a linear ground-truth coupling, making marginal matching largely sufficient and trivializing the unpaired translation task. As illustrated in Figure 4, this construction ensures that z0 and zT share semantic content through the latent variable u
+
+and the content index c, while style-dependent transformations introduce ambiguity in the marginal coupling. During training, supervision is controlled by selectively revealing paired samples (z0, z T ), allowing a systematic study of unpaired, semi-paired, and fully paired regimes. Content             
+
+> content 0
+> content 1
+> content 2
+> content 3
+> content 4
+> content 5
+> 40 20 020 40 60
+> 40
+> 20
+> 0
+> 20
+> 40
+> Condition marginal p
+> 40 20 020 40 60
+> 40
+> 20
+> 0
+> 20
+> 40
+> Target marginal p
+
+Figure 4. Synthetic 2D benchmark used in our experiments. Left: conditioning marginal pY . Right: target marginal pX . Points are color-coded by the underlying content variable, which is shared across endpoints but not observed during training. Arrows indicate a small subset of true paired correspondences (shown for visualization only). While the two marginals appear broadly similar, the true coupling is highly ambiguous without additional structure, motivating the use of diffusion-bridge constraints beyond marginal matching. 
+
+C.2. Denoiser Architecture 
+
+As depicted in Figure 5, the denoiser is implemented as a stack of L multi-head attention (MHA) blocks. The network operates directly in the endpoint space, i.e., it implements a denoising diffusion bridge model (Zhou et al., 2024) without modality-specific encoders and decoders, as opposed to its latent variant (Berman et al., 2025), and is conditioned on the source endpoint and diffusion time. At each diffusion step, the noisy latent vector zt ∈ Rd, the conditioning endpoint 
+
+y ∈ Rd, and a diffusion time embedding e(t) ∈ Rd (implemented using standard sinusoidal embeddings) are represented as a set of tokens, each of dimensionality d, and processed jointly by the attention blocks. The token corresponding to zt serves as the prediction target, and the output of the final attention block at this token is used directly as the denoiser output. This output is interpreted as a score (or noise) prediction according to the diffusion parameterization used in the main text. 13 Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges 𝑒𝑒 𝑡𝑡 ∈ ℝ 𝑑𝑑 
+
+## 𝑧𝑧 𝑡𝑡 ∈ ℝ 𝑑𝑑 
+
+## 𝑦𝑦 ∈ ℝ 𝑑𝑑 
+
+## 𝑀𝑀𝑀𝑀𝑀𝑀 
+
+## 𝐵𝐵𝐵𝐵𝐵𝐵𝐵𝐵𝐵𝐵  …   
+
+> Stack 𝐿𝐿 𝑏𝑏 𝐵𝐵𝐵𝐵𝐵𝐵𝐵𝐵 𝑏𝑏
+
+## −     
+
+> 𝑏𝑏 𝑧𝑧 𝑡𝑡 ,𝑡𝑡 ,𝑦𝑦 ∈ ℝ 𝑑𝑑
+
+## −            
+
+> Figure 5. Denoiser architecture for the synthetic benchmark. The noisy latent zt, conditioning endpoint y, and diffusion-time embedding e(t)are represented as a set of tokens of dimensionality dand processed jointly by a stack of Lmulti-head attention blocks. The output corresponding to the zttoken is used directly as the score (or noise) prediction for denoising.
+
+This simple design is sufficient for the synthetic benchmark and intentionally avoids architectural complexity, allowing us to isolate the effect of diffusion bridge constraints and supervision regimes. 
+
+C.3. Evaluation Metrics 
+
+We evaluate synthetic translation performance using the following metrics, which separately assess marginal alignment, conditional coupling quality, and reversibility. • Target marginal alignment (SWD). We measure sliced Wasserstein distance (SWD) between generated target samples 
+
+ˆx ∼ pθ (x | y) and samples x ∼ pX . SWD is computed by projecting samples onto random one-dimensional directions and averaging the Wasserstein-1 distance across projections. Lower values indicate better agreement with the target marginal. • Target marginal alignment (MMD). We additionally report the maximum mean discrepancy (MMD) between generated samples {ˆxi}Ni=1 and target samples {xj }Mj=1 , defined as 
+
+MMD 2 = Ex,x ′ [k(x, x ′)] + Eˆx, ˆx′ [k(ˆ x, ˆx′)] − 2 Ex, ˆx[k(x, ˆx)] ,
+
+where k(·, ·) is an RBF kernel. In practice we estimate MMD 2 using the unbiased U-statistic estimator on finite samples; lower values indicate closer alignment of the target marginal distributions. • Conditional content accuracy. To evaluate coupling quality, we train a classifier h : Rd → { 1, . . . , K } on target samples with known content labels and report the accuracy of h(ˆ x) on translated samples ˆx. This metric measures whether conditioning on the source endpoint preserves the underlying semantic content. • Endpoint cycle error. Reversibility is quantified by generating a forward translation ˆx ∼ pθ (x | y) followed by a reverse translation ˜y ∼ pθ (y | ˆx), and reporting the mean squared error E∥˜y − y∥22. Lower values indicate improved cycle consistency. Endpoint cycle error serves as a diagnostic for coupling consistency, penalizing solutions that achieve good marginal alignment and content preservation yet discard information about the specific conditioning endpoint. 
+
+C.4. Additional Experiments 
+
+We extend the synthetic study from the main text (reported for K=6 ) by increasing the complexity of the problem. This is done by increasing the number of content labels, i.e. the parameter K over {6, 20 , 100 , 1000 } while varying the supervision level ρ ∈ [0 , 1] . The experimental protocol, objectives, and evaluation metrics are unchanged: we report coupling quality via content accuracy, reversibility via endpoint cycle MSE, and marginal alignment via SWD and MMD 2. We compare 14 Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges 
+
+our semi-paired training procedure against a paired-only baseline trained with the same amount of pairing signal. Figure 6 summarizes the results for the whole sweep. Across all K, the qualitative trends observed in the K=6 setting persist. In the fully unpaired regime ( ρ = 0 ), only marginal-matching and cycle-consistency are applicable. In this setting, training with our structural constraints remains robust as K grows, achieving high coupling quality and low cycle error even without explicit pairing: content accuracy stays above 0.82 for K ≤ 100 and remains substantially high even at K=1000 (0.632 ), while cycle MSE is consistently reduced to ≈ 0.68 across all K.For any ρ > 0, we can compare directly to the paired-only baseline. At low supervision (e.g., ρ = 0 .1), the paired-only baseline increasingly struggles to identify meaningful couplings as K grows, with content accuracy dropping from 0.183 at 
+
+K=6 to near-zero at larger K, and cycle MSE remaining high. In contrast, semi-paired training yields substantially better coupling quality and reversibility at the same supervision level, indicating that the structural constraints resolve ambiguity that pairing alone does not address in the low-ρ regime. As supervision increases, both methods improve, but the relative advantage of semi-paired training is preserved throughout the sweep. At intermediate supervision (e.g., ρ = 0 .5), our method exhibits uniformly higher content accuracy and lower cycle MSE across all K, suggesting that the added structural regularization continues to provide complementary signal beyond limited pairing. Even in the fully paired regime ( ρ = 1 ), semi-paired training remains complementary to full supervision: for every K we observe a consistent gap in favor of our method, alongside a nontrivial reduction in cycle MSE. Finally, marginal alignment metrics (SWD and MMD 2) remain stable across K and across ρ, with only small fluctuations. This reinforces the interpretation that the gains in coupling quality and reversibility are not explained by better marginal matching, but by improved structural alignment of the learned stochastic coupling. Overall, the K-sweep supports the conclusion that as the synthetic task becomes more multimodal and under-constrained, explicit structural heuristics become increasingly important for identifying semantically meaningful and reversible couplings, and these benefits persist even when pairing supervision is available. 
+
+# D. Super-Resolution Experimental Details 
+
+D.1. Architectures Score model. We use the same denoiser (score model) DTDiT architecture as in LDDBM (Berman et al., 2025) for the conditional bridge sθ (zt, t | zT ), including the same conditioning mechanism on the LR endpoint and the same diffusion-time embedding. For fair comparison and to isolate the effect of the proposed method, unless stated otherwise, we match the LDDBM training budget and optimization settings for this benchmark. 
+
+Autoencoders. Our bridge model assumes that the LR and HR endpoints admit a sufficiently expressive and consistent shared latent space. Accordingly, we adopt the same encoder/decoder family as LDDBM (Berman et al., 2025) and use the pretrained autoencoder from latent diffusion models (LDM) (Rombach et al., 2021) for the SR benchmark. 
+
+D.2. Evaluation Protocol 
+
+To demonstrate the superiority of SDB , we follow the evaluation protocol from previous works (Moser et al., 2024; Berman et al., 2025). The model is trained on Flickr-Faces-HQ (FFHQ) (Karras et al., 2019) and evaluated zero-shot on CelebA-HQ (Karras et al., 2017). The task is defined as translation from resolution of 16 × 16 to 128 × 128 . We compare SDB to the data-driven bridge baseline (Berman et al., 2025) used in the main text and to the task-specific diffusion-based baseline DiWa (Moser et al., 2024). 
+
+D.3. Metrics 
+
+We evaluate SR performance using the following metrics. PSNR emphasizes low-level reconstruction accuracy and penalizes pixel-wise deviations, SSIM captures preservation of local structure (luminance/contrast/edges) that is critical for maintaining image content, and LPIPS measures similarity in deep feature space, reflecting perceptual quality and realism that may not be captured by pixel-level criteria. Let x ∈ [0 , 1] H×W ×C denote the ground-truth HR image and ˆx ∈ [0 , 1] H×W ×C the generated HR image (with H = W = 128 in our setting). 15 Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges      
+
+> 00.20.40.60.81
+> 0
+> 0.2
+> 0.4
+> 0.6
+> 0.8
+> 1
+
+ρ
+
+> Content acc.  →
+
+Coupling quality      
+
+> 00.20.40.60.81
+> 0.6
+> 0.8
+> 1
+
+ρ
+
+> Cycle MSE  ←
+
+Reversibility      
+
+> 00.20.40.60.81
+> 2
+> 2.2
+> 2.4
+> ·10 −2
+
+ρ
+
+> SWD  ←
+
+Marginal alignment (SWD)      
+
+> 00.20.40.60.81
+> −2
+> −1
+> 0
+> ·10 −4
+
+ρ
+
+> MMD 2 ←
+
+Marginal alignment (MMD 2)
+
+K = 6 K = 20 K = 100 K = 1000 
+
+Semi-paired (ours) Paired-only 
+
+Figure 6. Synthetic benchmark results across supervision levels ( ρ) for varying K. As the number of modes increases ( K ∈{6, 20 , 100 , 1000 }), semi-paired training maintains strong coupling quality and cycle consistency relative to paired-only baselines, while preserving competitive target marginal alignment. 
+
+16 Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges 
+
+• Pixel-level fidelity (PSNR). We report peak signal-to-noise ratio (PSNR) between ˆx and x, defined via the mean squared error 
+
+MSE( x, ˆx) = 1
+
+HW C 
+
+> H
+
+X
+
+> h=1
+> W
+
+X
+
+> w=1
+> C
+
+X
+
+> c=1
+
+ xh,w,c − ˆxh,w,c 
+
+2,
+
+and 
+
+PSNR( x, ˆx) = 10 log 10 
+
+ MAX 2
+
+MSE( x, ˆx)
+
+
+
+,
+
+where MAX is the maximum possible pixel value (here MAX = 1 ). Higher PSNR indicates better pixel-level fidelity. • Structural similarity (SSIM). We report structural similarity index (SSIM) between ˆy and y. For image patches with means μy , μ ˆy , variances σ2 
+
+> y
+
+, σ 2ˆy , and covariance σy ˆy , SSIM is 
+
+SSIM( x, ˆx) = (2 μxμˆx + C1)(2 σxˆx + C2)(μ2 
+
+> x
+
++ μ2ˆx + C1)( σ2 
+
+> x
+
++ σ2ˆx + C2) ,
+
+where C1 = ( K1MAX) 2 and C2 = ( K2MAX) 2 are stabilization constants (with standard choices K1 = 0 .01 ,
+
+K2 = 0 .03 ). We use the standard windowing/averaging procedure over the image as in (Moser et al., 2024). Higher SSIM indicates better structural preservation. • Perceptual similarity (LPIPS). We report learned perceptual image patch similarity (LPIPS) between ˆy and y,computed as a distance between deep feature activations of a pretrained network. Let ϕl(·) denote activations at layer l,spatially normalized, and wl learned linear weights. LPIPS is 
+
+LPIPS( x, ˆx) = X
+
+> l∈L
+
+1
+
+HlWlHlX
+
+> h=1
+> Wl
+
+X
+
+> w=1
+
+wl ⊙  ϕl(x)h,w − ϕl(ˆ x)h,w 
+
+ 22 ,
+
+where ⊙ denotes elementwise multiplication and (Hl, W l) is the spatial resolution at layer l. Lower LPIPS indicates higher perceptual similarity and typically better perceptual realism. 17 Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges 
+
+D.4. Additional Results Original 
+
+Down sampled 
+
+DiWa 
+
+LDDBM 
+
+SDB 
+
+Figure 7. Qualitative results on samples from the CelebA-HQ dataset. ρ = 1 .
+
+18 Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges 
+
+Original 
+
+Down sampled 
+
+DiWa 
+
+LDDBM 
+
+SDB 
+
+Figure 8. Qualitative results on samples from the CelebA-HQ dataset. ρ = 1 .
+
+19 Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges 
+
+Original 
+
+Down sampled 
+
+DiWa 
+
+LDDBM 
+
+SDB 
+
+Figure 9. Qualitative results on samples from the CelebA-HQ dataset. ρ = 1 .
+
+20 Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges 
+
+Original 
+
+Down sampled 
+
+DiWa 
+
+LDDBM 
+
+SDB 
+
+Figure 10. Qualitative results on samples from the CelebA-HQ dataset. ρ = 0 .5.
+
+21 Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges 
+
+Original 
+
+Down sampled 
+
+DiWa 
+
+LDDBM 
+
+SDB 
+
+Figure 11. Qualitative results on samples from the CelebA-HQ dataset. ρ = 0 .5.
+
+22 Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges 
+
+Original 
+
+Down sampled 
+
+DiWa 
+
+LDDBM 
+
+SDB 
+
+Figure 12. Qualitative results on samples from the CelebA-HQ dataset. ρ = 0 .5.
+
+23 Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges 
+
+Original 
+
+Down sampled 
+
+SDB 
+
+Figure 13. Qualitative results on samples from the CelebA-HQ dataset. ρ = 0 .
+
+24 Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges 
+
+Original 
+
+Down sampled 
+
+SDB 
+
+Figure 14. Qualitative results on samples from the CelebA-HQ dataset. ρ = 0 .
+
+25 Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges 
+
+Original 
+
+Down sampled 
+
+SDB 
+
+Figure 15. Qualitative results on samples from the CelebA-HQ dataset. ρ = 0 .
+
+26 Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges 
+
+# E. Multi-view Images to 3D Voxel Grids Experimental Details 
+
+E.1. Architectures Score model. Similar to the Super-Resolution experiment, we use DTDiT architecture as in LDDBM (Berman et al., 2025) for the conditional bridge sθ (zt, t | zT ), and unless stated otherwise, we match the LDDBM training budget and optimization settings for this benchmark. 
+
+Autoencoders. For a fair comparison, we adopt the architectures used in LDDBM (Berman et al., 2025), shortly described below. • 3D convolutional encoder. Encodes voxel inputs x ∈ RB×C×D×H×W using three 3D convolutional layers (kernel 4,stride 2, padding 1) with channel progression C → 64 → 128 → 256 . Each layer is followed by SiLU and optional dropout. The output is reshaped into a latent tensor used by the bridge model. • 3D convolutional decoder. Mirrors the 3D encoder using transposed 3D convolutions (kernel 4, stride 2, padding 1) to upsample the latent representation back to the original voxel resolution, with SiLU activations and optional dropout. • Multi-view 2D convolutional encoder. Encodes multi-view images y ∈ RB×V ×C×H×W by applying a shared 2D convolutional stack to each view (flattening B × V ). The stack has six layers (kernel 4, stride 2, appropriate padding) with SiLU and optional dropout, increasing channels from 32 up to 256 while reducing spatial resolution. Per-view features are concatenated across views and projected with a fully connected layer to obtain a unified latent representation. • Identity encoder/decoder (3D-EDM baseline). For the 3D-EDM baseline, diffusion operates directly in voxel space, so the encoder and decoder are identity maps (no latent-space adaptation). 
+
+E.2. Evaluation Protocol 
+
+We use the ShapeNet (Wu et al., 2015) dataset which comprises tens of thousands of 3D models across 55 object categories. We use the standard subset of 13 categories (approximately 43,783 models). Each 3D model is voxelized using Binvox at resolution 32 × 32 × 32 , and we render V = 4 images per model from random viewpoints at resolution 224 × 224 . We split objects into 70%/10%/20% train/validation/test, maintaining a balanced distribution across categories. For comparison, we include EDM and EDM-3D (Karras et al., 2022) as diffusion-based baselines using 2D and 3D U-Net architectures (Ronneberger et al., 2015), respectively. Additionally, we report LRGT+ (Yang et al., 2023) as a representative task-specialized baseline to illustrate the trade-off between general-purpose translation and domain-specific inductive biases. 
+
+E.3. Metrics 
+
+We evaluate the voxel generation using both generative and reconstruction-based metrics. We report 1-nearest neighbor accuracy (1-NNA) as a distributional similarity test between generated and real shapes, and additionally report voxel Intersection-over-Union (IoU) to assess instance-level reconstruction fidelity. Distances for 1-NNA are computed using Chamfer Distance (CD) between point clouds. • Chamfer Distance (CD). To compare 3D shapes for 1-NNA, we convert voxel grids into point clouds and compute Chamfer Distance. Given two point clouds P and Q,
+
+CD( P, Q ) = 1
+
+|P |
+
+X
+
+> p∈P
+
+min  
+
+> q∈Q
+
+∥p − q∥22 + 1
+
+|Q|
+
+X
+
+> q∈Q
+
+min  
+
+> p∈P
+
+∥q − p∥22.
+
+Lower CD indicates higher geometric similarity. We use CD only as the distance function underlying 1-NNA and do not report it as a standalone metric. • Distributional similarity (1-NNA). 1-nearest neighbor accuracy (1-NNA) is a two-sample test that assesses whether generated samples are distinguishable from real samples (Yang et al., 2019; Zhou et al., 2021). Let Sreal and Sgen 
+
+denote sets of real and generated samples, and define S = Sreal ∪ Sgen with binary labels indicating sample origin. For 27 Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges 
+
+each x ∈ S, we find its nearest neighbor NN( x) in S \ { x} using Chamfer Distance, and perform leave-one-out 1-NN classification. The score is 
+
+1-NNA = 1
+
+|S|
+
+X
+
+> x∈S
+
+1[label( x) = label(NN( x))] .
+
+An ideal generative model yields samples indistinguishable from real data, giving 1-NNA ≈ 0.5. Values significantly above 0.5 indicate that the distributions are separable; thus lower is better, with scores closer to 0.5 reflecting stronger generative performance. • Reconstruction fidelity (IoU). We compute Intersection-over-Union (IoU) between a predicted occupancy grid 
+
+ˆV ∈ { 0, 1}R×R×R and the ground-truth grid V ∈ { 0, 1}R×R×R,
+
+IoU = | ˆV ∩ V || ˆV ∪ V | .
+
+Higher IoU indicates better overlap with the true shape and is most relevant when the goal is to reconstruct a specific instance from the conditioning views. Since the data are voxelized, we first convert voxel grids to point clouds to compute Chamfer distances for 1-NNA, and then follow the standard evaluation interface of (Shi et al., 2021) to obtain the final scores. 28

@@ -1,0 +1,133 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-05-11T20:27:36.519607+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 3,
+    "quick_skim_target": 11,
+    "quick_selected": 3
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2605.02973v1",
+      "source": "arxiv",
+      "title": "Structured Diffusion Bridges: Inductive Bias for Denoising Diffusion Bridges",
+      "abstract": "Modality translation is inherently under-constrained, as multiple cross-modal mappings may yield the same marginals. Recent work has shown that diffusion bridges are effective for this task. However, most existing approaches rely on fully paired datasets, thereby imposing a single data-driven constraint. We propose a diffusion-bridge framework that characterizes the space of admissible solutions and restricts it via alignment constraints, treating paired supervision as an optional heuristic rather than a prerequisite. We validate our method on synthetic and real modality translation benchmarks across unpaired, semi-paired, and paired regimes, showing consistent performance across supervision levels. Notably, \\textbf{it achieves near fully-paired quality with a substantial relaxation in pairing requirements, and remaining applicable in the unpaired regime}. These results highlight diffusion bridges as a flexible foundation for modality translation beyond fully paired data.",
+      "authors": [
+        "Eitan Kosman",
+        "Gabriele Serussi",
+        "Chaim Basking"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-05-03T16:17:38+00:00",
+      "link": "https://arxiv.org/pdf/2605.02973v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "diffusion bridge framework for modality translation and denoising",
+      "llm_evidence_cn": "用于模态转换和去噪的扩散桥框架",
+      "llm_evidence": "用于模态转换和去噪的扩散桥框架",
+      "canonical_evidence": "用于模态转换和去噪的扩散桥框架",
+      "llm_tldr_en": "Proposes a structured diffusion bridge framework for cross-modal mapping with alignment constraints.",
+      "llm_tldr_cn": "提出了一种结构化扩散桥框架，通过对齐约束实现跨模态映射。",
+      "llm_tldr": "提出了一种结构化扩散桥框架，通过对齐约束实现跨模态映射。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "denoising diffusion probabilistic models applied to time series",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.07013v1",
+      "source": "arxiv",
+      "title": "Towards Closing the Autoregressive Gap in Language Modeling via Entropy-Gated Continuous Bitstream Diffusion",
+      "abstract": "Diffusion language models (DLMs) promise parallel, order-agnostic generation, but on standard benchmarks they have historically lagged behind autoregressive models in sample quality and diversity. Recent continuous flow and diffusion approaches over token embeddings have narrowed this gap, suggesting continuous state spaces are highly effective for language. In this work, we further close the autoregressive gap by modeling text as a continuous diffusion process over fixed-width binary bitstreams. Our approach represents semantic tokens as analog bit sequences and utilizes a matched-filter residual parameterization to isolate contextual learning from analytic independent-bit posteriors. Crucially, we adopt a stochastic sampler that applies Langevin-type corrections gated by the entropy-rate profile, automatically concentrating stochasticity in high-information regions while remaining nearly deterministic elsewhere. On the One Billion Word Benchmark (LM1B), our 130M-parameter bitstream model reaches a generative perplexity ($\\GenPPL$) of $59.76$ at matched real-data entropy ($4.31$) using 256 neural function evaluations (NFEs), decisively outperforming prior DLM baselines and reaching the autoregressive reference. On OpenWebText (OWT), our stochastic sampler establishes a new continuous-DLM Pareto frontier, achieving $\\GenPPL=27.06$ at an entropy of $5.26$ using $4\\times$ fewer steps than previous 1024-NFE baselines. As an additional architectural benefit, bitstream diffusion removes the $\\mathcal{O}(V)$ vocabulary scaling bottleneck shared by standard DLMs. By predicting $\\mathcal{O}(\\log V)$ bitwise logits via semantic bit-patching, our model yields a reduced memory footprint and higher throughput, demonstrating a scalable paradigm for language generation as vocabulary sizes grow.",
+      "authors": [
+        "Georgios Batzolis",
+        "Mark Girolami",
+        "Luca Ambrogioni"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-05-07T22:50:51+00:00",
+      "link": "https://arxiv.org/pdf/2605.07013v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "continuous diffusion process for sequence modeling",
+      "llm_evidence_cn": "用于序列建模的连续扩散过程",
+      "llm_evidence": "用于序列建模的连续扩散过程",
+      "canonical_evidence": "用于序列建模的连续扩散过程",
+      "llm_tldr_en": "Models text as a continuous diffusion process over bitstreams to improve sequence generation quality.",
+      "llm_tldr_cn": "将文本建模为比特流上的连续扩散过程，以提高序列生成的质量。",
+      "llm_tldr": "将文本建模为比特流上的连续扩散过程，以提高序列生成的质量。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "sequence modeling with diffusion processes for time-dependent data",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.08078v1",
+      "source": "arxiv",
+      "title": "Normalizing Trajectory Models",
+      "abstract": "Diffusion-based models decompose sampling into many small Gaussian denoising steps -- an assumption that breaks down when generation is compressed to a few coarse transitions. Existing few-step methods address this through distillation, consistency training, or adversarial objectives, but sacrifice the likelihood framework in the process. We introduce Normalizing Trajectory Models (NTM), which models each reverse step as an expressive conditional normalizing flow with exact likelihood training. Architecturally, NTM combines shallow invertible blocks within each step with a deep parallel predictor across the trajectory, forming an end-to-end network trainable from scratch or initializable from pretrained flow-matching models. Its exact trajectory likelihood further enables self-distillation: a lightweight denoiser trained on the model's own score produces high-quality samples in four steps. On text-to-image benchmarks, NTM matches or outperforms strong image generation baselines in just four sampling steps while uniquely retaining exact likelihood over the generative trajectory.",
+      "authors": [
+        "Jiatao Gu",
+        "Tianrong Chen",
+        "Ying Shen",
+        "David Berthelot",
+        "Shuangfei Zhai",
+        "Josh Susskind"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-05-08T17:57:14+00:00",
+      "link": "https://arxiv.org/pdf/2605.08078v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "modeling trajectory steps with conditional normalizing flows in diffusion-based models",
+      "llm_evidence_cn": "在基于扩散的模型中利用条件归一化流对轨迹步骤进行建模",
+      "llm_evidence": "在基于扩散的模型中利用条件归一化流对轨迹步骤进行建模",
+      "canonical_evidence": "在基于扩散的模型中利用条件归一化流对轨迹步骤进行建模",
+      "llm_tldr_en": "Introduces Normalizing Trajectory Models to improve few-step generation in diffusion processes.",
+      "llm_tldr_cn": "引入归一化轨迹模型，通过条件归一化流改进扩散过程中的少步生成。",
+      "llm_tldr": "引入归一化轨迹模型，通过条件归一化流改进扩散过程中的少步生成。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "sequence modeling with diffusion processes for time-dependent data",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

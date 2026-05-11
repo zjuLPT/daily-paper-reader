@@ -1,0 +1,118 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2605.07013v1/fig-001.webp",
+      "caption": "Table 11: Isolated boundary-only profiling (B = 16). This benchmark removes the Transformer trunk and isolates the cost of the vocabulary head and sequence loss computation.",
+      "page": 25,
+      "index": 1,
+      "width": 727,
+      "height": 194
+    },
+    {
+      "url": "assets/figures/arxiv/2605.07013v1/fig-002.webp",
+      "caption": "Table 12: 16 randomly selected generated samples from the LM1B checkpoint.",
+      "page": 26,
+      "index": 2,
+      "width": 814,
+      "height": 1172
+    },
+    {
+      "url": "assets/figures/arxiv/2605.07013v1/fig-003.webp",
+      "caption": "Figure 4: LM1B schedule ablation. We compare the entropy-rate grid and the Karras grid at 64, 128, and 256 NFEs. Dashed horizontal lines show deterministic sampling; solid curves show stochastic churn sweeps. The entropy-rate grid improves deterministic sampling and, more importantly, enables stochastic churn to reach a much better GenPPL regime than the Karras grid across all NFE budgets.",
+      "page": 21,
+      "index": 3,
+      "width": 818,
+      "height": 277
+    },
+    {
+      "url": "assets/figures/arxiv/2605.07013v1/fig-004.webp",
+      "caption": "Figure 5: LM1B stochasticity-window ablation at 256 NFEs. Left: location sweep with a fixed 25% entropy-CDF width. Right: centered width sweep. Narrow windows are sensitive to their location, while broad windows are consistently stronger. The full entropy-supported range q ∈ [0, 1] gives the best GenPPL in this sweep.",
+      "page": 21,
+      "index": 4,
+      "width": 818,
+      "height": 314
+    },
+    {
+      "url": "assets/figures/arxiv/2605.07013v1/fig-005.webp",
+      "caption": "Table 1: Main single-point comparison. We report one representative operating point per external method and compare both generative perplexity and token-frequency entropy. For Bitstream Diffusion, we show both deterministic and full-band stochastic 256-NFE samplers using the same trained checkpoint. To ensure robustness, our results are reported as the mean ± standard deviation across 10 random sampling seeds. The deterministic row isolates the base probability-flow sampler, while the stochastic row shows the effect of adding full-band churn on the entropy-rate grid at the same NFE budget. The real-data row provides the target values for each dataset. On LM1B, the stochastic sampler matches the real-data entropy regime while substantially improving over reported diffusion baselines. On OWT, it improves over LangFlow at matched or slightly higher reported entropy using four times fewer NFEs; additional points on the stochastic sampler frontier are shown in Figure 2.",
+      "page": 7,
+      "index": 5,
+      "width": 760,
+      "height": 402
+    },
+    {
+      "url": "assets/figures/arxiv/2605.07013v1/fig-006.webp",
+      "caption": "Figure 6: OWT churn sweep at fixed η = 0.6. The qualitative behavior matches the η = 0 sweep: moderate churn gives the best GenPPL–entropy trade-off, while excessive churn increases entropy at the cost of GenPPL.",
+      "page": 22,
+      "index": 6,
+      "width": 814,
+      "height": 509
+    },
+    {
+      "url": "assets/figures/arxiv/2605.07013v1/fig-007.webp",
+      "caption": "Figure 3: Stochastic churn controls the OWT quality–diversity frontier. Left: Normalized entropy-rate profile over noise level σ; the shaded region marks the broad entropy-active region used for this diagnostic. Right: At fixed NFE = 256 and η = 0, moderate full-band churn improves both GenPPL and entropy relative to deterministic sampling, while excessive churn increases entropy at the cost of GenPPL.",
+      "page": 10,
+      "index": 7,
+      "width": 794,
+      "height": 306
+    },
+    {
+      "url": "assets/figures/arxiv/2605.07013v1/fig-008.webp",
+      "caption": "Figure 7: Effect of asymmetric time-lag η on OWT. We show changes relative to η = 0 for deterministic sampling and for the smallest nonzero stochastic churn configuration. Top: change in GenPPL. Bottom: change in token-frequency entropy. Positive η can help at low NFE in deterministic sampling, but its effect is weaker and less consistent once stochastic churn is enabled.",
+      "page": 23,
+      "index": 8,
+      "width": 812,
+      "height": 661
+    },
+    {
+      "url": "assets/figures/arxiv/2605.07013v1/fig-009.webp",
+      "caption": "Figure 2: GenPPL–entropy comparison. Generative perplexity (lower is better) versus tokenfrequency entropy on LM1B and OWT. The deterministic curve isolates our base probability-flow sampler. The highlighted stochastic trajectory represents our optimized Pareto frontier: for each NFE budget, we swept the stochastic churn parameter across eight values and selected the operating point that gives a good balance between generative perplexity and entropy. On both datasets, Bitstream Diffusion establishes a strictly superior operating frontier. On LM1B, our 256-NFE sampler decisively outperforms all prior diffusion baselines while operating exactly in the real-data entropy regime. On OWT, the stochastic frontier consistently dominates previous models, achieving better generative perplexity and entropy than prior 1024-NFE baselines using only a fraction of the compute.",
+      "page": 8,
+      "index": 9,
+      "width": 823,
+      "height": 281
+    },
+    {
+      "url": "assets/figures/arxiv/2605.07013v1/fig-010.webp",
+      "caption": "Figure 1: End-to-end Bitstream Diffusion architecture. Text is encoded into a Tm-length bitstream and corrupted via Gaussian noise. The diffused bits xσ are patched into semantic groups and processed by a length-T Transformer trunk. In parallel with the trunk, a skip connection routes the raw noisy bits directly to the head, where a contextual residual is combined with the analytic matched filter to produce bit-level logits.",
+      "page": 4,
+      "index": 10,
+      "width": 814,
+      "height": 725
+    },
+    {
+      "url": "assets/figures/arxiv/2605.07013v1/fig-011.webp",
+      "caption": "Table 8: Generation efficiency on LM1B at 128 NFEs. Throughput measures completed generated semantic tokens per second and includes the full iterative denoising trajectory. The benchmark excludes decoding, caching, and external evaluation.",
+      "page": 24,
+      "index": 11,
+      "width": 732,
+      "height": 223
+    },
+    {
+      "url": "assets/figures/arxiv/2605.07013v1/fig-012.webp",
+      "caption": "Table 6: Training-step efficiency on LM1B (T = 128, V = 30,522). The token baseline and Bitstream Diffusion share an identical SDT trunk and differ only in the representation and output/loss boundary.",
+      "page": 24,
+      "index": 12,
+      "width": 722,
+      "height": 235
+    },
+    {
+      "url": "assets/figures/arxiv/2605.07013v1/fig-013.webp",
+      "caption": "Table 3: Training ablations on LM1B. All variants use 256 NFEs. Stochastic results are aggregated over 10 sampling seeds and the same target-churn sweep γ ∈ [0.11, 0.20]. Entropy standard deviations are omitted because they are negligible (< 0.01). Config A is the default protocol used in the main experiments.",
+      "page": 9,
+      "index": 13,
+      "width": 806,
+      "height": 252
+    },
+    {
+      "url": "assets/figures/arxiv/2605.07013v1/fig-014.webp",
+      "caption": "Table 5: Discrete diffusion on bits versus tokens on LM1B. Both baselines use a SEDD-style absorbing discrete diffusion process and the same 12-layer SDT trunk. The bitstream baseline preserves the favourable O(log V ) output boundary, but substantially underperforms the token-level discrete baseline across all NFE budgets. At high NFE, the token-frequency entropies are comparable, indicating that the gap is not simply explained by entropy collapse.",
+      "page": 16,
+      "index": 14,
+      "width": 522,
+      "height": 245
+    }
+  ]
+}
