@@ -1,0 +1,2935 @@
+Title: Conditional Diffusion Sampling
+
+URL Source: https://arxiv.org/pdf/2605.04013v1
+
+Published Time: Wed, 06 May 2026 01:18:38 GMT
+
+Number of Pages: 33
+
+Markdown Content:
+# Conditional Diffusion Sampling 
+
+Francisco M. Castro-Mac´ ıas 1 * Pablo Morales- ´ Alvarez 1 Saifuddin Syed 2 Daniel Hern´ andez-Lobato 3
+
+Rafael Molina 1 Jos´ e Miguel Hern´ andez-Lobato 4
+
+## Abstract 
+
+Sampling from unnormalized multimodal distri-butions with limited density evaluations remains a fundamental challenge in machine learning and natural sciences. Successful approaches construct a bridge between a tractable reference and the tar-get distribution. Parallel Tempering (PT) serves as the gold standard, while recent diffusion-based approaches offer a continuous alternative at the cost of neural training. In this work, we introduce Conditional Diffusion Sampling (CDS), a frame-work that combines these two paradigms. To this end, we derive Conditional Interpolants, a class of stochastic processes whose transport dynamics are governed by an exact, closed-form stochastic differential equation (SDE), requiring no neural approximation. Although these dynamics require sampling from a non-trivial initialization distribu-tion, we show both theoretically and empirically that the cost of this initialization diminishes for sufficiently short diffusion times. CDS leverages this by a two-stage procedure: (1) PT is used to efficiently sample the initial distribution, and then (2) samples are transported via the transport SDE. This combination couples the robust global exploration of PT with efficient local transport. Experiments suggest that CDS has the potential to achieve a superior trade-off between sample quality and density evaluation cost compared to state-of-the-art samplers. 
+
+## 1. Introduction 
+
+We consider the problem of drawing independent samples from a target probability distribution ν on a state space X ⊂ 
+
+*Work done while visiting the University of Cambridge. 
+
+> 1
+
+University of Granada 2University of British Columbia 
+
+> 3
+
+Universidad Aut ´onoma de Madrid (EPS and CIAFF) 4University of Cambridge. Correspondence to: Francisco M. Castro-Mac ´ıas 
+
+<fcastro@ugr.es >.
+
+Proceedings of the 43 rd International Conference on Machine Learning , Seoul, South Korea. PMLR 306, 2026. Copyright 2026 by the author(s). Stage 2 
+
+> SDE Integration
+> Stage 1
+> Conditional Sampling
+
+Figure 1. Overview of CDS. In the first stage, Parallel Tempering (PT) transforms initial samples z from the reference πref (orange) into samples from the initialization distribution πt0|z (blue). In the second stage, these samples are transported to the target distribu-tion π (blue) by integrating the closed-form SDE in Eq. 15. 
+
+RD . We assume that ν admits a positive density π : X → 
+
+(0 , +∞) known only up to a normalization constant, 
+
+π(x) = Z−1 ˜π(x), Z =
+
+Z
+
+> X
+
+˜π(x), dx, (1) and that we have access only to the unnormalized density 
+
+˜π. This classical problem arises across machine learning (Izmailov et al., 2021) and the natural sciences (Kroese et al., 2014). In these applications, evaluating ˜π is often computationally expensive, e.g., due to molecular force-field calculations (No ´e et al., 2019) or large neural networks (Izmailov et al., 2021). Consequently, it is crucial to de-sign samplers that achieve high sample quality with as few density evaluations as possible. A common strategy is to construct a bridge between a tractable reference distribution and the target. A promi-nent example is Parallel Tempering (PT, Geyer (1991); Hukushima & Nemoto (1996)), which defines a sequence of intermediate distributions and runs multiple Markov chains in parallel, exchanging states to propagate information to-ward the target. Modern non-reversible variants of PT domi-nate their reversible counterparts (Syed et al., 2022), but can be slow to converge if the reference shares meagre overlap with the target (Surjanovic et al., 2024). More recently, generative modeling has popularized diffusion-based approaches for bridging distributions (Song et al., 2021), in which samples are transported continuously 1                     
+
+> arXiv:2605.04013v1 [stat.ML] 5 May 2026 Conditional Diffusion Sampling 202
+> 2
+> 0
+> 2
+> Ground Truth
+> 202
+> CDS (ours)
+> 202
+> NRPT
+> 202
+> OASMC
+> 202
+> DiGS
+> 202
+> MALA
+> 202
+> HMC
+> Figure 2. Ramachandran histograms of Alanine Dipeptide (ALDP) in vacuum at T= 300K .All methods utilize a fixed budget of
+> 2·10 5density evaluations. Only the proposed CDS and NRPT successfully capture all modes under this limited budget.
+
+via a diffusion or flow. This perspective has been unified under the theory of Stochastic Interpolants (Albergo et al., 2025), and extended to unnormalized targets via Neural Diffusion Samplers (Akhound-Sadegh et al., 2024; Nusken et al., 2024; Albergo & Vanden-Eijnden, 2025; Akhound-Sadegh et al., 2025; Zhang et al., 2025). However, these methods typically require either training on pre-existing data or learning transport maps through iterative optimiza-tion, both of which are costly in terms of target density evaluations (He et al., 2025b). As such, they operate in a complementary, amortized regime to MCMC methods. In this work, we introduce Conditional Interpolants, a spe-cial class of interpolants that follow a conditional, rather than marginal, probability path. Their associated transport dynamics admit a closed-form, learning-free expression, with drift depending only on the target score and the inter-polant map, both of which are tractable. This exactness imposes a constraint: the dynamics cannot be initialized at 
+
+t = 0 and instead require samples from the probability path at some t0 > 0.We show that this requirement is, in fact, advantageous. As 
+
+t0 → 0, the probability path concentrates toward a Dirac measure centered at a reference sample, making the sam-pling process of the initialization distribution highly effi-cient. Building on this insight, we propose Conditional Diffusion Sampling (CDS), a two-stage method that (i) effi-ciently samples from the intermediate distribution using PT for near-zero t0, and (ii) transports these samples to the tar-get via the closed-form conditional diffusion. An overview of CDS is shown in Fig. 1. Our contributions are: (i) the derivation of Conditional In-terpolants, a general class of stochastic interpolants with exact, closed-form dynamics; (ii) a theoretical analysis of the initialization distribution, showing vanishing transport cost as diffusion time decreases, alongside empirical ev-idence of efficient PT sampling; (iii) the introduction of CDS, combining global exploration via PT with efficient conditional diffusion; and (iv) extensive evaluation across 8 target distributions and 4 tasks, demonstrating superior trade-off between sample quality and density evaluation cost as shown in Fig. 2. 
+
+## 2. Background 
+
+2.1. Markov Chain Monte Carlo 
+
+Markov Chain Monte Carlo (MCMC, (Meyn & Tweedie, 2012)) methods aim to sample from an unnormalized tar-get distribution ν by constructing a Markov chain whose invariant distribution is ν. This is typically achieved by designing a transition kernel that leaves ν invariant, such as Metropolis–Hastings (MH, Metropolis et al. (1953); Hast-ings (1970)), MALA (Roberts & Tweedie, 1996), or Hamil-tonian Monte Carlo (HMC, Duane et al. (1987)). We provide a brief introduction to these kernels in Subsec. D.2. 
+
+Annealing-based Methods. In high-dimensional and multi-modal settings, standard MCMC kernels often suffer from poor mixing, becoming trapped in individual modes and pro-ducing highly correlated samples (Meyn & Tweedie, 2012). This motivates annealing-based strategies, which introduce a sequence of annealing distributions νβ interpolating be-tween a tractable reference νref (e.g., a Gaussian or tempered target) at β = 0 and the target ν at β = 1 . A common choice is the geometric path, with densities πβ given by 
+
+πβ (x) ∝ πref (x)1−β π(x)β , (2) where πref is the density of the reference distribution. Given a schedule 0 = β0 < · · · < β N = 1 , samples are progres-sively transported from νref to ν through these intermediate distributions. Importantly, performance is highly sensitive to the schedule and degrades when the overlap between the reference and the target is poor (Syed et al., 2021; 2024). 
+
+Parallel Tempering (PT). PT is an annealing-based method that runs several chains in parallel, one per distribution in the annealing schedule. It alternates between local MCMC updates and swap moves between adjacent chains. Low-β
+
+chains explore smoother landscapes, and swap moves prop-agate this exploration toward the target, improving global mixing. We provide more details in App. A. 
+
+2.2. Diffusions and Interpolants Diffusions. A stochastic process {xt} = {xt : 0 ≤ t ≤ 1}
+
+is an (It ˆo) diffusion process if it is the solution to an stochas-tic differential equation (SDE) of the form 
+
+dxt = at(xt)d t + σtdWt, (3) 2Conditional Diffusion Sampling 
+
+where xt ∈ RD , (t, x ) 7 → at(x) ∈ RD is the drift vector field, t 7 → σt ∈ (0 , +∞) is the diffusion coefficient, and 
+
+Wt is a D-dimensional Wiener process. In the limit where the diffusion coefficient vanishes ( σt → 0), the dynamics reduce to a deterministic flow governed by an Ordinary Differential Equation (ODE), with marginals satisfying the continuity equation. We discuss this connection in App. B. If the marginal xt at time t admits a time-dependent density 
+
+x 7 → pt(x), then pt satisfies the Fokker-Planck-Kolmogorov (FPK) equation (S¨ arkk¨ a & Solin, 2019): 
+
+∂∂t pt = − div ( ptat) + σ2
+
+> t
+
+2 ∆pt. (4) Conversely, if pt solves the FPK equation and the coeffi-cients at, σt satisfy standard regularity and growth condi-tions, then there exists a stochastic process solving the SDE in Eq. 3 in the weak sense whose time marginals are given by pt (S¨ arkk¨ a & Solin, 2019). Under appropriate choice of drift term at, one may enforce p0 = πref (a fixed tractable reference distribution), and p1 = π (the target distribution) (Song et al., 2021). In this case, the SDE in Eq. 3 defines a continuous probabilistic bridge between πref and π.
+
+Stochastic Interpolants. Albergo et al. (2025) provides a unifying framework for flows and diffusions, known as Stochastic Interpolants. Instead of defining the process via an SDE or ODE directly, one specifies the process explicitly as an interpolation between samples: 
+
+xt = Ft(z, x ), z ∼ νref , x ∼ ν, (5) where ν is the target distribution and νref is a tractable refer-ence distribution, and Ft is a differentiable map satisfying the boundary conditions F0(z, x ) = z and F1(z, x ) = x.
+
+Example 2.1 (Linear Interpolant) . We consider the lin-ear interpolant as a running example throughout this work. For X = RD , it is defined as: 
+
+xt = Ft(z, x ) = (1 − t)z + tx, (6) with z ∼ νref , and x ∼ ν. This is the canonical choice in flow matching frameworks (Lipman et al., 2023). The resulting marginals define a probability path from νref 
+
+to ν. Crucially, the framework guarantees the existence of a drift field at such that the marginals of xt satisfy the FPK equation (or a velocity field ut satisfying the continuity equation in the deterministic limit). This duality allows one to characterize the interpolant xt equivalently as the solution to a diffusion SDE or a flow ODE. In practice, the vector fields governing these dynamics are intractable and are approximated using neural networks trained on samples from ν. Since we assume no prior access to such samples, this approach is unsuitable. Yet, the inter-polant perspective motivates our construction. In the next section, we introduce Conditional Interpolants, a class of interpolants admitting closed-form dynamics, and leverage them to design Conditional Diffusion Sampling (CDS). 
+
+## 3. Conditional Diffusion Sampling (CDS) 
+
+Overview. First, we provide a high-level overview of Con-ditional Diffusion Sampling (CDS), our framework for sam-pling from unnormalized multimodal distributions. The central idea of CDS is to reduce a difficult global sam-pling problem into two manageable stages. We condition on a reference point z ∼ νref and construct a conditional path of distributions {νt|z }t∈(0 ,1] that gradually evolves from a point mass at z to the full target distribution ν.The path is defined via a Conditional Interpolant map Ft|z
+
+(defined in Subsec. 3.1), which allows us to derive closed-form transport dynamics that need a careful initialization. As illustrated in Fig. 1, our sampling procedure leverages this in two stages: 
+
+Stage 1: Conditional Sampling (Subsec. 3.3). We ini-tialize the process at a small time t0 > 0 by sampling 
+
+xt0 ∼ νt0|z . As illustrated in Fig. 3, νt0|z highly con-centrates around z, ensuring substantial overlap with the reference distribution νref , and making global exploration highly efficient. In practice, using Parallel Tempering (PT) to sample νt0|z yields improved swap efficiency and mode exploration, see Subsec. 5.1. 
+
+Stage 2: SDE Integration (Subsec. 3.2). We transport the approximate samples from νt0|z to the target ν at t = 1 .Because the interpolant dynamics admit a closed-form SDE, we can transport and refine these samples without any ap-proximation. Crucially, the SDE provides continuous re-finement, correcting samples along the trajectory, see Sub-sec. 5.2. The remainder of this section details each component: Sub-sec. 3.1 introduces Conditional Interpolants, Subsec. 3.2 derives their transport dynamics (Stage 2), Subsec. 3.3 ana-lyzes the initialization (Stage 1), and Subsec. 3.4 presents the full algorithm. Notably, Stage 2 is presented before Stage 1, as the derivation of the transport dynamics clarify the need for careful initialization. 
+
+3.1. Conditional Interpolants 
+
+Let νref denote a tractable reference distribution (with den-sity πref ) from which sampling is straightforward. Following Albergo et al. (2025), we consider stochastic interpolants as given by Eq. 5. Rather than focusing on the marginal distribution of xt, we consider the conditional distribution of xt given a reference variable z ∼ νref .3Conditional Diffusion Sampling 
+
+(a) t = 0 .0 (b) t = 0 .1 (c) t = 0 .2 (d) t = 0 .5 (e) t = 1 .0
+
+Figure 3. Density evolution and exact samples from πt|z . This plot illustrates the linear interpolant for a fixed z sampled from N (0 , I ).As t → 0, the target distribution (blue) increasingly concentrates inside the reference (orange). 
+
+Fix z ∼ νref and define the conditional interpolation map 
+
+Ft|z (·) = Ft(z, ·), so that 
+
+xt = Ft|z (x), x ∼ ν. (7) 
+
+Definition. A Conditional Interpolant is the family of ran-dom variables defined by Eq. 7, where for each z ∼ νref and 
+
+t ∈ (0 , 1] , the map Ft|z : X → X is a diffeomorphism. This induces a conditional distribution νt|z as the pushforward of ν through Ft|z .
+
+Conditional Density. Let νt|z denote the distribution of the random variable xt conditioned on z. Its density, denoted 
+
+πt|z , is determined by the change of variables formula: 
+
+πt|z (x) = det J Ft|z
+
+ F −1 
+
+> t|z
+
+(x) −1
+
+π F −1 
+
+> t|z
+
+(x), (8) where JFt|z denotes the Jacobian matrix of the map Ft|z .
+
+Example 3.1 . For the linear interpolant defined in Eq. 6, the conditional density takes the closed form: 
+
+πt|z (x) = t−D π
+
+ x − (1 − t)zt
+
+
+
+. (9) Under standard regularity assumptions, as t → 0, the mea-sure νt|z concentrates mass around z. Formally, 
+
+lim  
+
+> t→0
+
+W1(δz , ν t|z ) = 0 , (10) where δz is a Dirac delta centered at z, and W1(·, ·) denotes the Wasserstein-1 distance; see Lemma D.1 for a proof. Intuitively, νt|z interpolates between a Dirac delta δz at 
+
+t = 0 and the target distribution ν at t = 1 , see Fig. 3. Indeed, νt|z corresponds to the displacement interpolant between ν and δz (McCann, 1997). 
+
+Remark 3.2 . We can recover the marginal of xt from this conditional distribution as 
+
+πt (x) = 
+
+Z
+
+> X
+
+πt|z (x) πref (z) d z. (11) 
+
+3.2. Transport Dynamics 
+
+We characterize the dynamics associated with the proposed family of interpolants. First, we define the conditional ve-locity field ut|z as the instantaneous time-evolution of the interpolant map: 
+
+ut|z (x) = ∂F t|z
+
+∂t 
+
+
+
+F −1 
+
+> t|z
+
+(x)
+
+
+
+. (12) This vector field describes the deterministic trajectory of the interpolant defined in Eq. 7. 
+
+Example 3.3 . For the linear interpolant introduced in Eq. 6, the velocity field takes the simple form: 
+
+ut|z (x) = x − zt . (13) The velocity field ut|z governs the deterministic transport of probability mass, but does not use any information about the target distribution; we elaborate about this in App. B. To account for this, we can introduce stochasticity while preserving the marginal distributions. The following propo-sition establishes the link between the interpolant’s density and a specific FPK equation. 
+
+Proposition 3.4. For any t 7 → σt ∈ (0 , ∞), the condi-tional density satisfies the following FPK equation: 
+
+∂∂t πt|z = − div  πt|z at|z
+
+ + σ2
+
+> t
+
+2 ∆πt|z , (14) 
+
+where at|z = ut|z + σ2 
+
+> t
+> 2
+
+∇ log πt|z .Proof. See Proposition D.4. Motivated by this, we define the corresponding Conditional Diffusion via the following SDE: 
+
+dxt =
+
+
+
+ut|z (xt) + σ2
+
+> t
+
+2 ∇ log πt|z (xt)
+
+
+
+dt+σt dWt. (15) Here, the noise schedule σt controls the path stochasticity without altering the time-dependent density πt|z (Song et al., 2021). Its impact is analyzed in App. H. 4Conditional Diffusion Sampling 
+
+A key advantage over standard score-based generative mod-eling is that the score function, ∇ log πt|z , does not need to be learned. Instead, it is calculated directly from the target density π via the change of variables formula and can be evaluated efficiently (see Lemma D.3). 
+
+Example 3.5 . For the linear interpolant, the score term in the SDE simplifies to: 
+
+∇ log πt|z (x) = t−1∇ log π
+
+ x − (1 − t)zt
+
+
+
+. (16) The dynamics in Eq. 15 balance the deterministic transport 
+
+ut|z with a stochastic correction guided by the score. The noise term allows the trajectory to explore the state space, while the score term continuously corrects the path towards high-density regions of the target π.
+
+Singularities and Initialization. Numerical integration of Eq. 15 requires careful handling of the boundary at t = 0 .Since the interpolant Ft|z is non-invertible at t = 0 , the velocity field ut|z exhibits a singularity at t = 0 , causing trajectories to diverge if integrated directly from t = 0 .This behavior mirrors the singularities observed in diffusion models and flow matching, where vanishing noise variance leads to unbounded scores or vector fields (Song et al., 2021; Lipman et al., 2023). To circumvent this, we initialize the process at a near-zero time t0 > 0. Crucially, as shown in App. H, a deterministic initialization xt0 = z yields poor performance because the diffusion cannot sufficiently expand from a point mass to cover the support of νt0|z . Therefore, we initialize by sam-pling xt0 ∼ νt0|z . We discuss efficient sampling strategies for this distribution in the following subsection. 
+
+3.3. Sampling the Initial State 
+
+We aim to sample from νt0|z for near-zero t0 > 0. As 
+
+t → 0, the measure νt|z concentrates around the anchor point z, converging to the Dirac measure δz . Accordingly, samples from this regime are expected to lie close to z.To formalize this behavior, we analyze how a Markov kernel transforms when its invariant distribution is modified from 
+
+ν to νt|z . The following result relates convergence under the transformed kernel to the Lipschitz properties of the interpolant. See Subsec. D.2 for background on Markov kernels. 
+
+Proposition 3.6. Let K be any Markov kernel invariant with respect to ν. We define the rescaled Markov kernel 
+
+Kt|z for any x ∈ X and measurable set A ⊂ X as: 
+
+Kt|z (x, A ) = K
+
+
+
+F −1 
+
+> t|z
+
+(x), F −1 
+
+> t|z
+
+(A)
+
+
+
+. (17) 
+
+Then, the kernel Kt|z is invariant with respect to νt|z .Furthermore, let Lt be the Lipschitz constant of the interpolant Ft|z . If we initialize the chain at the refer-ence point z, the Wasserstein-1 distance to the target satisfies: 
+
+W1
+
+
+
+Knt|z (δz ) , ν t|z
+
+
+
+≤ Lt W1 (Kn (δx0 ) , ν ) , (18) 
+
+where x0 = F −1 
+
+> t|z
+
+(z).Proof. See Proposition D.5. Equation 18 implies that whenever Lt ≤ 1, the sampling error – measured by the Wasserstein-1 distance – is strictly lower when targeting νt|z than when targeting the original distribution ν. Moreover, if lim t→0 Lt = 0 , the error van-ishes as t decreases. While this property does not hold for arbitrary bijections, it is satisfied by standard interpolants used in generative modeling, such as linear and trigonomet-ric paths (Albergo et al., 2025). Geometrically, contracting the space reduces the transport cost between the initializa-tion and the target νt|z proportionally. 
+
+Example 3.7 . In the linear interpolant case, the bound in Eq. 18 becomes an equality, implying that the error decays exactly linearly with t:
+
+W1
+
+
+
+Knt|z (δz ) , ν t|z
+
+
+
+= t W 1 (Kn (δz ) , ν ) . (19) See Corollary D.6 for a proof. Thus, for any fixed number of MCMC steps n, samples become arbitrarily close to νt|z in the optimal transport sense as t → 0.However, a small transport cost to νt0|z does not necessarily imply faster mixing. For non-linear interpolants, geometric distortions induced by the condition number of Ft|z may hinder exploration. Even in the linear case, νt0|z retains the multimodal structure of ν, differing only by a global contraction. Consequently, standard MCMC methods may still mix poorly. To mitigate this issue, we employ PT to sample from νt0|z , as described in the next section. 
+
+3.4. Algorithmic Details 
+
+The procedure of CDS is summarized in Alg. 1. It samples from the target distribution ν in two stages: (i) sampling from the conditional distribution νt0|z , and (ii) integrating the conditional SDE in Eq. 15. 
+
+Computational Budget Allocation. Given a fixed compu-tational budget, performance depends on how computation is split across the two stages. We control this trade-off via two hyperparameters: the number of steps in Stage 1 ( K)5Conditional Diffusion Sampling 
+
+Algorithm 1 Conditional Diffusion Sampling (CDS) 
+
+Require: Number of PT steps K, time schedule                                                                      
+
+> {0< t 0<· · · < t N= 1 }, noise schedule {σ0, . . . , σ N−1},number of corrector steps M.
+> STAGE 1: Conditional Sampling
+> 1: z∼νref
+> 2: // Run PT to sample from νt0|z.3: // Starting from z,Ksteps. 4: x0←PTSampler  z, ν t0|z, K 
+> STAGE 2: SDE Integration
+> 5: for n= 0 to N−1do
+> 6: ξ∼ N (0 , I )
+> 7: ∆tn←tn+1 −tn
+> 8: an←utn|z(xn) + σ2
+> n
+> 2∇log πtn|z(xn)
+> 9: y←xn+ ∆ tnan+σn
+> √∆tnξ
+> 10: // Run a corrector to sample from νtn+1 |z.11: // Starting from y,Msteps. 12: xn+1 ←Corrector  y, ν tn+1 |z, M 
+> 13: end for
+> 14: return xN
+
+and in Stage 2 ( N ). We find that sufficient effort must be de-voted to Stage 1 to ensure enough global exploration, while retaining enough integration steps to accurately transport the samples, see Subsec. H.5. 
+
+Choice of Sampler in Stage 1. Stage 1 aims to sample from νt0|z for t0 > 0. While any sampler could be used, 
+
+νt0|z remains multimodal, making local MCMC methods prone to poor mixing. Annealing-based methods are bet-ter suited, as they progressively bridge the reference and target distributions, and benefit from the fact that νt0|z ap-proaches the reference as t0 → 0. In practice, we find that PT outperforms other choices, see Subsec. H.2. 
+
+Numerical Integration. We use the Euler–Maruyama scheme to integrate the SDE, though any suitable solver could be employed. The diffusion variance σt controls the stochasticity of the process, and can be specified as a noise schedule. Following diffusion models (Song et al., 2021), integration can be enhanced with an M steps of an MCMC corrector targeting νt|z to reduce discretization error. In our setting, this is particularly effective since the log-density is available, enabling Metropolis–Hastings corrections. See Subsec. H.5 for the corresponding analysis of these hyper-parameters. 
+
+## 4. Related Work 
+
+We review related methods for sampling from unnormalized multimodal distributions. Since most effective approaches rely on constructing a bridge between a tractable reference distribution and the target, we organize prior work according to the mechanism used to define this bridge. 
+
+4.1. Annealing-based Methods 
+
+Annealing defines a sequence of intermediate densities that gradually transport samples from a reference to a target, see Eq. 2. Annealing-based methods differ in how they navigate this sequence. PT runs multiple Markov chains in paral-lel, periodically proposing swaps between adjacent chains to facilitate information exchange. In contrast, Annealed Importance Sampling (AIS, (Neal, 2001)) and Sequential Monte Carlo (SMC, (Del Moral et al., 2006)) propagate a population of weighted particles sequentially, with SMC ad-ditionally employing resampling to prevent mode collapse. The performance of annealing methods is highly sensitive to the schedule and number of distributions, and can suffer from mass teleportation, where probability mass abruptly shifts between disjoint modes (Woodard et al., 2009). Opti-mizing the schedule and increasing its density can mitigate these issues, but performance still sharply deteriorates when adjacent distributions share little overlap (Syed et al., 2024). For challenging problems with high discrepancy between 
+
+νref and ν, the number of interpolating distributions required for stable sampling can be prohibitively expensive. While CDS also leverages PT for initialization, it targets a conditional distribution νt0|z that concentrates near the refer-ence for near-zero t0, ensuring substantial overlap between successive distributions. This makes it easier to propagate samples from νref to νt0|z than directly to ν.
+
+4.2. Diffusion-based Methods 
+
+Neural samplers amortize sampling by training a neural network using both samples (from the model or previous iterations) and the target density. As we argue in Sec. 4.2, this training is computationally expensive. 
+
+Diffusion-based Neural Samplers. Neural Samplers amor-tize sampling by training neural networks to generate sam-ples from a target distribution (Arbel et al., 2021; Midgley et al., 2023). Motivated by diffusion models, several works adapt these formulations to design new Neural Samplers (Nusken et al., 2024; He et al., 2025a; Havens et al., 2025; Akhound-Sadegh et al., 2025; Albergo & Vanden-Eijnden, 2025; Rissanen et al., 2025). These methods are trained us-ing both target density evaluations and samples, either pro-duced by earlier model iterations or generated via MCMC. While training is computationally expensive, inference re-quires only a single forward pass with no additional density evaluations. Therefore, Neural Samplers operate in a dif-ferent but complementary regime from MCMC methods. 
+
+Non-amortized Methods. This line of work aims to exploit diffusion-based ideas without resorting to neural network 6Conditional Diffusion Sampling 
+
+Table 1. Sampling tasks considered in this work. See App. E for more details. Task name Target dist. Dim. ( D)Gaussian Mixture (GM) GM-2 2GMNU-2 2GM-16 16 GMNU-16 16 Lennard-Jones (LJ) LJ-13 3 × 13 = 39 
+
+LJ-55 3 × 55 = 165 
+
+Alanine Dipeptide (ALDP) ALDP 3 × 22 = 66 
+
+Bayesian Neural Network (BNN) BNN 550 
+
+training. Diffusive Gibbs Sampling (DiGS, (Chen et al., 2024)) introduces Gaussian convolutions to define a noisy auxiliary distribution that bridges isolated modes. However, it relies on a Metropolis-within-Gibbs procedure that scales poorly to high dimensions. Reverse Diffusion Monte Carlo (RDMC, (Huang et al., 2024)) expresses the score of the marginal distribution in terms of expectations under the de-noising posterior. To approximate this, it employs a nested MCMC procedure in which multiple samples from the de-noising posterior are drawn at each iteration. Consequently, several density evaluations are required per iteration. Both DiGS and RDMC rely on marginal probability paths with intractable scores. In contrast, the proposed CDS fol-lows a conditional probability path whose score admits a closed-form expression, enabling efficient sampling without approximations. 
+
+## 5. Experiments 
+
+In this section, we evaluate CDS with a linear interpolant on eight target distributions across four diverse tasks. We study the impact of the initial time t0 on PT communication efficiency in Subsec. 5.1 and compare CDS with state-of-the-art samplers in Subsec. 5.3. Experimental details are provided in App. G, with additional experiments in App. H 1
+
+Sampling Tasks. The tasks considered for evaluation are summarized in Tab. 1. In total, we consider eight target distributions across four tasks spanning synthetic bench-marks, physical systems, molecular dynamics, and high-dimensional Bayesian inference problems. These tasks cover multimodality, complex energy landscapes, and struc-tured posteriors in a wide range of dimensions. Notably, for the ALDP and BNN targets, density and score evaluations are computationally expensive, making them particularly interesting for assessing sampling efficiency. Full details are provided in App. E. 
+
+Sample Quality Metrics. We evaluate sample quality using 
+
+> 1
+
+The code is available at github.com/Franblueee/ conditional_diffusion_sampling .10 1             
+
+> 10 2
+> W2 (log scale)
+> 1.08
+> 1.10
+> 1.12
+> 1.14
+> 1.16
+> W2
+> 0.22
+> 0.24
+> 0.26
+> Ramachandran KL
+> 0.27
+> 0.28
+> 0.29
+> Test NLL
+> 10 410 1
+> 0
+> 5
+> 10
+> 15
+> Round Trips
+> GM-16
+> 10 210 110 0
+> 750
+> 1000
+> 1250
+> 1500
+> Round Trips
+> LJ-13
+> 10 210 110 0
+> t0
+> 150
+> 200
+> 250
+> 300
+> Round Trips
+> ALDP
+> 10 210 0
+> t0
+> 50
+> 60
+> 70
+> 80
+> Round Trips
+> BNN
+
+Figure 4. Round Trips (RTs, higher is better) and sampling error (lower is better) as a function of t0. Decreasing t0 from 
+
+1.0 generally increases RT counts and reduces sampling error, indicating improved mixing and sample quality. 
+
+standard task-specific metrics (lower is better for all): the Wasserstein-2 ( W2) distance for the GM and LJ tasks; the Kullback-Leibler (KL) divergence between Ramachandran plots for ALDP; and the test negative log-likelihood (NLL) for the BNN task. Additional metrics and implementation details are provided in App. F and H. 
+
+5.1. Impact of Initial Time t0 in Communication and Sample Quality 
+
+We analyze the communication efficiency of PT when target-ing the conditional distribution νt|z , and how it impacts sam-ple quality. Recall that CDS begins by sampling νt0|z for a chosen t0 > 0. As t → 0, νt|z concentrates toward a Dirac delta at z (drawn from the reference distribution), increas-ing overlap with the reference and potentially improving communication. We measure efficiency using Round Trips (RTs), which is the number of traversals between reference and target distributions. Higher RTs indicate better mixing (Syed et al., 2022). We report the Global Communication Barrier and provide further details in App. H. As shown in Fig. 4, decreasing t0 from 1.0 consistently increases RTs across tasks, confirming that sampling from 
+
+νt0|z is more efficient than sampling ν directly, and leading to improved sample quality. However, as t0 → 0, both efficiency and quality deteriorate as the distribution becomes excessively concentrated, which reduces overlap between replicas. As illustrated in Fig. 3, this suggests an optimal range for t0: small enough to enhance overlap with the reference, yet large enough to avoid degeneracy. A strategy for selecting t0 is discussed in App. C. 
+
+5.2. Analysis of the Transport Mechanism 
+
+We study the impact of the SDE integration in CDS’s Stage 2. After sampling from νt0|z , samples must be transported 7Conditional Diffusion Sampling 10 4 10 5      
+
+> Density evaluations
+> 10 0
+> W2 (log scale)
+> GM-2
+> 10 410 510 6
+> Density evaluations
+> 10 1
+> 10 2
+> W2 (log scale)
+> GM-16
+> 10 410 5
+> Density evaluations
+> 0.8
+> 0.9
+> 1.0
+> 1.1
+> W2
+> LJ-13
+> 10 410 5
+> Density evaluations
+> 10 1
+> 10 0
+> 10 1
+> 10 2
+> Test NLL (log scale)  BNN
+> PT + Inv. Transform PT + SDE
+
+Figure 5. Comparison between SDE-based transport and the in-verse interpolation map. We evaluate the effect of two strategies for transporting samples from νt0|z back to the target distribution 
+
+ν. The SDE-based approach consistently achieves better perfor-mance across tasks. 
+
+to the target ν. In our method, this is done by integrating the interpolation SDE Equation (15) from t0 to 1.Alternatively, one can apply the inverse interpolation map 
+
+F −1 
+
+> t0|z
+
+to directly map samples to ν. If νt0|z were sampled perfectly, this transformation would recover perfect samples from ν. In practice, however, approximation errors are am-plified by the inverse map. In contrast, the SDE dynamics provide an advantage: they continuously refine the sam-ples during transport, improving mixing and progressively correcting deviations from the target distribution. We empirically compare CDS with this baseline, where PT is used to sample from νt0|z followed by F −1 
+
+> t0|z
+
+. Results in Fig. 5 show that SDE-based transport consistently outper-forms the inverse mapping. The latter performs slightly better on GM-2 under small budgets, due to a trade-off: fewer SDE steps leave room for more exploration during the PT phase. This advantage disappears in more complex target distributions, where the corrective effect of the SDE becomes important. 
+
+5.3. Comparison with Other Sampling Methods 
+
+We benchmark CDS against five state-of-the-art MCMC methods, analyzing the trade-off between sample quality and total density evaluations. Full experimental details are provided in App. G. 
+
+Baselines. We select three recent state-of-the-art methods: Non-Reversible PT (NRPT) (Syed et al., 2022), Optimized Annealed SMC (OASMC) (Syed et al., 2024), and Diffusive Gibbs Sampling (DiGS) (Chen et al., 2024). We also include two MCMC baselines: Hamiltonian Monte Carlo (HMC) and Metropolis–Adjusted Langevin Algorithm (MALA). We exclude RDMC from this comparison as it proved com-putationally intractable for the tasks considered, consistent with findings in Chen et al. (2024). In Subsec. H.3, we include a comparison against No-U-Turn Sampler (NUTS, Hoffman et al. (2014)), Stein Variational Gradient Descent (SVGD, Liu & Wang (2016)), and the Metropolis Adjusted Microcanonical Sampler (MAMS, Robnik et al. (2025)). As discussed in Section 4.2, we exclude Neural Samplers as they operate in a different regime. 
+
+Evaluation Protocol. Sampling performance is assessed via average Pareto fronts, capturing the trade-off between sample quality and computational cost. In addition to task-specific quality metrics, we report the Mean Hypervolume Ratio (HVR) (Zitzler et al., 2003), computed on normalized Pareto fronts to enable comparability across objectives with different scales. Further details are provided in App. F. 
+
+Results Overview. Overall results are summarized in Ta-ble 2. CDS, with a mean HVR of 0.9863 , significantly outperforms the standard MCMC baselines (HMC, MALA) and the strongest competitor, NRPT. Thus, it achieves the best trade-offs between cost and sampling accuracy. 
+
+Per-task Analysis. Representative trade-off curves are shown in Fig. 6, with additional results reported in App. H. On the GM task, the proposed method exhibits stable per-formance across dimensions. While CDS and DiGS out-perform all samplers in low-dimensional settings (GM-2 and GMNU-2), DiGS performance deteriorates in the 16-dimensional cases (GM-16 and GMNU-16), likely due to the limited efficiency of its Metropolis-within-Gibbs mecha-nism. In contrast, CDS maintains its efficiency and achieves the best trade-offs in these medium-dimensional regimes. CDS remains highly competitive on physical system bench-marks. On LJ, MALA and HMC achieve the best Pareto fronts (as expected, since local samplers suffice to capture the target distribution in this task). CDS performs on par with NRPT and even surpasses it in the high-density evalua-tion budget regime. In contrast, performance on ALDP re-veals a clear separation: MALA and HMC degrade severely, while CDS rivals NRPT for the best results, followed by OASMC and DiGS. Notably, CDS remains robust despite the unfavorable interaction between the LJ potential (also present in ALDP) and the linear interpolant, which drives interparticle distances toward zero as t → 0. Even under these adverse conditions, which are induced by the inter-polant choice, CDS avoids catastrophic failure and performs remarkably well. In the highest-dimensional BNN task ( D = 550 ), CDS sig-nificantly outperforms all samplers, demonstrating superior capability in exploring complex, multimodal posteriors. 8Conditional Diffusion Sampling 
+
+Table 2. Aggregated Mean Hypervolume Ratio (HVR) across sampling tasks. Higher HVR values (↑) denote superior performance in terms of both convergence and coverage of the optimal Pareto front (Zitzler et al., 2003). See App. F for details.                                      
+
+> Method CDS (ours) NRPT OASMC DiGS HMC MALA HVR (↑)0.9976 ±0.0015 0.9827 ±0.0083 0.9287 ±0.0277 0.5464 ±0.1550 0.6263 ±0.1261 0.5241 ±0.1494 10 410 5
+> Density evaluations
+> 10 0
+> 10 1
+> W2 (log scale)
+> GM-2
+> 10 410 5
+> Density evaluations
+> 10 0
+> 10 1
+> W2 (log scale)
+> GMNU-2
+> 10 410 510 6
+> Density evaluations
+> 10 1
+> 10 2
+> W2 (log scale)
+> GM-16
+> 10 410 510 6
+> Density evaluations
+> 10 1
+> 10 2
+> W2 (log scale)
+> GMNU-16
+> 10 410 5
+> Density evaluations
+> 0.8
+> 0.9
+> 1.0
+> 1.1
+> W2
+> LJ-13
+> 10 510 6
+> Density evaluations
+> 1.8
+> 1.9
+> 2.0
+> W2
+> LJ-55
+> 10 510 6
+> Density evaluations
+> 10 1
+> 10 0
+> 10 1
+> Ramachandran KL
+> (log scale)
+> ALDP
+> 10 410 5
+> Density evaluations
+> 10 1
+> 10 0
+> 10 1
+> Test NLL (log scale)  BNN CDS (ours)
+> NRPT
+> OASMC
+> DiGS
+> HMC
+> MALA
+
+Figure 6. Pareto fronts for sampling performance across eight target distributions. The proposed CDS method achieves competitive or superior performance compared to state-of-the-art samplers, demonstrating higher efficiency by requiring fewer density evaluations for the same level of accuracy. 75 50 25 0      
+
+> Potential Energy
+> 0.00
+> 0.02
+> 0.04
+> 0.06
+> Density
+> LJ-13
+> 400 350 300
+> Potential Energy
+> 0.00
+> 0.01
+> 0.02
+> 0.03
+> Density
+> LJ-55
+> Ground Truth CDS (ours) NRPT HMC MALA
+
+Figure 7. Comparison of Lennard-Jones (LJ) potential energy histograms. For clarity, results for the remaining methods are provided in Fig. 13. All samplers use a fixed budget of 2 · 10 4
+
+and 2 · 10 5 density evaluations for the LJ-13 and LJ-55 targets, respectively. CDS provides the most accurate match to the ground truth histograms, closely followed by NRPT. 
+
+Qualitative Analysis. We analyze how quantitative perfor-mance differences translate into qualitative sample fidelity. Fig. 12 visualizes samples from the GM task using 2 · 10 3
+
+density evaluations. Both CDS and DiGS recover all modes with correct proportions, whereas competing methods fail to discover all of them. Energy histograms for the LJ sys-tems (Fig. 7) indicate that CDS matches the target energy distribution most accurately, closely followed by NRPT. For the ALDP task, the Ramachandran histograms (Fig. 2) show that only CDS and NRPT successfully recover the two modes with accurate density allocations, though NRPT captures the central isolated mode more effectively. 
+
+## 6. Conclusions 
+
+In this work, we introduced Conditional Diffusion Sampling (CDS), a training-free framework that combines the robust global exploration of Parallel Tempering (PT) with the effi-cient local transport of diffusion processes. By deriving Con-ditional Interpolants, we obtained exact, closed-form SDEs that transport samples from an accessible initialization dis-tribution to the target. Both theoretical and empirical results show that the initialization cost vanishes at short diffusion times. Our extensive evaluation on high-dimensional bench-marks demonstrates that CDS achieves a superior trade-off between sample quality and computational cost. 
+
+Limitations and Future Work. While CDS demonstrates robust performance across varying dimensionalities, our experimental analysis highlights the following two limita-tions. First, our results in the LJ and ALDP tasks suggest that the choice of interpolant is critical for densities with singularities, as it may force trajectories through numerical instabilities in high-energy regions. Second, we observed that the choice of the initialization time t0 involves a delicate trade-off: excessively small values cause the initialization distribution νt0|z to become extremely peaked, hindering communication efficiency in the PT stage. Crucially, these limitations stem primarily from the specific use of the linear interpolant rather than the CDS framework itself. This opens a promising research direction: designing better interpolants that take into account the underlying ge-ometry of the target density to further improve performance. 9Conditional Diffusion Sampling 
+
+## Acknowledgements 
+
+FMCM acknowledges contract FPU21/01874 (Ministe-rio de Universidades). PMA acknowledges grant C-EXP-153-UGR23 (Consejer ´ıa de Universidad, Investi-gaci ´on e Innovaci ´on and European Union ERDF An-dalusia Program 2021-2027). SS acknowledges sup-port from NSERC Discover Grant RGPIN-2026-07176. DHL acknowledges support from project PID2022-139856NB-I00 (MCIN/AEI/10.13039/501100011033 and FEDER, UE), project IDEA-CM (TEC-2024/COM-89, Comunidad de Madrid), and the ELLIS Unit Madrid. JMHL acknowledges support from EPSRC funding un-der grant EP/Y028805/1. RMS, PMA, FMCM ac-knowledges support from project PID2022-140189OB-C22 (MCIN/AEI/10.13039/501100011033 and FEDER, UE). 
+
+## Impact Statement 
+
+This paper presents work whose goal is to advance the field of Machine Learning. There are many potential societal consequences of our work, none of which we feel must be specifically highlighted here. 
+
+## References 
+
+Akhound-Sadegh, T., Rector-Brooks, J., Bose, J., Mittal, S., Lemos, P., Liu, C.-H., Sendera, M., Ravanbakhsh, S., Gidel, G., Bengio, Y., et al. Iterated denoising energy matching for sampling from boltzmann densities. In 
+
+International Conference on Machine Learning , pp. 760– 786. PMLR, 2024. Akhound-Sadegh, T., Lee, J., Bose, J., De Bortoli, V., Doucet, A., Bronstein, M. M., Beaini, D., Ravanbakhsh, S., Neklyudov, K., and Tong, A. Progressive inference-time annealing of diffusion models for sampling from boltzmann densities. In The Thirty-ninth Annual Confer-ence on Neural Information Processing Systems , 2025. Albergo, M., Boffi, N. M., and Vanden-Eijnden, E. Stochas-tic interpolants: A unifying framework for flows and diffusions. Journal of Machine Learning Research , 26 (209):1–80, 2025. Albergo, M. S. and Vanden-Eijnden, E. Nets: A non-equilibrium transport sampler. In International Confer-ence on Machine Learning , pp. 1026–1055. PMLR, 2025. Arbel, M., Matthews, A., and Doucet, A. Annealed flow transport monte carlo. In International Conference on Machine Learning , pp. 318–330. PMLR, 2021. Beskos, A., Pillai, N., Roberts, G., Sanz-Serna, J.-M., and Stuart, A. Optimal tuning of the hybrid monte carlo algorithm. 2013. Chen, W., Zhang, M., Paige, B., Hern ´andez-Lobato, J. M., and Barber, D. Diffusive gibbs sampling. In Interna-tional Conference on Machine Learning , pp. 7731–7747. PMLR, 2024. Del Moral, P., Doucet, A., and Jasra, A. Sequential monte carlo samplers. Journal of the Royal Statistical Society Series B: Statistical Methodology , 68(3):411–436, 2006. Duane, S., Kennedy, A. D., Pendleton, B. J., and Roweth, D. Hybrid monte carlo. Physics letters B , 195(2):216–222, 1987. Flamary, R., Courty, N., Gramfort, A., Alaya, M. Z., Bois-bunon, A., Chambon, S., Chapel, L., Corenflos, A., Fa-tras, K., Fournier, N., et al. Pot: Python optimal trans-port. Journal of Machine Learning Research , 22(78):1–8, 2021. Geyer, C. J. Markov chain Monte Carlo maximum likeli-hood. 1991. Gretton, A., Borgwardt, K. M., Rasch, M. J., Sch ¨olkopf, B., and Smola, A. A kernel two-sample test. The journal of machine learning research , 13(1):723–773, 2012. Grunert da Fonseca, V., Fonseca, C. M., and Hall, A. O. In-ferential performance assessment of stochastic optimisers and the attainment function. In International Confer-ence on Evolutionary Multi-Criterion Optimization , pp. 213–225. Springer, 2001. Hastings, W. K. Monte carlo sampling methods using markov chains and their applications. Biometrika , 57 (1):97–109, 04 1970. Havens, A. J., Miller, B. K., Yan, B., Domingo-Enrich, C., Sriram, A., Levine, D. S., Wood, B. M., Hu, B., Amos, B., Karrer, B., et al. Adjoint sampling: Highly scalable diffu-sion samplers via adjoint matching. In International Con-ference on Machine Learning , pp. 22204–22237. PMLR, 2025. He, J., Chen, W., Zhang, M., Barber, D., and Hern ´andez-Lobato, J. M. Training neural samplers with reverse dif-fusive kl divergence. In International Conference on Ar-tificial Intelligence and Statistics , pp. 5167–5175. PMLR, 2025a. He, J., Du, Y., Vargas, F., Zhang, D., Padhy, S., OuYang, R., Gomes, C. P., and Hern ´andez-Lobato, J. M. No trick, no treat: Pursuits and challenges towards simulation-free training of neural samplers. In Frontiers in Probabilistic Inference: Learning meets Sampling , 2025b. Hoffman, M. D., Gelman, A., et al. The no-u-turn sampler: adaptively setting path lengths in hamiltonian monte carlo. 
+
+J. Mach. Learn. Res. , 15(1):1593–1623, 2014. 10 Conditional Diffusion Sampling 
+
+Huang, X., Dong, H., Hao, Y., Ma, Y. A., and Zhang, T. Reverse diffusion monte carlo. In 12th International Conference on Learning Representations, ICLR 2024 ,2024. Hukushima, K. and Nemoto, K. Exchange Monte Carlo method and application to spin glass simulations. Journal of the Physical Society of Japan , 65(6):1604–1608, 1996. Izmailov, P., Vikram, S., Hoffman, M. D., and Wilson, A. G. G. What are bayesian neural network posteriors really like? In International conference on machine learning ,pp. 4629–4640. PMLR, 2021. Jones, J. E. On the determination of molecular fields. from the variation of the viscosity of a gas with temperature. 
+
+Proceedings of the Royal Society of London, Series A ,106(738):441–462, 1924. Klein, L., Kr¨ amer, A., and No´ e, F. Equivariant flow match-ing. Advances in Neural Information Processing Systems ,36:59886–59910, 2023. Kroese, D. P., Brereton, T., Taimre, T., and Botev, Z. I. Why the monte carlo method is so important today. Wiley Interdisciplinary Reviews: Computational Statistics , 6(6): 386–392, 2014. Lipman, Y., Chen, R. T., Ben-Hamu, H., Nickel, M., and Le, M. Flow matching for generative modeling. In 11th International Conference on Learning Representations, ICLR 2023 , 2023. Liu, Q. and Wang, D. Stein variational gradient descent: A general purpose bayesian inference algorithm. Advances in neural information processing systems , 29, 2016. McCann, R. J. A convexity principle for interacting gases. 
+
+Advances in mathematics , 128(1):153–179, 1997. McGibbon, R. T., Beauchamp, K. A., Harrigan, M. P., Klein, C., Swails, J. M., Hern ´andez, C. X., Schwantes, C. R., Wang, L.-P., Lane, T. J., and Pande, V. S. Mdtraj: a modern open library for the analysis of molecular dynam-ics trajectories. Biophysical journal , 109(8):1528–1532, 2015. Metropolis, N., Rosenbluth, A. W., Rosenbluth, M. N., Teller, A. H., and Teller, E. Equation of state calculations by fast computing machines. The journal of chemical physics , 21(6):1087–1092, 1953. Meyn, S. P. and Tweedie, R. L. Markov chains and stochas-tic stability . Springer Science & Business Media, 2012. Midgley, L. I., Stimper, V., Simm, G. N. C., Sch ¨olkopf, B., and Hern ´andez-Lobato, J. M. Flow annealed impor-tance sampling bootstrap. In The Eleventh International Conference on Learning Representations , 2023. Neal, R. M. Annealed importance sampling. Statistics and computing , 11(2):125–139, 2001. Neal, R. M. Bayesian learning for neural networks , volume 118. Springer Science & Business Media, 2012. No ´e, F., Olsson, S., K ¨ohler, J., and Wu, H. Boltzmann generators: Sampling equilibrium states of many-body systems with deep learning. Science , 365(6457):1147, 2019. Nusken, N., Vargas, F., Padhy, S., and Blessing, D. Trans-port meets variational inference: Controlled monte carlo diffusions. In The Twelfth International Conference on Learning Representations , 2024. Ollivier, Y. Ricci curvature of markov chains on metric spaces. Journal of Functional Analysis , 256(3):810–864, 2009. Petersen, K. B., Pedersen, M. S., et al. The matrix cookbook. 
+
+Technical University of Denmark , 7(15):510, 2008. Rissanen, S., Ouyang, R., He, J., Chen, W., Heinonen, M., Solin, A., and Hern ´andez-Lobato, J. M. Progressive tempering sampler with diffusion. In International Con-ference on Machine Learning , pp. 51724–51746. PMLR, 2025. Roberts, G. O. and Rosenthal, J. S. Optimal scaling of dis-crete approximations to langevin diffusions. Journal of the Royal Statistical Society: Series B (Statistical Method-ology) , 60(1):255–268, 1998. Roberts, G. O. and Tweedie, R. L. Exponential convergence of langevin distributions and their discrete approxima-tions. Bernoulli , pp. 341–363, 1996. Robnik, J., Cohn-Gordon, R., and Seljak, U. Metropolis adjusted microcanonical hamiltonian monte carlo. In The Thirty-ninth Annual Conference on Neural Information Processing Systems , 2025. S ¨arkk ¨a, S. and Solin, A. Applied stochastic differential equations , volume 10. Cambridge University Press, 2019. Smith, A. Sequential Monte Carlo methods in practice .Springer Science & Business Media, 2013. Smith, P. E. The alanine dipeptide free energy surface in solution. The Journal of chemical physics , 111(12):5568– 5579, 1999. Song, Y., Sohl-Dickstein, J., Kingma, D. P., Kumar, A., Er-mon, S., and Poole, B. Score-based generative modeling through stochastic differential equations. In International Conference on Learning Representations , 2021. 11 Conditional Diffusion Sampling 
+
+Surjanovic, N., Syed, S., Bouchard-C ˆot ´e, A., and Camp-bell, T. Parallel tempering with a variational reference. 
+
+Advances in Neural Information Processing Systems , 35: 565–577, 2022. Surjanovic, N., Syed, S., Bouchard-C ˆot ´e, A., and Campbell, T. Uniform ergodicity of parallel tempering with effi-cient local exploration. arXiv preprint arXiv:2405.11384 ,2024. Syed, S., Romaniello, V., Campbell, T., and Bouchard-C ˆot ´e, A. Parallel tempering on optimized paths. In Inter-national Conference on Machine Learning , pp. 10033– 10042. PMLR, 2021. Syed, S., Bouchard-C ˆot ´e, A., Deligiannidis, G., and Doucet, A. Non-reversible parallel tempering: a scalable highly parallel mcmc scheme. Journal of the Royal Statistical Society Series B: Statistical Methodology , 84(2):321–350, 2022. Syed, S., Bouchard-C ˆot ´e, A., Chern, K., and Doucet, A. Op-timised annealed sequential monte carlo samplers. arXiv preprint arXiv:2408.12057 , 2024. Woodard, D., Schmidler, S., and Huber, M. Sufficient Con-ditions for Torpid Mixing of Parallel and Simulated Tem-pering. Electronic Journal of Probability , 14:780 – 804, 2009. Zhang, L., Potaptchik, P., He, J., Du, Y., Doucet, A., Var-gas, F., Dau, H.-D., and Syed, S. Accelerated par-allel tempering via neural transports. arXiv preprint arXiv:2502.10328 , 2025. Zitzler, E., Thiele, L., Laumanns, M., Fonseca, C. M., and Da Fonseca, V. G. Performance assessment of multiobjec-tive optimizers: An analysis and review. IEEE Transac-tions on evolutionary computation , 7(2):117–132, 2003. 12 Conditional Diffusion Sampling 
+
+## A. Extended Background: Parallel Tempering 
+
+In this section, we describe Parallel Tempering (PT), a Markov chain Monte Carlo (MCMC) method designed to sample from a complex target distribution ν. We follow the exposition by Syed et al. (2022). Let νref be a reference distribution from which independent and identically distributed (i.i.d.) sampling is tractable. In the following, we assume ν and νref have densities π and πref , respectively. PT constructs a sequence of N + 1 distributions interpolating between the reference πref and the target π. This is governed by an annealing schedule BN = {0 = β0 < β 1 < · · · < β N = 1 }. The distribution for the n-th chain, πβn , is typically defined as: 
+
+πβ (x) ∝ πref (x)1−β π(x)β . (20) The algorithm simulates a Markov chain on the expanded state space X N +1 targeting the product distribution: 
+
+Π( x) = πβ0 (x0)πβ1 (x1) · · · πβN (xN ), (21) where x =  x0, . . . , x N . Each iteration of the PT algorithm consists of two distinct steps: local exploration and communication. 
+
+Local exploration. A πβn -invariant Markov kernel Kβn (e.g., MALA or HMC) is applied to update the state of each chain independently. See Subsec. D.2 for an introduction to Markov kernels. 
+
+Communication. Swaps between the states of adjacent chains are proposed. They are accepted or rejected according to a Metropolis-Hastings criterion. The acceptance probability αn (x) is given by: 
+
+αn (x) = max 
+
+
+
+1, πβn (xn+1 )πβn+1 (xn)
+
+πβn (xn)πβn+1 (xn+1 )
+
+
+
+. (22) Efficient communication implies that these swaps are frequently accepted, allowing samples from the tractable νref to traverse the path to ν. Non-reversible PT variants alternate between swaps of odd chains and swaps of even chains. They have proven to outperform their reversible counterparts (Syed et al., 2022). The pseudocode for Non-Reversible PT (NRPT) is shown in Alg. 2. 
+
+Algorithm 2 Non-Reversible Parallel Tempering (NRPT) 
+
+Require: Number of iterations K, annealing schedule BN . 
+
+> 1:
+
+Initialize x0 = ( x00, x 10, . . . , x N 
+
+> 0
+
+) with xn 
+
+> 0
+
+∼ πref . 
+
+> 2:
+
+for k = 1 to K do  
+
+> 3:
+
+// Local Exploration  
+
+> 4:
+
+for n = 0 to N do  
+
+> 5:
+
+xnk ← Sample from Kβn (xnk−1, ·). 
+
+> 6:
+
+end for  
+
+> 7:
+
+// Communication (Swaps)  
+
+> 8:
+
+for n ≡ k mod 2 do  
+
+> 9:
+
+αn ← αn (xk) // See Eq. 22  
+
+> 10:
+
+Draw u ∼ U (0 , 1)  
+
+> 11:
+
+if u < α n then  
+
+> 12:
+
+xn+1  
+
+> k
+
+, x nk ← xnk , x n+1  
+
+> k
+> 13:
+
+end if  
+
+> 14:
+
+end for  
+
+> 15:
+
+end for  
+
+> 16:
+
+return (x1, . . . , xK )
+
+Round Trips. A round trip is defined as the event where a specific particle, initialized at the reference distribution (index 
+
+0), traverses up to the target distribution (index N ) and returns to the reference. The round trip rate τN is the frequency of round trips over K iterations. A higher round trip rate indicates that the chains are exchanging information efficiently and that the target distribution is being effectively explored by samples originating from the reference. 13 Conditional Diffusion Sampling 
+
+Global Communication Barrier (GCB). The performance of PT can be analyzed in the asymptotic limit where the number of chains N → ∞ . In this regime, the efficiency is characterized by the Global Communication Barrier (GCB), denoted 
+
+Λ( νref , ν ). It is defined as the accumulated local communication barriers across the path: 
+
+Λ( νref , ν ) = 12
+
+Z 10
+
+λ (β) d β, λ (β) = 
+
+Z
+
+|l(x) − l(y)| πβ (x)πβ (y) d x dy, (23) where l(·) is the log-likelihood ratio l(·) = log π(·) − log πref (·). The asymptotic round trip rate converges to a value determined by the GCB: 
+
+lim   
+
+> N→∞
+
+τN = 12 + 2Λ( νref , ν ) . (24) Consequently, a lower GCB indicates higher communication efficiency and a faster restart rate. From (Surjanovic et al., 2022), the GCB is upper bounded by the square root of the symmetric KL divergence: 
+
+Λ( νref , ν ) ≤
+
+r 12 SKL ( νref , ν ), (25) where SKL ( νref , ν ) = KL ( νref , ν ) + KL ( ν, ν ref ).
+
+## B. Conditional Flows 
+
+Flows. When the diffusion coefficient in Eq. 3 vanishes, σt = 0 , the SDE in Eq. 3 reduces to the ordinary differential equation (ODE): 
+
+dxt = ut(xt) d t, (26) where (t, x ) 7 → at(x) ∈ RD is the velocity vector field. In this case, the FPK equation Eq. 4 degenerates into the continuity equation 
+
+∂∂t pt = − div ( ptut) , (27) which characterizes the evolution of densities transported by the deterministic flow induced by ut. As in diffusions, one can choose the velocity field ut such that p0 = πref , and p1 = π (Lipman et al., 2023). Thus, the ODE Eq. 26 defines a continuous probabilistic bridge between πref and π.
+
+The Conditional ODE. For a reference variable z ∼ νref , the interpolant defined in Eq. 7 describes a time-dependent probability path. This path can be characterized by an ODE associated with the following velocity field: 
+
+dxt = ut|z (xt) d t, (28) 
+
+ut|z (x) = ∂F t|z
+
+∂t 
+
+
+
+F −1 
+
+> t|z
+
+(x)
+
+
+
+. (29) This vector field is well-defined for t ∈ (0 , 1] . By construction, if {xt} solves this ODE, its marginal density at time t is exactly πt|z , as the density path satisfies the associated continuity equation, see Proposition D.4. 
+
+Example B.1 . For the linear interpolant introduced in Eq. 6, the vector field takes the simple form: 
+
+ut|z (x) = x − zt . (30) The boundary conditions defining the interpolant make it impossible for Ft|z to be invertible at t = 0 . As a consequence, the vector field ut|z generally exhibits a singularity at t = 0 , causing solutions to diverge as t → 0. This mirrors the boundary singularities observed in diffusion models and flow matching, where vanishing noise variance leads to unbounded vector fields or scores (Song et al., 2021; Lipman et al., 2023). Consequently, numerical integration cannot proceed from t = 0 .Instead, one must initialize the process at a initial time t0 > 0 with a sample xt0 ∼ νt0|z . Crucially, for the linear interpolant, the trajectory for t > t 0 is entirely deterministic given xt0 and z, as it is given by the integration of the velocity field in Eq. 26. This reveals a limitation of the ODE formulation: the target distribution ν influences the process only through the initial sample xt0 . Once initialized, the dynamics do not utilize the target information to refine the trajectory. 14 Conditional Diffusion Sampling 
+
+## C. Optimizing the Initial Time t0
+
+A critical design choice within the proposed CDS framework is the selection of the initial time instant, t0, used to sample from νt0|z and initialize the integration. In this section, we propose an optimization-based approach to determine this value. We propose to minimize the Symmetric Kullback-Leibler (SKL) divergence between the reference distribution νref and the target νt|z with respect to t. The SKL is defined as: 
+
+SKL  νref , ν t|z
+
+ = KL  νref , ν t|z
+
+ + KL  νt|z , ν ref 
+
+ , (31) where KL( ·, ·) denotes the standard Kullback-Leibler divergence. Consequently, we define the optimal start time t0 as: 
+
+t0 = arg min  
+
+> t
+
+SKL  νref , ν t|z
+
+ . (32) This criterion is motivated by the relationship between the SKL and the Global Communication Barrier (GCB), denoted as 
+
+Λ( ·, ·). As shown in (Surjanovic et al., 2022), the SKL provides an upper bound on the GCB: 
+
+Λ  νref , ν t|z
+
+ ≤
+
+r 12 SKL  νref , ν t|z
+
+. (33) In annealing-based methods such as Parallel Tempering (PT) and Optimized Sequential Monte Carlo (OSMC) (Syed et al., 2021; 2024), the GCB serves as a global measure of transport difficulty along the annealing path. Lower values imply easier communication and higher sampling efficiency. Since direct minimization of the GCB is often intractable, the SKL serves as an effective and differentiable proxy (Surjanovic et al., 2022). In CDS, when PT or OSMC is used in the first stage, minimizing this objective amounts to maximizing the communication efficiency of PT or OSMC. Next, we obtain closed-form expressions for the derivative of SKL with respect to t and propose an online optimization strategy. 
+
+C.1. Online optimization 
+
+Since the SKL divergence is differentiable with respect to t, we can employ stochastic optimization to find the optimal value 
+
+t0. The gradient with respect to t is given below. 
+
+Lemma C.1. The derivative of the SKL with respect to t is given by: 
+
+∂∂t SKL( νref , ν t|z ) = Ex∼νt|z
+
+ ∂∂t log πt|z (x)
+
+
+
+log πt|z (x)
+
+πref (x)
+
+
+
+− Ex∼νref 
+
+ ∂∂t log πt|z (x)
+
+
+
+. (34) 
+
+Proof. Let J(t) = SKL( νref , ν t|z ). We decompose this into the forward and reverse KL divergences: 
+
+J(t) = 
+
+Z
+
+πt|z (x) log πt|z (x)
+
+πref (x) dx 
+
+| {z }
+
+> At
+
++
+
+Z
+
+πref (x) log πref (x)
+
+πt|z (x) dx 
+
+| {z }
+
+> Bt
+
+. (35) For At, we differentiate under the integral sign and use the identity ∂∂t πt|z = πt|z ∂∂t log πt|z :
+
+∂∂t At =
+
+Z
+
+πt|z (x)
+
+ ∂∂t log πt|z (x)
+
+
+
+log πt|z (x)
+
+πref (x) dx +
+
+Z
+
+πt|z (x) ∂∂t log πt|z (x) dx 
+
+| {z }   
+
+> =∂∂t
+> Rπt|z(x)dx =0
+
+. (36) Thus, ∂∂t At = Ex∼νt|z
+
+h  ∂∂t log πt|z (x) log πt|z (x)
+
+> πref (x)
+
+i
+
+.For Bt, since πref is independent of t:
+
+∂∂t Bt =
+
+Z
+
+πref (x) ∂∂t 
+
+ log πref (x) − log πt|z (x) dx = −
+
+Z
+
+πref (x) ∂∂t log πt|z (x) dx. (37) Thus, ∂∂t Bt = −Ex∼νref 
+
+ ∂∂t log πt|z (x). Summing the derivatives of At and Bt yields the result. 15 Conditional Diffusion Sampling 
+
+Example C.2 . In the case of the linear interpolant, the derivative of SKL with respect to t is given by 
+
+∂∂t SKL( νref , ν t|z ) = Ex∼νt|z
+
+
+
+st|z (x) log πt|z (x)
+
+πref (x)
+
+
+
+− Ex∼νref 
+
+st|z (x) . (38) where st|z (x) = − 1 
+
+> t2
+
+(x − z)⊤∇ log πt|z (x) − dt .
+
+In practice, this gradient can be used within an online stochastic gradient descent scheme. Starting from an initial guess t0,we run the first-stage sampler (e.g., PT or OASMC) and use the generated particles from νt0|z to estimate the expectations and update t iteratively. This optimization can be performed during the burn-in phase of the initial sampler and continued until the first stage of CDS is completed. Importantly, this procedure incurs no additional target density evaluations, as all required gradients and density values can be cached for each particle. 
+
+## D. Theoretical Results 
+
+D.1. Conditional Interpolants Setting. Let F : [0 , 1] × X × X → X be a differentiable map denoted as Ft(z, x ) = F (t, z, x ), satisfying the boundary conditions F0(z, x ) = z and F1(z, x ) = x. For a fixed z ∈ X , we define the map Ft|z : X → X as 
+
+Ft|z (x) = Ft(z, x ). (39) We assume that Ft|z is a diffeomorphism (i.e., invertible with a differentiable inverse). Let ν be a probability measure defined on X . For a fixed z ∈ X , define the interpolated process: 
+
+xt = Ft|z (x), x ∼ ν. (40) Let νt|z denote the distribution of the random variable xt conditioned on z. Formally, this is the pushforward measure: 
+
+νt|z = Ft|z #ν. (41) 
+
+Lemma D.1 (Convergence to Dirac mass) . Assume that X is a separable normed vector space. Assume the following regularity conditions: 1. ν has a finite first-order moment. 2. For ν-almost all x, lim t→0 ∥Ft|z (x) − z∥ = 0 .3. There exists an integrable function g : X → [0 , +∞) such that for all sufficiently small t, ∥Ft|z (x) − z∥ ≤ g(x).Then, the conditional distribution νt|z converges to the Dirac mass δz in the Wasserstein-1 distance: 
+
+lim  
+
+> t→0
+
+W1(δz , ν t|z ) = 0 , (42) 
+
+Proof. In any normed space, the Wasserstein-1 distance between a Dirac mass δz and an arbitrary probability measure μ is given exactly by the expected distance to z:
+
+W1(δz , μ ) = 
+
+Z
+
+> X
+
+∥z − y∥ μ(d y). (43) Substituting μ = νt|z and applying the change of variables formula: 
+
+W1(δz , ν t|z ) = 
+
+Z
+
+> X
+
+∥z − Ft|z (x)∥ ν(d x). (44) We analyze the limit of this integral as t → 0. By the first regularity condition, the integrand converges to 0 for almost all x.By the second regularity condition, the integrand is bounded by the integrable function g(x). Therefore, by the Dominated Convergence Theorem: 
+
+lim 
+
+> t→0
+
+Z
+
+> X
+
+∥z − Ft|z (x)∥ μ(d x) = 0 . (45) 16 Conditional Diffusion Sampling 
+
+Lemma D.2 (Conditional Density) . Let π be the density of ν. Then, the density of νt|z is given by: 
+
+πt|z (x) = det J Ft|z
+
+ F −1 
+
+> t|z
+
+(x) −1
+
+π F −1 
+
+> t|z
+
+(x), (46) 
+
+where JFt|z denotes the Jacobian matrix of the map Ft|z .Proof. Let A ⊆ X be an arbitrary measurable set. Let πt|z be the density of νt|z . By the definition of the pushforward measure, we relate the integrals over the densities as follows: 
+
+Z
+
+> A
+
+πt|z (x) d x = νt|z (A) = ν
+
+
+
+F −1 
+
+> t|z
+
+(A)
+
+
+
+=
+
+Z  
+
+> F−1
+> t|z(A)
+
+π(y) d y. (47) We apply the change of variables formula to the integral on the right-hand side. Let x = Ft|z (y). By the Inverse Function Theorem, it holds: 
+
+det J( F −1 
+
+> t|z
+
+)( x) = det 
+
+
+
+JFt|z (F −1 
+
+> t|z
+
+(x)) 
+
+−1
+
+= det J Ft|z (F −1 
+
+> t|z
+
+(x)) −1
+
+. (48) Substituting this back into the integral and applying the change of variables formula, we obtain: 
+
+Z
+
+> A
+
+πt|z (x) d x =
+
+Z  
+
+> F−1
+> t|z(A)
+
+π(y) d y =
+
+Z
+
+> A
+
+π
+
+
+
+F −1 
+
+> t|z
+
+(x)
+
+
+
+det J Ft|z
+
+
+
+F −1 
+
+> t|z
+
+(x)
+
+ −1
+
+dx. (49) Since this equality holds for any measurable set A, the integrands must be equal almost everywhere. Therefore: 
+
+πt|z (x) = π
+
+
+
+F −1 
+
+> t|z
+
+(x)
+
+
+
+det J Ft|z
+
+
+
+F −1 
+
+> t|z
+
+(x)
+
+ −1
+
+. (50) 
+
+Lemma D.3 (Conditional Score) . Let π be the density of ν, and assume it to be differentiable and strictly positive. Then, 
+
+πt|z is differentiable and its score is given by: 
+
+∇x log πt|z (x) = 
+
+h
+
+JFt|z
+
+
+
+F −1 
+
+> t|z
+
+(x)
+
+i −⊤ 
+
+∇ log π
+
+
+
+F −1 
+
+> t|z
+
+(x)
+
+
+
+− ∇ x log det J Ft|z (x) . (51) 
+
+Proof. From the result of the previous Lemma, the density πt|z is given by: 
+
+πt|z (x) = π
+
+
+
+F −1 
+
+> t|z
+
+(x)
+
+
+
+det J Ft|z
+
+
+
+F −1 
+
+> t|z
+
+(x)
+
+ −1
+
+. (52) Taking the logarithm of both sides, we obtain: 
+
+log πt|z (x) = log π
+
+
+
+F −1 
+
+> t|z
+
+(x)
+
+
+
+− log det J Ft|z
+
+
+
+F −1 
+
+> t|z
+
+(x)
+
+
+
+. (53) We now compute the gradient with respect to x, denoted by ∇x. Applying the gradient operator to the equation gives: 
+
+∇x log πt|z (x) = ∇x
+
+h
+
+log π
+
+
+
+F −1 
+
+> t|z
+
+(x)
+
+i 
+
+− ∇ x
+
+h
+
+log det J Ft|z
+
+
+
+F −1 
+
+> t|z
+
+(x)
+
+ i 
+
+. (54) All we need to do is to develop the right-hand side. Let y = F −1 
+
+> t|z
+
+(x). By the chain rule: 
+
+∇x
+
+h
+
+log π
+
+
+
+F −1 
+
+> t|z
+
+(x)
+
+i 
+
+=
+
+
+
+JF −1 
+
+> t|z
+
+(x)
+
+⊤
+
+∇y log π(y) y=F −1 
+
+> t|z(x)
+
+. (55) The Inverse Function Theorem yields: 
+
+JF −1 
+
+> t|z
+
+(x) = 
+
+h
+
+JFt|z
+
+
+
+F −1 
+
+> t|z
+
+(x)
+
+i −1
+
+. (56) Substituting this back into the gradient expression and using the property (A−1)⊤ = A−⊤ :
+
+∇x
+
+h
+
+log π
+
+
+
+F −1 
+
+> t|z
+
+(x)
+
+i 
+
+=
+
+h
+
+JFt|z
+
+
+
+F −1 
+
+> t|z
+
+(x)
+
+i −⊤ 
+
+∇ log π
+
+
+
+F −1 
+
+> t|z
+
+(x)
+
+
+
+. (57) 17 Conditional Diffusion Sampling 
+
+Proposition D.4 (Continuity and FPK Equations) . Assume that F is C1 in t and C2 in x. Let ut|z : X → X be defined by: 
+
+ut|z (x) = 
+
+ ∂F t|z
+
+∂t 
+
+ 
+
+F −1 
+
+> t|z
+
+(x)
+
+
+
+. (58) 
+
+1. The density πt|z satisfies the following continuity equation: 
+
+∂∂t πt|z = − div  πt|z ut|z
+
+ , (59) 
+
+2. Furthermore, πt|z satisfies the following FPK equation: 
+
+∂∂t πt|z = − div  πt|z at|z
+
+ + σ2
+
+> t
+
+2 ∆πt|z , (60) 
+
+where at|z = ut|z + σ2 
+
+> t
+> 2
+
+∇ log πt|z .Proof. 
+
+1. First, we observe that, as a consequence of change of variables formula, the following identity holds for any y ∈ X :
+
+πt|z
+
+ Ft|z (y) Jt(y) = π(y), (61) where Jt(y) = det J Ft|z (y). We differentiate with respect to t:
+
+ ∂∂t 
+
+ πt|z ◦ Ft|z
+
+ (y)
+
+
+
+Jt(y) + πt|z
+
+ Ft|z (y)  ∂∂t Jt(y)
+
+
+
+= 0 . (62) We analyze the first term. Applying the chain rule: 
+
+∂∂t 
+
+ πt|z ◦ Ft|z
+
+ (y) = ∂π t|z
+
+∂t 
+
+ Ft|z (y) + ∇πt|z
+
+ Ft|z (y) · ut|z
+
+ Ft|z (y) , (63) where we have used ∂F t|z 
+
+> ∂t
+
+(y) = ut|z (Ft|z (y)) . For the second term, we use Jacobi’s formula for the derivative of a determinant (Petersen et al., 2008): 
+
+∂∂t det( At) = det( At) tr 
+
+
+
+A−1
+
+> t
+
+∂∂t At
+
+
+
+(64) Taking At = J Ft|z , we obtain: 
+
+∂∂t Jt(y) = Jt(y) div  ut|z
+
+ Ft|z (y) . (65) Substituting these into Eq. 62, and observing that Jt(y)̸ = 0 , we obtain: 
+
+ ∂π t|z
+
+∂t 
+
+ Ft|z (y) + ∇πt|z
+
+ Ft|z (y) · ut|z
+
+ Ft|z (y)
+
++ πt|z
+
+ Ft|z (y) div  ut|z
+
+ Ft|z (y) = 0 . (66) Now, let x ∈ X , and y = F −1 
+
+> t|z
+
+(x). The above equation becomes: 
+
+ ∂π t|z
+
+∂t (x) + ∇πt|z (x) · ut|z (x)
+
+
+
++ πt|z (x) div  ut|z (x) = 0 . (67) Using the identity div( πu ) = ∇π · u + π div( u), we conclude: 
+
+∂π t|z
+
+∂t (x) + div  πt|z ut|z
+
+ (x) = 0 . (68) 18 Conditional Diffusion Sampling 
+
+2. We start from the continuity equation derived above and add and subtract the term σ2 
+
+> t
+> 2
+
+∆πt|z to the right-hand side: 
+
+∂π t|z
+
+∂t = − div  πt|z ut|z
+
+ − σ2
+
+> t
+
+2 ∆πt|z + σ2
+
+> t
+
+2 ∆πt|z . (69) Using ∆π = div( ∇π), we obtain: 
+
+∂π t|z
+
+∂t = − div 
+
+
+
+πt|z ut|z + σ2
+
+> t
+
+2 ∇πt|z
+
+
+
++ σ2
+
+> t
+
+2 ∆πt|z . (70) Next, we use ∇πt|z = πt|z ∇ log πt|z to rewrite the term inside the divergence: 
+
+πt|z ut|z + σ2
+
+> t
+
+2 ∇πt|z = πt|z
+
+
+
+ut|z + σ2
+
+> t
+
+2 ∇ log πt|z
+
+
+
+, (71) which yields the desired equality by substituting the definition of the drift at|z = ut|z + σ2 
+
+> t
+> 2
+
+∇ log πt|z .
+
+D.2. Markov Kernels and Bijections Markov Kernels. We follow the exposition by Ollivier (2009). Let (X , d ) be a complete separable metric space equipped with its Borel σ-algebra B(X ). We denote by P(X ) the set of probability measures on X .A Markov transition kernel is a map K : X × B (X ) → [0 , 1] satisfying: 1. For every x ∈ X , the map A 7 → K(x, A ) is a probability measure on X .2. For every A ∈ B (X ), the map x 7 → K(x, A ) is measurable. We define the action of the kernel K on a measure μ ∈ P (X ) (from the left) as the measure K(μ) given by: 
+
+[K(μ)]( A) = 
+
+Z
+
+> X
+
+K(x, A ) d μ(x), for all A ∈ B (X ). (72) We define the n-step transition kernel Kn recursively by K1 = K and Kn(x, A ) = R 
+
+> X
+
+K(y, A )Kn−1(x, dy). Consistent with the operator notation, Kn(μ) denotes the measure obtained by applying the kernel n times. A probability measure ν is said to be invariant with respect to K if K(ν) = ν.
+
+Wasserstein Distance. For any two probability measures μ, ν ∈ P (X ), the L1-Wasserstein distance W1(μ, ν ) is defined by 
+
+W1(μ, ν ) = inf 
+
+> π∈Π( μ,ν )
+
+Z
+
+> X ×X
+
+d(x, y ) d π(x, y ), (73) where Π( μ, ν ) is the set of all couplings of μ and ν (i.e., measures on X × X with marginals μ and ν). 
+
+Proposition D.5 (Markov Kernels and Bi-Lipschitz Bijections) . Let K be a Markov transition kernel invariant with respect to a probability measure ν. Let F : X → X be a bijection such that both F and F −1 are Lipschitz continuous. We denote the Lipschitz constants of F and F −1 by LF and LF −1 , respectively Define the pushforward kernel KF by: 
+
+KF (ˆ x, ˆA) = K
+
+
+
+F −1(ˆ x), F −1( ˆA)
+
+
+
+. (74) 
+
+Let νF = F #ν be the pushforward of the invariant measure. Let z ∈ X be an arbitrary starting point, and let x0 = F −1(z)
+
+be its preimage in the original space. The following properties hold: 
+
+19 Conditional Diffusion Sampling 
+
+1. (Invariant measure) The pushforward kernel KF is invariant with respect to νF .2. (Algebraic Iteration) For any measure μ and n ≥ 1:
+
+KnF (μ) = F #  Kn  F −1#μ . (75) 
+
+3. (Wasserstein Lipschitz Bound) For any two measures μ1, μ 2:
+
+W1 (F #μ1, F #μ2) ≤ LF W1 (μ1, μ 2) . (76) 
+
+4. (Kernel Wasserstein Relation) 
+
+W1 (KnF (δz ) , ν F ) ≤ LF W1 (Kn (δx0 ) , ν ) . (77) 
+
+5. (Convergence Bounds) If there exists ρ ∈ (0 , 1) such that W1(Kn(δx), ν ) ≤ ρnW1(δx, ν ) for all x, then: 
+
+W1 (KnF (δz ) , ν F ) ≤ LF ρn W1 (δx0 , ν ) , (78) 
+
+W1 (KnF (δz ) , ν F ) ≤ LF LF −1 ρn W1 (δz , ν F ) . (79) 
+
+Proof. We prove each item separately: 1. (Invariant measure) We first verify that KF is invariant with respect to νF .
+
+KF (νF ) ( ˆA) = 
+
+Z
+
+KF
+
+
+
+ˆx, ˆA
+
+
+
+νF (dˆ x) = 
+
+Z
+
+K
+
+
+
+F −1 (ˆ x) , F −1  ˆA
+
+ 
+
+(F #ν) (dˆ x) (i) 
+
+= (80) 
+
+> (i)
+
+=
+
+Z
+
+K
+
+
+
+x, F −1  ˆA
+
+ 
+
+ν(d x) (ii) 
+
+= ν
+
+
+
+F −1  ˆA
+
+ 
+
+= ( F #ν)
+
+ ˆA
+
+
+
+= νF
+
+ ˆA
+
+
+
+, (81) where (i) is due to the change of variables theorem ( ˆx = F (x)), and (ii) is due to K being invariant with respect to ν.2. (Algebraic Iteration) We prove this by induction. For n = 1 , observe that: 
+
+(KF (μ)) 
+
+ ˆA
+
+
+
+=
+
+Z
+
+KF
+
+
+
+ˆx, ˆA
+
+
+
+μ (dˆ x) = 
+
+Z
+
+K
+
+
+
+F −1 (ˆ x) , F −1  ˆA
+
+ 
+
+μ (dˆ x) (i) 
+
+=
+
+> (i)
+
+=
+
+Z
+
+K
+
+
+
+x, F −1  ˆA
+
+  F −1#μ (d x) = K  F −1#μ 
+
+F −1  ˆA
+
+ 
+
+==  F #  K  F −1#μ  ˆA
+
+
+
+,
+
+where (i) follows from the change of variables. Suppose it is true for n ≥ 1. Then: 
+
+K(n+1)  
+
+> F
+
+(μ) = KF
+
+
+
+K(n) 
+
+> F
+
+(μ)
+
+
+
+= KF
+
+
+
+F #K(n)  F −1#μ
+
+== F #
+
+
+
+K
+
+
+
+F −1#F #K(n)  F −1#μ 
+
+== F #
+
+
+
+K(n+1)  F −1#μ
+
+.
+
+3. (Wasserstein Lipschitz Bound) Let γ ∈ Γ ( μ1, μ 2) be an optimal coupling for W1(μ1, μ 2). Define the pushforward coupling ˆγ = ( F, F ) # γ. We first confirm that ˆγ ∈ Γ ( F #μ1, F #μ2):
+
+ˆγ
+
+
+
+Rd × ˆA
+
+
+
+= γ
+
+
+
+Rd × F −1  ˆA
+
+ 
+
+= μ2
+
+
+
+F −1  ˆA
+
+ 
+
+= ( F #μ2)
+
+ ˆA
+
+
+
+,
+
+ˆγ
+
+ ˆA × Rd
+
+= γ
+
+
+
+F −1  ˆA
+
+
+
+× Rd
+
+= μ1
+
+
+
+F −1  ˆA
+
+ 
+
+= ( F #μ1)
+
+ ˆA
+
+
+
+.
+
+Next, we bound the transport cost using the Lipschitz property of F :
+
+W1(F #μ1, F #μ2) ≤
+
+Z
+
+∥ˆx − ˆy∥ ˆγ (dˆ x, dˆ y) = 
+
+Z
+
+∥F (x) − F (y)∥ γ (d x, dy)
+
+≤
+
+Z
+
+LF ∥x − y∥ γ (d x, dy) = LF W1 (μ1, μ 2) .
+
+20 Conditional Diffusion Sampling 
+
+4. (Kernel Wasserstein Relation) We apply the previous two results. Using Property 1 with μ = δz :
+
+KnF (δz ) = F #  Kn(F −1#δz ) = F # ( Kn(δx0 )) , (82) where x0 = F −1(z). Also recall νF = F #ν. Now apply Property 2 with μ1 = Kn(δx0 ) and μ2 = ν:
+
+W1 (KnF (δz ) , ν F ) = W1 (F #Kn(δx0 ), F #ν)
+
+≤ LF W1 (Kn(δx0 ), ν ) .
+
+5. (Convergence Bounds) Assume the base kernel satisfies W1(Kn(δx), ν ) ≤ ρnW1(δx, ν ). Substituting this into the result from Property 3: 
+
+W1 (KnF (δz ) , ν F ) ≤ LF ρnW1 (δx0 , ν ) . (83) To obtain the second bound, we need to relate W1(δx0 , ν ) back to νF . Note that x0 = F −1(z) and ν = F −1#νF .Applying the Lipschitz bound for the inverse map F −1 (analogous to Property 2): 
+
+W1(δx0 , ν ) = W1(F −1#δz , F −1#νF ) ≤ LF −1 W1(δz , ν F ). (84) Combining these inequalities yields: 
+
+W1 (KnF (δz ) , ν F ) ≤ LF LF −1 ρnW1(δz , ν F ). (85) 
+
+Corollary D.6 (Markov Kernels and Linear Interpolants) . Let X = RD . Let K be a Markov transition kernel invariant with respect to a probability measure ν. Let Ft|z (x) = (1 − t)z + tx for t ∈ (0 , 1] and z ∈ X .Define the pushforward kernel Kt|z by: 
+
+Kt|z (ˆ x, ˆA) = K
+
+
+
+F −1 
+
+> t|z
+
+(ˆ x), F −1 
+
+> t|z
+
+( ˆA)
+
+
+
+. (86) 
+
+The following properties hold: 1. (Invariant measure) The pushforward kernel Kt|z is invariant with respect to νt|z .2. (Algebraic Iteration) For any measure μ and n ≥ 1:
+
+Knt|z (μ) = Ft|z #
+
+
+
+Kn 
+
+F −1 
+
+> t|z
+
+#μ
+
+ 
+
+. (87) 
+
+3. (Wasserstein Equality) For any two measures μ1, μ 2:
+
+W1
+
+ Ft|z #μ1, F t|z #μ2
+
+ = t W 1 (μ1, μ 2) . (88) 
+
+4. (Kernel Wasserstein Equality) Since F −1 
+
+> t|z
+
+(z) = z, the bound becomes an equality: 
+
+W1
+
+
+
+Knt|z (δz ) , ν t|z
+
+
+
+= t W 1 (Kn (δz ) , ν ) . (89) 
+
+5. (Convergence Bounds) If W1(Kn(δz ), ν ) ≤ ρnW1(δz , ν ), then: 
+
+W1
+
+
+
+Knt|z (δz ) , ν t|z
+
+
+
+≤ t ρ n W1 (δz , ν ) , (90) 
+
+W1
+
+
+
+Knt|z (δz ) , ν t|z
+
+
+
+≤ ρn W1
+
+ δz , ν t|z
+
+ . (91) 
+
+Proof. Results are followed by applying Proposition 1 to the specific linear bijection Ft|z (x) = (1 − t)z + tx . Note that: 21 Conditional Diffusion Sampling 
+
+• (Lipschitz Constants) Since Ft|z is a homothety with scaling factor t, we have ∥Ft|z (x) − Ft|z (y)∥ = t∥x − y∥ and 
+
+∥F −1 
+
+> t|z
+
+(x) − F −1 
+
+> t|z
+
+(y)∥ = t−1∥x − y∥. Thus, LF = t and LF −1 = t−1.• (Fixed Point) Direct evaluation shows Ft|z (z) = z. Thus, the preimage of the starting point is x0 = F −1 
+
+> t|z
+
+(z) = z.Properties 1 and 2 are independent of the specific properties of the map. Property 5 follows by plugging in the values of LF
+
+and LF −1 .3. (Wasserstein Scaling) Proposition 1 (Property 3) provides the upper bound: 
+
+W1
+
+ Ft|z #μ1, F t|z #μ2
+
+ ≤ tW 1 (μ1, μ 2) . (92) To prove equality, we apply the same general bound to the inverse map F −1 
+
+> t|z
+
+acting on the measures ν1 = Ft|z #μ1 and 
+
+ν2 = Ft|z #μ2:
+
+W1 (μ1, μ 2) = W1
+
+
+
+F −1 
+
+> t|z
+
+#ν1, F −1 
+
+> t|z
+
+#ν2
+
+
+
+≤ t−1W1 (ν1, ν 2) . (93) Multiplying by t yields tW 1 (μ1, μ 2) ≤ W1
+
+ Ft|z #μ1, F t|z #μ2
+
+. Combining the upper and lower bounds confirms the equality: 
+
+W1
+
+ Ft|z #μ1, F t|z #μ2
+
+ = tW 1 (μ1, μ 2) . (94) 4. (Kernel Wasserstein Relation) We start with the result from the previous property using μ = δz :
+
+Knt|z (δz ) = Ft|z #
+
+
+
+Kn(F −1 
+
+> t|z
+
+#δz )
+
+
+
+. (95) Since z is a fixed point ( F −1 
+
+> t|z
+
+(z) = z), this simplifies to Ft|z #( Kn(δz )) . Additionally, νt|z = Ft|z #ν. Applying the exact scaling law derived in Item 2 with μ1 = Kn(δz ) and μ2 = ν:
+
+W1
+
+
+
+Knt|z (δz ), ν t|z
+
+
+
+= W1
+
+ Ft|z #Kn(δz ), F t|z #ν = tW 1 (Kn(δz ), ν ) . (96) 
+
+## E. Sampling Tasks 
+
+In this section, we provide more details about the tasks used in our experimental section. A summary of these tasks can be found in Tab. 1. 
+
+E.1. Gaussian mixture (GM) 
+
+This task is inspired by the 2-dimensional Gaussian mixture target first used by Midgley et al. (2023). We consider four target distributions of increasing complexity and dimensionality: GM-2, GMNU-2, GM-16, and GMNU-16. All targets are Gaussian mixture models; the first two are illustrated in Fig. 8. The notation GMNU denotes non-uniform mixture weights, meaning that different components carry unequal probability mass, while the suffix indicates the dimensionality (D = 2 or D = 16 ). As dimensionality increases, generating high-quality samples becomes more challenging. Similarly, the non-uniform setting is expected to be harder, since a successful sampler must accurately capture the relative mass of each mode. 
+
+E.2. Lennard-Jones (LJ) 
+
+We consider the Lennard-Jones (LJ) potential (Jones, 1924), a standard model for solid-state systems and rare-gas clusters. The potential energy for a system of N particles is defined as: 
+
+E(x1, . . . , x N ) = X
+
+> 1≤i<j ≤N
+
+4ϵ
+
+" σrij 
+
+12 
+
+−
+
+ σrij 
+
+6#
+
+, (97) where xn ∈ R3, rij = ∥xi − xj ∥2 is the Euclidean distance between particles i and j, and ϵ > 0 and σ > 0 are physical constants. Following prior work (Klein et al., 2023), we consider two Boltzmann distributions induced by this potential: LJ-13 and LJ-55, corresponding to systems with 13 and 55 particles, and dimensionalities D = 39 and D = 155 , respectively. To assess the quality of the generated samples, we use the test set provided by (Klein et al., 2023) as ground-truth samples. 22 Conditional Diffusion Sampling     
+
+> (a) GM-2 (b) GMNU-2
+> Figure 8. GM task in two dimensions.
+
+E.3. Alanine Dipeptide (ALDP) 
+
+We consider the alanine dipeptide molecule in vacuum at T = 300 K , a standard benchmark for evaluating sampling methods (Smith, 1999). The system comprises 22 atoms, corresponding to a D = 66 -dimensional configuration space, and the target is the Boltzmann distribution induced by the molecular force field. Since potential evaluations are computationally expensive, this setting highlights the need for samplers that achieve high sample quality with few density evaluations. Ground truth samples are generated using OpenMM molecular dynamics simulations following the setup of Midgley et al. (2023). 
+
+Ramachandran Histograms. To evaluate the quality of the generated samples, we project the 66-dimensional configuration space onto the two principal dihedral angles, ϕ and ψ (Midgley et al., 2023). These projection is done using the mdtraj 
+
+package (McGibbon et al., 2015). This results in a 2D histogram, known as a Ramachandran plot, which provides a visually intuitive and physically meaningful representation of the molecule’s conformational states. Following previous work (No ´eet al., 2019; Midgley et al., 2023; Rissanen et al., 2025), we use these plots to identify whether each sampler effectively navigates these barriers to achieve a global exploration of the conformational space compared to the MD ground truth. 
+
+Chirality. Alanine dipeptide is a chiral molecule, meaning it can exist in two forms: the L-form and the D-form (Midgley et al., 2023). While the D-form is found in synthetically created compounds, the L-form appears almost exclusively in nature. Consequently, the literature focuses predominantly on the L-form (Smith, 1999). To restrict our experiments to this biologically relevant state, we filter out D-forms by adding a penalization term to the potential energy surface. This term assigns a high energy penalty to D-configurations while remaining zero for L-configurations. Formally, this term is defined as the signed volume, Ω, of the parallelepiped spanned by the vectors connecting the central alpha-carbon (C α) to its neighbors. This is defined by the scalar triple product: 
+
+Ω = ( rN − rCα ) · (rC − rCα ) × (rCβ − rCα ) , (98) where rX represents the position vector of atom X ∈ { N, C, Cβ , Cα}. The sign of Ω determines the chirality, allowing us to penalize the system when it transitions into the D-region. 
+
+E.4. Bayesian Neural Network (BNN) 
+
+We consider the problem of sampling from the posterior distribution over the parameters of a Bayesian neural network, which is known to be complex and highly multimodal (Neal, 2012; Izmailov et al., 2021). Such samples are required to accurately compute posterior expectations and to quantify predictive uncertainty. Evaluating the target density involves a forward pass through the network, while computing the score of the log density requires a backward pass, both of which scale with the number of parameters. This makes it crucial to minimize the number of density evaluations needed to obtain high-quality samples. 
+
+## F. Evaluation Metrics 
+
+To evaluate performance, we consider a diverse set of metrics: Maximum Mean Discrepancy (MMD), Total Variation distance, the Wasserstein-2 distance ( W2), and the relative Mean Absolute Error (MAE). In addition, we report two task-specific metrics: the Ramachandran KL divergence for the ALDP task, and the Test Negative Log Likelihood (Test NLL) for the BNN task. Aggregate performance is quantified by the Mean Hypervolume Ratio (HVR) (Zitzler et al., 2003), computed 23 Conditional Diffusion Sampling 
+
+on normalized Pareto fronts to ensure comparability across objectives of varying scales. Next, we describe these metrics. 
+
+Maximum Mean Discrepancy (MMD). We use the definition of MMD given by Gretton et al. (2012). We compute MMD on the histograms of negative log-densities of the samples. Given two sets of samples X = {x1, . . . , x n} and 
+
+Y = {y1, . . . , y m}, the squared MMD estimate is defined as: 
+
+\MMD 2
+
+(X, Y ) = 1
+
+n(n − 1) 
+
+X
+
+> i̸=j
+
+k(xi, x j ) − 2
+
+nm 
+
+X
+
+> i,j
+
+k(xi, y j ) + 1
+
+m(m − 1) 
+
+X
+
+> i̸=j
+
+k(yi, y j ) (99) where k(·, ·) is a positive definite kernel. In this work, we use the Gaussian kernel k(x, y ) = exp 
+
+
+
+− ∥x−y∥2
+
+> 2σ2
+
+
+
+.
+
+Total Variation (TV). We approximate the Total Variation distance using the discretized histograms of the negative log-densities. Let HP and HQ be the normalized histogram vectors (probability mass functions) for the true and generated data respectively, where H(i) represents the probability mass in the i-th bin. The TV distance is computed as: TV (HP , H Q) = 12
+
+X
+
+> i
+
+|HP (i) − HQ(i)| (100) 
+
+Wasserstein-2 Distance ( W2). The Wasserstein-2 distance measures the cost of transporting the generated distribution to the target distribution. In practice, we compute W2 using the Python Optimal Transport package (Flamary et al., 2021). For the Lennard-Jones (LJ) task, the metric d(x, y ) must account for rotational and translational symmetries. Following previous work (Rissanen et al., 2025), we incorporate the Kabsch algorithm to ensure equivariance. The distance between two configurations x and y is defined as the root-mean-square deviation (RMSD) after optimal superposition: 
+
+dKabsch (x, y ) = min  
+
+> R∈SO (3) ,t ∈R3
+
+∥Rx + t − y∥2 (101) 
+
+Relative Mean Absolute Error (MAE). The relative MAE evaluates the accuracy of the estimated expectation of a scalar observable f (x). We use the same quadratic observable as in Midgley et al. (2023); Chen et al. (2024). The relative error is given by: RelMAE = |Ex∼ˆν [f (x)] − Ex∼ν [f (x)] ||Ex∼ν [f (x)] | (102) 
+
+Ramachandran Kullback–Leibler Divergence (Ramachandran KL). For the ALDP task, we assess the structural fidelity by comparing the marginal distributions of the dihedral angles ϕ and ψ. We compute the Kullback–Leibler (KL) divergence between discretized Ramachandran histograms of the ground-truth and generated samples. See App. E for more details about the Ramachandran histograms. 
+
+Ramachandran Root Mean Squared Error (Ramachandran RMSE). To complement the KL divergence, we evaluate the thermodynamic landscapes through the Free Energy Surface (FES) obtained from the Ramachandran histograms. We quantify the discrepancy between the ground-truth and generated FES using the Root Mean Square Error (RMSE). See App. E for details about the Ramachandran histograms. 
+
+Test Negative Log Likelihood (Test NLL). For the BNN task, ground-truth samples from the posterior are unavailable, making the previous metrics inapplicable. Instead, we evaluate models using the average Negative Log Likelihood (NLL) on a held-out test set. For each posterior sample (corresponding to a set of network weights), we compute the test NLL and then report the average across samples. 
+
+Hypervolume Ratio (HVR). To quantitatively assess the quality of the Pareto fronts across tasks with varying objective scales, we employ the Hypervolume (HV) indicator (Zitzler et al., 2003). The HV indicator measures the volume of the objective space that is dominated by a set of non-dominated solutions, bounded by a reference point. It is widely regarded as the gold standard in multi-objective optimization because it is strictly monotonic with respect to Pareto dominance. This means that a set of solutions that improves upon another in terms of convergence or diversity will strictly yield a higher hypervolume. Since the metrics in our set of tasks operate on different scales, raw hypervolume scores cannot be aggregated directly. To enable a fair cross-task comparison, we compute the Mean Hypervolume Ratio (HVR) following standard benchmarking 24 Conditional Diffusion Sampling 
+
+protocols (Zitzler et al., 2003). For each target distribution and evaluation metric, we employ the following procedure to compute the HVR: 1. Normalization: We identify the global minimum and maximum objective values across all methods and all evaluations. The objective vectors for all methods are then normalized to the unit square [0 , 1] 2 via linear rescaling. 2. Reference Front Construction: We construct a best known Pareto front for each task by pooling the solutions from all methods and filtering for the non-dominated set. The reference hypervolume, HV ref , is computed based on this combined front using a reference point of (1 .1, 1.1) in the normalized space to ensure all boundary solutions are captured. 3. Ratio Calculation: The HVR for a specific method is defined as the ratio of its hypervolume to the reference hypervolume: HVR (method ) = HV (method )
+
+HV ref 
+
+. (103) An HVR of 1.0 indicates that a method has successfully recovered the entire best-known Pareto front, while lower values indicate a failure to converge or a lack of diversity in the solution set. To obtain the Mean HVR of a method, we average the HVR corresponding to that method over the selected metrics and targets. 
+
+## G. Experimental Setup 
+
+In this section, we describe the implementation details and hyperparameter configuration of the methods used in our experiments. We also explain how to obtain the Pareto fronts depicted in Fig. 6 and App. H. 
+
+Implementation. All methods and target distributions are implemented in PyTorch, closely following their original formulations. The code used in our experiments has been uploaded as supplementary material. For NRPT, we extend the implementation by Rissanen et al. (2025), which is available at https://github.com/ cambridge-mlg/Progressive-Tempering-Sampler-with-Diffusion . For OASMC, we adapt to Py-Torch the pseudo-code provided by Syed et al. (2024). For DiGS, we rely on the implementation available at the official repository: https://github.com/Wenlin-Chen/DiGS . The implementations of MALA and HMC are standard, and we therefore use conventional versions of these algorithms. In all cases, these implementations have been refined to maximize performance while minimizing density evaluations. The implementation of CDS closely follows Alg. 1. Finally, all samplers are implemented to prioritize computational efficiency by minimizing target density evaluations. To achieve this, each sampler caches its current state, comprising the sample coordinates x, the log unnormalized density 
+
+log π(x), and the score ∇ log π(x). This caching mechanism prevents redundant gradient and density computations during internal steps. 
+
+Methods, Hyperparameters and Configuration. In this work, we consider the following methods: Non-Reversible PT (NRPT) (Syed et al., 2022), Optimized Annealed SMC (OASMC) (Syed et al., 2024), Diffusive Gibbs Sampling (DiGS) (Chen et al., 2024), Metropolis–Adjusted Langevin Algorithm (MALA), Hamiltonian Monte Carlo (HMC), No-U-Turn Sampler (NUTS, Hoffman et al. (2014)), Stein Variational Gradient Descent (SVGD, Liu & Wang (2016)), and the Metropolis Adjusted Microcanonical Sampler (MAMS, Robnik et al. (2025)). To ensure a fair evaluation, we explore multiple hyperparameter values for each method and select the optimal configurations via grid search. Several settings are shared across the evaluated methods. For the exploration (or denoising) kernels, all methods utilize the Metropolis-Adjusted Langevin Algorithm (MALA) across all tasks, with the exception of the ALDP task, which utilizes Hamiltonian Monte Carlo (HMC). To ensure numerical stability, we initialize a task-specific base step size that is consistent across all samplers: 0.1 for the GM task, 0.0001 for the LJ task, 0.000001 for the ALDP task, and 0.00001 for the BNN task. From this base initialization, all methods employ an adaptive step size: following each step, the size is updated to target theoretically optimal acceptance rates of 0.574 for MALA and 0.651 for HMC (Roberts & Rosenthal, 1998; Beskos et al., 2013). Furthermore, for methods requiring a reference distribution (NRPT and OASMC), we use a flat distribution (i.e., a uniform distribution with infinite support) in the GM, LJ, and ALDP tasks, and the prior distribution in the BNN task. The method-specific hyperparameters are detailed below: 25 Conditional Diffusion Sampling 
+
+• CDS: The hyperparameters include the first-stage sampler configurations, the number of integration steps, the corrector kernel and steps, the initial time t0, and the noise schedule σt. We employ NRPT for the first stage, fixing its hyperparameters to near-optimal values obtained for the NRPT baseline. We note that these values were not explicitly jointly optimized for CDS, where the first stage targets a distribution closer to the reference than the standalone NRPT baseline (and thus we expect them to differ). For the integration phase, we consider {10 , 100 , 1000 } for the integration steps and tune t0 independently for each task ( t0 = 0 .01 for GM, t0 ∈ { 0.2, 0.3} for LJ, t0 ∈ { 0.1, 0.2} for ALDP, 
+
+t0 = 0 .1 for BNN). We utilize MALA as the corrector kernel, applying either 0 (no correction) or 1 corrector step. Finally, we employ a constant noise schedule, fixing σt to the same task-specific base step size shared across the other evaluated methods. • NRPT: The hyperparameters include the number of replicas and the annealing schedule. We select the number of replicas from the set {3, 5, 10 }. For the annealing schedule, we adopt a geometric schedule and tune the initial value, βmin , per task ( βmin ∈ { 0.001 , 0.01 } for GM, βmin ∈ { 0.7, 0.8} for LJ, βmin ∈ { 0.3, 0.5} for ALDP, 
+
+βmin ∈ { 0.7, 0.8} for BNN). Additionally, we consider the schedule optimization procedure proposed by (Syed et al., 2022). • OASMC: Hyperparameters include the number of particles, the resampling threshold, the resampling mechanism, and the annealing schedule. We consider {10 , 100 , 1000 } particles for all tasks. For the resampling mechanism, we used both multinomial and systematic resampling, and observed that the latter provides a stronger empirical performance (Smith, 2013). Resampling events are triggered whenever the effective sample size (ESS) proportion falls below a specified threshold, evaluating values in {0.5, 1.0}. Similar to NRPT, we utilize a geometric annealing schedule, tune 
+
+βmin per task, and apply the schedule optimization procedure introduced by (Syed et al., 2024). • DiGS: The key hyperparameters are the noise schedule, the number of denoising steps, and the number of noise levels. The noise schedule follows the one used in the original paper (Chen et al., 2024). It is determined by the parameters 
+
+αmin and αmax , for which we consider {0.1, 0.4} and {0.6, 0.9}, respectively. We consider {1, 4} for the number of denoising steps and {1, 5} for the number of noise levels. • HMC: In addition to the shared adaptive step size, we tune the number of leapfrog steps, considering the set {3, 5}
+
+across all tasks. • MALA: The sole hyperparameter is the step size, which relies entirely on the shared adaptive procedure described above. • NUTS: In addition to the shared adaptive step size, we tune the maximum tree depth (which bounds the trajectory length); we consider the set {3, 5, 8} for all tasks. • MAMS: Similar to HMC, we tune the number of integration steps, considering the set {3, 5} across all tasks. • SVGD: The key hyperparameters include the step size (learning rate) for the particle updates and the kernel configura-tion. We adopt the shared task-specific base step size used across the other evaluated methods, and employ a Radial Basis Function (RBF) kernel with its bandwidth determined via the median heuristic. 
+
+Initialization and Sample Generation. To ensure a fair comparison, all samplers share a common initialization scheme. First, we identify one mode of each target density, x∗ 
+
+> π
+
+= arg max x log π(x), using 1, 000 iterations of standard gradient descent to ensure convergence. All samplers are then initialized at x∗ 
+
+> π
+
+. For CDS, which requires initialization from a reference distribution z ∼ νref , we define νref = N (x∗ 
+
+> π
+
+, τ 2I) and set the starting point to the mean, z = x∗ 
+
+> π
+
+. We fix τ = 1 .0
+
+across all target densities. For each method, the total sample count is set to 10 4 for the GM and LJ tasks, 10 5 for the ALDP task, and 10 3 for the BNN task. To minimize sample autocorrelation, we employ a fully parallelized scheme where each sampler runs as many chains as the number of required samples. This is implemented efficiently in PyTorch using vectorized operations, generating a tensor of shape (num samples , D ).
+
+Pareto Fronts. To construct the Pareto fronts presented in this paper, for each dataset, we fix a set of computational budgets, measured in terms of the number of density evaluations. For each budget and each method, we run all hyperparameter configurations for a number of iterations chosen to match the prescribed budget. Each configuration is repeated three times to obtain uncertainty estimates. 26 Conditional Diffusion Sampling 10 4 10 1              
+
+> t0
+> 6
+> 8
+> Global Com. Barrier  GM-16
+> 10 210 110 0
+> t0
+> 0.4
+> 0.6
+> 0.8
+> Global Com. Barrier  LJ-13
+> 10 210 110 0
+> t0
+> 3.0
+> 3.2
+> 3.4
+> 3.6
+> Global Com. Barrier  ALDP
+> 10 210 0
+> t0
+> 2.60
+> 2.65
+> 2.70
+> Global Com. Barrier  BNN
+> Figure 9. Global Communication Barrier (GCB) as a function of t0. Across LJ-13, ALDP, and BNN, decreasing t0initially improves communication efficiency (lower GCB).
+
+Pareto fronts are then constructed using a bootstrap procedure adapted from (Grunert da Fonseca et al., 2001). For each method, we perform 50 bootstrap iterations; in each iteration, we resample the experimental replicates to estimate the mean computational cost and performance. We then identify the non-dominated configurations and represent the resulting frontier as a monotonic step function. Finally, we aggregate the bootstrapped frontiers to compute the median Pareto front, together with 5th–95th percentile confidence bands. 
+
+## H. Additional Experiments and Results. 
+
+H.1. Communication Efficiency Analysis. 
+
+We study the communication efficiency of PT when targeting the conditional distribution νt|z . Recall that the first stage of CDS samples from νt0|z for a fixed t0 > 0. As t → 0, νt|z concentrates to a Dirac mass at z (a sample from the reference distribution), suggesting that communication should improve for small t. To test this hypothesis, we run NRPT targeting 
+
+νt0|z across different values of t0, keeping all hyperparameters fixed except for t0.Two factors influence PT communication efficiency: the annealing schedule and the number of replicas. We optimize the annealing schedule for each run, and set the number of replicas to the ceiling of the GCB estimated from a pilot run, following (Syed et al., 2022). These choices effectively control for their impact, isolating the effect of t0 on communication efficiency. 
+
+Round Trips (RTs). RTs is the number of times a replica traverses between the reference and target distributions. It is usually used as the main measure to assess PT efficiency, as higher RTs indicate better mixing (Syed et al., 2022). As shown in Fig. 4, decreasing t0 from 1.0 generally increases RTs across all tasks, confirming that sampling νt0|z is more efficient than sampling ν directly. However, efficiency starts to drop as t0 → 0, where the distribution becomes excessively peaked, reducing replica overlap. As depicted in Fig. 3, this suggests an optimal range for t0: small enough so that the target overlaps with the reference, but high enough to avoid singularities. 
+
+Global Communication Barrier. In addition to Round Trips, we evaluate communication efficiency using the GCB (Syed et al., 2022). The GCB aggregates the rejection probabilities of swap proposals between adjacent replicas, providing a global measure of the difficulty of the annealing path. Lower GCB values indicate easier communication and higher overall efficiency. The GCB results are reported in Fig. 9. Consistent with the RT analysis, we observe that decreasing t generally leads to improved communication, as reflected by a decreasing GCB in the LJ-55, ALDP, and BNN tasks. This further supports the claim that the conditional distributions νt|z are easier to sample than the original target. 
+
+Sample Quality. Sample quality improves as t0 decreases from 1.0, reflecting the enhanced communication efficiency of PT in this regime. However, this trend reverses as t0 → 0: the target distribution becomes increasingly concentrated, reducing overlap between replicas and degrading mixing. As a result, sample quality deteriorates for very small t0, indicating the existence of an optimal intermediate range that balances overlap and numerical stability. 
+
+H.2. Initializing with a Different Sampler 
+
+We study the impact of the sampler used in Stage 1 of CDS. The objective of this stage is to draw samples from νt0|z for a fixed t0 > 0. In principle, any sampling procedure could be employed for this purpose. However, since νt0|z remains multimodal, we expect local MCMC methods (e.g., MALA or HMC) to exhibit poor mixing. In contrast, annealing-based 27 Conditional Diffusion Sampling 10 4 10 5
+
+> Density evaluations
+> 10 0
+> 10 1
+> W2
+
+GM-2  
+
+> 10 410 5
+> Density evaluations
+> 10 0
+> 10 1
+> W2
+
+GMNU-2   
+
+> 10 410 510 6
+> Density evaluations
+> 10 1
+> 2 × 10 1
+> W2
+
+GM-16   
+
+> 10 410 510 6
+> Density evaluations
+> 10 1
+> W2
+
+GMNU-16   
+
+> CDS w/ NRPT CDS w/ OASMC CDS w/ HMC
+
+Figure 10. Effect of the Stage 1 sampler on CDS performance. We compare NRPT, OASMC, and HMC while keeping Stage 2 (SDE integration) fixed. NRPT consistently outperforms OASMC, whereas HMC struggles to explore the multimodal distribution and exhibits significantly degraded performance. 10 4 10 5
+
+> Density evaluations
+> 10 0
+> 10 1
+> W2 (log scale)
+
+GM-2   
+
+> 10 410 510 6
+> Density evaluations
+> 10 1
+> 10 2
+> W2 (log scale)
+
+GM-16  
+
+> 10 410 5
+> Density evaluations
+> 0.8
+> 1.0
+> W2
+
+LJ-13   
+
+> 10 410 5
+> Density evaluations
+> 10 1
+> 10 0
+> 10 1
+> Test NLL (log scale)
+
+BNN     
+
+> CDS (ours) NUTS MAMS HMC SVGD
+
+Figure 11. Comparison of CDS against additional baselines (NUTS, SVGD, MAMS). CDS consistently outperforms all methods in GM and BNN, while in LJ, MAMS and NUTS perform best in the low-budget regime but are surpassed by CDS as the number of density evaluations increases. 
+
+methods (such as PT and SMC), which progressively bridge the reference and target distributions, are better suited to this setting, particularly because νt0|z approaches the reference distribution as t0 → 0.We compare CDS performance under different choices of sampler in Stage 1. Specifically, we consider NRPT, OASMC, and HMC, all tuned as described in App. G, while keeping the parameters of Stage 2 (SDE integration) fixed. The results, shown in Fig. 10, indicate that although OASMC is a competitive alternative, it is consistently outperformed by NRPT. In contrast, HMC performs poorly: it becomes trapped in local modes and fails to adequately explore the target distribution. 
+
+H.3. Additional Baselines 
+
+We compare the proposed CDS against additional baselines consisting of variants of the local samplers (MALA and HMC) considered in the main text. Specifically, we include the No-U-Turn Sampler (NUTS, Hoffman et al. (2014)), Stein Variational Gradient Descent (SVGD, Liu & Wang (2016)), and the Metropolis Adjusted Microcanonical Sampler (MAMS, Robnik et al. (2025)). Results are reported in Fig. 11. As NUTS and MAMS are extensions of HMC, we also include HMC for reference. In the GM task, CDS consistently outperforms all baselines. The competing methods exhibit behavior similar to HMC and MALA, becoming trapped in local modes and failing to mix effectively. In the LJ task, MAMS and NUTS achieve near-optimal performance with fewer than 10 4 density evaluations, outperforming both HMC and CDS in this low-budget regime. This is expected, as local samplers such as MALA and HMC are sufficient to accurately capture the target distribution in this setting. However, as the computational budget increases, CDS surpasses all methods and achieves the best overall performance. Finally, in the BNN task, CDS again delivers the strongest results. While the additional baselines improve upon HMC, they remain unable to match the performance of CDS. 28 Conditional Diffusion Sampling Ground Truth CDS (ours) NRPT OASMC DiGS HMC MALA 
+
+(a) GM-2 target. Ground Truth CDS (ours) NRPT OASMC DiGS HMC MALA 
+
+(b) GMNU-2 target. 
+
+Figure 12. Comparison of ground truth and generated samples for the Gaussian Mixture (GM) task. Each method uses a fixed budget of 2 · 10 3 density evaluations. 80 60 40 20 0        
+
+> Potential Energy
+> 0.000
+> 0.025
+> 0.050
+> 0.075
+> 0.100
+> Density
+> LJ-13
+> 400 350 300
+> Potential Energy
+> 0.00
+> 0.01
+> 0.02
+> 0.03
+> 0.04
+> Density
+> LJ-55
+> Ground Truth CDS (ours) NRPT OASMC DiGS HMC MALA
+
+Figure 13. Comparison of Lennard-Jones (LJ) potential energy histograms. All samplers use a fixed budget of 2 · 10 4 and 2 · 10 5
+
+density evaluations for the LJ-13 and LJ-55 targets, respectively. DiGS is omitted from the LJ55 plot as it produces a degenerate histogram. 
+
+H.4. Qualitative Analysis 
+
+In this section, we analyze the samples generated by each method across the different tasks. Our goal is to determine how quantitative performance differences translate into qualitative sample fidelity. 
+
+GM Task. For the GM task, we focus on the GM-2 and GMNU-2 targets, as their two-dimensional nature allows for direct visualization. As shown in Fig. 12, when methods are restricted to a limited budget of density evaluations, only the proposed CDS and DiGS successfully recover all modes. This aligns with the Pareto front results in Fig. 17, where CDS and DiGS demonstrated superior performance. 
+
+LJ Task. Energy histograms for the LJ systems are displayed in Fig. 13. We observe that CDS most accurately reproduces the target energy distribution, followed by NRPT and OASMC. Notably, for the LJ-55 target, only CDS and NRPT are able to accurately approximate the target distribution. 
+
+ALDP Task. Ramachandran histograms for the ALDP task are presented in Fig. 2. The ground truth samples reveal two distinct metastable states separated by a high-energy barrier. Both CDS (ours) and NRPT successfully recover these modes with accurate density allocations; however, NRPT slightly outperforms CDS in this specific instance. Conversely, OASMC and DiGS exhibit artifacts in high-energy transition regions, while local samplers (MALA and HMC) suffer from mode collapse, failing to traverse the energy barrier. 
+
+H.5. Ablation study 
+
+We analyze the impact of key hyperparameters on CDS performance: the computational budget allocation between phases, the number of integration steps, the use of corrector steps, and the choice of noise schedule. 29 Conditional Diffusion Sampling 0.0 0.5 
+
+> Proportion of PT steps
+> 50
+> 100
+> W2
+
+GM-16     
+
+> 0.0 0.5
+> Proportion of PT steps
+> 0.8
+> 0.9
+> 1.0
+> 1.1
+> W2
+> LJ-13
+> 0.0 0.5
+> Proportion of PT steps
+> 0
+> 5
+> 10
+> Ramachandran KL  ALDP
+> 0.25 0.50 0.75
+> Proportion of PT steps
+> 1.0
+> 1.5
+> Test NLL
+> BNN
+
+Figure 14. Impact of steps allocation on CDS performance . We evaluate the trade-off between Parallel Tempering (PT) and SDE integration by varying the proportion of total steps dedicated to the PT phase. 10 4 10 5
+
+> Density evaluations
+> 10 0
+> 10 1
+> W2 (log scale)
+
+GM-2  
+
+> 10 410 5
+> Density evaluations
+> 10 0
+> 10 1
+> W2 (log scale)
+
+GMNU-2   
+
+> 10 410 510 6
+> Density evaluations
+> 10 1
+> 10 2
+> W2 (log scale)
+
+GM-16   
+
+> 10 410 510 6
+> Density evaluations
+> 10 1
+> 10 2
+> W2 (log scale)
+
+GMNU-16   
+
+> Int. Steps: 10 Int. Steps: 100 Int. Steps: 1000
+
+Figure 15. Impact of integration steps on CDS performance. Under a limited evaluation budget, fewer integration steps are preferable as they allow more resources for exploration in the first stage. In contrast, with a larger budget, increasing the number of integration steps improves the accuracy of the transport to the target distribution. 
+
+Computational Budget Allocation Between Phases. We study the balance between the two stages of CDS to understand how to allocate computational resources effectively. To this end, we introduce a hyperparameter ρ, which controls the fraction of steps assigned to Stage 1. Given a total computational budget of N steps, we define: 
+
+NStage1 = ρN, NStage2 = (1 − ρ)N. (104) Thus, ρ determines the relative emphasis between the two stages of CDS, enabling a controlled analysis of their trade-off. We fix all other configurations and evaluate performance as a function of ρ across tasks, see Fig. 14. As expected, ρ = 0 
+
+(pure SDE integration) performs poorly, confirming that starting the integration at t = 0 leads to insufficient exploration of the target distribution. Increasing ρ consistently improves performance by incorporating more PT steps, which enhance global exploration. For the GM, LJ, and ALDP tasks, performance continues to improve as ρ increases, indicating that only a small number of integration steps are sufficient to transport samples effectively to the target distribution. In contrast, for the BNN task, overly large values of ρ degrade performance, as too few SDE integration steps hinder accurate transport to the target. 
+
+Integration Steps. From the previous analysis, we observe that allocating more steps to the first stage of CDS is beneficial. Next, we investigate deeper on how to choose the number of integration steps. As before, we fix all other configurations and evaluate performance as a function of the number of integration steps. Results are shown in Fig. 15, where we report Pareto fronts for different choices of this parameter. We observe that, under a limited density evaluation budget, it is more effective to use fewer integration steps, as this allows more steps to be devoted to exploration in the first stage. In contrast, when the budget is sufficiently large, allocating more integration steps becomes advantageous, improving the accuracy of the transport to the target distribution. Overall, our results highlight the need for a balanced allocation of computational resources: sufficient effort must be devoted to the PT stage to ensure effective global exploration, while retaining enough integration steps to accurately map samples to the target distribution. 
+
+Diffusion Noise and Corrector Steps. We study two closely related hyperparameters: the diffusion noise variance ( σ2 
+
+> t
+
+)30 Conditional Diffusion Sampling 10 4 10 5
+
+> Density evaluations
+> 10 0
+> 10 1
+> W2 (log scale)
+
+GM-2  
+
+> 10 410 5
+> Density evaluations
+> 10 0
+> 10 1
+> W2 (log scale)
+
+GMNU-2   
+
+> 10 410 510 6
+> Density evaluations
+> 10 1
+> 10 2
+> W2 (log scale)
+
+GM-16   
+
+> 10 410 510 6
+> Density evaluations
+> 10 1
+> 10 2
+> W2 (log scale)
+
+GMNU-16    
+
+> Corrector Steps: 0 Corrector Steps: 1 Corrector Steps: 0 Corrector Steps: 1
+> Noise Var: 0.1 Noise Var: 0.5
+
+Figure 16. Impact of corrector steps and noise variance on CDS performance. Corrector steps improve results only at low noise levels, while their impact becomes negligible as the diffusion variance increases. 
+
+and the use of corrector steps. Both affect the second stage of the method, in which the interpolation SDE is integrated. Corrector steps were originally introduced to mitigate errors arising from the numerical discretization of the SDE. In turn, the diffusion variance controls the weight of the score term in the SDE, and therefore modulates the strength of the guidance toward the target distribution. Importantly, the effectiveness of corrector steps depends on the choice of diffusion variance. In particular, smaller variance reduces the influence of the score term, which can lead to samples drifting away from the intermediate distribution at each integration step. We empirically verify this interaction by evaluating CDS across different configurations of these hyperparameters on the GM task. The results are shown in Fig. 16. We observe that corrector steps improve performance only when the diffusion variance is low. In contrast, for higher noise levels, introducing corrector steps does not yield any noticeable benefit. 31 Conditional Diffusion Sampling 
+
+H.6. Additional pareto fronts CDS (ours) NRPT OASMC DiGS HMC MALA 10 4 10 5
+
+Density evaluations 
+
+0.00 
+
+0.05 
+
+0.10 
+
+> MMD
+
+GM-2 
+
+10 4 10 5
+
+Density evaluations 
+
+0.050 
+
+0.075 
+
+0.100 
+
+> TVD
+
+GM-2 
+
+10 4 10 5
+
+Density evaluations 
+
+0.0 
+
+0.5 
+
+1.0 
+
+> Relative MAE
+
+GM-2 
+
+10 4 10 5
+
+Density evaluations 
+
+10 0
+
+10 1
+
+> W2 (log scale)
+
+GM-2 
+
+10 4 10 5
+
+Density evaluations 
+
+0.000 
+
+0.025 
+
+0.050 
+
+0.075 
+
+> MMD
+
+GMNU-2 
+
+10 4 10 5
+
+Density evaluations 
+
+0.04 
+
+0.06 
+
+0.08 
+
+> TVD
+
+GMNU-2 
+
+10 4 10 5
+
+Density evaluations 
+
+0.00 
+
+0.25 
+
+0.50 
+
+0.75 
+
+> Relative MAE
+
+GMNU-2 
+
+10 4 10 5
+
+Density evaluations 
+
+10 0
+
+10 1
+
+> W2 (log scale)
+
+GMNU-2 
+
+10 4 10 5 10 6
+
+Density evaluations 
+
+0.00 
+
+0.02 
+
+0.04 
+
+> MMD
+
+GM-16 
+
+10 4 10 5 10 6
+
+Density evaluations 
+
+0.025 
+
+0.050 
+
+0.075 
+
+0.100 
+
+> TVD
+
+GM-16 
+
+10 4 10 5 10 6
+
+Density evaluations 
+
+0.0 
+
+0.2 
+
+0.4 
+
+0.6 
+
+> Relative MAE
+
+GM-16 
+
+10 4 10 5 10 6
+
+Density evaluations 
+
+10 1
+
+10 2
+
+> W2 (log scale)
+
+GM-16 
+
+10 4 10 5 10 6
+
+Density evaluations 
+
+0.0 
+
+0.2 
+
+0.4 
+
+> MMD
+
+GMNU-16 
+
+10 4 10 5 10 6
+
+Density evaluations 
+
+0.2 
+
+0.4 
+
+> TVD
+
+GMNU-16 
+
+10 4 10 5 10 6
+
+Density evaluations 
+
+0.0 
+
+0.2 
+
+0.4 
+
+> Relative MAE
+
+GMNU-16 
+
+10 4 10 5 10 6
+
+Density evaluations 
+
+10 1
+
+10 2
+
+> W2 (log scale)
+
+GMNU-16 
+
+Figure 17. Pareto fronts for the Gaussian Mixture (GM) task across different evaluation metrics . Evolution of performance across different evaluation criteria (defined in App. F). Each curve represents the optimal trade-off between computational budget and sample quality. 
+
+32 Conditional Diffusion Sampling CDS (ours) NRPT OASMC DiGS HMC MALA 10 4 10 5
+
+Density evaluations 
+
+0.00 
+
+0.05 
+
+0.10 
+
+> MMD
+
+LJ-13 
+
+10 4 10 5
+
+Density evaluations 
+
+0.0 
+
+0.1 
+
+0.2 
+
+> TVD
+
+LJ-13 
+
+10 4 10 5
+
+Density evaluations 
+
+0.000 
+
+0.025 
+
+0.050 
+
+0.075 
+
+> Relative MAE
+
+LJ-13 
+
+10 4 10 5
+
+Density evaluations 
+
+0.8 
+
+0.9 
+
+1.0 
+
+1.1 
+
+> W2
+
+LJ-13 
+
+10 5 10 6
+
+Density evaluations 
+
+0.02 
+
+0.04 
+
+0.06 
+
+> MMD
+
+LJ-55 
+
+10 5 10 6
+
+Density evaluations 
+
+0.05 
+
+0.10 
+
+0.15 
+
+0.20 
+
+> TVD
+
+LJ-55 
+
+10 5 10 6
+
+Density evaluations 
+
+0.000 
+
+0.002 
+
+0.004 
+
+0.006 
+
+> Relative MAE
+
+LJ-55 
+
+10 5 10 6
+
+Density evaluations 
+
+1.8 
+
+1.9 
+
+2.0 
+
+> W2
+
+LJ-55 
+
+Figure 18. Pareto fronts for the Lennard-Jones (LJ) task across different evaluation metrics . Evolution of performance across different evaluation criteria (defined in App. F). Each curve represents the optimal trade-off between computational budget and sample quality. CDS (ours) NRPT OASMC DiGS HMC MALA 10 5 10 6
+
+Density evaluations 
+
+10 4
+
+10 2
+
+10 0
+
+> TVD (log scale)
+
+10 5 10 6
+
+Density evaluations 
+
+0.02 
+
+0.04 
+
+0.06 
+
+0.08 
+
+> Relative MAE
+
+10 5 10 6
+
+Density evaluations 
+
+10 1
+
+10 0
+
+10 1
+
+> Ramachandran KL
+> (log scale)
+
+10 5 10 6
+
+Density evaluations 
+
+10 0
+
+10 1
+
+> Ramachandran RMSE
+> (log scale)
+
+Figure 19. Pareto fronts for the Alanine Dipeptide (ALDP) task across different evaluation metrics . Evolution of performance across different evaluation criteria (defined in App. F). Each curve represents the optimal trade-off between computational budget and sample quality. 
+
+33

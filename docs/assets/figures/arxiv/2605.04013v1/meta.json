@@ -1,0 +1,126 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2605.04013v1/fig-001.webp",
+      "caption": "Figure 1. Overview of CDS. In the first stage, Parallel Tempering (PT) transforms initial samples z from the reference πref (orange) into samples from the initialization distribution πt0|z (blue). In the second stage, these samples are transported to the target distribution π (blue) by integrating the closed-form SDE in Eq. 15.",
+      "page": 1,
+      "index": 1,
+      "width": 495,
+      "height": 702
+    },
+    {
+      "url": "assets/figures/arxiv/2605.04013v1/fig-002.webp",
+      "caption": "Figure 15. Impact of integration steps on CDS performance. Under a limited evaluation budget, fewer integration steps are preferable as they allow more resources for exploration in the first stage. In contrast, with a larger budget, increasing the number of integration steps improves the accuracy of the transport to the target distribution.",
+      "page": 30,
+      "index": 2,
+      "width": 950,
+      "height": 228
+    },
+    {
+      "url": "assets/figures/arxiv/2605.04013v1/fig-003.webp",
+      "caption": "Figure 14. Impact of steps allocation on CDS performance. We evaluate the trade-off between Parallel Tempering (PT) and SDE integration by varying the proportion of total steps dedicated to the PT phase.",
+      "page": 30,
+      "index": 3,
+      "width": 943,
+      "height": 212
+    },
+    {
+      "url": "assets/figures/arxiv/2605.04013v1/fig-004.webp",
+      "caption": "Table 1. Sampling tasks considered in this work. See App. E for more details.",
+      "page": 7,
+      "index": 4,
+      "width": 430,
+      "height": 329
+    },
+    {
+      "url": "assets/figures/arxiv/2605.04013v1/fig-005.webp",
+      "caption": "Figure 12. Comparison of ground truth and generated samples for the Gaussian Mixture (GM) task. Each method uses a fixed budget of 2 · 103 density evaluations.",
+      "page": 29,
+      "index": 5,
+      "width": 958,
+      "height": 351
+    },
+    {
+      "url": "assets/figures/arxiv/2605.04013v1/fig-006.webp",
+      "caption": "Figure 13. Comparison of Lennard-Jones (LJ) potential energy histograms. All samplers use a fixed budget of 2 · 104 and 2 · 105 density evaluations for the LJ-13 and LJ-55 targets, respectively. DiGS is omitted from the LJ55 plot as it produces a degenerate histogram.",
+      "page": 29,
+      "index": 6,
+      "width": 590,
+      "height": 227
+    },
+    {
+      "url": "assets/figures/arxiv/2605.04013v1/fig-007.webp",
+      "caption": "Figure 19. Pareto fronts for the Alanine Dipeptide (ALDP) task across different evaluation metrics. Evolution of performance across different evaluation criteria (defined in App. F). Each curve represents the optimal trade-off between computational budget and sample quality.",
+      "page": 33,
+      "index": 7,
+      "width": 954,
+      "height": 251
+    },
+    {
+      "url": "assets/figures/arxiv/2605.04013v1/fig-008.webp",
+      "caption": "Figure 18. Pareto fronts for the Lennard-Jones (LJ) task across different evaluation metrics. Evolution of performance across different evaluation criteria (defined in App. F). Each curve represents the optimal trade-off between computational budget and sample quality.",
+      "page": 33,
+      "index": 8,
+      "width": 893,
+      "height": 488
+    },
+    {
+      "url": "assets/figures/arxiv/2605.04013v1/fig-009.webp",
+      "caption": "Figure 11. Comparison of CDS against additional baselines (NUTS, SVGD, MAMS). CDS consistently outperforms all methods in GM and BNN, while in LJ, MAMS and NUTS perform best in the low-budget regime but are surpassed by CDS as the number of density evaluations increases.",
+      "page": 28,
+      "index": 9,
+      "width": 950,
+      "height": 228
+    },
+    {
+      "url": "assets/figures/arxiv/2605.04013v1/fig-010.webp",
+      "caption": "Figure 10. Effect of the Stage 1 sampler on CDS performance. We compare NRPT, OASMC, and HMC while keeping Stage 2 (SDE integration) fixed. NRPT consistently outperforms OASMC, whereas HMC struggles to explore the multimodal distribution and exhibits significantly degraded performance.",
+      "page": 28,
+      "index": 10,
+      "width": 945,
+      "height": 228
+    },
+    {
+      "url": "assets/figures/arxiv/2605.04013v1/fig-011.webp",
+      "caption": "Figure 5. Comparison between SDE-based transport and the inverse interpolation map. We evaluate the effect of two strategies for transporting samples from νt0|z back to the target distribution ν. The SDE-based approach consistently achieves better performance across tasks.",
+      "page": 8,
+      "index": 11,
+      "width": 975,
+      "height": 454
+    },
+    {
+      "url": "assets/figures/arxiv/2605.04013v1/fig-012.webp",
+      "caption": "Figure 3. Density evolution and exact samples from πt|z . This plot illustrates the linear interpolant for a fixed z sampled fromN (0, I). As t→ 0, the target distribution (blue) increasingly concentrates inside the reference (orange).",
+      "page": 4,
+      "index": 12,
+      "width": 925,
+      "height": 208
+    },
+    {
+      "url": "assets/figures/arxiv/2605.04013v1/fig-013.webp",
+      "caption": "Figure 17. Pareto fronts for the Gaussian Mixture (GM) task across different evaluation metrics. Evolution of performance across different evaluation criteria (defined in App. F). Each curve represents the optimal trade-off between computational budget and sample quality.",
+      "page": 32,
+      "index": 13,
+      "width": 913,
+      "height": 948
+    },
+    {
+      "url": "assets/figures/arxiv/2605.04013v1/fig-014.webp",
+      "caption": "Figure 9. Global Communication Barrier (GCB) as a function of t0. Across LJ-13, ALDP, and BNN, decreasing t0 initially improves communication efficiency (lower GCB).",
+      "page": 27,
+      "index": 14,
+      "width": 899,
+      "height": 199
+    },
+    {
+      "url": "assets/figures/arxiv/2605.04013v1/fig-015.webp",
+      "caption": "Figure 16. Impact of corrector steps and noise variance on CDS performance. Corrector steps improve results only at low noise levels, while their impact becomes negligible as the diffusion variance increases.",
+      "page": 31,
+      "index": 15,
+      "width": 950,
+      "height": 258
+    }
+  ]
+}

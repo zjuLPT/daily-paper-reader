@@ -1,0 +1,54 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2605.09654v1/fig-001.webp",
+      "caption": "Table 3: Diffusion sampling hyperparameters for experiments on image datasets. Run times are based on a batch size of 64.",
+      "page": 25,
+      "index": 1,
+      "width": 1077,
+      "height": 542
+    },
+    {
+      "url": "assets/figures/arxiv/2605.09654v1/fig-002.webp",
+      "caption": "Figure 1: DDM sampling using a probability flow ODE predictor, ULA correction, and MADM correction. Mean distance to the true samples and the 95% sample containment distance are shown. A coarse diffusion schedule and large ULA stepsize are chosen to show the discretisation bias, the same schedule and stepsize are used in MADM to show the bias correction from this method.",
+      "page": 2,
+      "index": 2,
+      "width": 986,
+      "height": 271
+    },
+    {
+      "url": "assets/figures/arxiv/2605.09654v1/fig-003.webp",
+      "caption": "Figure 2: Properties of integral estimators.",
+      "page": 7,
+      "index": 3,
+      "width": 513,
+      "height": 527
+    },
+    {
+      "url": "assets/figures/arxiv/2605.09654v1/fig-004.webp",
+      "caption": "Figure 3: DDM sampling using an ancestral sampler predictor, and MADM correction. Mean distance to the true samples and the 95% sample containment distance are shown.",
+      "page": 10,
+      "index": 4,
+      "width": 936,
+      "height": 565
+    },
+    {
+      "url": "assets/figures/arxiv/2605.09654v1/fig-005.webp",
+      "caption": "Figure 4: Optimal acceptance rate for Algorithm 2",
+      "page": 23,
+      "index": 5,
+      "width": 451,
+      "height": 358
+    },
+    {
+      "url": "assets/figures/arxiv/2605.09654v1/fig-006.webp",
+      "caption": "Table 1: Fréchet Inception Distance (FID) on image datasets sampled using the probability flow ODE (PF-ODE) and MADM with pre-trained models from Karras et al. (2022). All FIDs are calculated using 50,000 samples. We highlight the best FID in bold.",
+      "page": 12,
+      "index": 6,
+      "width": 868,
+      "height": 191
+    }
+  ]
+}
