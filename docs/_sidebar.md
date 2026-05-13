@@ -1,6 +1,11 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-05-13 <!--dpr-date:20260513-->
+    * 精读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202605/13/2605.11414v1-generative-diffusion-prior-distillation-for-long-context-knowledge-transfer" data-sidebar-item="{&quot;title&quot;: &quot;Generative Diffusion Prior Distillation for Long-Context Knowledge Transfer&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2605.11414v1-generative-diffusion-prior-distillation-for-long-context-knowledge-transfer&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;diffts&quot;}], &quot;evidence&quot;: &quot;用于时间序列知识迁移的扩散先验&quot;}">Generative Diffusion Prior Distillation for Long-Context Knowledge Transfer</a>
+    * 速读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202605/13/2605.08625v1-reasoning-aware-training-for-time-series-forecasting" data-sidebar-item="{&quot;title&quot;: &quot;Reasoning-Aware Training for Time Series Forecasting&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2605.08625v1-reasoning-aware-training-for-time-series-forecasting&quot;, &quot;score&quot;: &quot;7.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;diffts&quot;}], &quot;evidence&quot;: &quot;时间序列预测框架&quot;}">Reasoning-Aware Training for Time Series Forecasting</a>
   * 2026-05-12 <!--dpr-date:20260512-->
     * 精读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202605/12/2605.05736v2-sdflow-similarity-driven-flow-matching-for-time-series-generation" data-sidebar-item="{&quot;title&quot;: &quot;SDFlow: Similarity-Driven Flow Matching for Time Series Generation&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2605.05736v2-sdflow-similarity-driven-flow-matching-for-time-series-generation&quot;, &quot;score&quot;: &quot;9.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;diffts&quot;}], &quot;evidence&quot;: &quot;用于非自回归时间序列生成的流匹配&quot;}">SDFlow: Similarity-Driven Flow Matching for Time Series Generation</a>

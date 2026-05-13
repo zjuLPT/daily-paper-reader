@@ -1,0 +1,39 @@
+{
+  "label": "2026-05-13",
+  "date": "2026-05-13",
+  "generated_at": "2026-05-13T21:01:41",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202605/13/2605.11414v1-generative-diffusion-prior-distillation-for-long-context-knowledge-transfer",
+      "section": "deep",
+      "title_en": "Generative Diffusion Prior Distillation for Long-Context Knowledge Transfer",
+      "authors": "Nilushika Udayangani, Kishor Nandakishor, Marimuthu Palaniswami",
+      "date": "2026-05-12",
+      "pdf": "https://arxiv.org/pdf/2605.11414v1",
+      "score": "9.0",
+      "evidence": "用于时间序列知识迁移的扩散先验",
+      "tldr": "本文针对时间序列分类中仅能使用部分序列输入导致泛化能力下降的问题，提出生成扩散先验蒸馏（GDPD）方法，通过学习教师特征的扩散生成先验，为学生提供渐进和多样的长上下文知识，从而提升短上下文分类的泛化表现。",
+      "tags": "query:diffts",
+      "abstract_en": "While traditional time-series classifiers assume full sequences at inference, practical constraints (latency and cost) often limit inputs to partial prefixes. The absence of class-discriminative patterns in partial data can significantly hinder a classifier's ability to generalize. This work uses knowledge distillation (KD) to equip partial time series classifiers with the generalization ability of their full-sequence counterparts. In KD, high-capacity teacher transfers supervision to aid student learning on the target task. Matching with teacher features has shown promise in closing the generalization gap due to limited parameter capacity. However, when the generalization gap arises from training-data differences (full versus partial), the teacher's full-context features can be an overwhelming target signal for the student's short-context features. To provide progressive, diverse, and collective teacher supervision, we propose Generative Diffusion Prior Distillation (GDPD), a novel KD framework that treats short-context student features as degraded observations of the target full-context features. Inspired by the iterative restoration capability of diffusion models, we learn a diffusion-based generative prior over teacher features. Leveraging this prior, we posterior-sample target teacher representations that could best explain the missing long-range information in the student features and optimize the student features to be minimally degraded relative to these targets. GDPD provides each student feature with a distribution of task-relevant long-context knowledge, which benefits learning on the partial classification task. Extensive experiments across earliness settings, datasets, and architectures demonstrate GDPD's effectiveness for full-to-partial distillation.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202605/13/2605.08625v1-reasoning-aware-training-for-time-series-forecasting",
+      "section": "quick",
+      "title_en": "Reasoning-Aware Training for Time Series Forecasting",
+      "authors": "Md Atik Ahamed, Mihir Parmar, Palash Goyal, Chun-Liang Li, Qiang Cheng, Tomas Pfister, Jinsung Yoon",
+      "date": "2026-05-09",
+      "pdf": "https://arxiv.org/pdf/2605.08625v1",
+      "score": "7.0",
+      "evidence": "时间序列预测框架",
+      "tldr": "本文提出STRIDE框架，将LLM的语义推理以连续嵌入形式融入时间序列基础模型，解决模态差距与解释性不足问题。通过联合优化，模型在多个评测上实现最优预测与推理性能，为时间序列预测提供可解释且精确的方案。",
+      "tags": "query:diffts",
+      "abstract_en": "Time Series Foundation Models (TSFMs) excel at numerical forecasting but operate as black boxes lacking qualitative reasoning. Conversely, applying LLMs directly to temporal data introduces a modality gap: text tokenizers fragment continuous numerical values, degrading mathematical relationships and exploding sequence lengths, leading to computational overhead. To resolve this, we introduce STRIDE (Strategic Time-series Reasoning Injected via Distilled Embeddings), a novel framework natively integrating LLM reasoning into the continuous embedding space of TSFMs. Instead of discrete tokens, STRIDE distills reasoning traces into a lightweight LLM, dynamically projecting its mean-pooled hidden states as a cross-modal prior into the target numerical encoder. The architecture is jointly optimized using cross-entropy and quantile losses. Evaluations demonstrate STRIDE establishes state-of-the-art numerical forecasting on GIFT-Eval (0.674 MASE, 0.454 CRPS) compared to TSFMs and exhibits superior in-domain and out-of-domain numerical as well as reasoning performance on TFRBench. Specifically, STRIDE acts as a plug-and-play enhancement, consistently improving diverse TSFMs (e.g., Chronos-2, Timer-S1) across various LLM configurations. Thus, injecting semantic reasoning as a continuous prior equips TSFMs with human-interpretable reasoning while fundamentally improving predictive accuracy.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

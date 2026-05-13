@@ -1,0 +1,97 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-05-13T20:59:07.391247+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2605.11414v1",
+      "source": "arxiv",
+      "title": "Generative Diffusion Prior Distillation for Long-Context Knowledge Transfer",
+      "abstract": "While traditional time-series classifiers assume full sequences at inference, practical constraints (latency and cost) often limit inputs to partial prefixes. The absence of class-discriminative patterns in partial data can significantly hinder a classifier's ability to generalize. This work uses knowledge distillation (KD) to equip partial time series classifiers with the generalization ability of their full-sequence counterparts. In KD, high-capacity teacher transfers supervision to aid student learning on the target task. Matching with teacher features has shown promise in closing the generalization gap due to limited parameter capacity. However, when the generalization gap arises from training-data differences (full versus partial), the teacher's full-context features can be an overwhelming target signal for the student's short-context features. To provide progressive, diverse, and collective teacher supervision, we propose Generative Diffusion Prior Distillation (GDPD), a novel KD framework that treats short-context student features as degraded observations of the target full-context features. Inspired by the iterative restoration capability of diffusion models, we learn a diffusion-based generative prior over teacher features. Leveraging this prior, we posterior-sample target teacher representations that could best explain the missing long-range information in the student features and optimize the student features to be minimally degraded relative to these targets. GDPD provides each student feature with a distribution of task-relevant long-context knowledge, which benefits learning on the partial classification task. Extensive experiments across earliness settings, datasets, and architectures demonstrate GDPD's effectiveness for full-to-partial distillation.",
+      "authors": [
+        "Nilushika Udayangani",
+        "Kishor Nandakishor",
+        "Marimuthu Palaniswami"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-05-12T02:06:05+00:00",
+      "link": "https://arxiv.org/pdf/2605.11414v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "diffusion prior for time-series knowledge transfer",
+      "llm_evidence_cn": "用于时间序列知识迁移的扩散先验",
+      "llm_evidence": "用于时间序列知识迁移的扩散先验",
+      "canonical_evidence": "用于时间序列知识迁移的扩散先验",
+      "llm_tldr_en": "Uses generative diffusion priors to distill knowledge from full to partial time series for better classification.",
+      "llm_tldr_cn": "利用生成式扩散先验将全序列知识蒸馏至部分序列分类器，提升其泛化能力。",
+      "llm_tldr": "利用生成式扩散先验将全序列知识蒸馏至部分序列分类器，提升其泛化能力。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "research papers on diffusion models applied to time series tasks",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2605.08625v1",
+      "source": "arxiv",
+      "title": "Reasoning-Aware Training for Time Series Forecasting",
+      "abstract": "Time Series Foundation Models (TSFMs) excel at numerical forecasting but operate as black boxes lacking qualitative reasoning. Conversely, applying LLMs directly to temporal data introduces a modality gap: text tokenizers fragment continuous numerical values, degrading mathematical relationships and exploding sequence lengths, leading to computational overhead. To resolve this, we introduce STRIDE (Strategic Time-series Reasoning Injected via Distilled Embeddings), a novel framework natively integrating LLM reasoning into the continuous embedding space of TSFMs. Instead of discrete tokens, STRIDE distills reasoning traces into a lightweight LLM, dynamically projecting its mean-pooled hidden states as a cross-modal prior into the target numerical encoder. The architecture is jointly optimized using cross-entropy and quantile losses. Evaluations demonstrate STRIDE establishes state-of-the-art numerical forecasting on GIFT-Eval (0.674 MASE, 0.454 CRPS) compared to TSFMs and exhibits superior in-domain and out-of-domain numerical as well as reasoning performance on TFRBench. Specifically, STRIDE acts as a plug-and-play enhancement, consistently improving diverse TSFMs (e.g., Chronos-2, Timer-S1) across various LLM configurations. Thus, injecting semantic reasoning as a continuous prior equips TSFMs with human-interpretable reasoning while fundamentally improving predictive accuracy.",
+      "authors": [
+        "Md Atik Ahamed",
+        "Mihir Parmar",
+        "Palash Goyal",
+        "Chun-Liang Li",
+        "Qiang Cheng",
+        "Tomas Pfister",
+        "Jinsung Yoon"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-05-09T02:41:47+00:00",
+      "link": "https://arxiv.org/pdf/2605.08625v1",
+      "tags": [
+        "keyword:DiffTS",
+        "query:DiffTS"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Time Series Forecasting framework",
+      "llm_evidence_cn": "时间序列预测框架",
+      "llm_evidence": "时间序列预测框架",
+      "canonical_evidence": "时间序列预测框架",
+      "llm_tldr_en": "Introduces STRIDE to integrate LLM reasoning into time series foundation models for better forecasting.",
+      "llm_tldr_cn": "引入 STRIDE 框架，将大语言模型推理集成到时间序列基础模型中以优化预测。",
+      "llm_tldr": "引入 STRIDE 框架，将大语言模型推理集成到时间序列基础模型中以优化预测。",
+      "llm_tags": [
+        "query:diffts"
+      ],
+      "matched_query_tag": "query:diffts",
+      "matched_query_text": "Time Series",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
