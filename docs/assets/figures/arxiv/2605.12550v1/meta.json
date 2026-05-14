@@ -1,0 +1,134 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2605.12550v1/fig-001.webp",
+      "caption": "Figure 9: Forecasting visualization on a sample from ETTm2. (a) Input image of structural branch. (b) Output image of structural branch. (c) Input image of spectral branch(enhanced by Spectral Magnitude Aligner). (d) Output image of spectral branch. (e-f) Comparison of predictions and ground truths by SSDA and DMMV.",
+      "page": 25,
+      "index": 1,
+      "width": 826,
+      "height": 982
+    },
+    {
+      "url": "assets/figures/arxiv/2605.12550v1/fig-002.webp",
+      "caption": "Figure 10: Forecasting visualization on a sample from ETTh1. (a) Input image of structural branch. (b) Output image of structural branch. (c) Input image of spectral branch(enhanced by Spectral Magnitude Aligner). (d) Output image of spectral branch. (e-f) Comparison of predictions and ground truths by SSDA and DMMV.",
+      "page": 26,
+      "index": 2,
+      "width": 826,
+      "height": 982
+    },
+    {
+      "url": "assets/figures/arxiv/2605.12550v1/fig-003.webp",
+      "caption": "Table 8: Default Training Parameters",
+      "page": 21,
+      "index": 3,
+      "width": 764,
+      "height": 742
+    },
+    {
+      "url": "assets/figures/arxiv/2605.12550v1/fig-004.webp",
+      "caption": "Figure 1: Illustration of the spectral and structural modality gaps. Left: Spectral gap. Top: one representative sample from three modalities, i.e., a time series from ETT, a natural image from ImageNet, and a text snippet from Wikipedia. Bottom: power spectra averaged over a large set of samples per modality, fitted with the power-law model P (f) ∝ f−α. The fitted exponents Time Series (α = 1.66± 0.63), Natural Images (α = 2.19± 0.40), and Text (α = −0.70± 0.57) reveal substantial distributional differences across modalities. Right: Structural gap. Reshaping a 1D time series into a 2D image via periodic folding introduces spurious spatial adjacencies between temporally distant points and severs continuous temporal adjacencies at column boundaries.",
+      "page": 2,
+      "index": 4,
+      "width": 826,
+      "height": 379
+    },
+    {
+      "url": "assets/figures/arxiv/2605.12550v1/fig-005.webp",
+      "caption": "Table 1: Full TSF results with forecasting horizons H ∈ {96, 192, 336, 720}. Red indicates the best performance, and Blue indicates the second best. “OOM” denotes the out-of-memory failure.",
+      "page": 7,
+      "index": 5,
+      "width": 824,
+      "height": 474
+    },
+    {
+      "url": "assets/figures/arxiv/2605.12550v1/fig-006.webp",
+      "caption": "Table 9: Full few-shot learning results on 10% training data with forecasting horizons H ∈ {96, 192, 336, 720}. Lower values indicate better performance. Red indicates the best performance, and Blue indicates the second best.",
+      "page": 22,
+      "index": 6,
+      "width": 827,
+      "height": 498
+    },
+    {
+      "url": "assets/figures/arxiv/2605.12550v1/fig-007.webp",
+      "caption": "Table 10: Full few-shot learning results on 5% training data. ”-” denotes that 5% of the time series is insufficient to form a valid training set.",
+      "page": 22,
+      "index": 7,
+      "width": 827,
+      "height": 497
+    },
+    {
+      "url": "assets/figures/arxiv/2605.12550v1/fig-008.webp",
+      "caption": "Figure 5: Power spectrum analysis of different modalities. Each subfigure shows the power spectrum (top) and the original modality example (bottom). (a) Rough-texture image (fine gravel and sand): α = 1.66, indicating high-frequency content from fine textures; (b) Smooth-texture image (bird with blurred background): α = 3.10, with gentler decay reflecting large-scale homogeneity; (c) Time series (ETTh1): α = 1.34; (d) Text (Wikipedia corpus): α = −1.11.",
+      "page": 14,
+      "index": 8,
+      "width": 826,
+      "height": 305
+    },
+    {
+      "url": "assets/figures/arxiv/2605.12550v1/fig-009.webp",
+      "caption": "Figure 7: Power spectral slope analysis for time series data rendered with different periodicity values. Subfigures (a)-(f) show the power spectral density (PSD) of ETTh1 data when rendered to image representation with periodicity values of 24, 28, 30, 32, 48, and 64 respectively.",
+      "page": 18,
+      "index": 9,
+      "width": 806,
+      "height": 395
+    },
+    {
+      "url": "assets/figures/arxiv/2605.12550v1/fig-010.webp",
+      "caption": "Figure 8: The bubble chart of performance vs. efficiency.",
+      "page": 23,
+      "index": 10,
+      "width": 582,
+      "height": 404
+    },
+    {
+      "url": "assets/figures/arxiv/2605.12550v1/fig-011.webp",
+      "caption": "Table 3: Ablation study with relative change (%). All degradations are highlighted in red.",
+      "page": 8,
+      "index": 11,
+      "width": 827,
+      "height": 207
+    },
+    {
+      "url": "assets/figures/arxiv/2605.12550v1/fig-012.webp",
+      "caption": "Table 2: Few-shot forecasting results on 10% and 5% training data.",
+      "page": 8,
+      "index": 12,
+      "width": 824,
+      "height": 323
+    },
+    {
+      "url": "assets/figures/arxiv/2605.12550v1/fig-013.webp",
+      "caption": "Figure 2: The Overall architecture of SSDA.",
+      "page": 4,
+      "index": 13,
+      "width": 826,
+      "height": 374
+    },
+    {
+      "url": "assets/figures/arxiv/2605.12550v1/fig-014.webp",
+      "caption": "Figure 6: Power spectral slope analysis for different modalities. Subfigures (a)-(c) show individual sample curves for time series, natural images, and text respectively. Subfigure (d) displays the averaged power spectral slope.",
+      "page": 17,
+      "index": 14,
+      "width": 802,
+      "height": 553
+    },
+    {
+      "url": "assets/figures/arxiv/2605.12550v1/fig-015.webp",
+      "caption": "Figure 11: Forecasting visualization on a sample from ETTh2. (a) Input image of structural branch. (b) Output image of structural branch. (c) Input image of spectral branch(enhanced by Spectral Magnitude Aligner). (d) Output image of spectral branch. (e-f) Comparison of predictions and ground truths by SSDA and DMMV.",
+      "page": 27,
+      "index": 15,
+      "width": 826,
+      "height": 982
+    },
+    {
+      "url": "assets/figures/arxiv/2605.12550v1/fig-016.webp",
+      "caption": "Table 7: Default Model Architecture Parameters",
+      "page": 20,
+      "index": 16,
+      "width": 522,
+      "height": 298
+    }
+  ]
+}

@@ -1,0 +1,912 @@
+Title: Path-Dependent Denoising: A Non-Conservative Field Perspective on Order Collapse in Diffusion Language Models
+
+URL Source: https://arxiv.org/pdf/2605.09303v1
+
+Published Time: Tue, 12 May 2026 01:41:40 GMT
+
+Number of Pages: 18
+
+Markdown Content:
+# Path-Dependent Denoising: A Non-Conservative Field Perspective on Order Collapse in Diffusion Language Models 
+
+Jeonseong Kim 
+
+Abstract 
+
+Diffusion language models (DLMs) offer a structural alternative to autoregressive generation: denois-ing can update tokens in arbitrary orders or in parallel rather than along a fixed left-to-right chain. In practice, fast DLM decoding remains strongly order-sensitive and often drifts toward autoregressive-like trajectories. We trace this tension to compatibility. At each reverse-time step, a DLM provides local denoising conditionals over the unresolved tokens. Arbitrary-order denoising becomes well defined when these local conditionals compose into order-invariant pseudo-joints. We formalize this view by defining order-induced pseudo-joints and a local denoising circulation: the log-ratio between the two pseudo-joints obtained by swapping a pair of unresolved positions. This circulation is zero under compatible conditionals, and global order gaps decompose into sums of local circulations along adjacent swaps. We further separate incompatibility-driven path dependence from conditional-dependence error in parallel updates and from order-specific estimation error. The resulting framework provides inference-only diagnostics for testing when DLM decoding is genuinely order-free. 
+
+# 1 Introduction 
+
+Autoregressive language models factorize text generation into a strict left-to-right product of conditional probabilities. This factorization yields clear probabilistic semantics, but it also imposes an unavoidable serial bottleneck: the ith token cannot be generated before the preceding i − 1 tokens have been determined. Diffusion language models seek to bypass this limitation. Unlike autoregressive models, masked or discrete diffusion language models start from highly corrupted text states and gradually recover tokens through iterative denoising. Because denoising steps need not follow a fixed absolute position order, DLMs support arbitrary-order, block-wise, and fully parallel generation at the interface level (Austin et al., 2021; Li et al., 2022; Gulrajani and Hashimoto, 2023; Sahoo et al., 2024; Lou et al., 2024; Nie et al., 2025). This apparent freedom is precisely why DLMs are often seen as promising candidates for breaking the latency bottleneck of autoregressive inference. In practice, however, a central contradiction is emerging: while the model interface permits arbitrary order, the learned behavior is often far from order-invariant. Many fast DLMs degrade substantially under high decoding parallelism; to preserve quality, effective decoding policies frequently drift back toward left-to-right, confidence-based, or other highly structured unmasking schedules (Kim et al., 2025a,b). More directly, recent concurrent analyses have reported that practical DLMs can revert toward autoregressive-like decoding under stronger parallelism, and that masked diffusion models can exhibit locality and mask-induced context-comprehension failures that further complicate genuinely order-free generation (Li et al., 2026; Piskorz et al., 2026). Existing explanations usually operate at the level of data and tasks. Natural language is inherently sequential, and chain-of-thought supervision further reinforces the pattern that later steps depend on earlier ones. As a result, even a non-autoregressive training objective may lead a DLM to internalize autoregressive-like computation (Kim et al., 2025a; Li et al., 2026; Piskorz et al., 2026). These explanations capture important regularities, but they leave the key structural question under-specified. For a fixed reverse-time 1
+
+> arXiv:2605.09303v1 [cs.LG] 10 May 2026
+
+step, a DLM provides a family of local conditional distributions over unresolved coordinates. The central issue is whether those local conditionals are compatible with a common joint distribution or define only local rules for the decoder. This perspective separates two levels of analysis. At the model level, different denoising orders induce different pseudo-joints Qπθ,t , and local curl measures the log-ratio between nearby orderings. At the decoding level, operator commutators ask whether a particular update rule—argmax, sampling, thresholding, or another scheduler-specific operator—turns that pseudo-joint order gap into path sensitivity of the predictive state. Even with small curl, fully independent parallel updates can still fail when unresolved coordinates have large conditional total correlation. In language tasks, left-to-right order often re-emerges because it both stabilizes context and moves the model onto lower-error conditional contexts. The paper makes four contributions: • Compatibility formulation. We formulate arbitrary-order denoising as a pseudo-joint invariance problem. • Local circulation diagnostic. Elementary curl is exactly a swapped pseudo-joint log-ratio, and its expectation under one order is the corresponding order-swap KL divergence. • Path-dependence characterization. Exact order consistency on a fixed block holds if and only if every reachable elementary square is curl-free, and any global order gap decomposes along adjacent swaps. • Failure-mode separation. Bayes-optimal uniform masking yields zero curl, parallel failure also depends on conditional total correlation, and order preference is governed by order-specific conditional estimation error. The paper is formal and mechanism-oriented. It establishes exact structural facts about pseudo-joints, identifies the operator-dependent route from incompatibility to path sensitivity, separates curl from conditional total correlation, and specifies empirical tests of the compatibility view. 
+
+# 2 Related Work 
+
+The relationship between this paper and existing literature can be summarized as “DLM order sensitivity viewed through conditional compatibility.” Foundational work on diffusion for language and discrete data includes D3PMs (Austin et al., 2021), continuous-text diffusion in Diffusion-LM (Li et al., 2022), likelihood-oriented large-scale diffusion language modeling in Plaid (Gulrajani and Hashimoto, 2023), masked discrete diffusion in MDLM (Sahoo et al., 2024), score-entropy discrete diffusion in SEDD (Lou et al., 2024), and recent scaling results for LLaDA (Nie et al., 2025). Together, these papers establish that diffusion-style objectives can be extended to text generation in several distinct ways, and in some regimes can become competitive with strong autoregressive baselines. A first background line comes from conditionally specified distributions, Markov random fields, Gibbs-style constructions, and dependency networks (Besag, 1974; Geman and Geman, 1984; Arnold and Press, 1989; Arnold et al., 2001; Heckerman et al., 2000; Hobert and Casella, 1998). These works ask when a family of local conditionals corresponds to a single joint distribution and what happens when compatibility fails. Our elementary-circulation diagnostic is intended as a local, time-dependent witness to that same underlying question for denoising conditionals. A closely related modern empirical line is Wagner et al. (2024), who test whether different completion or conditioning orders assign consistent span probabilities in language models. Their results provide a useful consistency-testing precedent for the methodological point that local predictive scores should not automatically be assumed to arise from one order-invariant global probability object. 2A second background line comes from orderless or permutation-trained language modeling. NADE and its orderless extensions make variable order explicit inside tractable autoregressive density estimators, while XLNet trains across permutations of factorization order (Larochelle and Murray, 2011; Uria et al., 2014; Yang et al., 2019). These models differ from DLMs in that their semantics are still built around exact factorization objectives. Our focus is on diffusion denoisers whose interface permits arbitrary update order even when the induced local conditionals are not jointly compatible. Recent work has also started to analyze inference order and decoding strategy more directly. In particular, Kim et al. (2025a) show both theoretically and empirically that token ordering is a central variable in masked diffusion inference, while Kim et al. (2025b) demonstrate that adaptive fast samplers can materially change the quality–speed trade-off. Concurrent analyses have further highlighted difficulties with truly parallel decoding and broader context-comprehension issues in masked diffusion models (Li et al., 2026; Piskorz et al., 2026). We place these phenomena in a common framework of order-induced pseudo-joints: learned incompatibility yields order gaps, conditional dependence yields independent-parallel error even at zero curl, and the scheduler selects contexts on which local conditional estimation error is smaller. The result is a unified diagnostic and mechanistic account of these phenomena. 
+
+# 3 DLMs as Time-Dependent Conditional Specifications 
+
+3.1 Local Conditionals Rather Than a Joint 
+
+Consider a token sequence x = ( x1, . . . , x L) ∈ V L of length L, where each xi belongs to a vocabulary V. In masked diffusion or discrete diffusion language modeling, the forward process gradually replaces original tokens with masks, noisy tokens, or other corrupted states; the reverse process starts from a highly corrupted state and gradually reconstructs fluent text. Let zt denote the partially observed state at time step t, and let 
+
+Mt denote the set of positions that remain masked or corrupted. A typical denoising predictor is then written as (Austin et al., 2021; Gulrajani and Hashimoto, 2023; Sahoo et al., 2024; Lou et al., 2024; Nie et al., 2025) 
+
+pθ(xi | zt, t ), i ∈ Mt.
+
+For theoretical analysis, however, it is useful to freeze the observed part of zt and focus on the currently unresolved coordinates. Let x = ( x1, . . . , x m) ∈ V m denote an assignment on those active coordinates, with already observed tokens absorbed into the conditioning context. At time t, the denoiser therefore induces a family of local conditional specifications 
+
+qθ,t (xi | x−i), i = 1 , . . . , m. 
+
+This places DLM denoisers closer to the literature on conditionally specified models, Gibbs/MRF construc-tions, and dependency networks than to a jointly normalized left-to-right factorization (Besag, 1974; Geman and Geman, 1984; Arnold and Press, 1989; Arnold et al., 2001; Heckerman et al., 2000; Hobert and Casella, 1998). The model supplies a collection of local conditionals; the existence of a single global distribution that realizes them is a separate structural property. The sampling interface differs sharply from autoregressive models: the model can update tokens outside a fixed left-to-right order. Single-position updates require an unmasking order; multi-position updates yield block-wise or parallel decoding. This freedom makes DLMs appealing, but arbitrary-order denoising requires compatible local conditionals across orders. When different orders induce different generation distributions, the scheduler becomes part of the effective generative rule. 33.2 Order-Induced Pseudo-Joint Distributions 
+
+Fix an observed context index set S and a block B ⊆ [L] \ S of unresolved positions. For any permutation 
+
+π = ( π1, . . . , π |B|) of B, the denoiser induces the order-specific pseudo-joint 
+
+Qπθ,t (xB | xS ) = 
+
+> |B|
+
+Y
+
+> m=1
+
+qθ,t (xπm | xS , x π<m ).
+
+We call Qπθ,t a pseudo-joint because it is the sequential product induced by one factorization path. A DLM supports arbitrary-order denoising on a block when these pseudo-joints agree across relevant orders: 
+
+Qπθ,t (xB | xS ) ≈ Qπ′
+
+> θ,t
+
+(xB | xS ).
+
+Order-free generation is thus a claim about pseudo-joint invariance across factorizations. 
+
+3.3 Compatibility and Global Potentials 
+
+The classical compatibility question is whether there exists a joint distribution 
+
+∃pθ,t (x)
+
+s.t. qθ,t (xi | x−i) = pθ,t (xi | x−i) for all i. 
+
+If such a joint exists, define the global potential 
+
+Φθ(x, t ) = log pθ,t (x).
+
+This Φθ serves as an idealized reference object for order-free denoising. We define the potential through shift-invariant log conditional probability ratios rather than raw logits. If 
+
+ℓi(a | x−i, t ) denotes a pre-softmax logit, then the shift ℓi(a | x−i, t ) 7 → ℓi(a | x−i, t ) + ci(x−i, t ) leaves the conditional distribution unchanged. Raw logit levels are identifiable only up to a position-wise additive constant, so compatibility and circulation live at the level of log conditional ratios. Compatible local conditionals make every order-induced pseudo-joint Qπθ,t (xB | xS ) coincide with the same conditional distribution pθ,t (xB | xS ), regardless of π. Incompatible conditionals make order sensitivity structural: the scheduler becomes part of the effective generative rule. This issue is concrete. Recent consistency-testing work on span probabilities in language models studies whether interchangeable completion or conditioning orders agree on the same span probability object (Wagner et al., 2024). Those results support the same methodological point here: a global potential interpretation requires order-swapped local predictions to compose into a consistent probability object. 
+
+Remark 1 (Exact compatibility is a restrictive special case) . Exact compatibility imposes a coupled family of equalities across coordinates, conditioning contexts, and reverse-time steps. In flexible neural denoisers trained only through local denoising losses, there is typically no architectural reason for these identities to hold exactly. We therefore treat zero elementary circulation as a meaningful and important special case, but not as the generic default. 
+
+# 4 Pseudo-Joints, Curl, and Path Dependence 
+
+4.1 Local Order Curl as a Pseudo-Joint Log-Ratio 
+
+Fix a partial context xS , two unresolved positions i, j / ∈ S, and candidate tokens a, b ∈ V . Define the two local order-induced pseudo-joints 
+
+Qi→jθ,t (a, b | xS ) = qθ,t (a | xS ) qθ,t (b | xS , x i=a),Qj→iθ,t (a, b | xS ) = qθ,t (b | xS ) qθ,t (a | xS , x j =b).
+
+4Define the local order curl 
+
+Ca,b ij (xS , t ) = log qθ,t (xi = a | xS )+ log qθ,t (xj = b | xS , x i = a)
+
+− log qθ,t (xj = b | xS )
+
+− log qθ,t (xi = a | xS , x j = b).
+
+Theorem 1 (Local curl equals a pseudo-joint log-ratio) . For every xS , t, i, j, a, b ,
+
+Ca,b ij (xS , t ) = log Qi→jθ,t (a, b | xS )
+
+Qj→iθ,t (a, b | xS ) .
+
+Consequently, Ca,b ij (xS , t ) = 0 for all a, b if and only if 
+
+Qi→jθ,t (·, · | xS ) = Qj→iθ,t (·, · | xS )
+
+as distributions. Moreover, 
+
+E(a,b )∼Qi→jθ,t (·,·| xS )
+
+Ca,b ij (xS , t )
+
+= KL  Qi→jθ,t (·, · | xS ) ∥ Qj→iθ,t (·, · | xS ).
+
+Proof idea. Expanding the two pseudo-joints gives the displayed log-ratio, and averaging that identity under 
+
+Qi→jθ,t yields the KL term; Appendix A gives the full proof. This is the key interpretation: curl is the log-density ratio between two denoising orders on the same local block. Because it is built entirely from conditional log-probabilities, it is automatically invariant to additive logit shifts. At the sample level we may aggregate these quantities as 
+
+ECircAbs( xS , t ) = Ei,j,a,b 
+
+|C a,b ij (xS , t )|,
+
+and for cross-time or cross-model comparison one may normalize by the total magnitude of the four participating log-probability terms: 
+
+eCa,b ij (xS , t ) = 
+
+|C a,b ij (xS , t )||log qθ,t (xi = a | xS )|
+
++ |log qθ,t (xj = b | xS , x i = a)|
+
++ |log qθ,t (xj = b | xS )|
+
++ |log qθ,t (xi = a | xS , x j = b)| + ϵ.
+
+for a small ϵ > 0.
+
+4.2 Adjacent Swaps and Block-Level Path Dependence 
+
+For a block B and permutation π, recall the pseudo-joint 
+
+Qπθ,t (xB | xS ) = 
+
+> |B|
+
+Y
+
+> m=1
+
+qθ,t (xπm | xS , x π<m ).
+
+Any two permutations can be connected by a sequence of adjacent swaps, but the local curl terms in the decomposition must be indexed by a specific swap path because the prefix context at each swap depends on the intermediate ordering. 5Theorem 2 (Path-specific adjacent-swap decomposition) . Let π and π′ be two permutations of B, and fix an adjacent-swap path 
+
+Γ : ρ(0) = π → ρ(1) → · · · → ρ(R) = π′.
+
+Suppose the rth step swaps adjacent positions kr and kr + 1 in the current ordering ρ(r−1) . Write 
+
+ir = ρ(r−1)  
+
+> kr
+
+, jr = ρ(r−1)   
+
+> kr+1
+
+,
+
+and let 
+
+Sr = S ∪ { ρ(r−1) 1 , . . . , ρ (r−1)   
+
+> kr−1
+
+}
+
+be the prefix index set before the swapped adjacent pair. Then for every assignment xB ,
+
+log Qπθ,t (xB | xS )
+
+Qπ′
+
+> θ,t
+
+(xB | xS ) =
+
+> R
+
+X
+
+> r=1
+
+Cxir ,x jr   
+
+> irjr
+
+(xSr , t ).
+
+Proof. See Appendix A. This theorem makes the path-dependence statement exact: path dependence is accumulated local curl along a chosen adjacent-swap path. The individual contexts Sr depend on the path Γ, but the total sum does not, because it telescopes to the fixed endpoint quantity log Qπθ,t − log Qπ′
+
+> θ,t
+
+. The relevant “circulation” is therefore not an endpoint prediction difference at the same state, but the log-ratio between pseudo-joints induced by different factorization paths. The next proposition upgrades this pathwise identity into an exact characterization of order consistency on a fixed block. 
+
+Proposition 1 (Exact order consistency equals reachable curl-freeness) . Fix xS , a block B ⊆ [L] \ S, and a time t. Assume every local conditional appearing in the relevant pseudo-joints is strictly positive. Then the following are equivalent: 1. For every pair of permutations π, π ′ of B and every assignment xB ,
+
+Qπθ,t (xB | xS ) = Qπ′
+
+> θ,t
+
+(xB | xS ).
+
+2. For every reachable context index set C = S ∪ A with A ⊆ B, every assignment xC extending xS ,every distinct i, j ∈ B \ A, and every a, b ∈ V ,
+
+Ca,b ij (xC , t ) = 0 .
+
+Equivalently, exact arbitrary-order semantics on B relative to xS are the same as discrete curl-freeness on every reachable elementary square inside B.
+
+Proof. See Appendix A. This proposition makes local curl an exact semantic criterion. On a fixed block, a DLM is genuinely arbitrary-order if and only if every reachable elementary square is curl-free. Any non-zero curl on a reachable square obstructs exact arbitrary-order consistency on that block. 64.3 Pseudo-Joint Gaps Versus Decoder Commutators 
+
+The pseudo-joint identities above are model-level statements about the family of conditionals induced by the denoiser. A practical decoder adds another layer of path sensitivity. Let Pθ(· | z, t ) denote the predictive object over unresolved coordinates at state z and time t, and let Ui denote a local update rule at position i.Then the operator commutator 
+
+μUij (z, t ) := Pθ(· | UiUj z, t ),
+
+Comm (U,D ) 
+
+> ij
+
+(z, t ) := D μUij (z, t ), μ Uji (z, t ) . (1) measures whether a chosen rule turns a pseudo-joint order gap into a discrepancy between downstream predictive objects. High curl does not force every decoder to diverge, but commit-style operators such as argmax writing, thresholded updates, and finite-support sampling are natural mechanisms by which pseudo-joint mismatch becomes decoding-time path sensitivity. 
+
+# 5 Bayes Limits, Parallel Independence Error, and Order Preference 
+
+The pseudo-joint view clarifies three further questions: when curl must vanish, why parallel decoding can still fail even when curl is zero, and how a model can acquire a preferred order without any theorem saying that language itself generates non-zero curl. 
+
+Theorem 3 (Bayes-optimal uniform masking implies zero curl) . Suppose the denoiser is trained under a uniform masking objective and, in the infinite-capacity Bayes-optimal limit, satisfies 
+
+qθ,t (xi | xS ) = pdata (xi | xS )
+
+for every visible context xS and unresolved coordinate i. Then for every xS , t, i, j, a, b ,
+
+Qi→jθ,t (a, b | xS ) = pdata (a, b | xS )= Qj→iθ,t (a, b | xS ),
+
+and therefore 
+
+Ca,b ij (xS , t ) = 0 .
+
+Proof idea. Under Bayes optimality, both factorization orders equal the same data conditional pdata (a, b | xS )
+
+by the chain rule, so the curl vanishes; Appendix A gives the full proof. This theorem prevents an overly strong interpretation of the framework. Data directionality alone does not imply non-zero compatibility curl. Non-zero curl is a property of the learned denoiser away from Bayes-optimal compatibility, arising from finite capacity, incomplete coverage of masking contexts, imperfect optimization, calibration mismatch, or decoding-time approximation. 
+
+Theorem 4 (Independent parallel updates incur conditional total correlation) . For a block B, define the one-shot independent parallel approximation 
+
+Qpar  
+
+> θ,t
+
+(xB | xS ) = Y
+
+> i∈B
+
+qθ,t (xi | xS ).
+
+If the denoiser is Bayes optimal so that qθ,t = p, then 
+
+KL 
+
+
+
+p(xB | xS ) Qpar  
+
+> θ,t
+
+(xB | xS )
+
+
+
+= KL 
+
+
+
+p(xB | xS ) Y
+
+> i∈B
+
+p(xi | xS )
+
+
+
+= TC( XB | XS ),
+
+7where 
+
+TC( XB | XS ) = X
+
+> i∈B
+
+H(Xi | XS ) − H(XB | XS ).
+
+Proof idea. Substituting the Bayes-optimal condition q = p reduces the KL term to the conditional total-correlation definition, and the entropy form follows by expansion; Appendix A gives the full proof. Parallel degradation has multiple sources. Even with zero compatibility curl, one-shot independent updates can fail whenever unresolved coordinates remain strongly conditionally dependent. A useful conceptual decomposition is therefore: parallel degradation 
+
+≈ conditional dependence / TC + model incompatibility / curl 
+
++ estimation and calibration error .
+
+This display should be read as a structural decomposition of failure modes, not as a claim of an exact additive theorem. 
+
+Theorem 5 (Order preference is governed by order-specific conditional estimation error) . For any order π,
+
+Ep
+
+− log Qπθ,t (XB | XS )
+
+= Hp(XB | XS ) + KL  p(XB | XS ) ∥ Qπθ,t (XB | XS ).
+
+Moreover, the KL term decomposes as 
+
+KL  p(XB | XS ) ∥ Qπθ,t (XB | XS )
+
+=
+
+> |B|
+
+X
+
+> m=1
+
+Ep
+
+h
+
+KL  p(Xπm | XS , X π<m ) ∥ qθ,t (Xπm | XS , X π<m )i
+
+.
+
+Proof. See Appendix A. Define the order-specific local estimation error 
+
+ϵi(C) = KL  p(Xi | C) ∥ qθ,t (Xi | C).
+
+Then the best order is the one whose induced context distribution makes the cumulative expected local errors smallest. In particular, if prefix-like contexts are easier for the model than arbitrary mixed-mask contexts, the preferred decoding path can naturally become left-to-right even without any theorem saying that language itself forces signed curl. 
+
+# 6 Mechanism: Why DLMs Drift Toward AR-Like Decoding 
+
+The preceding theorems suggest a more careful mechanism than “language is directional, therefore curl is non-zero.” First, Theorem 3 shows that at Bayes-optimal uniform masking the local curl vanishes. Data directionality alone is therefore insufficient. Second, real denoisers operate under finite capacity, imperfect optimization, incomplete coverage of rare masking patterns, and approximate decoding. These factors generate pseudo-joint mismatch and non-zero local curl. Third, once some mismatch exists, Theorem 5 shows that order preference is governed by the contexts on which the model’s local conditional error is smallest. If prefix-like contexts are easier to estimate than arbitrary mixed-mask contexts, a left-to-right schedule 8becomes a natural low-error path. Fourth, Theorem 4 shows that even near-zero curl does not make fully parallel decoding safe when unresolved coordinates retain large conditional total correlation. Autoregressive-like collapse arises from the interaction of three ingredients: learned pseudo-joint mis-match, residual within-block dependence, and order-specific conditional estimation error. Better parallel DLMs must address all three. 
+
+# 7 Validation Interface 
+
+The framework yields a concrete validation interface. The empirical task is to test separate predictions about pseudo-joint order gaps, conditional dependence inside the block, and order-specific estimation error. 
+
+Order-gap prediction. For a fixed model and task, larger absolute local curl or larger expected two-order KL should predict stronger disagreement between order-induced pseudo-joints and greater fragility when the decoding order is perturbed. 
+
+TC versus curl. Even when pairwise curl is small, blocks with high conditional total correlation should remain resistant to one-shot independent parallel updates. This predicts a failure regime that is not explained by incompatibility alone. 
+
+Order-specific error profiling. If a scheduler performs substantially better than another, the advantage should correlate with the contexts it induces for subsequent predictions. Strong schedules should move the model onto lower-error conditional contexts, not just lower-entropy positions. 
+
+Trajectory diversification. If training exposes the model to multiple equivalent recovery trajectories or explicitly enforces cross-order agreement, then pseudo-joint order gaps should decrease and order-specific estimation asymmetry should weaken. 
+
+Synthetic control tasks. Synthetic data should allow separate manipulation of within-block dependence and learned incompatibility. Tasks with the same conditional dependence but different training coverage or architectural constraints should separate TC-driven failure from curl-driven failure. 
+
+# 8 Operationalization 
+
+The validation interface can be instantiated without retraining large models. The essential requirement is access to token conditionals or logits at fixed reverse-time states, so that pseudo-joint ratios, local estimation errors, and post-update predictive objects can be queried directly. 
+
+8.1 Model Access and Scope 
+
+A practical starting point is to use publicly accessible DLMs or masked diffusion models for which local conditional probabilities or logits can be queried directly, such as Plaid-style likelihood-trained diffusion models (Gulrajani and Hashimoto, 2023), MDLM (Sahoo et al., 2024), SEDD (Lou et al., 2024), and LLaDA (Nie et al., 2025). If compute is limited, an initial study can focus on smaller checkpoints and inference-only diagnostics before scaling up the same measurements. For reproducibility, the implementation should report checkpoint identifiers, parameter scales, tokenizer details, reverse-time schedule, and hardware. 98.2 Pseudo-Joint Gap Estimation 
+
+For each sample at a chosen time step t, select active coordinate pairs (i, j ) and candidate token pairs (a, b ).Compute the local curl 
+
+Ca,b ij (xS , t ) = log Qi→jθ,t (a, b | xS )
+
+Qj→iθ,t (a, b | xS )
+
+and summarize both absolute and normalized versions. A useful companion statistic is the empirical two-order KL from Theorem 1, estimated by averaging curl under samples drawn from one order-induced pseudo-joint. 
+
+8.3 Commutator Diagnostics 
+
+To stay close to actual decoding, explicitly run two local update paths under a chosen rule U :
+
+zij = Uj (Ui(z)) , zji = Ui(Uj (z)) .
+
+Then compare the downstream predictive objects: 
+
+Comm (U, √JS)  
+
+> ij
+
+(z, t ) = 
+
+h
+
+JS  Pθ(· | zij , t ), P θ(· | zji , t )i1/2
+
+.
+
+This quantifies how much the pseudo-joint order gap survives the decoder and appears as prediction-level path sensitivity. 
+
+8.4 Conditional-Dependence Controls 
+
+For any candidate block B, estimate the independent-parallel gap 
+
+KL 
+
+bp(xB | xS ) Y
+
+> i∈B
+
+bp(xi | xS )
+
+
+
+or a tractable proxy such as the sum of pairwise conditional mutual informations inside B. These quantities serve as empirical controls for the TC term from Theorem 4 and prevent parallel-failure analyses from over-crediting curl. 
+
+8.5 Order-Specific Error Profiling 
+
+For each candidate order π, evaluate the cumulative conditional cross-entropy 
+
+> |B|
+
+X
+
+> m=1
+
+− log qθ,t (xπm | xS , x π<m )
+
+on held-out data, and compare it with the same quantity under alternative orders. This directly measures the order-specific estimation-error profile from Theorem 5. In practice, one can stratify these losses by context type—prefix-like, random-mask, high-entropy, or synthetically controlled—to see where the model most strongly prefers a particular factorization path. 
+
+8.6 Parallelism Stress Test 
+
+For the same model and task, compare several decoding regimes: sequential recovery, small-block recovery, large-block recovery, and fully parallel or few-step recovery. Regress the performance drop under increased parallelism against three families of predictors: pseudo-joint order-gap statistics, TC proxies, and order-specific conditional error. This directly tests whether the framework explains failure better than entropy or confidence alone. 10 8.7 Scheduler Analysis 
+
+Compare left-to-right, random, confidence-based, and learned schedulers in terms of the blocks and contexts they induce. Strong schedulers should avoid both high-curl swaps and high-TC blocks, while also moving the model toward contexts on which its conditional error is lower. On this view, scheduler quality comes from navigating all three terms in the mechanism, not from confidence alone. 
+
+8.8 Synthetic Dependency Tasks 
+
+Construct synthetic settings that separately tune conditional dependence and compatibility. For example, one can hold the data-generating dependency graph fixed while varying training coverage over masking patterns, or hold masking coverage fixed while changing the data dependency graph from chain-like to exchangeable. Measuring curl, TC proxies, and order-specific error in these settings provides a clean causal test of the framework. 
+
+# 9 Potential Regularization and Improvement Directions 
+
+Although this paper is primarily analytical, the framework naturally suggests several improvement directions. The target is reduced incompatibility on coordinates that the system intends to update jointly or in arbitrary order, while preserving directional asymmetries that are useful for modeling language. 
+
+9.1 Elementary-Circulation Regularization 
+
+During training, one can sample position pairs and candidate token assignments and explicitly minimize a normalized compatibility penalty such as 
+
+Lecirc = ExS ,t,i,j,a,b 
+
+( eCa,b ij (xS , t )) 2.
+
+Applied selectively to candidate parallel blocks, this regularizer encourages nearby orders to induce more consistent pseudo-joints where parallel decoding is desired. Its main cost is additional computation, and overly aggressive regularization could suppress useful asymmetries, so the regularizer should target candidate parallel blocks. 
+
+9.2 Commutator-Aware Scheduling 
+
+At decoding time, block selection should trade off confidence, commutator conflict, and within-block dependence. For a candidate block B, define 
+
+Conflict( B) = X
+
+> i,j ∈B, i<j
+
+Comm (U,D ) 
+
+> ij
+
+(z, t ).
+
+A practical scheduler can then trade off “high confidence,” “low commutator conflict,” and “manageable conditional dependence,” providing a more structured way to control parallelism than token-wise confidence alone. 
+
+9.3 Parallel Trajectory Supervision 
+
+If training data provide only a single reasoning path, such as a standard chain-of-thought trajectory, then the model can easily internalize a strong directional bias in where incompatibility is tolerated. A direct alternative is to construct multiple equivalent reasoning trajectories, locally permuted supervision signals, or 11 block-independent auxiliary targets so that the model sees evidence that the same answer can be recovered through different paths. This should reduce path bias at the data level, especially on coordinates that the decoder is expected to update jointly. 
+
+9.4 Potential-Based DLMs 
+
+A more ambitious direction is to explicitly learn a joint model pθ,t (x) together with its potential Φθ(x, t ) = log pθ,t (x), and then derive local denoising decisions from compatible conditionals. If successful, such models could enforce stronger integrability by construction. The challenge is that joint normalization and scalable training remain difficult in large-vocabulary, discrete-state, multi-step generation settings. 
+
+# 10 Conclusion 
+
+This paper reframes arbitrary-order denoising in diffusion language models through order-induced pseudo-joint distributions. The core condition is no longer verbal: for a block B and partial context S, different denoising orders should induce approximately the same pseudo-joint Qπθ,t (xB | xS ). Local curl is then exactly the log-ratio between two swapped pseudo-joints, and its expectation under one order is the corresponding order-swap KL divergence. Proposition 1 sharpens this further: exact order consistency on a fixed block is equivalent to curl-freeness on every reachable elementary square. This viewpoint yields three clarifications. First, path dependence is accumulated local curl along adjacent swaps. Second, Bayes-optimal uniform masking implies zero curl, so data directionality alone does not force incompatibility. Third, parallel degradation has multiple components: even at zero curl, one-shot independent parallel updates incur a conditional-total-correlation penalty, and order preference is governed by the contexts on which the denoiser’s conditional estimation error is smallest. From a research-program perspective, the paper offers a criterion for what it means for a language diffusion model to be genuinely parallel: the interface must permit arbitrary-order generation, the induced pseudo-joints must remain stable across orders, the block dependence must be manageable at the intended update granularity, and the model must support stable context distributions across schedules. Future work can therefore proceed along three directions: measure pseudo-joint order gaps at scale, separate TC-driven failure from incompatibility-driven failure, and design training objectives that reduce harmful order-specific estimation asymmetries. 
+
+# 11 Limitations 
+
+This paper offers a mechanism-oriented framework, a set of formal diagnostics, and a concrete validation interface, but it does not yet include the broad empirical evidence required to establish the scope of the claim across many diffusion language model families. In particular, the paper does not yet show whether pseudo-joint-gap, TC, and order-specific-error measurements consistently outperform simpler proxies such as token entropy, confidence, or token distance when predicting failure under parallel decoding. The mechanism claim should therefore be read as a testable structural hypothesis rather than a closed empirical account. A second limitation is that the key objects introduced here—local curl, order-induced pseudo-joints, operator commutators, and TC proxies—may be expensive to estimate for large models or long sequences. Their practical utility will depend on whether low-variance approximations can be computed efficiently enough to make the diagnostics usable at scale. A third limitation is that the decomposition into incompatibility, conditional dependence, and estimation error is conceptually clean but not yet operationally unique. In practice these terms may interact, and empirical work will need careful controls to disentangle them. 12 A fourth limitation is conceptual. Low curl is not universally desirable, and neither is low conditional dependence. Language contains real structure. Our claim is therefore local and operational: arbitrary-order or fully parallel denoising becomes unsafe when the chosen update granularity outruns either compatibility or conditional-independence assumptions; it does not imply that diffusion language models are categorically inferior to autoregressive models (Nie et al., 2025). 
+
+# References 
+
+Barry C. Arnold and S. James Press. Compatible conditional distributions. Journal of the American Statistical Association , 84(405):152–156, 1989. Barry C. Arnold, Enrique Castillo, and José M. Sarabia. Conditionally specified distributions: An introduction. 
+
+Statistical Science , 16(3):249–274, 2001. Jacob Austin, Daniel D. Johnson, Jonathan Ho, Daniel Tarlow, and Rianne van den Berg. Structured denoising diffusion models in discrete state-spaces. In Advances in Neural Information Processing Systems , 2021. Julian Besag. Spatial interaction and the statistical analysis of lattice systems. Journal of the Royal Statistical Society. Series B (Methodological) , 36(2):192–236, 1974. Stuart Geman and Donald Geman. Stochastic relaxation, gibbs distributions, and the bayesian restoration of images. IEEE Transactions on Pattern Analysis and Machine Intelligence , 6(6):721–741, 1984. Ishaan Gulrajani and Tatsunori Hashimoto. Likelihood-based diffusion language models. In Advances in Neural Information Processing Systems , 2023. David Heckerman, David Maxwell Chickering, Christopher Meek, Robert Rounthwaite, and Carl Kadie. Dependency networks for inference, collaborative filtering, and data visualization. Journal of Machine Learning Research , 1:49–75, 2000. James P. Hobert and George Casella. Functional compatibility, markov chains, and gibbs sampling with improper posteriors. Journal of Computational and Graphical Statistics , 7(1):42–60, 1998. Jaeyeon Kim, Kulin Shah, Vasilis Kontonis, Sham M. Kakade, and Sitan Chen. Train for the worst, plan for the best: Understanding token ordering in masked diffusions. In Proceedings of the 42nd International Conference on Machine Learning , 2025a. Seo Hyun Kim, Sunwoo Hong, Hojung Jung, Youngrok Park, and Se-Young Yun. KLASS: KL-guided fast inference in masked diffusion models. In Advances in Neural Information Processing Systems , 2025b. Hugo Larochelle and Iain Murray. The neural autoregressive distribution estimator. In Proceedings of the 14th International Conference on Artificial Intelligence and Statistics , volume 15 of Proceedings of Machine Learning Research , pages 29–37, 2011. Pengxiang Li, Dilxat Muhtar, Tianlong Chen, Lu Yin, and Shiwei Liu. Why diffusion language models struggle with truly parallel (non-autoregressive) decoding? In ICLR 2026 Workshop on Data-FM , 2026. Xiang Li, John Thickstun, Ishaan Gulrajani, Percy Liang, and Tatsunori B. Hashimoto. Diffusion-LM improves controllable text generation. In Advances in Neural Information Processing Systems , 2022. Aaron Lou, Chenlin Meng, and Stefano Ermon. Discrete diffusion modeling by estimating the ratios of the data distribution. In Proceedings of the 41st International Conference on Machine Learning , 2024. 13 Shen Nie, Fengqi Zhu, Zebin You, Xiaolu Zhang, Jingyang Ou, Jun Hu, Jun Zhou, Yankai Lin, Ji-Rong Wen, and Chongxuan Li. Large language diffusion models. In Advances in Neural Information Processing Systems , 2025. Julianna Piskorz, Cristina Pinneri, Alvaro Correia, Motasem Alfarra, Risheek Garrepalli, and Christos Louizos. Masks can be distracting: On context comprehension in diffusion language models. In Sci4DL 2026 , 2026. Subham Sekhar Sahoo, Marianne Arriola, Yair Schiff, Aaron Gokaslan, Edgar Mariano Marroquin, Justin T. Chiu, Alexander M. Rush, and Volodymyr Kuleshov. Simple and effective masked diffusion language models. In Advances in Neural Information Processing Systems , 2024. Benigno Uria, Iain Murray, and Hugo Larochelle. A deep and tractable density estimator. In Proceedings of the 31st International Conference on Machine Learning , volume 32 of Proceedings of Machine Learning Research , pages 467–475, 2014. Eitan Wagner, Yuli Slavutsky, and Omri Abend. CONTESTS: a framework for consistency testing of span probabilities in language models. In Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing , pages 15469–15484, Miami, Florida, USA, 2024. Association for Computational Linguistics. doi: 10.18653/v1/2024.emnlp-main.866. Zhilin Yang, Zihang Dai, Yiming Yang, Jaime Carbonell, Ruslan Salakhutdinov, and Quoc V. Le. XLNet: Generalized autoregressive pretraining for language understanding. In Advances in Neural Information Processing Systems , 2019. 
+
+# A Proofs and Technical Clarifications 
+
+A.1 Proof of Theorem 1 
+
+Proof. By definition, 
+
+Qi→jθ,t (a, b | xS ) = qθ,t (a | xS ) qθ,t (b | xS , x i=a)
+
+and 
+
+Qj→iθ,t (a, b | xS ) = qθ,t (b | xS ) qθ,t (a | xS , x j =b).
+
+Taking the logarithm of the ratio gives 
+
+log Qi→jθ,t (a, b | xS )
+
+Qj→iθ,t (a, b | xS ) = log qθ,t (a | xS )+ log qθ,t (b | xS , x i=a)
+
+− log qθ,t (b | xS )
+
+− log qθ,t (a | xS , x j =b),
+
+which is exactly Ca,b ij (xS , t ).If Ca,b ij (xS , t ) = 0 for all a, b , then the displayed ratio equals 1 for all a, b , so 
+
+Qi→jθ,t (a, b | xS ) = Qj→iθ,t (a, b | xS )
+
+pointwise and hence the two distributions are equal. The converse is immediate from the same identity. 14 For the expectation claim, 
+
+E(a,b )∼Qi→jθ,t (·,·| xS )
+
+Ca,b ij (xS , t )
+
+= X
+
+> a,b
+
+Qi→jθ,t (a, b | xS ) log Qi→jθ,t (a, b | xS )
+
+Qj→iθ,t (a, b | xS )= KL  Qi→jθ,t (·, · | xS ) ∥ Qj→iθ,t (·, · | xS ),
+
+which is the definition of KL divergence. 
+
+A.2 Proof of Theorem 2 
+
+Proof. For each step r, let 
+
+Ar = ( ρ(r−1) 1 , . . . , ρ (r−1)   
+
+> kr−1
+
+) and Dr = ( ρ(r−1)   
+
+> kr+2
+
+, . . . , ρ (r−1)  
+
+> |B|
+
+),
+
+so that 
+
+ρ(r−1) = ( Ar, i r, j r, D r) and ρ(r) = ( Ar, j r, i r, D r).
+
+Also write Cr = S ∪ Ar, which is exactly the prefix index set Sr in the theorem statement. Expanding the sequential products along the two adjacent orders gives 
+
+Qρ(r−1)  
+
+> θ,t
+
+(xB | xS ) = QAr (xAr | xS ) qθ,t (xir | xCr )
+
+· qθ,t (xjr | xCr , x ir )
+
+· QDr (xDr | xCr , x ir , x jr ),
+
+and 
+
+Qρ(r) 
+
+> θ,t
+
+(xB | xS ) = QAr (xAr | xS ) qθ,t (xjr | xCr )
+
+· qθ,t (xir | xCr , x jr )
+
+· QDr (xDr | xCr , x ir , x jr ).
+
+The prefix factor QAr is identical in both expressions, and the suffix factor QDr is also identical because after the adjacent swap both ir and jr have entered the conditioning context. Therefore, 
+
+log Qρ(r−1)  
+
+> θ,t
+
+(xB | xS )
+
+Qρ(r) 
+
+> θ,t
+
+(xB | xS )=log qθ,t (xir | xCr ) + log qθ,t (xjr | xCr , x ir )
+
+− log qθ,t (xjr | xCr ) − log qθ,t (xir | xCr , x jr )= Cxir ,x jr   
+
+> irjr
+
+(xCr , t ).
+
+Summing these consecutive log-ratios along the path Γ telescopes: 
+
+log Qπθ,t (xB | xS )
+
+Qπ′
+
+> θ,t
+
+(xB | xS ) =
+
+> R
+
+X
+
+> r=1
+
+log Qρ(r−1)  
+
+> θ,t
+
+(xB | xS )
+
+Qρ(r) 
+
+> θ,t
+
+(xB | xS )=
+
+> R
+
+X
+
+> r=1
+
+Cxir ,x jr   
+
+> irjr
+
+(xSr , t ),
+
+which is the claimed decomposition. 15 A.3 Proof of Proposition 1 
+
+Proof. Assume first that (ii) holds. Let π and π′ be any two permutations of B, and let Γ be any adjacent-swap path from π to π′. Every swap along Γ occurs at some reachable prefix context Cr = S ∪ Ar with Ar ⊆ B,so by (ii) each term in Theorem 2 is zero. Hence for every assignment xB ,
+
+log Qπθ,t (xB | xS )
+
+Qπ′
+
+> θ,t
+
+(xB | xS ) = 0 .
+
+Because the relevant pseudo-joint factors are strictly positive, the logarithm is well defined and the last display implies 
+
+Qπθ,t (xB | xS ) = Qπ′
+
+> θ,t
+
+(xB | xS ).
+
+This proves (i). Conversely, assume (i). Fix a reachable context index set C = S ∪ A with A ⊆ B, an assignment xC
+
+extending xS , distinct i, j ∈ B \ A, and tokens a, b ∈ V . Let 
+
+D = B \ (A ∪ { i, j }),
+
+choose any permutation α of A, and choose any permutation δ of D. Consider the two full orders 
+
+π = ( α, i, j, δ ) and π′ = ( α, j, i, δ ).
+
+By (i), for every completion xD of the remaining coordinates, 
+
+Qπθ,t (xA, a, b, x D | xS ) = Qπ′
+
+> θ,t
+
+(xA, a, b, x D | xS ).
+
+Expanding both sides, the prefix factors determined by α are identical, and the suffix factors determined by 
+
+δ are also identical because in both orders they condition on the same realized variables xA, xi = a, and 
+
+xj = b. Cancelling these common factors yields 
+
+qθ,t (a | xC )qθ,t (b | xC , x i=a) = qθ,t (b | xC )qθ,t (a | xC , x j =b).
+
+By Theorem 1, this equality of the two local pseudo-joints is equivalent to 
+
+Ca,b ij (xC , t ) = 0 .
+
+Since C, xC , i, j, a, and b were arbitrary, (ii) follows. 
+
+A.4 Proof of Theorem 3 
+
+Proof. Fix xS , t, i, j, a, and b. By the Bayes-optimal assumption, 
+
+qθ,t (a | xS ) = pdata (a | xS )
+
+and, because xS together with xi = a is also a visible context for coordinate j,
+
+qθ,t (b | xS , x i=a) = pdata (b | xS , x i=a).
+
+Therefore, 
+
+Qi→jθ,t (a, b | xS ) = qθ,t (a | xS )qθ,t (b | xS , x i=a)= pdata (a | xS )pdata (b | xS , x i=a)= pdata (a, b | xS ),
+
+16 where the last step is the chain rule. The same argument with i and j swapped gives 
+
+Qj→iθ,t (a, b | xS ) = qθ,t (b | xS )qθ,t (a | xS , x j =b)= pdata (b | xS )pdata (a | xS , x j =b)= pdata (a, b | xS ).
+
+Hence 
+
+Qi→jθ,t (a, b | xS ) = pdata (a, b | xS ) = Qj→iθ,t (a, b | xS ).
+
+Applying Theorem 1 then gives Ca,b ij (xS , t ) = 0 .
+
+A.5 Proof of Theorem 4 
+
+Proof. Under the Bayes-optimal condition qθ,t = p, the independent parallel approximation becomes 
+
+Qpar  
+
+> θ,t
+
+(xB | xS ) = Y
+
+> i∈B
+
+p(xi | xS ).
+
+Substituting this into the KL divergence yields 
+
+KL 
+
+
+
+p(xB | xS ) Qpar  
+
+> θ,t
+
+(xB | xS )
+
+
+
+= KL 
+
+
+
+p(xB | xS ) Y
+
+> i∈B
+
+p(xi | xS )
+
+
+
+.
+
+By the definition of conditional total correlation, the right-hand side is TC( XB | XS ).For the entropy form, expand the KL divergence under the joint law of (XB , X S ):
+
+TC( XB | XS ) = Ep
+
+"
+
+log p(XB | XS )
+
+Q 
+
+> i∈B
+
+p(Xi | XS )
+
+#
+
+= Ep
+
+log p(XB | XS ) − X
+
+> i∈B
+
+Ep
+
+log p(Xi | XS )
+
+= −H(XB | XS ) + X
+
+> i∈B
+
+H(Xi | XS ),
+
+which is exactly 
+
+TC( XB | XS ) = X
+
+> i∈B
+
+H(Xi | XS ) − H(XB | XS ).
+
+A.6 Proof of Theorem 5 
+
+Proof. For the first identity, 
+
+KL  p(XB | XS ) ∥ Qπθ,t (XB | XS )
+
+= Ep
+
+log p(XB | XS ) − log Qπθ,t (XB | XS ).
+
+Rearranging gives 
+
+Ep
+
+− log Qπθ,t (XB | XS ) =
+
+− Ep
+
+log p(XB | XS ) + KL  p(XB | XS ) ∥ Qπθ,t (XB | XS )
+
+= Hp(XB | XS ) + KL  p(XB | XS ) ∥ Qπθ,t (XB | XS ),
+
+17 which is the first claim. For the second claim, apply the chain rule to both the target conditional and the pseudo-joint in the same order π:
+
+p(XB | XS ) = 
+
+> |B|
+
+Y
+
+> m=1
+
+p(Xπm | XS , X π<m )
+
+and 
+
+Qπθ,t (XB | XS ) = 
+
+> |B|
+
+Y
+
+> m=1
+
+qθ,t (Xπm | XS , X π<m ).
+
+Therefore, 
+
+KL  p(XB | XS ) ∥ Qπθ,t (XB | XS )
+
+= Ep
+
+" |B|
+
+X
+
+> m=1
+
+log p(Xπm | XS , X π<m )
+
+qθ,t (Xπm | XS , X π<m )
+
+#
+
+=
+
+> |B|
+
+X
+
+> m=1
+
+Ep
+
+"
+
+log p(Xπm | XS , X π<m )
+
+qθ,t (Xπm | XS , X π<m )
+
+#
+
+.
+
+Now condition on (XS , X π<m ) and apply the definition of KL divergence inside each term: 
+
+Ep
+
+"
+
+log p(Xπm | XS , X π<m )
+
+qθ,t (Xπm | XS , X π<m )
+
+#
+
+= Ep
+
+h
+
+KL  p(Xπm | XS , X π<m ) ∥ qθ,t (Xπm | XS , X π<m )i
+
+.
+
+Summing over m yields the claimed decomposition. 
+
+A.7 Why Pseudo-Joints Are the Right Starting Object 
+
+A DLM denoiser natively provides local conditionals, not a jointly normalized density over an unresolved block. Once a decoding order is chosen, those local conditionals can always be multiplied into a sequential product Qπθ,t (xB | xS ). This object is operationally unavoidable because it is exactly what a step-by-step decoder uses. The compatibility question is whether these pseudo-joints agree across orders. 
+
+A.8 Why Logit-Shift Invariance Is the Identifiable Object 
+
+If the model emits logits ℓi(a | xS , t ), then adding any scalar ci(xS , t ) to every logit at coordinate i leaves the conditional distribution unchanged after softmax. Objects defined directly from raw logit levels are therefore not identifiable from the model’s predictive semantics alone. By contrast, log-probability ratios and pseudo-joint log-ratios are invariant to such shifts, which is why the paper defines curl at that level. 18
