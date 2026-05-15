@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2605.14305v1/fig-001.webp",
+      "caption": "Table 2: Ablation study on training effects. Best accuracy values within each comparison group are in bold. Mean denotes the average results across all four benchmarks.",
+      "page": 9,
+      "index": 1,
+      "width": 818,
+      "height": 217
+    },
+    {
+      "url": "assets/figures/arxiv/2605.14305v1/fig-002.webp",
+      "caption": "Table 1: Main results on mathematical reasoning and code generation benchmarks. Best accuracy values are in bold, and fastest speed values are underlined. Mean denotes the average results across all four benchmarks. For FeF-DLLM, step denotes the number of diffusion model steps.",
+      "page": 8,
+      "index": 2,
+      "width": 818,
+      "height": 224
+    },
+    {
+      "url": "assets/figures/arxiv/2605.14305v1/fig-003.webp",
+      "caption": "Figure 1: Overview of FeF-DLLM. Prefix-conditioned training predicts each clean token from the clean prefix X<i 0 and the remaining corrupted context X≥i t . During inference, a draft model proposes a speculative window in parallel, and a prefix-conditioned target model verifies the proposals left to right before constructing the standard reverse transition.",
+      "page": 6,
+      "index": 3,
+      "width": 816,
+      "height": 433
+    }
+  ]
+}

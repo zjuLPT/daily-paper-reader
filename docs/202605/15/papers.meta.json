@@ -1,0 +1,54 @@
+{
+  "label": "2026-05-15",
+  "date": "2026-05-15",
+  "generated_at": "2026-05-15T20:30:32",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202605/15/2605.14598v1-dssp-diffusion-state-space-policy-with-full-history-encoding",
+      "section": "deep",
+      "title_en": "DSSP: Diffusion State Space Policy with Full-History Encoding",
+      "authors": "Zhiyuan Guan, Jianshu Hu, Han Fang, Yunpeng Jiang, Yize Huang, Shujia Li, Xiao Li, Yutong Ban",
+      "date": "2026-05-14",
+      "pdf": "https://arxiv.org/pdf/2605.14598v1",
+      "score": "9.0",
+      "evidence": "用于历史条件序列建模的扩散状态空间策略",
+      "tldr": "本文提出DSSP，一种结合状态空间模型的扩散策略框架，通过全历史编码与分层条件生成机制，在长时机器人操控任务中实现高效的历史依赖处理与动作生成，显著提升性能与模型效率。",
+      "tags": "query:diffts",
+      "abstract_en": "Diffusion-based imitation learning has shown strong promise for robot manipulation. However, most existing policies condition only on the current observation or a short window of recent observations, limiting their ability to resolve history-dependent ambiguities in long-horizon tasks. To address this, we introduce DSSP, a history-conditioned Diffusion State Space Policy that enables efficient, full-history conditioning for robot manipulation. Leveraging the continuous sequence modeling properties of State Space Models (SSMs), our history encoder effectively compresses the entire observation stream into a compact context representation. To ensure this context preserves critical information regarding future state evolution, the encoder is optimized with a dynamics-aware auxiliary training objective. This high-level context representation is then seamlessly fused with recent state observations to form a hierarchical conditioning mechanism for action generation. Furthermore, to maintain architectural consistency and minimize GPU memory overhead, we also instantiate the diffusion backbone itself using an SSM. Extensive experiments across simulation benchmarks and real-world manipulation tasks show that DSSP achieves state-of-the-art performance with a significantly smaller model size, demonstrating superior efficiency of the hierarchical conditioning in capturing crucial information as the history length increases.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202605/15/2605.13999v1-support-before-frequency-in-discrete-diffusion",
+      "section": "quick",
+      "title_en": "Support Before Frequency in Discrete Diffusion",
+      "authors": "Adrian Müller, Antoine Gonon, Zebang Shen, Ya-Ping Hsieh, Niao He",
+      "date": "2026-05-13",
+      "pdf": "https://arxiv.org/pdf/2605.13999v1",
+      "score": "6.0",
+      "evidence": "序列数据离散扩散中的去噪目标",
+      "tldr": "本文研究离散扩散模型在语言建模中如何组织学习，提出支持结构和频率信息存在层次关系。通过对均匀与吸收扩散的理论分析与实验验证，发现模型先学习支持有效性，再细化频率估计，从而揭示其学习动态机制。",
+      "tags": "query:diffts",
+      "abstract_en": "Discrete diffusion models are increasingly competitive for language modeling, yet it remains unclear how their denoising objectives organize learning. Although these objectives target the full data distribution, we show that the exact reverse process induces a hierarchy between coarse support information and finer frequency information. For uniform and absorbing (a.k.a. masking) diffusion, we prove that, in the small-noise regime of the final denoising steps, each single-token reverse edit decomposes into a leading scale, determined by whether it moves toward the data support (e.g., grammatically valid sentences), and a finer coefficient, determining relative probabilities within the same scale. Thus, recovering validity structure only requires learning the correct order of magnitude of reverse probabilities, whereas recovering data frequencies requires coefficient-level estimation. The separation is mechanism-dependent: uniform diffusion exhibits a trichotomy into validity-improving, validity-preserving, and validity-worsening edits, while absorbing diffusion places its leading-order mass on validity-improving moves. Experiments on a masked language diffusion model and synthetic regular-language tasks support these predictions: support-localization emerges earlier than within-support frequency ranking, and the contrast between uniform and absorbing diffusion matches the predicted rate separation. Together, our results suggest that discrete diffusion models learn data support before data frequencies.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202605/15/2605.14305v1-factorization-error-free-discrete-diffusion-language-model-via-speculative-decoding",
+      "section": "quick",
+      "title_en": "Factorization-Error-Free Discrete Diffusion Language Model via Speculative Decoding",
+      "authors": "Xun Fang, Yunchen Li, Hang Yuan, Zhou Yu",
+      "date": "2026-05-14",
+      "pdf": "https://arxiv.org/pdf/2605.14305v1",
+      "score": "6.0",
+      "evidence": "用于序列建模的离散扩散语言模型",
+      "tldr": "本文提出Factorization-Error-Free Discrete Diffusion Language Model (FeF-DLLM)，通过精确前缀条件化建模解决离散扩散语言模型中的因子化误差问题，并结合推测解码以保持并行预测的效率。实验结果显示，该方法在多项任务上显著提升精度和推理速度。",
+      "tags": "query:diffts",
+      "abstract_en": "Discrete diffusion language models improve generation efficiency through parallel token prediction, but standard $X_0$ prediction methods introduce factorization errors by approximating the clean token posterior with independent token-wise distributions. This paper proposes Factorization-Error-Free Discrete Diffusion Language Modeling (FeF-DLLM), which replaces independent clean-token prediction with an exact prefix-conditioned factorization of the clean posterior to better preserve token dependencies. To reduce the sequential cost introduced by prefix conditioning, FeF-DLLM further incorporates speculative decoding within diffusion denoising, accelerating inference while maintaining the parallel prediction and re-masking properties of DLLMs. Theoretically, we prove that FeF-DLLM generates from the true joint distribution and derive its expected acceleration ratio. Experiments on GSM8K, MATH, HumanEval, and MBPP demonstrate that our method improves accuracy by an average of 5.04 percentage points while achieving an average inference speedup of $3.86\\times$.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

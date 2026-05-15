@@ -1,0 +1,150 @@
+{
+  "version": 2,
+  "extractor": "pdffigures2",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2605.13999v1/fig-001.webp",
+      "caption": "Figure 5: Results for H = 32, K = 64, T = 32.",
+      "page": 26,
+      "index": 1,
+      "width": 1004,
+      "height": 318
+    },
+    {
+      "url": "assets/figures/arxiv/2605.13999v1/fig-002.webp",
+      "caption": "Figure 6: Results for H = 64, K = 32, T = 64.",
+      "page": 26,
+      "index": 2,
+      "width": 1004,
+      "height": 317
+    },
+    {
+      "url": "assets/figures/arxiv/2605.13999v1/fig-003.webp",
+      "caption": "Figure 7: Results for H = 64, K = 32, T = 128.",
+      "page": 26,
+      "index": 3,
+      "width": 1004,
+      "height": 318
+    },
+    {
+      "url": "assets/figures/arxiv/2605.13999v1/fig-004.webp",
+      "caption": "Figure 2: Synthetic echo of support before frequency. In the regular-language setting of Section 3.2, direct support metrics improve before frequency ones, paralleling the FineWeb trend in Figure 1.",
+      "page": 7,
+      "index": 4,
+      "width": 846,
+      "height": 276
+    },
+    {
+      "url": "assets/figures/arxiv/2605.13999v1/fig-005.webp",
+      "caption": "Figure 11: Results for H = 64, K = 32, T = 128: (a) Fraction in support across training; (b) Distance to support across training; (c) Fraction in support (final checkpoint); (d) Win rate: Distance to support (final checkpoint)",
+      "page": 29,
+      "index": 5,
+      "width": 1004,
+      "height": 189
+    },
+    {
+      "url": "assets/figures/arxiv/2605.13999v1/fig-006.webp",
+      "caption": "Figure 14: Support probe under different choices of non-candidate negatives. Uniform negatives are easiest; negatives drawn from frequent tokens in the context bank are harder; frequency-matched negatives are the primary curve used in the main text because they compare candidates against non-candidates with similar global frequency. The support signal rises at the same time under all choices.",
+      "page": 34,
+      "index": 6,
+      "width": 761,
+      "height": 416
+    },
+    {
+      "url": "assets/figures/arxiv/2605.13999v1/fig-007.webp",
+      "caption": "Figure 1: Support before frequencies in a web-trained masked DLM. We train a masked DLM on FineWeb and evaluate support and frequency proxies inspired by the separation in Theorem 2.2 (Section 3.1). The support-localization proxy reaches its peak gain earlier than the frequency-ranking proxies. Curves show means over three seeds with ±1 standard-deviation bands; transition markers use the first checkpoint reaching 90% of each seed’s peak gain.",
+      "page": 3,
+      "index": 7,
+      "width": 702,
+      "height": 405
+    },
+    {
+      "url": "assets/figures/arxiv/2605.13999v1/fig-008.webp",
+      "caption": "Figure 15: Raw metric levels for the FineWeb masked-DLM probes. The support probe rises from 0.624 to a peak of 0.873 candidate-vs-negative accuracy, with chance at 0.5. Top-1 frequency recovery rises from 0.362 to 0.464, compared with a random-candidate baseline of 0.115. Pairwise frequency recovery rises from 0.695 to 0.756, with chance at 0.5. Dotted vertical lines mark the 90% peak-gain transition times.",
+      "page": 35,
+      "index": 8,
+      "width": 986,
+      "height": 277
+    },
+    {
+      "url": "assets/figures/arxiv/2605.13999v1/fig-009.webp",
+      "caption": "Figure 16: Train/validation diagnostic for the FineWeb masked-DLM trajectory. In the support–frequency transition window, train and validation masked-token denoising losses improve together and the validationminus-train gap remains small across masking levels.",
+      "page": 35,
+      "index": 9,
+      "width": 770,
+      "height": 218
+    },
+    {
+      "url": "assets/figures/arxiv/2605.13999v1/fig-010.webp",
+      "caption": "Figure 8: Results for H = 32, K = 64, T = 64 (see Figure 3): (a) Fraction in support across training; (b) Distance to support across training; (c) Fraction in support (final checkpoint); (d) Win rate: Distance to support (final checkpoint)",
+      "page": 28,
+      "index": 10,
+      "width": 1004,
+      "height": 189
+    },
+    {
+      "url": "assets/figures/arxiv/2605.13999v1/fig-011.webp",
+      "caption": "Figure 9: Results for H = 32, K = 64, T = 32: (a) Fraction in support across training; (b) Distance to support across training; (c) Fraction in support (final checkpoint); (d) Win rate: Distance to support (final checkpoint)",
+      "page": 28,
+      "index": 11,
+      "width": 1004,
+      "height": 189
+    },
+    {
+      "url": "assets/figures/arxiv/2605.13999v1/fig-012.webp",
+      "caption": "Figure 10: Results for H = 64, K = 32, T = 64: (a) Fraction in support across training; (b) Distance to support across training; (c) Fraction in support (final checkpoint); (d) Win rate: Distance to support (final checkpoint)",
+      "page": 28,
+      "index": 12,
+      "width": 1004,
+      "height": 189
+    },
+    {
+      "url": "assets/figures/arxiv/2605.13999v1/fig-013.webp",
+      "caption": "Figure 4: Two routes for training absorbing-mask diffusion models. In the clean-token family used by D3PMstyle and mean/SUBS parameterizations, the reverse kernel and the induced score are determined by the same normalized network output and lead to the same weighted masked-token cross-entropy. Direct score parameterizations such as SEDD remain a separate family. We use the weighted masked clean-token CE in our experiments, in the mask case, which is equivalent to the popular SUBS/mean and D3PM parameterizations, and which also coincides with a score objective for the induced score field.",
+      "page": 13,
+      "index": 13,
+      "width": 995,
+      "height": 669
+    },
+    {
+      "url": "assets/figures/arxiv/2605.13999v1/fig-014.webp",
+      "caption": "Figure 3: Projection-style edits help uniform diffusion more.",
+      "page": 8,
+      "index": 14,
+      "width": 812,
+      "height": 292
+    },
+    {
+      "url": "assets/figures/arxiv/2605.13999v1/fig-015.webp",
+      "caption": "Figure 18: Learning-rate schedule robustness. Labeled dotted lines show the 90% peak-gain transition for each curve. Adding a 384-step learning-rate warmup delays the support transition and brings the top-1 frequency transition close to it, while pairwise frequency ranking remains later.",
+      "page": 36,
+      "index": 15,
+      "width": 986,
+      "height": 304
+    },
+    {
+      "url": "assets/figures/arxiv/2605.13999v1/fig-016.webp",
+      "caption": "Figure 17: Absolute train and validation masked-token denoising cross-entropies for the FineWeb masked-DLM trajectory. Curves are averages over the three seeds at three masking levels.",
+      "page": 36,
+      "index": 16,
+      "width": 933,
+      "height": 265
+    },
+    {
+      "url": "assets/figures/arxiv/2605.13999v1/fig-017.webp",
+      "caption": "Figure 12: Logged denoising losses for the FineWeb masked-diffusion runs. The training line is the seed mean after a trailing 25-step moving average. Diamonds mark the validation evaluations available in the logs.",
+      "page": 31,
+      "index": 17,
+      "width": 699,
+      "height": 386
+    },
+    {
+      "url": "assets/figures/arxiv/2605.13999v1/fig-018.webp",
+      "caption": "Figure 13: Logged denoising losses for the 3.93B-token training run. The training curve uses the same trailing 25-step moving average as Figure 12; diamonds mark the validation evaluations from that continuation.",
+      "page": 31,
+      "index": 18,
+      "width": 699,
+      "height": 386
+    }
+  ]
+}
