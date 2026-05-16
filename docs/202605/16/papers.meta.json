@@ -1,0 +1,39 @@
+{
+  "label": "2026-05-16",
+  "date": "2026-05-16",
+  "generated_at": "2026-05-16T20:36:55",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202605/16/2605.14069v1-surf-a-generative-model-for-multivariate-irregular-time-series-forecasting",
+      "section": "deep",
+      "title_en": "SurF: A Generative Model for Multivariate Irregular Time Series Forecasting",
+      "authors": "Mohammad R. Rezaei, Tejas Balaji, Rahul G. Krishnan",
+      "date": "2026-05-13",
+      "pdf": "https://arxiv.org/pdf/2605.14069v1",
+      "score": "8.0",
+      "evidence": "用于时间序列预测的生成模型",
+      "tldr": "本文提出SurF，一种面向多变量不规则时间序列的生成模型，基于时间重缩放定理构建可学习的双射映射，将事件序列转化为独立同分布的指数噪声，并结合高效累计强度参数化与Transformer编码器实现跨数据集预训练，在多个真实数据集上显著优于现有方法。",
+      "tags": "query:diffts",
+      "abstract_en": "Irregularly sampled multivariate event streams remain a stubbornly difficult modality for generative modeling: tokenization-based approaches break down when inter-event intervals vary by orders of magnitude, and neural temporal point processes are bottlenecked by window-level numerical quadrature. We (i) propose SurF, a generative model that uses the Time Rescaling Theorem (TRT) as a learnable bijection between event sequences and i.i.d.\\ unit-rate exponential noise, enabling a single model to be trained across heterogeneous event-stream datasets; (ii) three efficient parameterizations of the cumulative intensity that scale to long sequences; and (iii) a Transformer-based encoder for multi-dataset pretraining. On six real-world benchmarks, SurF achieves the best reported time RMSE on Earthquake, Retweet, and Taobao, and is within trial-level noise of the strongest specialist on the remaining three. Under a strict leave-one-out protocol, the held-out checkpoint beats every classical and neural-autoregressive baseline on 5/6 datasets and beats every baseline on Amazon and Earthquake, an initial step toward foundation models over asynchronous event streams.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202605/16/2605.13013v1-jedi-joint-embedding-diffusion-world-model-for-online-model-based-reinforcement-learning",
+      "section": "quick",
+      "title_en": "JEDI: Joint Embedding Diffusion World Model for Online Model-Based Reinforcement Learning",
+      "authors": "Jing Yu Lim, Rushi Shah, Zarif Ikram, Samson Yu, Haozhe Ma, Tze-Yun Leong, Dianbo Liu",
+      "date": "2026-05-13",
+      "pdf": "https://arxiv.org/pdf/2605.13013v1",
+      "score": "6.0",
+      "evidence": "用于强化学习的扩散世界模型",
+      "tldr": "引入JEDI，一种用于高效在线基于模型的强化学习的联合嵌入扩散世界模型。",
+      "tags": "query:diffts",
+      "abstract_en": "Diffusion world models have recently become competitive for online model-based reinforcement learning, but current approaches expose a tension: pixel diffusion is effective but computationally expensive while the latest latent diffusion approach improves efficiency yet performs subpar. The latter also relies on separately trained latents rather than the end-to-end world-model objectives that have driven much of modern MBRL progress. In particular, JEPA-style predictive representation learning has emerged as an especially promising direction for world modeling and MBRL. Concurrently, diffusion-style objectives have gained traction across multiple domains, with iterative refinement as a promising approach for multimodal and stochastic targets. Taken together, these trends motivate Joint Embedding DIffusion (JEDI), the first online end-to-end latent diffusion world model. JEDI learns its latent space directly from the diffusion denoising loss with a JEPA framework, using denoising to learn and predict future latents rather than relying on reconstruction and pretrained models. We provide a theoretical motivation showing that conventional JEPA objectives induce a predictive information bottleneck, and that conditional diffusion denoising admits a closely related predictive-compression decomposition. Empirically, JEDI is competitive on Atari100k and outperforms the baseline with seperately trained latents where directly comparable. Relative to the pixel diffusion baseline, JEDI uses 43% less VRAM, over 3$\\times$ faster world-model sampling, and 2.5$\\times$ faster training. JEDI also exhibits a markedly different task-level performance profile from the pixel baseline, suggesting that end-to-end predictive latents change more than compute alone.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

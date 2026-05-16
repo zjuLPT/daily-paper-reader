@@ -6,31 +6,29 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-05-15
-- 运行时间：2026-05-15 20:30:29 UTC
+- 最新运行日期：2026-05-16
+- 运行时间：2026-05-16 20:36:52 UTC
 - 运行状态：成功
-- 本次总论文数：3
+- 本次总论文数：2
 - 精读区：1
-- 速读区：2
+- 速读区：1
 
 ### 今日简报（AI）
-聚焦离散扩散与策略建模，三篇论文完成阅读。  
-最值得关注的是DSSP方法以全历史编码提升策略生成能力。  
-建议下步深入比较扩散策略与传统强化学习在复杂任务中的差异。
-- 详情：[/202605/15/README](/202605/15/README)
+- 今日共生成 2 篇推荐（精读 1 篇，速读 1 篇）
+- 精读：《SurF: A Generative Model for Multivariate Irregular Time Series Forecasting》（8.0/10）
+- 速读：《JEDI: Joint Embedding Diffusion World Model for Online Model-Based Reinforcement Learning》（6.0/10）
+- 这些结果覆盖了当下较热的方向，建议先看精读区论文的关键问题与方法。
+- 详情：[/202605/16/README](/202605/16/README)
 
 ### 精读区论文标签
-1. [DSSP: Diffusion State Space Policy with Full-History Encoding](/202605/15/2605.14598v1-dssp-diffusion-state-space-policy-with-full-history-encoding)  
-   标签：评分：9.0/10、query:diffts
-   evidence：用于历史条件序列建模的扩散状态空间策略
+1. [SurF: A Generative Model for Multivariate Irregular Time Series Forecasting](/202605/16/2605.14069v1-surf-a-generative-model-for-multivariate-irregular-time-series-forecasting)  
+   标签：评分：8.0/10、query:diffts
+   evidence：用于时间序列预测的生成模型
 
 ### 速读区论文标签
-1. [Support Before Frequency in Discrete Diffusion](/202605/15/2605.13999v1-support-before-frequency-in-discrete-diffusion)  
+1. [JEDI: Joint Embedding Diffusion World Model for Online Model-Based Reinforcement Learning](/202605/16/2605.13013v1-jedi-joint-embedding-diffusion-world-model-for-online-model-based-reinforcement-learning)  
    标签：评分：6.0/10、query:diffts
-   evidence：序列数据离散扩散中的去噪目标
-2. [Factorization-Error-Free Discrete Diffusion Language Model via Speculative Decoding](/202605/15/2605.14305v1-factorization-error-free-discrete-diffusion-language-model-via-speculative-decoding)  
-   标签：评分：6.0/10、query:diffts
-   evidence：用于序列建模的离散扩散语言模型
+   evidence：用于强化学习的扩散世界模型
 
 
 <div class="dpr-home-promo-card">
